@@ -152,13 +152,14 @@ export default function Home() {
               <button key={k} onClick={()=>setMetric(v)} style={{padding:mob?'6px 12px':'8px 18px',borderRadius:20,border:metric===v?'2px solid #2563EB':'1px solid #e2e8f0',background:metric===v?'#eff6ff':'#fff',color:metric===v?'#2563EB':'#64748b',fontSize:13,fontWeight:metric===v?600:400,cursor:'pointer'}}>{METRICS[k]}</button>
             ))}
           </div>
-          <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'1fr 340px',gap:20}}>
-            <div style={{background:'#fff',borderRadius:14,padding:'20px 24px',border:'1px solid #f0f0f0',boxShadow:'0 1px 3px rgba(0,0,0,0.04)',position:'relative'}}>
-              <div style={{fontSize:14,fontWeight:600,marginBottom:4}}>{Object.values(METRICS)[Object.values(mKey).indexOf(metric)]||metric}</div>
-              <div style={{fontSize:32,fontWeight:700,color:'#b91c1c',letterSpacing:'-0.02em'}}>{fmt(prefs.reduce((s,p)=>s+(p[metric]||0),0))}</div>
-              <div style={{fontSize:11,color:'#94a3b8',marginBottom:16}}>全国合計　｜　都道府県にカーソルを合わせると詳細を表示</div>
+          <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'1fr 260px',gap:16}}>
+            <div style={{background:'#fff',borderRadius:14,padding:mob?'12px':'16px 20px',border:'1px solid #f0f0f0',boxShadow:'0 1px 3px rgba(0,0,0,0.04)',position:'relative'}}>
+              <div style={{display:'flex',alignItems:'baseline',gap:12,marginBottom:mob?8:12}}>
+                <div style={{fontSize:28,fontWeight:700,color:'#b91c1c',letterSpacing:'-0.02em'}}>{fmt(prefs.reduce((s,p)=>s+(p[metric]||0),0))}</div>
+                <div style={{fontSize:12,color:'#94a3b8'}}>{Object.values(METRICS)[Object.values(mKey).indexOf(metric)]||metric} ｜ 都道府県をタップで詳細</div>
+              </div>
               {japanMap && (
-                <svg viewBox={japanMap.viewBox} style={{width:'100%',maxHeight:mob?320:420}}>
+                <svg viewBox={japanMap.viewBox} style={{width:'100%',height:mob?'calc(100vh - 280px)':'calc(100vh - 260px)',maxHeight:mob?500:700}}>
                   {japanMap.prefs.map(pf => {
                     const data = prefByName[pf.ja];
                     const val = data?.[metric]||0;
@@ -183,13 +184,13 @@ export default function Home() {
                 </div>
               ):null;})()}
             </div>
-            <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden',maxHeight:520,overflowY:'auto',boxShadow:'0 1px 3px rgba(0,0,0,0.04)'}}>
-              <div style={{padding:'14px 16px',borderBottom:'1px solid #f0f0f0',fontSize:13,fontWeight:600,position:'sticky',top:0,background:'#fff',zIndex:1}}>全{prefs.length}都道府県</div>
+            <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden',maxHeight:mob?300:'calc(100vh - 200px)',overflowY:'auto',boxShadow:'0 1px 3px rgba(0,0,0,0.04)'}}>
+              <div style={{padding:'10px 12px',borderBottom:'1px solid #f0f0f0',fontSize:12,fontWeight:600,position:'sticky',top:0,background:'#fff',zIndex:1}}>全{prefs.length}都道府県</div>
               {[...prefs].sort((a,b)=>(b[metric]||0)-(a[metric]||0)).map((p,i)=>(
-                <div key={p.code} onClick={()=>{setSelectedPref(p.name);setView('muni');}} style={{display:'flex',alignItems:'center',padding:'8px 16px',borderBottom:'1px solid #f8f9fa',cursor:'pointer',fontSize:13}} onMouseEnter={e=>e.currentTarget.style.background='#f0f7ff'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
-                  <span style={{width:24,fontWeight:600,color:'#94a3b8',fontSize:11}}>{i+1}</span>
+                <div key={p.code} onClick={()=>{setSelectedPref(p.name);setView('muni');}} style={{display:'flex',alignItems:'center',padding:'6px 12px',borderBottom:'1px solid #f8f9fa',cursor:'pointer',fontSize:12}} onMouseEnter={e=>e.currentTarget.style.background='#f0f7ff'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+                  <span style={{width:20,fontWeight:600,color:'#94a3b8',fontSize:10}}>{i+1}</span>
                   <span style={{flex:1,fontWeight:500}}>{p.name}</span>
-                  <span style={{fontWeight:600,color:'#2563EB',fontVariantNumeric:'tabular-nums'}}>{fmt(p[metric])}</span>
+                  <span style={{fontWeight:600,color:'#b91c1c',fontVariantNumeric:'tabular-nums',fontSize:12}}>{fmt(p[metric])}</span>
                   <div style={{width:60,height:6,borderRadius:3,background:'#f1f5f9',marginLeft:8,overflow:'hidden'}}>
                     <div style={{height:'100%',borderRadius:3,background:getColor(p[metric]||0),width:`${(p[metric]||0)/maxVal*100}%`}}/>
                   </div>
