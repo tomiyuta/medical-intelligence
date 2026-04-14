@@ -41,6 +41,9 @@ export default function Home() {
   const [areaPref, setAreaPref] = useState('東京都');
   const [areaData, setAreaData] = useState([]);
   const [areaPrefList, setAreaPrefList] = useState([]);
+  const [geoFacilities, setGeoFacilities] = useState([]);
+  const [selectedFacility, setSelectedFacility] = useState(null);
+  const [mapPref, setMapPref] = useState('');
 
   useEffect(() => {
     Promise.all([
@@ -55,6 +58,7 @@ export default function Home() {
       setAreaPrefList(d.prefectures||[]);
       setAreaData(d.data?.filter(a=>a.pref==='東京都')||[]);
     });
+    fetch('/api/facilities-geo').then(r=>r.json()).then(d => setGeoFacilities(d.data||[]));
   }, []);
 
   useEffect(() => {
@@ -97,6 +101,7 @@ export default function Home() {
         <Nav icon="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z" label="都道府県別 分布" active={view==='map'} onClick={()=>setView('map')}/>
         <Nav icon="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z" label="市区町村 人口動態" active={view==='muni'} onClick={()=>setView('muni')}/>
         <Nav icon="M22 12h-4l-3 9L9 3l-3 9H2" label="医療圏分析" active={view==='area'} onClick={()=>setView('area')}/>
+        <Nav icon="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" label="施設マップ" active={view==='geomap'} onClick={()=>setView('geomap')}/>
         <Nav icon="M18 20V10M12 20V4M6 20v-6" label="スコアリング" active={view==='score'} onClick={()=>setView('score')}/>
         <div style={{flex:1}}/>
         <div style={{padding:'12px 14px',borderTop:'1px solid #f0f0f0',fontSize:11,color:'#cbd5e1'}}>
@@ -250,6 +255,78 @@ export default function Home() {
                 </tr>))}</tbody>
             </table>
             <div style={{padding:'12px 16px',fontSize:11,color:'#94a3b8',borderTop:'1px solid #f1f5f9'}}>出典: 厚労省 病床機能報告（令和元年度）全国339二次医療圏対応</div>
+          </div>
+        </>}
+
+        {/* ═══ GEO MAP VIEW (Leaflet + Facility Detail) ═══ */}
+        {view==='geomap' && <>
+          <div style={{marginBottom:24,display:'flex',justifyContent:'space-between',alignItems:'flex-end'}}>
+            <div>
+              <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:4}}>Facility Map</div>
+              <h1 style={{fontSize:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>施設マッピング</h1>
+              <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>Tier S/A {geoFacilities.length}施設を地図上に表示。施設をクリックで詳細表示。</p>
+            </div>
+            <select value={mapPref} onChange={e=>{setMapPref(e.target.value);setSelectedFacility(null);}} style={{padding:'8px 14px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,background:'#fff',cursor:'pointer'}}>
+              <option value="">全国</option>
+              {[...new Set(geoFacilities.map(f=>f.pref))].sort().map(p=><option key={p} value={p}>{p}</option>)}
+            </select>
+          </div>
+
+          <div style={{display:'grid',gridTemplateColumns:selectedFacility?'1fr 380px':'1fr',gap:16}}>
+            {/* Map Area */}
+            <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden',height:560}}>
+              <iframe
+                width="100%" height="100%" frameBorder="0" style={{border:0}}
+                src={`https://www.openstreetmap.org/export/embed.html?bbox=${mapPref?'':'-180,-90,180,90'}&layer=mapnik`}
+              />
+              {/* Facility list overlay */}
+              <div style={{position:'relative',marginTop:-560,height:560,overflowY:'auto',padding:12,background:'rgba(255,255,255,0.92)'}}>
+                <div style={{fontSize:13,fontWeight:600,marginBottom:8,color:'#0f172a'}}>
+                  {mapPref||'全国'} — {(mapPref?geoFacilities.filter(f=>f.pref===mapPref):geoFacilities).length}施設
+                </div>
+                {(mapPref?geoFacilities.filter(f=>f.pref===mapPref):geoFacilities).map((f,i)=>(
+                  <div key={i} onClick={()=>setSelectedFacility(f)} style={{padding:'8px 10px',marginBottom:4,borderRadius:8,cursor:'pointer',background:selectedFacility?.code===f.code?'#eff6ff':'#fff',border:'1px solid '+(selectedFacility?.code===f.code?'#2563EB':'#f0f0f0'),fontSize:12,transition:'all 0.1s'}}>
+                    <div style={{display:'flex',justifyContent:'space-between',alignItems:'center'}}>
+                      <span style={{fontWeight:600,color:'#1e293b'}}>{f.name.slice(0,25)}</span>
+                      <span style={{padding:'1px 8px',borderRadius:12,fontSize:10,fontWeight:700,background:f.tier==='S'?'#fef2f2':'#fff7ed',color:f.tier==='S'?'#dc2626':'#f97316'}}>{f.score}pt</span>
+                    </div>
+                    <div style={{color:'#94a3b8',fontSize:11,marginTop:2}}>{f.pref} | {f.beds}床 | {fmt(f.cases)}症例</div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Facility Detail Panel */}
+            {selectedFacility && (
+              <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden',display:'flex',flexDirection:'column'}}>
+                <div style={{padding:'16px 20px',borderBottom:'1px solid #f0f0f0'}}>
+                  <div style={{fontSize:16,fontWeight:700,color:'#0f172a',marginBottom:4}}>{selectedFacility.name}</div>
+                  <div style={{fontSize:12,color:'#64748b'}}>{selectedFacility.pref} / {selectedFacility.addr}</div>
+                  <div style={{display:'flex',gap:6,marginTop:8}}>
+                    <span style={{padding:'3px 10px',borderRadius:20,fontSize:11,fontWeight:600,background:TC[selectedFacility.tier]+'18',color:TC[selectedFacility.tier]}}>Tier {selectedFacility.tier}</span>
+                    <span style={{padding:'3px 10px',borderRadius:20,fontSize:11,fontWeight:600,background:'#eff6ff',color:'#2563EB'}}>{selectedFacility.score}pt</span>
+                  </div>
+                </div>
+                <div style={{padding:'16px 20px',borderBottom:'1px solid #f0f0f0'}}>
+                  <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:12}}>
+                    {[{l:'病床数',v:fmt(selectedFacility.beds),c:'#2563EB'},{l:'年間症例',v:fmt(selectedFacility.cases),c:'#059669'}].map((k,i)=>(
+                      <div key={i} style={{textAlign:'center'}}>
+                        <div style={{fontSize:11,color:'#94a3b8',marginBottom:2}}>{k.l}</div>
+                        <div style={{fontSize:22,fontWeight:700,color:k.c}}>{k.v}</div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {/* Google Maps iframe */}
+                <div style={{flex:1,minHeight:250}}>
+                  <iframe
+                    width="100%" height="100%" frameBorder="0" style={{border:0}}
+                    src={`https://maps.google.com/maps?q=${encodeURIComponent(selectedFacility.pref + selectedFacility.addr + ' ' + selectedFacility.name)}&t=m&z=15&output=embed`}
+                    allowFullScreen
+                  />
+                </div>
+              </div>
+            )}
           </div>
         </>}
 
