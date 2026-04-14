@@ -142,24 +142,24 @@ export default function Home() {
 
         {/* ═══ MAP VIEW ═══ */}
         {view==='map' && <>
-          <div style={{marginBottom:24}}>
-            <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:4}}>Live Data</div>
-            <h1 style={{fontSize:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>都道府県別 医療機関分布</h1>
-            <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>全国97,024施設の実データを可視化。指標を切り替えて地域差を把握できます。</p>
+          <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:mob?8:12,flexWrap:'wrap',gap:8}}>
+            <div>
+              <h1 style={{fontSize:mob?18:20,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>都道府県別 医療機関分布</h1>
+            </div>
+            <div style={{display:'flex',gap:4}}>
+              {Object.entries(mKey).map(([k,v])=>(
+                <button key={k} onClick={()=>setMetric(v)} style={{padding:mob?'5px 10px':'6px 14px',borderRadius:20,border:metric===v?'2px solid #b91c1c':'1px solid #e2e8f0',background:metric===v?'#fef2f2':'#fff',color:metric===v?'#b91c1c':'#64748b',fontSize:12,fontWeight:metric===v?600:400,cursor:'pointer'}}>{METRICS[k]}</button>
+              ))}
+            </div>
           </div>
-          <div style={{display:'flex',gap:6,marginBottom:20}}>
-            {Object.entries(mKey).map(([k,v])=>(
-              <button key={k} onClick={()=>setMetric(v)} style={{padding:mob?'6px 12px':'8px 18px',borderRadius:20,border:metric===v?'2px solid #2563EB':'1px solid #e2e8f0',background:metric===v?'#eff6ff':'#fff',color:metric===v?'#2563EB':'#64748b',fontSize:13,fontWeight:metric===v?600:400,cursor:'pointer'}}>{METRICS[k]}</button>
-            ))}
-          </div>
-          <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'1fr 260px',gap:16}}>
-            <div style={{background:'#fff',borderRadius:14,padding:mob?'12px':'16px 20px',border:'1px solid #f0f0f0',boxShadow:'0 1px 3px rgba(0,0,0,0.04)',position:'relative'}}>
-              <div style={{display:'flex',alignItems:'baseline',gap:12,marginBottom:mob?8:12}}>
-                <div style={{fontSize:28,fontWeight:700,color:'#b91c1c',letterSpacing:'-0.02em'}}>{fmt(prefs.reduce((s,p)=>s+(p[metric]||0),0))}</div>
-                <div style={{fontSize:12,color:'#94a3b8'}}>{Object.values(METRICS)[Object.values(mKey).indexOf(metric)]||metric} ｜ 都道府県をタップで詳細</div>
+          <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'1fr 240px',gap:12}}>
+            <div style={{background:'#fff',borderRadius:14,padding:mob?'8px':'12px 16px',border:'1px solid #f0f0f0',position:'relative',minHeight:mob?'calc(100vh - 180px)':'calc(100vh - 160px)'}}>
+              <div style={{display:'flex',alignItems:'baseline',gap:8,marginBottom:4}}>
+                <span style={{fontSize:26,fontWeight:700,color:'#b91c1c'}}>{fmt(prefs.reduce((s,p)=>s+(p[metric]||0),0))}</span>
+                <span style={{fontSize:11,color:'#94a3b8'}}>{Object.values(METRICS)[Object.values(mKey).indexOf(metric)]} ｜ hover/タップで詳細</span>
               </div>
               {japanMap && (
-                <svg viewBox={japanMap.viewBox} style={{width:'100%',height:mob?'calc(100vh - 280px)':'calc(100vh - 260px)',maxHeight:mob?500:700}}>
+                <svg viewBox={japanMap.viewBox} style={{width:'100%',height:mob?'calc(100vh - 220px)':'calc(100vh - 200px)'}} preserveAspectRatio="xMidYMid meet">
                   {japanMap.prefs.map(pf => {
                     const data = prefByName[pf.ja];
                     const val = data?.[metric]||0;
@@ -184,7 +184,7 @@ export default function Home() {
                 </div>
               ):null;})()}
             </div>
-            <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden',maxHeight:mob?300:'calc(100vh - 200px)',overflowY:'auto',boxShadow:'0 1px 3px rgba(0,0,0,0.04)'}}>
+            <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden',maxHeight:mob?300:'calc(100vh - 160px)',overflowY:'auto',boxShadow:'0 1px 3px rgba(0,0,0,0.04)'}}>
               <div style={{padding:'10px 12px',borderBottom:'1px solid #f0f0f0',fontSize:12,fontWeight:600,position:'sticky',top:0,background:'#fff',zIndex:1}}>全{prefs.length}都道府県</div>
               {[...prefs].sort((a,b)=>(b[metric]||0)-(a[metric]||0)).map((p,i)=>(
                 <div key={p.code} onClick={()=>{setSelectedPref(p.name);setView('muni');}} style={{display:'flex',alignItems:'center',padding:'6px 12px',borderBottom:'1px solid #f8f9fa',cursor:'pointer',fontSize:12}} onMouseEnter={e=>e.currentTarget.style.background='#f0f7ff'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
