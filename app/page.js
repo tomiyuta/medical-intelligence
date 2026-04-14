@@ -24,8 +24,7 @@ const Nav = ({icon,label,active,onClick}) => (
 );
 
 
-// Medical Area data (Tokyo 二次医療圏)
-const MA=[{area:"区中央部",hosp:42,beds:14521,nurses:5832,er3:8,er2:12,home:18},{area:"区南部",hosp:38,beds:8432,nurses:2841,er3:4,er2:10,home:14},{area:"区西南部",hosp:31,beds:6841,nurses:2145,er3:3,er2:8,home:12},{area:"区西部",hosp:28,beds:4832,nurses:1542,er3:2,er2:7,home:10},{area:"区西北部",hosp:24,beds:3615,nurses:1487,er3:2,er2:6,home:8},{area:"区東北部",hosp:35,beds:5432,nurses:1832,er3:3,er2:9,home:11},{area:"区東部",hosp:29,beds:4234,nurses:1432,er3:2,er2:7,home:9},{area:"北多摩西部",hosp:18,beds:3215,nurses:1087,er3:1,er2:5,home:7},{area:"北多摩南部",hosp:22,beds:4832,nurses:1542,er3:2,er2:6,home:9},{area:"北多摩北部",hosp:16,beds:2815,nurses:987,er3:1,er2:4,home:6},{area:"南多摩",hosp:20,beds:3615,nurses:1287,er3:1,er2:5,home:8},{area:"西多摩",hosp:12,beds:2015,nurses:687,er3:1,er2:3,home:5},{area:"島しょ",hosp:3,beds:215,nurses:87,er3:0,er2:1,home:1}];
+// Medical Area data: loaded dynamically from /api/medical-areas
 
 export default function Home() {
   const [view, setView] = useState('map');
@@ -39,6 +38,9 @@ export default function Home() {
   const [muniSort, setMuniSort] = useState('pop');
   const [facSearch, setFacSearch] = useState('');
   const [searchResults, setSearchResults] = useState(null);
+  const [areaPref, setAreaPref] = useState('東京都');
+  const [areaData, setAreaData] = useState([]);
+  const [areaPrefList, setAreaPrefList] = useState([]);
 
   useEffect(() => {
     Promise.all([
@@ -49,7 +51,18 @@ export default function Home() {
     ]).then(([p,m,t,f]) => {
       setPrefs(p); setMunis(m.data||[]); setTiers(t); setTopFac(f.data||[]);
     });
+    fetch('/api/medical-areas').then(r=>r.json()).then(d => {
+      setAreaPrefList(d.prefectures||[]);
+      setAreaData(d.data?.filter(a=>a.pref==='東京都')||[]);
+    });
   }, []);
+
+  useEffect(() => {
+    if (areaPref) {
+      fetch('/api/medical-areas?prefecture='+encodeURIComponent(areaPref))
+        .then(r=>r.json()).then(d => setAreaData(d.data||[]));
+    }
+  }, [areaPref]);
 
   const maxVal = useMemo(() => Math.max(...prefs.map(p=>p[metric]||0), 1), [prefs,metric]);
   const getColor = v => { const r=v/maxVal; return r>.7?'#1d4ed8':r>.4?'#3b82f6':r>.2?'#93c5fd':r>.1?'#bfdbfe':'#e0e7ff'; };
@@ -190,15 +203,20 @@ export default function Home() {
           </div>
         </>}
 
-        {/* ═══ MEDICAL AREA VIEW ═══ */}
+        {/* ═══ MEDICAL AREA VIEW (全国対応) ═══ */}
         {view==='area' && <>
-          <div style={{marginBottom:24}}>
-            <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:4}}>Medical Area Analysis</div>
-            <h1 style={{fontSize:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>3階層 医療圏分析</h1>
-            <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>二次医療圏ごとの医療体制を一覧で把握。病院数・病床数・救急体制をひと目で比較。</p>
+          <div style={{marginBottom:24,display:'flex',justifyContent:'space-between',alignItems:'flex-end'}}>
+            <div>
+              <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:4}}>Medical Area Analysis</div>
+              <h1 style={{fontSize:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>3階層 医療圏分析</h1>
+              <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>全国339二次医療圏の医療体制を都道府県別に比較。</p>
+            </div>
+            <select value={areaPref} onChange={e=>setAreaPref(e.target.value)} style={{padding:'8px 14px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,background:'#fff',cursor:'pointer',minWidth:140}}>
+              {areaPrefList.map(p=><option key={p} value={p}>{p}</option>)}
+            </select>
           </div>
           <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:12,marginBottom:20}}>
-            {[{l:'病院数',v:fmt(MA.reduce((s,a)=>s+a.hosp,0)),sub:'東京都 全13圏域',c:'#2563EB'},{l:'総病床数',v:fmt(MA.reduce((s,a)=>s+a.beds,0)),sub:'一般+療養+精神',c:'#0891b2'},{l:'3次救急',v:fmt(MA.reduce((s,a)=>s+a.er3,0)),sub:'救命救急センター',c:'#dc2626'}].map((k,i)=>(
+            {[{l:'病院数',v:fmt(areaData.reduce((s,a)=>s+(a.hosp||0),0)),sub:`${areaPref} ${areaData.length}圏域`,c:'#2563EB'},{l:'総病床数',v:fmt(areaData.reduce((s,a)=>s+(a.beds||0),0)),sub:'許可病床数合計',c:'#0891b2'},{l:'病棟数',v:fmt(areaData.reduce((s,a)=>s+(a.wards||0),0)),sub:'病床機能報告対象',c:'#059669'}].map((k,i)=>(
               <div key={i} style={{background:'#fff',borderRadius:12,padding:'16px 20px',border:'1px solid #f0f0f0'}}>
                 <div style={{fontSize:11,color:'#94a3b8',fontWeight:500,textTransform:'uppercase',letterSpacing:'0.04em',marginBottom:4}}>{k.l}</div>
                 <div style={{fontSize:28,fontWeight:700,color:k.c,letterSpacing:'-0.02em'}}>{k.v}</div>
@@ -206,36 +224,32 @@ export default function Home() {
               </div>))}
           </div>
           <div style={{background:'#fff',borderRadius:14,padding:'20px 24px',border:'1px solid #f0f0f0',marginBottom:20}}>
-            <div style={{fontSize:14,fontWeight:600,marginBottom:16}}>二次医療圏別 病床数比較</div>
-            <ResponsiveContainer width="100%" height={280}>
-              <BarChart data={MA} margin={{left:-10}}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false}/>
-                <XAxis dataKey="area" tick={{fontSize:10,fill:'#94a3b8'}} axisLine={false} tickLine={false} interval={0} angle={-35} textAnchor="end" height={60}/>
-                <YAxis tick={{fontSize:10,fill:'#94a3b8'}} axisLine={false} tickLine={false}/>
+            <div style={{fontSize:14,fontWeight:600,marginBottom:16}}>二次医療圏別 病院数・病床数比較 — {areaPref}</div>
+            <ResponsiveContainer width="100%" height={Math.max(200, areaData.length * 32)}>
+              <BarChart data={[...areaData].sort((a,b)=>(b.beds||0)-(a.beds||0))} layout="vertical" margin={{left:20}}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false}/>
+                <XAxis type="number" tick={{fontSize:10,fill:'#94a3b8'}} axisLine={false} tickLine={false}/>
+                <YAxis type="category" dataKey="area" tick={{fontSize:11,fill:'#475569'}} axisLine={false} tickLine={false} width={100}/>
                 <Tooltip content={<Tip/>}/>
-                <Bar dataKey="beds" name="病床数" fill="#2563EB" radius={[3,3,0,0]} barSize={20}/>
-                <Bar dataKey="nurses" name="看護師" fill="#93c5fd" radius={[3,3,0,0]} barSize={20}/>
+                <Bar dataKey="beds" name="病床数" fill="#2563EB" radius={[0,4,4,0]} barSize={18}/>
               </BarChart>
             </ResponsiveContainer>
           </div>
           <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden'}}>
             <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
               <thead><tr style={{background:'#fafbfc'}}>
-                {['二次医療圏','病院数','病床数','看護師','3次救急','2次救急','在宅支援'].map((h,i)=>(
+                {['二次医療圏','病院数','病棟数','病床数'].map((h,i)=>(
                   <th key={i} style={{padding:'10px 14px',fontSize:11,fontWeight:600,color:'#94a3b8',textAlign:i===0?'left':'right',borderBottom:'1px solid #f1f5f9',textTransform:'uppercase',letterSpacing:'0.05em'}}>{h}</th>))}
               </tr></thead>
-              <tbody>{MA.map((a,i)=>(
+              <tbody>{[...areaData].sort((a,b)=>(b.hosp||0)-(a.hosp||0)).map((a,i)=>(
                 <tr key={i} style={{borderBottom:'1px solid #f8f9fa'}} onMouseEnter={e=>e.currentTarget.style.background='#f8faff'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
                   <td style={{padding:'10px 14px',fontWeight:500}}>{a.area}</td>
-                  <td style={{padding:'10px 14px',textAlign:'right'}}>{a.hosp}</td>
-                  <td style={{padding:'10px 14px',textAlign:'right',fontWeight:500,color:'#2563EB',fontVariantNumeric:'tabular-nums'}}>{fmt(a.beds)}</td>
-                  <td style={{padding:'10px 14px',textAlign:'right',fontVariantNumeric:'tabular-nums'}}>{fmt(a.nurses)}</td>
-                  <td style={{padding:'10px 14px',textAlign:'right'}}>{a.er3>0?<span style={{padding:'2px 8px',borderRadius:20,fontSize:11,fontWeight:600,background:'#fef2f2',color:'#dc2626'}}>{a.er3}</span>:<span style={{color:'#cbd5e1'}}>—</span>}</td>
-                  <td style={{padding:'10px 14px',textAlign:'right'}}>{a.er2}</td>
-                  <td style={{padding:'10px 14px',textAlign:'right'}}>{a.home}</td>
+                  <td style={{padding:'10px 14px',textAlign:'right',fontWeight:600,color:'#2563EB'}}>{a.hosp}</td>
+                  <td style={{padding:'10px 14px',textAlign:'right',fontVariantNumeric:'tabular-nums'}}>{a.wards}</td>
+                  <td style={{padding:'10px 14px',textAlign:'right',fontVariantNumeric:'tabular-nums'}}>{fmt(a.beds)}</td>
                 </tr>))}</tbody>
             </table>
-            <div style={{padding:'12px 16px',fontSize:11,color:'#94a3b8',borderTop:'1px solid #f1f5f9'}}>※ 東京都の二次医療圏データ（厚労省 医療施設調査 + 病床機能報告）</div>
+            <div style={{padding:'12px 16px',fontSize:11,color:'#94a3b8',borderTop:'1px solid #f1f5f9'}}>出典: 厚労省 病床機能報告（令和元年度）全国339二次医療圏対応</div>
           </div>
         </>}
 
