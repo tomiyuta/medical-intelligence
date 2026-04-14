@@ -291,11 +291,10 @@ export default function Home() {
             </select>
           </div>
 
-          <div style={{display:'grid',gridTemplateColumns:mob?'1fr':(selectedFacility?'1fr 380px':'1fr'),gap:16}}>
+          <div style={{display:'flex',flexDirection:mob?'column-reverse':'row',gap:16}}>
             {/* Facility List */}
-            <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden'}}>
-              {!mob && <iframe width="100%" height="0" frameBorder="0" style={{border:0,display:'none'}}/>}
-              <div style={{maxHeight:mob?'none':'560px',overflowY:mob?'visible':'auto',padding:12}}>
+            <div style={{flex:1,background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden'}}>
+              <div style={{maxHeight:mob?400:560,overflowY:'auto',padding:12}}>
                 <div style={{fontSize:13,fontWeight:600,marginBottom:8,color:'#0f172a'}}>
                   {mapPref||'全国'} — {(mapPref?geoFacilities.filter(f=>f.pref===mapPref):geoFacilities).length}施設
                 </div>
@@ -313,7 +312,7 @@ export default function Home() {
 
             {/* Facility Detail Panel */}
             {selectedFacility && (
-              <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden',display:'flex',flexDirection:'column'}}>
+              <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden',display:'flex',flexDirection:'column',width:mob?'100%':380,flexShrink:0}}>
                 <div style={{padding:'16px 20px',borderBottom:'1px solid #f0f0f0'}}>
                   <div style={{fontSize:16,fontWeight:700,color:'#0f172a',marginBottom:4}}>{selectedFacility.name}</div>
                   <div style={{fontSize:12,color:'#64748b'}}>{selectedFacility.pref} / {selectedFacility.addr}</div>
