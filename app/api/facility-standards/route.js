@@ -20,6 +20,12 @@ export async function GET(request) {
   const summary = searchParams.get('summary');
   if (summary === 'true') return NextResponse.json(loadSummary());
   let data = loadCompact();
-  if (pref) data = data.filter(d => d.pref === pref);
-  return NextResponse.json({ total: data.length, data });
+  if (pref) data = data.filter(d => (d.pref || d.p) === pref);
+  // Normalize slim format to standard format
+  const normalized = data.map(d => ({
+    code: d.code || d.c, name: d.name || d.m, pref: d.pref || d.p,
+    std_count: d.n || d.std_count,
+    standards: d.top3 || d.standards || [],
+  }));
+  return NextResponse.json({ total: normalized.length, data: normalized });
 }
