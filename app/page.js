@@ -51,6 +51,9 @@ export default function Home() {
   const [geoFacilities, setGeoFacilities] = useState([]);
   const [selectedFacility, setSelectedFacility] = useState(null);
   const [mapPref, setMapPref] = useState('');
+  const [japanMap, setJapanMap] = useState(null);
+  const [hovPref, setHovPref] = useState(null);
+  const [tooltipPos, setTooltipPos] = useState({x:0,y:0});
 
   useEffect(() => {
     Promise.all([
@@ -66,6 +69,7 @@ export default function Home() {
       setAreaData(d.data?.filter(a=>a.pref==='東京都')||[]);
     });
     fetch('/api/facilities-geo').then(r=>r.json()).then(d => setGeoFacilities(d.data||[]));
+    fetch('/api/japan-map').then(r=>r.json()).then(d => setJapanMap(d));
   }, []);
 
   useEffect(() => {
@@ -76,7 +80,14 @@ export default function Home() {
   }, [areaPref]);
 
   const maxVal = useMemo(() => Math.max(...prefs.map(p=>p[metric]||0), 1), [prefs,metric]);
-  const getColor = v => { const r=v/maxVal; return r>.7?'#1d4ed8':r>.4?'#3b82f6':r>.2?'#93c5fd':r>.1?'#bfdbfe':'#e0e7ff'; };
+  const getColor = v => { const r=v/maxVal; return r>.7?'#b91c1c':r>.4?'#ea580c':r>.2?'#f59e0b':r>.1?'#fbbf24':'#fef3c7'; };
+
+  // Build pref name→data lookup for SVG map
+  const prefByName = useMemo(() => {
+    const m = {};
+    prefs.forEach(p => { m[p.name] = p; });
+    return m;
+  }, [prefs]);
 
   const filteredMunis = useMemo(() => {
     let d = [...munis];
@@ -142,21 +153,35 @@ export default function Home() {
             ))}
           </div>
           <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'1fr 340px',gap:20}}>
-            <div style={{background:'#fff',borderRadius:14,padding:'20px 24px',border:'1px solid #f0f0f0',boxShadow:'0 1px 3px rgba(0,0,0,0.04)'}}>
+            <div style={{background:'#fff',borderRadius:14,padding:'20px 24px',border:'1px solid #f0f0f0',boxShadow:'0 1px 3px rgba(0,0,0,0.04)',position:'relative'}}>
               <div style={{fontSize:14,fontWeight:600,marginBottom:4}}>{Object.values(METRICS)[Object.values(mKey).indexOf(metric)]||metric}</div>
-              <div style={{fontSize:32,fontWeight:700,color:'#2563EB',letterSpacing:'-0.02em'}}>{fmt(prefs.reduce((s,p)=>s+(p[metric]||0),0))}</div>
-              <div style={{fontSize:11,color:'#94a3b8',marginBottom:16}}>全国合計</div>
-              <ResponsiveContainer width="100%" height={400}>
-                <BarChart data={[...prefs].sort((a,b)=>(b[metric]||0)-(a[metric]||0)).slice(0,20)} margin={{left:-10}}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false}/>
-                  <XAxis dataKey="name" tick={{fontSize:10,fill:'#94a3b8'}} axisLine={false} tickLine={false} interval={0} angle={-45} textAnchor="end" height={60}/>
-                  <YAxis tick={{fontSize:10,fill:'#94a3b8'}} axisLine={false} tickLine={false}/>
-                  <Tooltip content={<Tip/>}/>
-                  <Bar dataKey={metric} name={metric} radius={[3,3,0,0]} barSize={16}>
-                    {[...prefs].sort((a,b)=>(b[metric]||0)-(a[metric]||0)).slice(0,20).map((p,i)=><Cell key={i} fill={getColor(p[metric]||0)}/>)}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
+              <div style={{fontSize:32,fontWeight:700,color:'#b91c1c',letterSpacing:'-0.02em'}}>{fmt(prefs.reduce((s,p)=>s+(p[metric]||0),0))}</div>
+              <div style={{fontSize:11,color:'#94a3b8',marginBottom:16}}>全国合計　｜　都道府県にカーソルを合わせると詳細を表示</div>
+              {japanMap && (
+                <svg viewBox={japanMap.viewBox} style={{width:'100%',maxHeight:mob?320:420}}>
+                  {japanMap.prefs.map(pf => {
+                    const data = prefByName[pf.ja];
+                    const val = data?.[metric]||0;
+                    const isHov = hovPref===pf.ja;
+                    return (
+                      <path key={pf.id} d={pf.d}
+                        fill={isHov?'#7c2d12':getColor(val)}
+                        stroke="#fff" strokeWidth="0.5"
+                        style={{cursor:'pointer',transition:'fill 0.15s'}}
+                        onMouseEnter={e=>{setHovPref(pf.ja);const r=e.currentTarget.getBoundingClientRect();const svgR=e.currentTarget.closest('svg').getBoundingClientRect();setTooltipPos({x:r.x-svgR.x+r.width/2,y:r.y-svgR.y});}}
+                        onMouseLeave={()=>setHovPref(null)}
+                        onClick={()=>{setSelectedPref(pf.ja);setView('muni');}}
+                      />
+                    );
+                  })}
+                </svg>
+              )}
+              {hovPref && (()=>{const d=prefByName[hovPref];return d?(
+                <div style={{position:'absolute',left:Math.min(tooltipPos.x,mob?200:400),top:tooltipPos.y+60,background:'#1e293b',color:'#fff',padding:'8px 14px',borderRadius:8,fontSize:12,pointerEvents:'none',zIndex:10,boxShadow:'0 4px 12px rgba(0,0,0,0.15)',whiteSpace:'nowrap'}}>
+                  <div style={{fontWeight:700,marginBottom:2}}>{hovPref}</div>
+                  <div>{Object.values(METRICS)[Object.values(mKey).indexOf(metric)]}: <span style={{color:'#fbbf24',fontWeight:600}}>{fmt(d[metric])}</span></div>
+                </div>
+              ):null;})()}
             </div>
             <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden',maxHeight:520,overflowY:'auto',boxShadow:'0 1px 3px rgba(0,0,0,0.04)'}}>
               <div style={{padding:'14px 16px',borderBottom:'1px solid #f0f0f0',fontSize:13,fontWeight:600,position:'sticky',top:0,background:'#fff',zIndex:1}}>全{prefs.length}都道府県</div>
