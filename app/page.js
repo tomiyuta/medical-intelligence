@@ -2,6 +2,10 @@
 import { useState, useEffect, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from 'recharts';
 
+const PREF_ORDER = ['北海道','青森県','岩手県','宮城県','秋田県','山形県','福島県','茨城県','栃木県','群馬県','埼玉県','千葉県','東京都','神奈川県','新潟県','富山県','石川県','福井県','山梨県','長野県','岐阜県','静岡県','愛知県','三重県','滋賀県','京都府','大阪府','兵庫県','奈良県','和歌山県','鳥取県','島根県','岡山県','広島県','山口県','徳島県','香川県','愛媛県','高知県','福岡県','佐賀県','長崎県','熊本県','大分県','宮崎県','鹿児島県','沖縄県'];
+const sortPrefs = arr => [...arr].sort((a,b) => PREF_ORDER.indexOf(a) - PREF_ORDER.indexOf(b));
+const NDB_CAT = {'A_初再診料':'初再診料','B_医学管理等':'医学管理等','C_在宅医療':'在宅医療','D_検査':'検査','E_画像診断':'画像診断','K_手術':'手術'};
+
 function useIsMobile() {
   const [m, setM] = useState(false);
   useEffect(() => { const c = () => setM(window.innerWidth < 768); c(); window.addEventListener('resize', c); return () => window.removeEventListener('resize', c); }, []);
@@ -244,7 +248,7 @@ export default function Home() {
           </div>
           <div style={{display:'flex',gap:8,marginBottom:16,flexWrap:'wrap'}}>
             <select value={demoPref} onChange={e=>{setDemoPref(e.target.value);const a=areaDemoData.filter(x=>x.pref===e.target.value);if(a.length)setDemoArea(a[0].area);}} style={{padding:'8px 12px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,background:'#fff'}}>
-              {demoPrefList.map(p=><option key={p} value={p}>{p}</option>)}
+              {sortPrefs(demoPrefList).map(p=><option key={p} value={p}>{p}</option>)}
             </select>
             <select value={demoArea} onChange={e=>setDemoArea(e.target.value)} style={{padding:'8px 12px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,background:'#fff'}}>
               {areaNames.map(a=><option key={a} value={a}>{a}</option>)}
@@ -359,7 +363,7 @@ export default function Home() {
             </div>
             <select value={mapPref} onChange={e=>{setMapPref(e.target.value);setSelectedFacility(null);}} style={{padding:'8px 14px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,background:'#fff',cursor:'pointer'}}>
               <option value="">全国</option>
-              {[...new Set(geoFacilities.map(f=>f.pref))].sort().map(p=><option key={p} value={p}>{p}</option>)}
+              {sortPrefs([...new Set(geoFacilities.map(f=>f.pref))]).map(p=><option key={p} value={p}>{p}</option>)}
             </select>
           </div>
 
@@ -480,14 +484,14 @@ export default function Home() {
           </div>
           <div style={{display:'flex',gap:8,marginBottom:16}}>
             <select value={ndbPref} onChange={e=>{setNdbPref(e.target.value);fetch('/api/ndb/prescriptions?prefecture='+encodeURIComponent(e.target.value)).then(r=>r.json()).then(d=>setNdbRx(d));}} style={{padding:'8px 12px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,background:'#fff'}}>
-              {[...new Set(ndbDiag.map(d=>d.prefecture))].sort().map(p=><option key={p} value={p}>{p}</option>)}
+              {sortPrefs([...new Set(ndbDiag.map(d=>d.prefecture))]).map(p=><option key={p} value={p}>{p}</option>)}
             </select>
           </div>
           <h2 style={{fontSize:16,fontWeight:600,margin:'0 0 12px',color:'#1e293b'}}>診療行為 — {ndbPref}</h2>
           <div style={{display:'grid',gridTemplateColumns:mob?'1fr 1fr':'repeat(3,1fr)',gap:10,marginBottom:20}}>
             {diagByPref.sort((a,b)=>b.total_claims-a.total_claims).map((d,i)=>(
               <div key={i} style={{background:'#fff',borderRadius:10,padding:'12px 16px',border:'1px solid #f0f0f0'}}>
-                <div style={{fontSize:11,color:'#94a3b8',marginBottom:2}}>{d.category}</div>
+                <div style={{fontSize:11,color:'#94a3b8',marginBottom:2}}>{NDB_CAT[d.category]||d.category}</div>
                 <div style={{fontSize:mob?16:20,fontWeight:700,color:'#2563EB'}}>{fmt(d.total_claims)}</div>
                 <div style={{fontSize:10,color:'#94a3b8'}}>算定回数</div>
               </div>))}
@@ -566,7 +570,7 @@ export default function Home() {
             <h2 style={{fontSize:16,fontWeight:600,margin:'0 0 12px',color:'#1e293b'}}>都道府県別 施設一覧</h2>
             <div style={{display:'flex',gap:8,marginBottom:12}}>
               <select value={kijunPref} onChange={e=>{setKijunPref(e.target.value);fetch('/api/facility-standards?prefecture='+encodeURIComponent(e.target.value)).then(r=>r.json()).then(d=>setKijunData(d.data||[]));}} style={{padding:'8px 12px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,background:'#fff'}}>
-                {(kijunSummary.prefectures||[]).sort().map(p=><option key={p} value={p}>{p}</option>)}
+                {sortPrefs(kijunSummary.prefectures||[]).map(p=><option key={p} value={p}>{p}</option>)}
               </select>
               <span style={{fontSize:13,color:'#64748b',padding:'8px 0'}}>{kijunData.length>0?`${kijunData.length}施設`:''}</span>
             </div>
