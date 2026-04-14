@@ -58,6 +58,13 @@ export default function Home() {
   const [demoPref, setDemoPref] = useState('東京都');
   const [demoArea, setDemoArea] = useState('区中央部');
   const [demoPrefList, setDemoPrefList] = useState([]);
+  const [ndbDiag, setNdbDiag] = useState([]);
+  const [ndbRx, setNdbRx] = useState([]);
+  const [ndbHc, setNdbHc] = useState([]);
+  const [ndbPref, setNdbPref] = useState('東京都');
+  const [kijunData, setKijunData] = useState([]);
+  const [kijunSummary, setKijunSummary] = useState(null);
+  const [kijunPref, setKijunPref] = useState('愛知県');
 
   useEffect(() => {
     Promise.all([
@@ -78,6 +85,9 @@ export default function Home() {
       setDemoPrefList(d.prefectures||[]);
       setAreaDemoData(d.data||[]);
     });
+    fetch('/api/ndb/diagnostics').then(r=>r.json()).then(d=>setNdbDiag(d));
+    fetch('/api/ndb/health-checkup').then(r=>r.json()).then(d=>setNdbHc(d));
+    fetch('/api/facility-standards?summary=true').then(r=>r.json()).then(d=>setKijunSummary(d));
   }, []);
 
   useEffect(() => {
@@ -121,8 +131,8 @@ export default function Home() {
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
       {/* Desktop Sidebar / Mobile Bottom Nav */}
       {mob ? (
-        <nav style={{position:'fixed',bottom:0,left:0,right:0,background:'#fff',borderTop:'1px solid #e2e8f0',display:'flex',zIndex:50,padding:'6px 0 env(safe-area-inset-bottom)',boxShadow:'0 -2px 8px rgba(0,0,0,0.06)'}}>
-          {[['map','分布','M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z'],['muni','人口','M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z'],['area','医療圏','M22 12h-4l-3 9L9 3l-3 9H2'],['geomap','地図','M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z'],['score','Score','M18 20V10M12 20V4M6 20v-6']].map(([id,l,ic])=>(
+        <nav style={{position:'fixed',bottom:0,left:0,right:0,background:'#fff',borderTop:'1px solid #e2e8f0',display:'flex',zIndex:50,padding:'6px 0 env(safe-area-inset-bottom)',boxShadow:'0 -2px 8px rgba(0,0,0,0.06)',overflowX:'auto'}}>
+          {[['map','分布','M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z'],['muni','人口','M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z'],['area','医療圏','M22 12h-4l-3 9L9 3l-3 9H2'],['geomap','地図','M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z'],['score','Score','M18 20V10M12 20V4M6 20v-6'],['ndb','NDB','M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'],['kijun','基準','M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z']].map(([id,l,ic])=>(
             <button key={id} onClick={()=>setView(id)} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:2,padding:'6px 0',border:'none',background:'transparent',cursor:'pointer',color:view===id?'#2563EB':'#94a3b8',fontSize:10,fontWeight:view===id?700:400}}>
               <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={view===id?'#2563EB':'#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={ic}/></svg>
               {l}
@@ -140,6 +150,8 @@ export default function Home() {
         <Nav icon="M22 12h-4l-3 9L9 3l-3 9H2" label="医療圏分析" active={view==='area'} onClick={()=>setView('area')}/>
         <Nav icon="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" label="施設マップ" active={view==='geomap'} onClick={()=>setView('geomap')}/>
         <Nav icon="M18 20V10M12 20V4M6 20v-6" label="スコアリング" active={view==='score'} onClick={()=>setView('score')}/>
+        <Nav icon="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" label="NDB分析" active={view==='ndb'} onClick={()=>setView('ndb')}/>
+        <Nav icon="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" label="施設基準" active={view==='kijun'} onClick={()=>setView('kijun')}/>
         <div style={{flex:1}}/>
         <div style={{padding:'12px 14px',borderTop:'1px solid #f0f0f0',fontSize:11,color:'#cbd5e1'}}>
           出典: 厚労省/総務省/社人研<br/>96,488施設 × 9因子スコアリング
@@ -454,6 +466,128 @@ export default function Home() {
             </table>
           </div>
         </>}
+
+        {/* ═══ NDB ANALYSIS VIEW ═══ */}
+        {view==='ndb' && (()=>{
+          const diagByPref = ndbDiag.filter(d=>d.prefecture===ndbPref);
+          const diagTotal = diagByPref.reduce((s,d)=>s+d.total_claims,0);
+          const hcPref = ndbHc.filter(d=>d.pref===ndbPref);
+          return <>
+          <div style={{marginBottom:20}}>
+            <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:4}}>NDB Open Data</div>
+            <h1 style={{fontSize:mob?20:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>NDBオープンデータ分析</h1>
+            <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>第10回NDBオープンデータ（令和5年度）— 診療行為・処方薬・特定健診の地域差を分析。</p>
+          </div>
+          <div style={{display:'flex',gap:8,marginBottom:16}}>
+            <select value={ndbPref} onChange={e=>{setNdbPref(e.target.value);fetch('/api/ndb/prescriptions?prefecture='+encodeURIComponent(e.target.value)).then(r=>r.json()).then(d=>setNdbRx(d));}} style={{padding:'8px 12px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,background:'#fff'}}>
+              {[...new Set(ndbDiag.map(d=>d.prefecture))].sort().map(p=><option key={p} value={p}>{p}</option>)}
+            </select>
+          </div>
+          <h2 style={{fontSize:16,fontWeight:600,margin:'0 0 12px',color:'#1e293b'}}>診療行為 — {ndbPref}</h2>
+          <div style={{display:'grid',gridTemplateColumns:mob?'1fr 1fr':'repeat(3,1fr)',gap:10,marginBottom:20}}>
+            {diagByPref.sort((a,b)=>b.total_claims-a.total_claims).map((d,i)=>(
+              <div key={i} style={{background:'#fff',borderRadius:10,padding:'12px 16px',border:'1px solid #f0f0f0'}}>
+                <div style={{fontSize:11,color:'#94a3b8',marginBottom:2}}>{d.category}</div>
+                <div style={{fontSize:mob?16:20,fontWeight:700,color:'#2563EB'}}>{fmt(d.total_claims)}</div>
+                <div style={{fontSize:10,color:'#94a3b8'}}>算定回数</div>
+              </div>))}
+          </div>
+          {hcPref.length>0&&<>
+            <h2 style={{fontSize:16,fontWeight:600,margin:'0 0 12px',color:'#1e293b'}}>特定健診 検査値平均 — {ndbPref}</h2>
+            <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'repeat(3,1fr)',gap:10,marginBottom:20}}>
+              {hcPref.map((h,i)=>(
+                <div key={i} style={{background:'#fff',borderRadius:10,padding:'14px 16px',border:'1px solid #f0f0f0'}}>
+                  <div style={{fontSize:13,fontWeight:600,marginBottom:8}}>{h.metric}</div>
+                  <div style={{display:'flex',gap:16}}>
+                    <div><div style={{fontSize:10,color:'#94a3b8'}}>男性</div><div style={{fontSize:20,fontWeight:700,color:'#2563EB'}}>{h.male}</div></div>
+                    <div><div style={{fontSize:10,color:'#94a3b8'}}>女性</div><div style={{fontSize:20,fontWeight:700,color:'#dc2626'}}>{h.female}</div></div>
+                  </div>
+                </div>))}
+            </div>
+          </>}
+          {ndbRx.length>0&&<>
+            <h2 style={{fontSize:16,fontWeight:600,margin:'0 0 12px',color:'#1e293b'}}>処方薬 薬効分類別 — {ndbPref}</h2>
+            <div style={{background:'#fff',borderRadius:12,border:'1px solid #f0f0f0',overflow:'hidden',overflowX:'auto'}}>
+              <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
+                <thead><tr style={{background:'#fafbfc'}}>
+                  {['薬効分類','薬効名','処方数量'].map((h,i)=>(
+                    <th key={i} style={{padding:'9px 12px',fontSize:11,fontWeight:600,color:'#94a3b8',textAlign:i===2?'right':'left',borderBottom:'1px solid #f1f5f9',whiteSpace:'nowrap'}}>{h}</th>))}
+                </tr></thead>
+                <tbody>{ndbRx.sort((a,b)=>b.qty-a.qty).slice(0,15).map((r,i)=>(
+                  <tr key={i} style={{borderBottom:'1px solid #f8f9fa'}}>
+                    <td style={{padding:'8px 12px',color:'#94a3b8',fontSize:12}}>{r.code}</td>
+                    <td style={{padding:'8px 12px',fontWeight:500}}>{r.name}</td>
+                    <td style={{padding:'8px 12px',textAlign:'right',fontWeight:600,color:'#2563EB',fontVariantNumeric:'tabular-nums'}}>{fmt(r.qty)}</td>
+                  </tr>))}</tbody>
+              </table>
+            </div>
+          </>}
+          <div style={{padding:'10px 0',fontSize:11,color:'#94a3b8',marginTop:12}}>出典: 厚生労働省 第10回NDBオープンデータ（令和5年度レセプト・令和4年度特定健診）</div>
+        </>;})()}
+
+        {/* ═══ FACILITY STANDARDS VIEW ═══ */}
+        {view==='kijun' && (()=>{
+          return <>
+          <div style={{marginBottom:20}}>
+            <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:4}}>Facility Standards</div>
+            <h1 style={{fontSize:mob?20:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>施設基準の届出状況</h1>
+            <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>{kijunSummary?`${fmt(kijunSummary.total_standards)}件の施設基準届出データ（${kijunSummary.total_facilities}施設）`:'読込中...'}</p>
+          </div>
+          {kijunSummary&&<>
+            <div style={{display:'grid',gridTemplateColumns:mob?'1fr 1fr':'repeat(3,1fr)',gap:10,marginBottom:20}}>
+              <div style={{background:'#fff',borderRadius:10,padding:'14px 16px',border:'1px solid #f0f0f0'}}>
+                <div style={{fontSize:11,color:'#94a3b8'}}>総届出件数</div>
+                <div style={{fontSize:24,fontWeight:700,color:'#2563EB'}}>{fmt(kijunSummary.total_standards)}</div>
+              </div>
+              <div style={{background:'#fff',borderRadius:10,padding:'14px 16px',border:'1px solid #f0f0f0'}}>
+                <div style={{fontSize:11,color:'#94a3b8'}}>対象施設数</div>
+                <div style={{fontSize:24,fontWeight:700,color:'#059669'}}>{fmt(kijunSummary.total_facilities)}</div>
+              </div>
+              <div style={{background:'#fff',borderRadius:10,padding:'14px 16px',border:'1px solid #f0f0f0'}}>
+                <div style={{fontSize:11,color:'#94a3b8'}}>対象都道府県</div>
+                <div style={{fontSize:24,fontWeight:700,color:'#f59e0b'}}>{kijunSummary.prefectures?.length||0}</div>
+              </div>
+            </div>
+            <h2 style={{fontSize:16,fontWeight:600,margin:'0 0 12px',color:'#1e293b'}}>届出件数の多い施設基準（上位15）</h2>
+            <div style={{background:'#fff',borderRadius:12,border:'1px solid #f0f0f0',overflow:'hidden',overflowX:'auto',marginBottom:20}}>
+              <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
+                <thead><tr style={{background:'#fafbfc'}}>
+                  {['順位','施設基準名称','届出件数'].map((h,i)=>(
+                    <th key={i} style={{padding:'9px 12px',fontSize:11,fontWeight:600,color:'#94a3b8',textAlign:i===2?'right':'left',borderBottom:'1px solid #f1f5f9',whiteSpace:'nowrap'}}>{h}</th>))}
+                </tr></thead>
+                <tbody>{(kijunSummary.top_standards||[]).map((s,i)=>(
+                  <tr key={i} style={{borderBottom:'1px solid #f8f9fa'}} onMouseEnter={e=>e.currentTarget.style.background='#f8faff'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+                    <td style={{padding:'9px 12px',color:'#94a3b8',fontWeight:600}}>{i+1}</td>
+                    <td style={{padding:'9px 12px',fontWeight:500}}>{s.name}</td>
+                    <td style={{padding:'9px 12px',textAlign:'right',fontWeight:600,color:'#2563EB',fontVariantNumeric:'tabular-nums'}}>{fmt(s.count)}</td>
+                  </tr>))}</tbody>
+              </table>
+            </div>
+            <h2 style={{fontSize:16,fontWeight:600,margin:'0 0 12px',color:'#1e293b'}}>都道府県別 施設一覧</h2>
+            <div style={{display:'flex',gap:8,marginBottom:12}}>
+              <select value={kijunPref} onChange={e=>{setKijunPref(e.target.value);fetch('/api/facility-standards?prefecture='+encodeURIComponent(e.target.value)).then(r=>r.json()).then(d=>setKijunData(d.data||[]));}} style={{padding:'8px 12px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,background:'#fff'}}>
+                {(kijunSummary.prefectures||[]).sort().map(p=><option key={p} value={p}>{p}</option>)}
+              </select>
+              <span style={{fontSize:13,color:'#64748b',padding:'8px 0'}}>{kijunData.length>0?`${kijunData.length}施設`:''}</span>
+            </div>
+            {kijunData.length>0&&<div style={{background:'#fff',borderRadius:12,border:'1px solid #f0f0f0',overflow:'hidden',overflowX:'auto',maxHeight:400,overflowY:'auto'}}>
+              <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
+                <thead><tr style={{background:'#fafbfc',position:'sticky',top:0}}>
+                  {['施設名','住所','届出数','主な施設基準'].map((h,i)=>(
+                    <th key={i} style={{padding:'9px 10px',fontSize:11,fontWeight:600,color:'#94a3b8',textAlign:i===2?'right':'left',borderBottom:'1px solid #f1f5f9',whiteSpace:'nowrap',background:'#fafbfc'}}>{h}</th>))}
+                </tr></thead>
+                <tbody>{kijunData.sort((a,b)=>b.std_count-a.std_count).slice(0,50).map((f,i)=>(
+                  <tr key={i} style={{borderBottom:'1px solid #f8f9fa'}}>
+                    <td style={{padding:'8px 10px',fontWeight:500,maxWidth:200,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{f.name}</td>
+                    <td style={{padding:'8px 10px',color:'#64748b',fontSize:12,maxWidth:180,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{f.addr}</td>
+                    <td style={{padding:'8px 10px',textAlign:'right',fontWeight:600,color:'#2563EB'}}>{f.std_count}</td>
+                    <td style={{padding:'8px 10px',fontSize:11,color:'#94a3b8',maxWidth:250,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{(f.standards||[]).join('、')}</td>
+                  </tr>))}</tbody>
+              </table>
+            </div>}
+          </>}
+          <div style={{padding:'10px 0',fontSize:11,color:'#94a3b8',marginTop:12}}>出典: 東海北陸厚生局 届出受理医療機関名簿（令和8年4月1日現在）</div>
+        </>;})()}
 
         <div style={{fontSize:12,color:'#cbd5e1',textAlign:'center',marginTop:32}}>MedIntel v2.0 — 厚労省/総務省/社人研 オープンデータ統合 — 9因子スコアリングエンジン v4</div>
       </main>
