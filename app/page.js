@@ -2,6 +2,12 @@
 import { useState, useEffect, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell } from 'recharts';
 
+function useIsMobile() {
+  const [m, setM] = useState(false);
+  useEffect(() => { const c = () => setM(window.innerWidth < 768); c(); window.addEventListener('resize', c); return () => window.removeEventListener('resize', c); }, []);
+  return m;
+}
+
 const fmt = n => n?.toLocaleString?.() ?? '—';
 const METRICS = { f:'施設数', h:'病院数', d:'DPC病院', b:'総病床数' };
 const mKey = { f:'facilities', h:'hospitals', d:'dpc', b:'beds' };
@@ -27,6 +33,7 @@ const Nav = ({icon,label,active,onClick}) => (
 // Medical Area data: loaded dynamically from /api/medical-areas
 
 export default function Home() {
+  const mob = useIsMobile();
   const [view, setView] = useState('map');
   const [metric, setMetric] = useState('facilities');
   const [prefs, setPrefs] = useState([]);
@@ -91,8 +98,19 @@ export default function Home() {
 
 
   return (
-    <div style={{display:'flex',minHeight:'100vh',fontFamily:"'DM Sans',system-ui,sans-serif",background:'#f8f9fb',color:'#0f172a'}}>
+    <div style={{display:'flex',flexDirection:mob?'column':'row',minHeight:'100vh',fontFamily:"'DM Sans',system-ui,sans-serif",background:'#f8f9fb',color:'#0f172a'}}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+      {/* Desktop Sidebar / Mobile Bottom Nav */}
+      {mob ? (
+        <nav style={{position:'fixed',bottom:0,left:0,right:0,background:'#fff',borderTop:'1px solid #e2e8f0',display:'flex',zIndex:50,padding:'6px 0 env(safe-area-inset-bottom)',boxShadow:'0 -2px 8px rgba(0,0,0,0.06)'}}>
+          {[['map','分布','M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z'],['muni','人口','M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z'],['area','医療圏','M22 12h-4l-3 9L9 3l-3 9H2'],['geomap','地図','M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z'],['score','Score','M18 20V10M12 20V4M6 20v-6']].map(([id,l,ic])=>(
+            <button key={id} onClick={()=>setView(id)} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:2,padding:'6px 0',border:'none',background:'transparent',cursor:'pointer',color:view===id?'#2563EB':'#94a3b8',fontSize:10,fontWeight:view===id?700:400}}>
+              <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={view===id?'#2563EB':'#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={ic}/></svg>
+              {l}
+            </button>
+          ))}
+        </nav>
+      ) : (
       <aside style={{width:230,background:'#fff',borderRight:'1px solid #f0f0f0',padding:'20px 12px',flexShrink:0,position:'sticky',top:0,height:'100vh',boxSizing:'border-box',display:'flex',flexDirection:'column',gap:2}}>
         <div style={{padding:'0 14px 16px',borderBottom:'1px solid #f0f0f0',marginBottom:8}}>
           <div style={{fontSize:18,fontWeight:700,letterSpacing:'-0.03em'}}>MedIntel</div>
@@ -108,7 +126,8 @@ export default function Home() {
           出典: 厚労省/総務省/社人研<br/>96,488施設 × 9因子スコアリング
         </div>
       </aside>
-      <main style={{flex:1,padding:'28px 32px',maxWidth:1100,overflow:'auto'}}>
+      )}
+      <main style={{flex:1,padding:mob?'16px 16px 80px':'28px 32px',maxWidth:1100,overflow:'auto'}}>
 
         {/* ═══ MAP VIEW ═══ */}
         {view==='map' && <>
@@ -119,10 +138,10 @@ export default function Home() {
           </div>
           <div style={{display:'flex',gap:6,marginBottom:20}}>
             {Object.entries(mKey).map(([k,v])=>(
-              <button key={k} onClick={()=>setMetric(v)} style={{padding:'8px 18px',borderRadius:20,border:metric===v?'2px solid #2563EB':'1px solid #e2e8f0',background:metric===v?'#eff6ff':'#fff',color:metric===v?'#2563EB':'#64748b',fontSize:13,fontWeight:metric===v?600:400,cursor:'pointer'}}>{METRICS[k]}</button>
+              <button key={k} onClick={()=>setMetric(v)} style={{padding:mob?'6px 12px':'8px 18px',borderRadius:20,border:metric===v?'2px solid #2563EB':'1px solid #e2e8f0',background:metric===v?'#eff6ff':'#fff',color:metric===v?'#2563EB':'#64748b',fontSize:13,fontWeight:metric===v?600:400,cursor:'pointer'}}>{METRICS[k]}</button>
             ))}
           </div>
-          <div style={{display:'grid',gridTemplateColumns:'1fr 340px',gap:20}}>
+          <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'1fr 340px',gap:20}}>
             <div style={{background:'#fff',borderRadius:14,padding:'20px 24px',border:'1px solid #f0f0f0',boxShadow:'0 1px 3px rgba(0,0,0,0.04)'}}>
               <div style={{fontSize:14,fontWeight:600,marginBottom:4}}>{Object.values(METRICS)[Object.values(mKey).indexOf(metric)]||metric}</div>
               <div style={{fontSize:32,fontWeight:700,color:'#2563EB',letterSpacing:'-0.02em'}}>{fmt(prefs.reduce((s,p)=>s+(p[metric]||0),0))}</div>
@@ -162,7 +181,7 @@ export default function Home() {
             <h1 style={{fontSize:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>市区町村別 人口動態</h1>
             <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>{selectedPref?`${selectedPref} の主要市区町村`:'全国主要80市区町村'}の人口構成・高齢化率・自然増減を分析。</p>
           </div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:12,marginBottom:20}}>
+          <div style={{display:'grid',gridTemplateColumns:mob?'1fr 1fr':'repeat(4,1fr)',gap:12,marginBottom:20}}>
             {[{l:'総人口',v:fmt(totalPop),c:'#2563EB'},{l:'高齢化率',v:totalPop?(total65/totalPop*100).toFixed(1)+'%':'—',c:'#dc2626'},{l:'出生数',v:fmt(totalBirths),c:'#059669'},{l:'自然増減',v:(totalBirths-totalDeaths>=0?'+':'')+fmt(totalBirths-totalDeaths),c:totalBirths>=totalDeaths?'#059669':'#dc2626'}].map((k,i)=>(
               <div key={i} style={{background:'#fff',borderRadius:12,padding:'16px 20px',border:'1px solid #f0f0f0'}}>
                 <div style={{fontSize:11,color:'#94a3b8',fontWeight:500,textTransform:'uppercase',letterSpacing:'0.04em',marginBottom:4}}>{k.l}</div>
@@ -186,7 +205,7 @@ export default function Home() {
             <input value={muniSearch} onChange={e=>setMuniSearch(e.target.value)} placeholder="市区町村名で検索" style={{flex:1,padding:'8px 14px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,outline:'none',background:'#fff'}}/>
             {selectedPref&&<button onClick={()=>setSelectedPref(null)} style={{padding:'8px 14px',borderRadius:8,border:'1px solid #fecaca',background:'#fff',fontSize:12,cursor:'pointer',color:'#dc2626'}}>✕ {selectedPref}</button>}
           </div>
-          <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden'}}>
+          <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden',overflowX:'auto'}}>
             <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
               <thead><tr style={{background:'#fafbfc'}}>
                 {[['name','市区町村','left'],['pop','人口','right'],['aging','高齢化率','right'],['births','出生数','right'],['deaths','死亡数','right'],['nc','自然増減','right'],['hh','世帯数','right']].map(([k,l,a])=>(
@@ -210,7 +229,7 @@ export default function Home() {
 
         {/* ═══ MEDICAL AREA VIEW (全国対応) ═══ */}
         {view==='area' && <>
-          <div style={{marginBottom:24,display:'flex',justifyContent:'space-between',alignItems:'flex-end'}}>
+          <div style={{marginBottom:24,display:'flex',flexDirection:mob?'column':'row',justifyContent:'space-between',alignItems:mob?'flex-start':'flex-end',gap:12}}>
             <div>
               <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:4}}>Medical Area Analysis</div>
               <h1 style={{fontSize:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>3階層 医療圏分析</h1>
@@ -220,7 +239,7 @@ export default function Home() {
               {areaPrefList.map(p=><option key={p} value={p}>{p}</option>)}
             </select>
           </div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:12,marginBottom:20}}>
+          <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'repeat(3,1fr)',gap:12,marginBottom:20}}>
             {[{l:'病院数',v:fmt(areaData.reduce((s,a)=>s+(a.hosp||0),0)),sub:`${areaPref} ${areaData.length}圏域`,c:'#2563EB'},{l:'総病床数',v:fmt(areaData.reduce((s,a)=>s+(a.beds||0),0)),sub:'許可病床数合計',c:'#0891b2'},{l:'病棟数',v:fmt(areaData.reduce((s,a)=>s+(a.wards||0),0)),sub:'病床機能報告対象',c:'#059669'}].map((k,i)=>(
               <div key={i} style={{background:'#fff',borderRadius:12,padding:'16px 20px',border:'1px solid #f0f0f0'}}>
                 <div style={{fontSize:11,color:'#94a3b8',fontWeight:500,textTransform:'uppercase',letterSpacing:'0.04em',marginBottom:4}}>{k.l}</div>
@@ -240,7 +259,7 @@ export default function Home() {
               </BarChart>
             </ResponsiveContainer>
           </div>
-          <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden'}}>
+          <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden',overflowX:'auto'}}>
             <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
               <thead><tr style={{background:'#fafbfc'}}>
                 {['二次医療圏','病院数','病棟数','病床数'].map((h,i)=>(
@@ -260,7 +279,7 @@ export default function Home() {
 
         {/* ═══ GEO MAP VIEW (Leaflet + Facility Detail) ═══ */}
         {view==='geomap' && <>
-          <div style={{marginBottom:24,display:'flex',justifyContent:'space-between',alignItems:'flex-end'}}>
+          <div style={{marginBottom:24,display:'flex',flexDirection:mob?'column':'row',justifyContent:'space-between',alignItems:mob?'flex-start':'flex-end',gap:12}}>
             <div>
               <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:4}}>Facility Map</div>
               <h1 style={{fontSize:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>施設マッピング</h1>
@@ -272,15 +291,15 @@ export default function Home() {
             </select>
           </div>
 
-          <div style={{display:'grid',gridTemplateColumns:selectedFacility?'1fr 380px':'1fr',gap:16}}>
+          <div style={{display:'grid',gridTemplateColumns:mob?'1fr':(selectedFacility?'1fr 380px':'1fr'),gap:16}}>
             {/* Map Area */}
-            <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden',height:560}}>
+            <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden',height:mob?350:560}}>
               <iframe
                 width="100%" height="100%" frameBorder="0" style={{border:0}}
                 src={`https://www.openstreetmap.org/export/embed.html?bbox=${mapPref?'':'-180,-90,180,90'}&layer=mapnik`}
               />
               {/* Facility list overlay */}
-              <div style={{position:'relative',marginTop:-560,height:560,overflowY:'auto',padding:12,background:'rgba(255,255,255,0.92)'}}>
+              <div style={{position:'relative',marginTop:mob?-350:-560,height:mob?350:560,overflowY:'auto',padding:12,background:'rgba(255,255,255,0.92)'}}>
                 <div style={{fontSize:13,fontWeight:600,marginBottom:8,color:'#0f172a'}}>
                   {mapPref||'全国'} — {(mapPref?geoFacilities.filter(f=>f.pref===mapPref):geoFacilities).length}施設
                 </div>
@@ -337,7 +356,7 @@ export default function Home() {
             <h1 style={{fontSize:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>訪問優先度スコアリング</h1>
             <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>9因子複合スコア（v4）— 96,488施設をDPC件数×病床数×成長率で自動ランク付け</p>
           </div>
-          <div style={{display:'flex',gap:10,flexWrap:'wrap',marginBottom:24}}>
+          <div style={{display:'grid',gridTemplateColumns:mob?'1fr 1fr':'repeat(5,1fr)',gap:10,marginBottom:24}}>
             {tiers.map(t=>(
               <div key={t.tier} style={{flex:1,minWidth:130,background:'#fff',borderRadius:12,padding:'16px 18px',border:'1px solid #f0f0f0',borderLeft:`4px solid ${TC[t.tier]||'#ccc'}`}}>
                 <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:6}}>
@@ -361,7 +380,7 @@ export default function Home() {
                 <span style={{color:'#64748b',fontSize:12}}>beds={fmt(f.total_beds)}</span>
               </div>))}
           </div>}
-          <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden'}}>
+          <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden',overflowX:'auto'}}>
             <div style={{padding:'16px 20px',borderBottom:'1px solid #f0f0f0',fontSize:16,fontWeight:600}}>Tier S 施設一覧</div>
             <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
               <thead><tr style={{background:'#fafbfc'}}>
