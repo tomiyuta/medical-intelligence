@@ -1,0 +1,9 @@
+data/medical_intelligence.db
+data/processed/
+data/static/facility_standards.json
+data/static/facilities_compact.json
+src/
+scripts/
+docs/
+*.csv
+*.db
