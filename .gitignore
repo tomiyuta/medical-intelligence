@@ -9,3 +9,5 @@ data/processed/
 data/static/facilities_compact.json
 __pycache__/
 *.pyc
+data/static/facility_standards.json
+data/static/facilities_compact.json
