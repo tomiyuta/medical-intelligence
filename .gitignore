@@ -1,0 +1,11 @@
+node_modules/
+.next/
+.env
+.env.local
+data/medical_intelligence.db
+data/supabase_export/
+data/raw/
+data/processed/
+data/static/facilities_compact.json
+__pycache__/
+*.pyc
