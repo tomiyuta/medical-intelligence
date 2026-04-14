@@ -487,7 +487,8 @@ export default function Home() {
               {sortPrefs([...new Set(ndbDiag.map(d=>d.prefecture))]).map(p=><option key={p} value={p}>{p}</option>)}
             </select>
           </div>
-          <h2 style={{fontSize:16,fontWeight:600,margin:'0 0 12px',color:'#1e293b'}}>診療行為 — {ndbPref}</h2>
+          <h2 style={{fontSize:16,fontWeight:600,margin:'0 0 4px',color:'#1e293b'}}>診療行為 — {ndbPref}</h2>
+          <p style={{fontSize:11,color:'#94a3b8',margin:'0 0 12px'}}>※ 算定回数＝診療報酬点数表に定められた一行為の保険請求回数（延べ）。患者数ではありません。</p>
           <div style={{display:'grid',gridTemplateColumns:mob?'1fr 1fr':'repeat(3,1fr)',gap:10,marginBottom:20}}>
             {diagByPref.sort((a,b)=>b.total_claims-a.total_claims).map((d,i)=>(
               <div key={i} style={{background:'#fff',borderRadius:10,padding:'12px 16px',border:'1px solid #f0f0f0'}}>
@@ -496,21 +497,30 @@ export default function Home() {
                 <div style={{fontSize:10,color:'#94a3b8'}}>算定回数</div>
               </div>))}
           </div>
-          {hcPref.length>0&&<>
-            <h2 style={{fontSize:16,fontWeight:600,margin:'0 0 12px',color:'#1e293b'}}>特定健診 検査値平均 — {ndbPref}</h2>
+          {hcPref.length>0&&(()=>{
+            const HC_UNIT={'ヘモグロビン':'g/dL','血清クレアチニン':'mg/dL','eGFR':'mL/min/1.73m²'};
+            const HC_NOTE={'ヘモグロビン':'低値＝貧血リスク','血清クレアチニン':'高値＝腎機能低下','eGFR':'60未満でCKD'};
+            return <>
+            <h2 style={{fontSize:16,fontWeight:600,margin:'0 0 4px',color:'#1e293b'}}>特定健診 検査値平均 — {ndbPref}</h2>
+            <p style={{fontSize:11,color:'#94a3b8',margin:'0 0 12px'}}>※ 40〜74歳の特定健診受診者の検査結果平均値（男女別中計）。全人口の平均ではありません。</p>
             <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'repeat(3,1fr)',gap:10,marginBottom:20}}>
               {hcPref.map((h,i)=>(
                 <div key={i} style={{background:'#fff',borderRadius:10,padding:'14px 16px',border:'1px solid #f0f0f0'}}>
-                  <div style={{fontSize:13,fontWeight:600,marginBottom:8}}>{h.metric}</div>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:8}}>
+                    <span style={{fontSize:13,fontWeight:600}}>{h.metric}</span>
+                    <span style={{fontSize:10,color:'#94a3b8',background:'#f8fafc',padding:'1px 6px',borderRadius:4}}>{HC_UNIT[h.metric]||''}</span>
+                  </div>
                   <div style={{display:'flex',gap:16}}>
                     <div><div style={{fontSize:10,color:'#94a3b8'}}>男性</div><div style={{fontSize:20,fontWeight:700,color:'#2563EB'}}>{h.male}</div></div>
                     <div><div style={{fontSize:10,color:'#94a3b8'}}>女性</div><div style={{fontSize:20,fontWeight:700,color:'#dc2626'}}>{h.female}</div></div>
                   </div>
+                  <div style={{fontSize:10,color:'#b0b8c4',marginTop:6}}>{HC_NOTE[h.metric]||''}</div>
                 </div>))}
             </div>
-          </>}
+          </>;})()}
           {ndbRx.length>0&&<>
-            <h2 style={{fontSize:16,fontWeight:600,margin:'0 0 12px',color:'#1e293b'}}>処方薬 薬効分類別 — {ndbPref}</h2>
+            <h2 style={{fontSize:16,fontWeight:600,margin:'0 0 4px',color:'#1e293b'}}>処方薬 薬効分類別 — {ndbPref}</h2>
+            <p style={{fontSize:11,color:'#94a3b8',margin:'0 0 12px'}}>※ 処方数量の単位は薬剤ごとに異なります（錠・mL・g等）。薬効分類間の数量比較は適切ではありません。</p>
             <div style={{background:'#fff',borderRadius:12,border:'1px solid #f0f0f0',overflow:'hidden',overflowX:'auto'}}>
               <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
                 <thead><tr style={{background:'#fafbfc'}}>
