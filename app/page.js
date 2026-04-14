@@ -292,14 +292,10 @@ export default function Home() {
           </div>
 
           <div style={{display:'grid',gridTemplateColumns:mob?'1fr':(selectedFacility?'1fr 380px':'1fr'),gap:16}}>
-            {/* Map Area */}
-            <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden',height:mob?350:560}}>
-              <iframe
-                width="100%" height="100%" frameBorder="0" style={{border:0}}
-                src={`https://www.openstreetmap.org/export/embed.html?bbox=${mapPref?'':'-180,-90,180,90'}&layer=mapnik`}
-              />
-              {/* Facility list overlay */}
-              <div style={{position:'relative',marginTop:mob?-350:-560,height:mob?350:560,overflowY:'auto',padding:12,background:'rgba(255,255,255,0.92)'}}>
+            {/* Facility List */}
+            <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden'}}>
+              {!mob && <iframe width="100%" height="0" frameBorder="0" style={{border:0,display:'none'}}/>}
+              <div style={{maxHeight:mob?'none':'560px',overflowY:mob?'visible':'auto',padding:12}}>
                 <div style={{fontSize:13,fontWeight:600,marginBottom:8,color:'#0f172a'}}>
                   {mapPref||'全国'} — {(mapPref?geoFacilities.filter(f=>f.pref===mapPref):geoFacilities).length}施設
                 </div>
