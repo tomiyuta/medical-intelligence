@@ -1,6 +1,6 @@
 'use client';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import { jsPDF } from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 export function generateScoringPDF(facilities, options = {}) {
   const { title = '重点施設ターゲットリスト', prefecture = '全国', date = new Date().toISOString().slice(0,10) } = options;
@@ -55,7 +55,7 @@ export function generateScoringPDF(facilities, options = {}) {
     (f.missing || []).join(', ') || '',
   ]);
 
-  doc.autoTable({
+  autoTable(doc, {
     startY: y,
     head: headers,
     body: rows,
@@ -126,7 +126,7 @@ export function generateKijunPDF(facilities, options = {}) {
     })(),
   ]);
 
-  doc.autoTable({
+  autoTable(doc, {
     startY: 44,
     head: headers,
     body: rows,
