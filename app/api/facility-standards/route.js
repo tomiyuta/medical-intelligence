@@ -20,12 +20,11 @@ export async function GET(request) {
   const summary = searchParams.get('summary');
   if (summary === 'true') return NextResponse.json(loadSummary());
   let data = loadCompact();
-  if (pref) data = data.filter(d => (d.pref || d.p) === pref);
-  // Normalize slim format to standard format
+  if (pref) data = data.filter(d => d.p === pref);
   const normalized = data.map(d => ({
-    code: d.code || d.c, name: d.name || d.m, pref: d.pref || d.p,
-    std_count: d.n || d.std_count,
-    standards: d.top3 || d.standards || [],
+    code: d.c, name: d.m, pref: d.p, std_count: d.n,
+    addr: d.a || '', zip: d.z || '', beds: d.b || null, beds_text: d.bt || '',
+    cases: d.cs || null, los: d.los || null, score: d.sc || null, tier: d.t || '',
   }));
   return NextResponse.json({ total: normalized.length, data: normalized });
 }
