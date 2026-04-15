@@ -13,6 +13,14 @@ function useIsMobile() {
 }
 
 const fmt = n => n?.toLocaleString?.() ?? '—';
+const downloadCSV = (rows, filename) => {
+  const bom = '\uFEFF';
+  const csv = rows.map(r => r.map(c => `"${String(c??'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob([bom + csv], {type:'text/csv;charset=utf-8'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = filename; a.click();
+  URL.revokeObjectURL(url);
+};
 const METRICS = { f:'施設数', h:'病院数', d:'DPC病院', b:'総病床数' };
 const mKey = { f:'facilities', h:'hospitals', d:'dpc', b:'beds' };
 const TC = { S:'#dc2626', A:'#f97316', B:'#eab308', C:'#22c55e', D:'#94a3b8' };
@@ -498,6 +506,11 @@ export default function Home() {
           <div style={{display:'flex',gap:8,marginBottom:20}}>
             <input value={facSearch} onChange={e=>setFacSearch(e.target.value)} onKeyDown={e=>e.key==='Enter'&&doSearch()} placeholder="施設名で検索（例: 東大, 慶應, 藤田）" style={{flex:1,padding:'10px 16px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:14,outline:'none'}}/>
             <button onClick={doSearch} style={{padding:'10px 20px',borderRadius:8,border:'none',background:'#2563EB',color:'#fff',fontWeight:600,cursor:'pointer'}}>検索</button>
+            <button onClick={()=>{
+              const header=['Rank','Score','Tier','施設名','都道府県','病床数','年間症例数','平均在院日数','出典','取得日'];
+              const data=topFac.map(f=>[f.rank,f.priority_score,f.tier,f.facility_name,f.prefecture_name,f.total_beds||'',f.annual_cases||'',f.avg_los||'','厚労省DPC/G-MIS','2026-04']);
+              downloadCSV([header,...data],`medintel_scoring_tierS_${new Date().toISOString().slice(0,10)}.csv`);
+            }} style={{padding:'10px 16px',borderRadius:8,border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',fontSize:13,cursor:'pointer',whiteSpace:'nowrap'}}>📥 CSV</button>
           </div>
           {searchResults&&<div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:20,marginBottom:24}}>
             <div style={{fontSize:14,fontWeight:600,marginBottom:12}}>検索結果: {searchResults.total}件</div>
@@ -651,6 +664,11 @@ export default function Home() {
                 <option value="std_count">届出数順</option><option value="beds">病床数順</option><option value="cases">症例数順</option><option value="score">スコア順</option>
               </select>
               <span style={{fontSize:12,color:'#64748b'}}>{filtered.length>0?`${fmt(filtered.length)}施設`:'—'}{totalPages>1?` (${pg+1}/${totalPages}p)`:''}</span>
+              <button onClick={()=>{
+                const header=['施設コード','施設名','都道府県','住所','病床数','届出数','スコア','ティア','出典','取得日'];
+                const data=sorted.map(f=>[f.code,f.name,kijunPref,f.addr||'',f.beds||f.beds_text||'',f.std_count,f.score||'',f.tier||'','厚生局 届出受理名簿','2026-04']);
+                downloadCSV([header,...data],`medintel_kijun_${kijunPref}_${new Date().toISOString().slice(0,10)}.csv`);
+              }} style={{padding:'5px 12px',borderRadius:6,border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',fontSize:12,cursor:'pointer',whiteSpace:'nowrap'}}>📥 CSV</button>
             </div>
             {paged.length>0&&<div style={{background:'#fff',borderRadius:12,border:'1px solid #f0f0f0',overflow:'hidden',overflowX:'auto'}}>
               <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
@@ -698,7 +716,10 @@ export default function Home() {
           <div style={{padding:'10px 0',fontSize:11,color:'#94a3b8',marginTop:12}}>出典: 全国8地方厚生局 届出受理医療機関名簿（医科）令和8年2月〜4月現在</div>
         </>;})()}
 
-        <div style={{fontSize:12,color:'#cbd5e1',textAlign:'center',marginTop:32}}>MedIntel v2.0 — 厚労省/総務省/社人研 オープンデータ統合 — 9因子スコアリングエンジン v4</div>
+        <div style={{fontSize:11,color:'#cbd5e1',textAlign:'center',marginTop:32,lineHeight:1.6}}>
+          MedIntel v3.16 — 厚労省/総務省/社人研/全国8地方厚生局 オープンデータを加工して作成<br/>
+          本サービスは公的統計データを独自に統合・スコアリングしたものであり、政府が作成したものではありません
+        </div>
       </main>
     </div>
   );
