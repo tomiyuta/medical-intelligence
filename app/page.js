@@ -246,10 +246,52 @@ export default function Home() {
           const rW=tPop?(tW/tPop*100).toFixed(1):'0';
           const r65=tPop?(t65/tPop*100).toFixed(1):'0';
           return <>
-          <div style={{marginBottom:20}}>
+          {/* Aging rate map */}
+          {(()=>{
+            const prefAging={};
+            areaDemoData.forEach(d=>{let pop=0,p65=0;(d.munis||[]).forEach(m=>{pop+=m.pop||0;p65+=m.p65||0;});if(pop>0)prefAging[d.pref]=(prefAging[d.pref]||{pop:0,p65:0});if(prefAging[d.pref]){prefAging[d.pref].pop+=pop;prefAging[d.pref].p65+=p65;}});
+            const agingRates={};Object.entries(prefAging).forEach(([p,s])=>{agingRates[p]=s.pop>0?(s.p65/s.pop*100):0;});
+            const vals=Object.values(agingRates).filter(v=>v>0);
+            const minA=Math.min(...vals)||20,maxA=Math.max(...vals)||40;
+            const agingColor=v=>{if(!v)return '#f5f5f5';const r=(v-minA)/(maxA-minA);return r>.8?'#b91c1c':r>.6?'#dc2626':r>.4?'#ea580c':r>.2?'#f59e0b':'#fef3c7';};
+            return japanMap && vals.length>0 ? (
+            <div style={{position:'relative',background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:mob?'12px':'16px 20px',marginBottom:16,boxShadow:'0 1px 3px rgba(0,0,0,0.04)'}}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:8}}>
+                <h2 style={{fontSize:15,fontWeight:600,margin:0,color:'#1e293b'}}>都道府県別 高齢化率</h2>
+                <div style={{display:'flex',gap:4,alignItems:'center',fontSize:10,color:'#94a3b8'}}>
+                  <span>{minA.toFixed(0)}%</span>
+                  {['#fef3c7','#f59e0b','#ea580c','#dc2626','#b91c1c'].map((c,i)=><div key={i} style={{width:20,height:10,background:c,borderRadius:2}}/>)}
+                  <span>{maxA.toFixed(0)}%</span>
+                </div>
+              </div>
+              <svg viewBox={japanMap.viewBox} style={{width:'100%',height:mob?280:340}} preserveAspectRatio="xMidYMid meet">
+                {japanMap.prefs.map(pf=>{
+                  const rate=agingRates[pf.ja]||0;
+                  const isHov=hovPref===pf.ja;
+                  const isSel=demoPref===pf.ja;
+                  return <path key={pf.id} d={pf.d}
+                    fill={isHov?'#7c2d12':isSel?'#1e40af':agingColor(rate)}
+                    stroke={isSel?'#1e40af':'#fff'} strokeWidth={isSel?1.5:0.5}
+                    style={{cursor:'pointer',transition:'fill 0.15s'}}
+                    onMouseEnter={e=>{setHovPref(pf.ja);const r2=e.currentTarget.getBoundingClientRect();const svgR=e.currentTarget.closest('svg').getBoundingClientRect();setTooltipPos({x:r2.x-svgR.x+r2.width/2,y:r2.y-svgR.y});}}
+                    onMouseLeave={()=>setHovPref(null)}
+                    onClick={()=>{setDemoPref(pf.ja);const a2=areaDemoData.filter(x=>x.pref===pf.ja);if(a2.length)setDemoArea(a2[0].area);setHovPref(null);}}
+                  />;
+                })}
+              </svg>
+              {hovPref&&agingRates[hovPref]&&(
+                <div style={{position:'absolute',left:Math.min(tooltipPos.x,mob?180:350),top:tooltipPos.y+(mob?50:60),background:'#1e293b',color:'#fff',padding:'8px 14px',borderRadius:8,fontSize:12,pointerEvents:'none',zIndex:10,boxShadow:'0 4px 12px rgba(0,0,0,0.15)',whiteSpace:'nowrap'}}>
+                  <div style={{fontWeight:700,marginBottom:2}}>{hovPref}</div>
+                  <div>高齢化率: <span style={{color:'#fbbf24',fontWeight:600}}>{agingRates[hovPref].toFixed(1)}%</span></div>
+                </div>
+              )}
+            </div>
+            ) : null;
+          })()}
+          <div style={{marginBottom:12}}>
             <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:4}}>Demographics</div>
             <h1 style={{fontSize:mob?20:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>市区町村別 人口動態</h1>
-            <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>1次医療圏単位で人口構成・高齢化率・出生死亡の自然増減を分析。</p>
+            <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>1次医療圏単位で人口構成・高齢化率・出生死亡の自然増減を分析。都道府県をクリックで選択。</p>
           </div>
           <div style={{display:'flex',gap:8,marginBottom:16,flexWrap:'wrap'}}>
             <select value={demoPref} onChange={e=>{setDemoPref(e.target.value);const a=areaDemoData.filter(x=>x.pref===e.target.value);if(a.length)setDemoArea(a[0].area);}} style={{padding:'8px 12px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,background:'#fff'}}>
