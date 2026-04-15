@@ -144,14 +144,5 @@ export function generateKijunPDF(facilities, options = {}) {
     doc.text(`Page ${i} / ${pageCount}`, doc.internal.pageSize.width - 30, footY);
   }
 
-  // Use blob URL for reliable download (doc.save can be blocked by some browsers)
-  const blob = doc.output('blob');
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `medintel_kijun_${date}.pdf`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  doc.save(`medintel_kijun_${date}.pdf`);
 }
