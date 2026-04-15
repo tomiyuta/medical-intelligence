@@ -261,25 +261,20 @@ export default function Home() {
             const total65_47=Object.values(prefAging).reduce((s,v)=>s+v.p65,0);
             const natAvg=totalPop47>0?(total65_47/totalPop47*100):0;
             return japanMap && vals.length>0 ? (
-            <div style={{background:'#fff',borderRadius:14,padding:mob?'8px':'12px 16px',border:'1px solid #f0f0f0',position:'relative',minHeight:mob?'calc(100vh - 180px)':'calc(100vh - 160px)',boxShadow:'0 1px 3px rgba(0,0,0,0.04)'}}>
-              <div style={{display:'flex',justifyContent:'space-between',alignItems:'flex-start',marginBottom:4}}>
-                <div>
-                  <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:2}}>Demographics — Aging Rate</div>
-                  <h1 style={{fontSize:mob?18:20,fontWeight:700,margin:0,letterSpacing:'-0.02em'}}>都道府県別 高齢化率マップ</h1>
+            <div style={{background:'#fff',borderRadius:14,padding:mob?'8px 8px 4px':'10px 16px 6px',border:'1px solid #f0f0f0',position:'relative',minHeight:mob?'calc(100vh - 170px)':'calc(100vh - 140px)',boxShadow:'0 1px 3px rgba(0,0,0,0.04)',display:'flex',flexDirection:'column'}}>
+              <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexShrink:0}}>
+                <div style={{display:'flex',alignItems:'baseline',gap:10,flexWrap:'wrap'}}>
+                  <span style={{fontSize:mob?26:32,fontWeight:700,color:'#b91c1c'}}>{selRate.toFixed(1)}%</span>
+                  <span style={{fontSize:14,fontWeight:600,color:'#1e293b'}}>{demoPref}</span>
+                  <span style={{fontSize:12,color:'#94a3b8'}}>({selRank}/47位 | 全国 {natAvg.toFixed(1)}%)</span>
                 </div>
-                <div style={{display:'flex',gap:4,alignItems:'center',fontSize:10,color:'#94a3b8',flexShrink:0}}>
+                <div style={{display:'flex',gap:3,alignItems:'center',fontSize:10,color:'#94a3b8',flexShrink:0}}>
                   <span>{minA.toFixed(0)}%</span>
-                  {['#fef3c7','#f59e0b','#ea580c','#dc2626','#b91c1c'].map((c,i)=><div key={i} style={{width:mob?14:20,height:10,background:c,borderRadius:2}}/>)}
+                  {['#fef3c7','#f59e0b','#ea580c','#dc2626','#b91c1c'].map((c,i)=><div key={i} style={{width:mob?12:18,height:8,background:c,borderRadius:2}}/>)}
                   <span>{maxA.toFixed(0)}%</span>
                 </div>
               </div>
-              <div style={{display:'flex',alignItems:'baseline',gap:8,marginBottom:4}}>
-                <span style={{fontSize:mob?28:34,fontWeight:700,color:'#b91c1c'}}>{selRate.toFixed(1)}%</span>
-                <span style={{fontSize:13,color:'#64748b'}}>{demoPref}</span>
-                <span style={{fontSize:12,color:'#94a3b8'}}>({selRank}/47位)</span>
-                <span style={{fontSize:11,color:'#94a3b8',marginLeft:4}}>全国平均 {natAvg.toFixed(1)}%</span>
-              </div>
-              <svg viewBox={japanMap.viewBox} style={{width:'100%',height:mob?'calc(100vh - 300px)':'calc(100vh - 280px)'}} preserveAspectRatio="xMidYMid meet">
+              <svg viewBox="60 40 380 470" style={{width:'100%',flex:1,minHeight:0}} preserveAspectRatio="xMidYMid meet">
                 {japanMap.prefs.map(pf=>{
                   const rate=agingRates[pf.ja]||0;
                   const isHov=hovPref===pf.ja;
@@ -301,7 +296,6 @@ export default function Home() {
                   <div style={{fontSize:11,color:'#94a3b8',marginTop:2}}>人口: {fmt(prefAging[hovPref]?.pop||0)}</div>
                 </div>
               )}
-              <div style={{fontSize:11,color:'#cbd5e1',textAlign:'center',marginTop:4}}>都道府県をクリックで選択 → 下部に市区町村詳細を表示</div>
             </div>
             ) : null;
           })()}
