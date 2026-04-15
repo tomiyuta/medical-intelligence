@@ -1,6 +1,6 @@
 # Medical Intelligence Platform — 設計仕様書
 
-**Version**: 3.20  
+**Version**: 3.21  
 **URL**: https://medical-intelligence-two.vercel.app  
 **Repository**: https://github.com/tomiyuta/medical-intelligence  
 **Last Updated**: 2026-04-15  
@@ -162,6 +162,7 @@ Score = 0.20×CaseVolume + 0.18×BedScale + 0.12×Market + 0.10×CaseGrowth + 0.
 
 | Version | Commit | Description |
 |---|---|---|
+| v3.21 | f91d418 | PDF出力機能追加 + CSV/PDF 4項目出力 |
 | v3.20 | 1edf0d9 | JSON shard化 + Scoring v5 Confidence/Reason UI (Phase 4+5) |
 | v3.19 | e2c81f6 | 施設基準taxonomy化 — 10カテゴリcapability vector (Phase 2) |
 | v3.18 | 8609d67 | page.js 7ビュー分割完了 (758→178行, -76.5%) |
