@@ -1,5 +1,6 @@
 'use client';
 import { fmt, TC, downloadCSV } from '../shared';
+import { generateScoringPDF } from '../pdfExport';
 
 export default function ScoringView({ mob, tiers, topFac, facSearch, setFacSearch, searchResults, doSearch }) {
   return <>
@@ -43,6 +44,7 @@ export default function ScoringView({ mob, tiers, topFac, facSearch, setFacSearc
       });
       downloadCSV([header,...data],`medintel_scoring_${new Date().toISOString().slice(0,10)}.csv`);
     }} style={{padding:'10px 16px',borderRadius:8,border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',fontSize:13,cursor:'pointer',whiteSpace:'nowrap'}}>📥 CSV</button>
+    <button onClick={()=>generateScoringPDF(topFac,{title:'Priority Target List — Tier S'})} style={{padding:'10px 16px',borderRadius:8,border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',fontSize:13,cursor:'pointer',whiteSpace:'nowrap'}}>📄 PDF</button>
   </div>
   {searchResults&&<div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:20,marginBottom:24}}>
     <div style={{fontSize:14,fontWeight:600,marginBottom:12}}>検索結果: {searchResults.total}件</div>

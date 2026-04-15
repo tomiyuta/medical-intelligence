@@ -9,6 +9,8 @@
   },
   "dependencies": {
     "@svg-maps/japan": "^2.0.0",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.7",
     "next": "^14.2.35",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
