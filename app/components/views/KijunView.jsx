@@ -1,10 +1,19 @@
 'use client';
+import { useState } from 'react';
 import { fmt, sortPrefs, downloadCSV } from '../shared';
 
+const CAT_LABELS = {imaging:'画像診断',surgery:'手術',acute:'急性期',rehab:'リハビリ',homecare:'在宅',oncology:'がん',psychiatry:'精神',pediatric:'小児',infection:'感染',dx_it:'DX'};
+const CAT_COLORS = {imaging:'#2563EB',surgery:'#dc2626',acute:'#f59e0b',rehab:'#059669',homecare:'#8b5cf6',oncology:'#ec4899',psychiatry:'#6366f1',pediatric:'#14b8a6',infection:'#f97316',dx_it:'#64748b'};
+
 export default function KijunView({ mob, kijunData, setKijunData, kijunSummary, kijunPref, setKijunPref, kijunPage, setKijunPage, kijunSearch, setKijunSearch, kijunSort, setKijunSort, kijunExpanded, setKijunExpanded }) {
+  const [capFilter, setCapFilter] = useState('');
   const TC2 = {S:'#dc2626',A:'#f59e0b',B:'#2563EB',C:'#64748b',D:'#cbd5e1'};
   const PER_PAGE = 100;
-  const filtered = kijunData.filter(f => !kijunSearch || f.name.includes(kijunSearch) || (f.addr||'').includes(kijunSearch));
+  const filtered = kijunData.filter(f => {
+    if (kijunSearch && !f.name.includes(kijunSearch) && !(f.addr||'').includes(kijunSearch)) return false;
+    if (capFilter && (!f.caps || !f.caps[capFilter])) return false;
+    return true;
+  });
   const sorted = [...filtered].sort((a,b) => {
     if (kijunSort==='std_count') return b.std_count - a.std_count;
     if (kijunSort==='beds') return (b.beds||0) - (a.beds||0);
@@ -46,6 +55,12 @@ export default function KijunView({ mob, kijunData, setKijunData, kijunSummary, 
               </table>
             </div>
             <h2 style={{fontSize:15,fontWeight:600,margin:'0 0 10px',color:'#1e293b'}}>都道府県別 施設一覧</h2>
+            <div style={{display:'flex',gap:4,marginBottom:8,flexWrap:'wrap'}}>
+              <button onClick={()=>{setCapFilter('');setKijunPage(0);}} style={{padding:'3px 10px',borderRadius:12,border:!capFilter?'2px solid #2563EB':'1px solid #e2e8f0',background:!capFilter?'#eff6ff':'#fff',color:!capFilter?'#2563EB':'#94a3b8',fontSize:11,fontWeight:!capFilter?600:400,cursor:'pointer'}}>全て</button>
+              {Object.entries(CAT_LABELS).map(([k,v])=>(
+                <button key={k} onClick={()=>{setCapFilter(capFilter===k?'':k);setKijunPage(0);}} style={{padding:'3px 10px',borderRadius:12,border:capFilter===k?`2px solid ${CAT_COLORS[k]}`:'1px solid #e2e8f0',background:capFilter===k?CAT_COLORS[k]+'18':'#fff',color:capFilter===k?CAT_COLORS[k]:'#94a3b8',fontSize:11,fontWeight:capFilter===k?600:400,cursor:'pointer'}}>{v}</button>
+              ))}
+            </div>
             <div style={{display:'flex',gap:8,marginBottom:10,flexWrap:'wrap',alignItems:'center'}}>
               <select value={kijunPref} onChange={e=>changePref(e.target.value)} style={{padding:'7px 12px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,background:'#fff'}}>
                 {sortPrefs(kijunSummary.prefectures||[]).map(p=><option key={p} value={p}>{p}</option>)}
@@ -108,6 +123,14 @@ export default function KijunView({ mob, kijunData, setKijunData, kijunSummary, 
                         {f.los?<div><div style={{fontSize:11,color:'#94a3b8'}}>平均在院日数</div><div style={{fontSize:15,fontWeight:600}}>{f.los}日</div></div>:null}
                         {f.tier?<div><div style={{fontSize:11,color:'#94a3b8'}}>ティア</div><div style={{fontSize:15,fontWeight:700,color:TC2[f.tier]||'#999'}}>{f.tier}</div></div>:null}
                       </div>
+                      {f.caps&&Object.keys(f.caps).length>0&&<div style={{marginTop:8}}>
+                        <div style={{fontSize:11,color:'#94a3b8',marginBottom:4}}>対応領域</div>
+                        <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
+                          {Object.entries(f.caps).sort((a,b)=>b[1]-a[1]).map(([k,v])=>(
+                            <span key={k} style={{padding:'2px 8px',borderRadius:10,fontSize:10,fontWeight:600,background:(CAT_COLORS[k]||'#ccc')+'18',color:CAT_COLORS[k]||'#999'}}>{CAT_LABELS[k]||k} {v}</span>
+                          ))}
+                        </div>
+                      </div>}
                     </div>
                   </td></tr>
                   ];})}</tbody>
