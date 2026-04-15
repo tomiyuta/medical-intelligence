@@ -507,9 +507,26 @@ export default function Home() {
             <input value={facSearch} onChange={e=>setFacSearch(e.target.value)} onKeyDown={e=>e.key==='Enter'&&doSearch()} placeholder="施設名で検索（例: 東大, 慶應, 藤田）" style={{flex:1,padding:'10px 16px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:14,outline:'none'}}/>
             <button onClick={doSearch} style={{padding:'10px 20px',borderRadius:8,border:'none',background:'#2563EB',color:'#fff',fontWeight:600,cursor:'pointer'}}>検索</button>
             <button onClick={()=>{
-              const header=['Rank','Score','Tier','施設名','都道府県','病床数','年間症例数','平均在院日数','出典','取得日'];
-              const data=topFac.map(f=>[f.rank,f.priority_score,f.tier,f.facility_name,f.prefecture_name,f.total_beds||'',f.annual_cases||'',f.avg_los||'','厚労省DPC/G-MIS','2026-04']);
-              downloadCSV([header,...data],`medintel_scoring_tierS_${new Date().toISOString().slice(0,10)}.csv`);
+              const header=['Rank','Score','Tier','施設名','都道府県','住所','病床数','年間症例数','平均在院日数','Confidence','推奨理由','不足情報','出典','取得日'];
+              const data=topFac.map(f=>{
+                const reasons=[];
+                if(f.total_beds>=1000) reasons.push('1000床超大規模');
+                else if(f.total_beds>=500) reasons.push('500床超中規模');
+                if(f.annual_cases>=20000) reasons.push('症例2万超');
+                else if(f.annual_cases>=10000) reasons.push('症例1万超');
+                if(f.is_dpc_participant) reasons.push('DPC参加病院');
+                if(f.case_growth_pct>0) reasons.push(`症例増加+${f.case_growth_pct}%`);
+                if(f.avg_los&&f.avg_los<12) reasons.push('短期在院(効率的)');
+                const missing=[];
+                if(!f.annual_cases) missing.push('症例数非開示');
+                if(!f.is_dpc_participant) missing.push('DPC実績なし');
+                if(!f.avg_los) missing.push('在院日数不明');
+                if(!f.address) missing.push('住所不明');
+                const coverage=[f.total_beds,f.annual_cases,f.avg_los,f.is_dpc_participant,f.case_growth_pct].filter(v=>v!=null&&v!==0).length;
+                const conf=coverage>=4?'High':coverage>=2?'Medium':'Low';
+                return [f.rank,f.priority_score,f.tier,f.facility_name,f.prefecture_name,f.address||'',f.total_beds||'',f.annual_cases||'',f.avg_los||'',conf,reasons.join(' / ')||'—',missing.join(' / ')||'なし','厚労省DPC/G-MIS','2026-04'];
+              });
+              downloadCSV([header,...data],`medintel_scoring_${new Date().toISOString().slice(0,10)}.csv`);
             }} style={{padding:'10px 16px',borderRadius:8,border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',fontSize:13,cursor:'pointer',whiteSpace:'nowrap'}}>📥 CSV</button>
           </div>
           {searchResults&&<div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:20,marginBottom:24}}>
@@ -665,8 +682,23 @@ export default function Home() {
               </select>
               <span style={{fontSize:12,color:'#64748b'}}>{filtered.length>0?`${fmt(filtered.length)}施設`:'—'}{totalPages>1?` (${pg+1}/${totalPages}p)`:''}</span>
               <button onClick={()=>{
-                const header=['施設コード','施設名','都道府県','住所','病床数','届出数','スコア','ティア','出典','取得日'];
-                const data=sorted.map(f=>[f.code,f.name,kijunPref,f.addr||'',f.beds||f.beds_text||'',f.std_count,f.score||'',f.tier||'','厚生局 届出受理名簿','2026-04']);
+                const header=['施設コード','施設名','都道府県','住所','病床数','届出数','スコア','ティア','Confidence','特徴','不足情報','出典','取得日'];
+                const data=sorted.map(f=>{
+                  const reasons=[];
+                  if(f.std_count>=100) reasons.push('届出100超(高機能)');
+                  else if(f.std_count>=50) reasons.push('届出50超');
+                  if(f.beds&&f.beds>=500) reasons.push('500床超');
+                  else if(f.beds&&f.beds>=200) reasons.push('200床超');
+                  if(f.score&&f.score>=45) reasons.push('Tier A以上');
+                  if(f.cases) reasons.push(`症例${f.cases.toLocaleString()}`);
+                  const missing=[];
+                  if(!f.score) missing.push('スコア未算出');
+                  if(!f.addr) missing.push('住所不明');
+                  if(!f.beds&&!f.beds_text) missing.push('病床数不明');
+                  const cov=[f.addr,f.beds||f.beds_text,f.score,f.tier].filter(Boolean).length;
+                  const conf=cov>=3?'High':cov>=2?'Medium':'Low';
+                  return [f.code,f.name,kijunPref,f.addr||'',f.beds||f.beds_text||'',f.std_count,f.score||'',f.tier||'',conf,reasons.join(' / ')||'—',missing.join(' / ')||'なし','厚生局 届出受理名簿','2026-04'];
+                });
                 downloadCSV([header,...data],`medintel_kijun_${kijunPref}_${new Date().toISOString().slice(0,10)}.csv`);
               }} style={{padding:'5px 12px',borderRadius:6,border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',fontSize:12,cursor:'pointer',whiteSpace:'nowrap'}}>📥 CSV</button>
             </div>
