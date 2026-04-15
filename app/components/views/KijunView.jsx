@@ -9,7 +9,7 @@ const CAT_COLORS = {imaging:'#2563EB',surgery:'#dc2626',acute:'#f59e0b',rehab:'#
 export default function KijunView({ mob, kijunData, setKijunData, kijunSummary, kijunPref, setKijunPref, kijunPage, setKijunPage, kijunSearch, setKijunSearch, kijunSort, setKijunSort, kijunExpanded, setKijunExpanded }) {
   const [capFilter, setCapFilter] = useState('');
   const TC2 = {S:'#dc2626',A:'#f59e0b',B:'#2563EB',C:'#64748b',D:'#cbd5e1'};
-  const PER_PAGE = 100;
+  const PER_PAGE = 25;
   const filtered = kijunData.filter(f => {
     if (kijunSearch && !f.name.includes(kijunSearch) && !(f.addr||'').includes(kijunSearch)) return false;
     if (capFilter && (!f.caps || !f.caps[capFilter])) return false;
@@ -93,11 +93,12 @@ export default function KijunView({ mob, kijunData, setKijunData, kijunSummary, 
               }} style={{padding:'5px 12px',borderRadius:6,border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',fontSize:12,cursor:'pointer',whiteSpace:'nowrap'}}>📥 CSV</button>
               <button onClick={()=>generateKijunPDF(sorted.slice(0,200),{prefecture:kijunPref})} style={{padding:'5px 12px',borderRadius:6,border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',fontSize:12,cursor:'pointer',whiteSpace:'nowrap'}}>📄 PDF</button>
             </div>
-            {paged.length>0&&<div style={{background:'#fff',borderRadius:12,border:'1px solid #f0f0f0',overflow:'hidden',overflowX:'auto'}}>
+            {paged.length>0&&<div style={{background:'#fff',borderRadius:12,border:'1px solid #f0f0f0',overflow:'hidden'}}>
+             <div style={{maxHeight:'calc(100vh - 340px)',overflowY:'auto',overflowX:'auto'}}>
               <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
-                <thead><tr style={{background:'#fafbfc'}}>
+                <thead><tr style={{background:'#fafbfc',position:'sticky',top:0,zIndex:1}}>
                   {(mob?['施設名','届出']:['施設名','住所','病床','届出','Tier']).map((h,i)=>(
-                    <th key={i} style={{padding:'8px 10px',fontSize:11,fontWeight:600,color:'#94a3b8',textAlign:['届出','病床','Tier'].includes(h)?'right':'left',borderBottom:'1px solid #f1f5f9',whiteSpace:'nowrap'}}>{h}</th>))}
+                    <th key={i} style={{padding:'8px 10px',fontSize:11,fontWeight:600,color:'#94a3b8',textAlign:['届出','病床','Tier'].includes(h)?'right':'left',borderBottom:'1px solid #f1f5f9',whiteSpace:'nowrap',background:'#fafbfc'}}>{h}</th>))}
                 </tr></thead>
                 <tbody>{paged.map((f,i)=>{
                   const idx=pg*PER_PAGE+i;const isExp=kijunExpanded===idx;
@@ -137,6 +138,7 @@ export default function KijunView({ mob, kijunData, setKijunData, kijunSummary, 
                   </td></tr>
                   ];})}</tbody>
               </table>
+             </div>
             </div>}
             {totalPages>1&&<div style={{display:'flex',justifyContent:'center',gap:4,marginTop:12,flexWrap:'wrap'}}>
               <button onClick={()=>setKijunPage(Math.max(0,pg-1))} disabled={pg===0} style={{padding:'6px 12px',borderRadius:6,border:'1px solid #e2e8f0',background:pg===0?'#f8f9fa':'#fff',cursor:pg===0?'default':'pointer',fontSize:12,color:pg===0?'#cbd5e1':'#64748b'}}>◀ 前へ</button>
