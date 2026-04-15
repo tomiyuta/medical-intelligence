@@ -1,17 +1,22 @@
 export const dynamic = "force-dynamic";
 import { NextResponse } from 'next/server';
-import { readFileSync } from 'fs';
+import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
 
-let cache = null;
-function loadCompact() {
-  if (!cache) cache = JSON.parse(readFileSync(join(process.cwd(), 'data', 'static', 'facility_standards_compact.json'), 'utf-8'));
-  return cache;
-}
 let summaryCache = null;
 function loadSummary() {
   if (!summaryCache) summaryCache = JSON.parse(readFileSync(join(process.cwd(), 'data', 'static', 'facility_standards_summary.json'), 'utf-8'));
   return summaryCache;
+}
+
+const shardCache = {};
+function loadShard(pref) {
+  if (!shardCache[pref]) {
+    const path = join(process.cwd(), 'data', 'static', 'kijun_shards', `${pref}.json`);
+    if (existsSync(path)) shardCache[pref] = JSON.parse(readFileSync(path, 'utf-8'));
+    else shardCache[pref] = [];
+  }
+  return shardCache[pref];
 }
 
 const CAT_LABELS = {
@@ -26,8 +31,8 @@ export async function GET(request) {
   const summary = searchParams.get('summary');
   const cap = searchParams.get('capability');
   if (summary === 'true') return NextResponse.json({...loadSummary(), categories: CAT_LABELS});
-  let data = loadCompact();
-  if (pref) data = data.filter(d => d.p === pref);
+  if (!pref) return NextResponse.json({ total: 0, data: [], error: 'prefecture parameter required' });
+  let data = loadShard(pref);
   if (cap) data = data.filter(d => d.cap && d.cap[cap] > 0);
   const normalized = data.map(d => ({
     code: d.c, name: d.m, pref: d.p, std_count: d.n,

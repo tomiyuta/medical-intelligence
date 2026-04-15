@@ -58,18 +58,22 @@ export default function ScoringView({ mob, tiers, topFac, facSearch, setFacSearc
     <div style={{padding:'16px 20px',borderBottom:'1px solid #f0f0f0',fontSize:16,fontWeight:600}}>Tier S 施設一覧</div>
     <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
       <thead><tr style={{background:'#fafbfc'}}>
-        {['#','Score','施設名','都道府県','病床','年間症例'].map((h,i)=>(
-          <th key={i} style={{padding:'10px 14px',fontSize:11,fontWeight:600,color:'#94a3b8',textAlign:i<3?'left':'right',borderBottom:'1px solid #f1f5f9'}}>{h}</th>))}
+        {(mob?['#','Score','施設名']:['#','Score','施設名','都道府県','病床','症例','信頼度','推奨理由']).map((h,i)=>(
+          <th key={i} style={{padding:'10px 12px',fontSize:11,fontWeight:600,color:'#94a3b8',textAlign:i<3?'left':'right',borderBottom:'1px solid #f1f5f9'}}>{h}</th>))}
       </tr></thead>
-      <tbody>{topFac.map((f,i)=>(
+      <tbody>{topFac.map((f,i)=>{
+        const confColor = f.confidence==='High'?'#059669':f.confidence==='Medium'?'#f59e0b':'#94a3b8';
+        return (
         <tr key={i} style={{borderBottom:'1px solid #f8f9fa'}} onMouseEnter={e=>e.currentTarget.style.background='#f8faff'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
-          <td style={{padding:'10px 14px',color:'#94a3b8'}}>#{f.rank}</td>
-          <td style={{padding:'10px 14px'}}><span style={{padding:'2px 10px',borderRadius:20,fontSize:12,fontWeight:700,background:(TC[f.tier]||'#ccc')+'18',color:TC[f.tier]}}>{f.priority_score}</span></td>
-          <td style={{padding:'10px 14px',fontWeight:500,color:'#1e293b'}}>{f.facility_name}</td>
-          <td style={{padding:'10px 14px',textAlign:'right',color:'#64748b'}}>{f.prefecture_name}</td>
-          <td style={{padding:'10px 14px',textAlign:'right',fontVariantNumeric:'tabular-nums'}}>{fmt(f.total_beds)}</td>
-          <td style={{padding:'10px 14px',textAlign:'right',color:'#2563EB',fontWeight:600,fontVariantNumeric:'tabular-nums'}}>{fmt(f.annual_cases)}</td>
-        </tr>))}</tbody>
+          <td style={{padding:'10px 12px',color:'#94a3b8'}}>#{f.rank}</td>
+          <td style={{padding:'10px 12px'}}><span style={{padding:'2px 10px',borderRadius:20,fontSize:12,fontWeight:700,background:(TC[f.tier]||'#ccc')+'18',color:TC[f.tier]}}>{f.priority_score}</span></td>
+          <td style={{padding:'10px 12px',fontWeight:500,color:'#1e293b'}}>{f.facility_name}{f.missing&&f.missing.length>0&&<span style={{fontSize:10,color:'#f59e0b',marginLeft:4}} title={f.missing.join(', ')}>⚠</span>}</td>
+          {!mob&&<td style={{padding:'10px 12px',textAlign:'right',color:'#64748b'}}>{f.prefecture_name}</td>}
+          {!mob&&<td style={{padding:'10px 12px',textAlign:'right',fontVariantNumeric:'tabular-nums'}}>{fmt(f.total_beds)}</td>}
+          {!mob&&<td style={{padding:'10px 12px',textAlign:'right',color:'#2563EB',fontWeight:600,fontVariantNumeric:'tabular-nums'}}>{fmt(f.annual_cases)}</td>}
+          {!mob&&<td style={{padding:'10px 12px',textAlign:'right'}}><span style={{fontSize:11,fontWeight:600,color:confColor}}>{f.confidence||'—'}</span></td>}
+          {!mob&&<td style={{padding:'10px 12px',fontSize:11,color:'#64748b',maxWidth:180}}>{(f.reasons||[]).join(' / ')||'—'}</td>}
+        </tr>);})}</tbody>
     </table>
   </div>
   </>;
