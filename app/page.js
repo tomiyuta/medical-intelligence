@@ -163,7 +163,7 @@ export default function Home() {
         <Nav icon="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" label="施設基準" active={view==='kijun'} onClick={()=>setView('kijun')}/>
         <div style={{flex:1}}/>
         <div style={{padding:'12px 14px',borderTop:'1px solid #f0f0f0',fontSize:11,color:'#cbd5e1'}}>
-          出典: 厚労省/総務省/社人研<br/>96,488施設 × 9因子スコアリング
+          出典: 厚労省/総務省/社人研<br/>Tier S/A/B 上位2,802施設 × 9因子スコアリング
         </div>
       </aside>
       )}
@@ -483,7 +483,7 @@ export default function Home() {
           <div style={{marginBottom:24}}>
             <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:4}}>Priority Scoring</div>
             <h1 style={{fontSize:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>訪問優先度スコアリング</h1>
-            <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>9因子複合スコア（v4）— 96,488施設をDPC件数×病床数×成長率で自動ランク付け</p>
+            <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>9因子複合スコア（v4）— Tier S/A/B 上位2,802施設をDPC件数×病床数×成長率で自動ランク付け</p>
           </div>
           <div style={{display:'grid',gridTemplateColumns:mob?'1fr 1fr':'repeat(5,1fr)',gap:10,marginBottom:24}}>
             {tiers.map(t=>(
