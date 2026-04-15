@@ -1,6 +1,6 @@
 # Medical Intelligence Platform — 設計仕様書
 
-**Version**: 3.16  
+**Version**: 3.18  
 **URL**: https://medical-intelligence-two.vercel.app  
 **Repository**: https://github.com/tomiyuta/medical-intelligence  
 **Last Updated**: 2026-04-15  
@@ -15,7 +15,7 @@
 
 | レイヤー | 技術 |
 |---|---|
-| フロントエンド | Next.js 14 (App Router), React 18, Recharts, SVG choropleth |
+| フロントエンド | Next.js 14 (App Router), React 18, Recharts, SVG choropleth, 7コンポーネント分割 |
 | バックエンド | Next.js API Routes (16エンドポイント) |
 | データベース | SQLite (開発・ETL用, 1.2M+ rows) |
 | データ配信 | Static JSON (Vercel Edge, 19ファイル) |
@@ -145,7 +145,7 @@ Score = 0.20×CaseVolume + 0.18×BedScale + 0.12×Market + 0.10×CaseGrowth + 0.
 
 | Phase | 期間 | 作業 | 判定指標 |
 |---|---|---|---|
-| 0 | Week 0 | truth in labeling修正(✅済) / 出典表示(✅済) / CSV出力(✅済) | 法務・信用の土台 |
+| 0 | Week 0 | truth in labeling修正(✅済) / 出典表示(✅済) / CSV出力(✅済) / page.js分割(✅済) | 法務・信用・保守性の土台 |
 | 1 | Week 1-2 | 10社ヒアリング / 3社デモ | 同じ課題3回再出 |
 | 2 | Week 2-4 | 施設基準taxonomy化(1カテゴリ) / 4項目スコア出力 | 1社design partner |
 | 3 | Week 4-6 | paid pilot納品(手作業込み) / ラベル回収権確保 | 初回入金≥30万円 |
@@ -162,6 +162,8 @@ Score = 0.20×CaseVolume + 0.18×BedScale + 0.12×Market + 0.10×CaseGrowth + 0.
 
 | Version | Commit | Description |
 |---|---|---|
+| v3.18 | 8609d67 | page.js 7ビュー分割完了 (758→178行, -76.5%) |
+| v3.17 | b7f9cfa | CSV 4項目出力(Confidence/Reason/Missing) + README統合更新 |
 | v3.16 | b546a53 | CSV出力機能 + 出典表示統一化 |
 | v3.15 | 444e8b6 | 高齢化率マップ最大化+viewBox最適化 |
 | v3.13 | 4c90687 | 人口動態ビューに高齢化率choroplethマップ追加 |
