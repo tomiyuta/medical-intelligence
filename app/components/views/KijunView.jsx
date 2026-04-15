@@ -1,30 +1,23 @@
-#!/usr/bin/env python3
-import re
+'use client';
+import { fmt, sortPrefs, downloadCSV } from '../shared';
 
-with open("/Users/yutatomi/Projects/medical-intelligence/app/page.js", "r") as f:
-    lines = f.readlines()
+export default function KijunView({ mob, kijunData, setKijunData, kijunSummary, kijunPref, setKijunPref, kijunPage, setKijunPage, kijunSearch, setKijunSearch, kijunSort, setKijunSort, kijunExpanded, setKijunExpanded }) {
+  const TC2 = {S:'#dc2626',A:'#f59e0b',B:'#2563EB',C:'#64748b',D:'#cbd5e1'};
+  const PER_PAGE = 100;
+  const filtered = kijunData.filter(f => !kijunSearch || f.name.includes(kijunSearch) || (f.addr||'').includes(kijunSearch));
+  const sorted = [...filtered].sort((a,b) => {
+    if (kijunSort==='std_count') return b.std_count - a.std_count;
+    if (kijunSort==='beds') return (b.beds||0) - (a.beds||0);
+    if (kijunSort==='cases') return (b.cases||0) - (a.cases||0);
+    if (kijunSort==='score') return (b.score||0) - (a.score||0);
+    return 0;
+  });
+  const totalPages = Math.ceil(sorted.length / PER_PAGE) || 1;
+  const pg = Math.min(kijunPage, totalPages - 1);
+  const paged = sorted.slice(pg * PER_PAGE, (pg + 1) * PER_PAGE);
+  const changePref = (p) => { setKijunPref(p); setKijunPage(0); setKijunSearch(''); setKijunExpanded(null); fetch('/api/facility-standards?prefecture='+encodeURIComponent(p)).then(r=>r.json()).then(d=>setKijunData(d.data||[])); };
 
-# Lines 548-609 (1-indexed) = indices 547-608
-# Verify boundaries
-assert "view==='kijun'" in lines[547], f"Line 548 mismatch: {lines[547][:50]}"
-assert "})()}" in lines[608], f"Line 609 mismatch: {lines[608][:50]}"
-
-new_block = """        {view==='kijun' && (()=>{
-          const TC2 = {S:'#dc2626',A:'#f59e0b',B:'#2563EB',C:'#64748b',D:'#cbd5e1'};
-          const PER_PAGE = 100;
-          const filtered = kijunData.filter(f => !kijunSearch || f.name.includes(kijunSearch) || (f.addr||'').includes(kijunSearch));
-          const sorted = [...filtered].sort((a,b) => {
-            if (kijunSort==='std_count') return b.std_count - a.std_count;
-            if (kijunSort==='beds') return (b.beds||0) - (a.beds||0);
-            if (kijunSort==='cases') return (b.cases||0) - (a.cases||0);
-            if (kijunSort==='score') return (b.score||0) - (a.score||0);
-            return 0;
-          });
-          const totalPages = Math.ceil(sorted.length / PER_PAGE) || 1;
-          const pg = Math.min(kijunPage, totalPages - 1);
-          const paged = sorted.slice(pg * PER_PAGE, (pg + 1) * PER_PAGE);
-          const changePref = (p) => { setKijunPref(p); setKijunPage(0); setKijunSearch(''); setKijunExpanded(null); fetch('/api/facility-standards?prefecture='+encodeURIComponent(p)).then(r=>r.json()).then(d=>setKijunData(d.data||[])); };
-          return <>
+  return <>
           <div style={{marginBottom:16}}>
             <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:4}}>Facility Standards</div>
             <h1 style={{fontSize:mob?20:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>施設基準の届出状況</h1>
@@ -62,6 +55,26 @@ new_block = """        {view==='kijun' && (()=>{
                 <option value="std_count">届出数順</option><option value="beds">病床数順</option><option value="cases">症例数順</option><option value="score">スコア順</option>
               </select>
               <span style={{fontSize:12,color:'#64748b'}}>{filtered.length>0?`${fmt(filtered.length)}施設`:'—'}{totalPages>1?` (${pg+1}/${totalPages}p)`:''}</span>
+              <button onClick={()=>{
+                const header=['施設コード','施設名','都道府県','住所','病床数','届出数','スコア','ティア','Confidence','特徴','不足情報','出典','取得日'];
+                const data=sorted.map(f=>{
+                  const reasons=[];
+                  if(f.std_count>=100) reasons.push('届出100超(高機能)');
+                  else if(f.std_count>=50) reasons.push('届出50超');
+                  if(f.beds&&f.beds>=500) reasons.push('500床超');
+                  else if(f.beds&&f.beds>=200) reasons.push('200床超');
+                  if(f.score&&f.score>=45) reasons.push('Tier A以上');
+                  if(f.cases) reasons.push(`症例${f.cases.toLocaleString()}`);
+                  const missing=[];
+                  if(!f.score) missing.push('スコア未算出');
+                  if(!f.addr) missing.push('住所不明');
+                  if(!f.beds&&!f.beds_text) missing.push('病床数不明');
+                  const cov=[f.addr,f.beds||f.beds_text,f.score,f.tier].filter(Boolean).length;
+                  const conf=cov>=3?'High':cov>=2?'Medium':'Low';
+                  return [f.code,f.name,kijunPref,f.addr||'',f.beds||f.beds_text||'',f.std_count,f.score||'',f.tier||'',conf,reasons.join(' / ')||'—',missing.join(' / ')||'なし','厚生局 届出受理名簿','2026-04'];
+                });
+                downloadCSV([header,...data],`medintel_kijun_${kijunPref}_${new Date().toISOString().slice(0,10)}.csv`);
+              }} style={{padding:'5px 12px',borderRadius:6,border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',fontSize:12,cursor:'pointer',whiteSpace:'nowrap'}}>📥 CSV</button>
             </div>
             {paged.length>0&&<div style={{background:'#fff',borderRadius:12,border:'1px solid #f0f0f0',overflow:'hidden',overflowX:'auto'}}>
               <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
@@ -107,13 +120,5 @@ new_block = """        {view==='kijun' && (()=>{
             </div>}
           </>}
           <div style={{padding:'10px 0',fontSize:11,color:'#94a3b8',marginTop:12}}>出典: 全国8地方厚生局 届出受理医療機関名簿（医科）令和8年2月〜4月現在</div>
-        </>;})()}
-"""
-
-# Replace lines 548-609
-new_lines = lines[:547] + [new_block] + lines[609:]
-
-with open("/Users/yutatomi/Projects/medical-intelligence/app/page.js", "w") as f:
-    f.writelines(new_lines)
-
-print(f"OK: replaced lines 548-609, new file {sum(1 for _ in new_lines)} lines")
+        </>;
+}
