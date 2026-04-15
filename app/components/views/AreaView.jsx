@@ -1,6 +1,6 @@
 'use client';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
-import { fmt, Tip } from '../shared';
+import { fmt, Tip, sortPrefs } from '../shared';
 
 export default function AreaView({ mob, areaData, areaPref, setAreaPref, areaPrefList }) {
   return <>
@@ -11,7 +11,7 @@ export default function AreaView({ mob, areaData, areaPref, setAreaPref, areaPre
       <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>全国339二次医療圏の医療体制を都道府県別に比較。</p>
     </div>
     <select value={areaPref} onChange={e=>setAreaPref(e.target.value)} style={{padding:'8px 14px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,background:'#fff',cursor:'pointer',minWidth:140}}>
-      {areaPrefList.map(p=><option key={p} value={p}>{p}</option>)}
+      {sortPrefs(areaPrefList).map(p=><option key={p} value={p}>{p}</option>)}
     </select>
   </div>
   <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'repeat(3,1fr)',gap:12,marginBottom:20}}>

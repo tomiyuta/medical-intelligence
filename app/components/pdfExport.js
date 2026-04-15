@@ -144,5 +144,7 @@ export function generateKijunPDF(facilities, options = {}) {
     doc.text(`Page ${i} / ${pageCount}`, doc.internal.pageSize.width - 30, footY);
   }
 
+  console.log('KIJUN_PDF: generating', facilities.length, 'facilities,', pageCount, 'pages');
   doc.save(`medintel_kijun_${date}.pdf`);
+  console.log('KIJUN_PDF: doc.save() completed');
 }
