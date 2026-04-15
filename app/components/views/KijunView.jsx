@@ -91,7 +91,7 @@ export default function KijunView({ mob, kijunData, setKijunData, kijunSummary, 
                 });
                 downloadCSV([header,...data],`medintel_kijun_${kijunPref}_${new Date().toISOString().slice(0,10)}.csv`);
               }} style={{padding:'5px 12px',borderRadius:6,border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',fontSize:12,cursor:'pointer',whiteSpace:'nowrap'}}>📥 CSV</button>
-              <button onClick={()=>{try{generateKijunPDF(sorted.slice(0,200),{prefecture:kijunPref});}catch(e){console.error('KIJUN_PDF_ERR:',e);alert('PDF error: '+e.message);}}} style={{padding:'5px 12px',borderRadius:6,border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',fontSize:12,cursor:'pointer',whiteSpace:'nowrap'}}>📄 PDF</button>
+              <button onClick={()=>generateKijunPDF(sorted.slice(0,200),{prefecture:kijunPref})} style={{padding:'5px 12px',borderRadius:6,border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',fontSize:12,cursor:'pointer',whiteSpace:'nowrap'}}>📄 PDF</button>
             </div>
             {paged.length>0&&<div style={{background:'#fff',borderRadius:12,border:'1px solid #f0f0f0',overflow:'hidden',overflowX:'auto'}}>
               <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
