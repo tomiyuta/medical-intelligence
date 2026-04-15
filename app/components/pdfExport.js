@@ -2,11 +2,15 @@
 import { jsPDF } from 'jspdf';
 import autoTable from 'jspdf-autotable';
 
-export function generateScoringPDF(facilities, options = {}) {
-  const { title = '重点施設ターゲットリスト', prefecture = '全国', date = new Date().toISOString().slice(0,10) } = options;
-  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+// ASCII-safe text helper: replace CJK chars with placeholder for jsPDF default font
+function safeText(str) {
+  if (!str) return '';
+  return String(str).replace(/[^\x00-\x7F]/g, '?');
+}
 
-  // Japanese font support: use built-in helvetica (latin chars) + unicode fallback
+export function generateScoringPDF(facilities, options = {}) {
+  const { title = 'Priority Target List', prefecture = 'All', date = new Date().toISOString().slice(0,10) } = options;
+  const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
   doc.setFont('helvetica');
 
   // Header
@@ -19,40 +23,36 @@ export function generateScoringPDF(facilities, options = {}) {
 
   doc.setFontSize(14);
   doc.setTextColor(30, 41, 59);
-  doc.text(title, 14, 32);
+  doc.text(safeText(title), 14, 32);
 
   doc.setFontSize(9);
   doc.setTextColor(100, 116, 139);
-  doc.text(`${prefecture} | ${date} | Tier S/A/B ${facilities.length} facilities`, 14, 38);
+  doc.text(`${safeText(prefecture)} | ${date} | Tier S/A/B ${facilities.length} facilities`, 14, 38);
 
-  // Summary KPIs
   const tierCounts = {};
   facilities.forEach(f => { tierCounts[f.tier] = (tierCounts[f.tier]||0) + 1; });
   const confCounts = {};
-  facilities.forEach(f => { confCounts[f.confidence||'—'] = (confCounts[f.confidence||'—']||0) + 1; });
+  facilities.forEach(f => { confCounts[f.confidence||'-'] = (confCounts[f.confidence||'-']||0) + 1; });
 
   let y = 44;
   doc.setFontSize(8);
   doc.setTextColor(100, 116, 139);
-  const kpis = Object.entries(tierCounts).map(([k,v])=>`Tier ${k}: ${v}`).join('  |  ');
-  const confs = Object.entries(confCounts).map(([k,v])=>`${k}: ${v}`).join('  |  ');
-  doc.text(`Tiers: ${kpis}`, 14, y);
-  doc.text(`Confidence: ${confs}`, 14, y + 4);
+  doc.text(`Tiers: ${Object.entries(tierCounts).map(([k,v])=>`${k}: ${v}`).join(' | ')}`, 14, y);
+  doc.text(`Confidence: ${Object.entries(confCounts).map(([k,v])=>`${k}: ${v}`).join(' | ')}`, 14, y + 4);
   y += 12;
 
-  // Table
   const headers = [['#','Score','Tier','Facility','Prefecture','Beds','Cases','Conf','Reasons','Missing']];
   const rows = facilities.map((f, i) => [
     i + 1,
     f.priority_score || f.score || '',
     f.tier || '',
-    f.facility_name || f.name || '',
-    f.prefecture_name || f.pref || '',
+    safeText(f.facility_name || f.name || ''),
+    safeText(f.prefecture_name || f.pref || ''),
     f.total_beds || f.beds || '',
     f.annual_cases || f.cases || '',
     f.confidence || '',
-    (f.reasons || []).join(', ') || '',
-    (f.missing || []).join(', ') || '',
+    safeText((f.reasons || []).join(', ') || '-'),
+    safeText((f.missing || []).join(', ') || '-'),
   ]);
 
   autoTable(doc, {
@@ -62,29 +62,22 @@ export function generateScoringPDF(facilities, options = {}) {
     styles: { fontSize: 7, cellPadding: 2, overflow: 'linebreak' },
     headStyles: { fillColor: [37, 99, 235], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 7 },
     columnStyles: {
-      0: { cellWidth: 8 },
-      1: { cellWidth: 12 },
-      2: { cellWidth: 10 },
-      3: { cellWidth: 55 },
-      4: { cellWidth: 22 },
-      5: { cellWidth: 14 },
-      6: { cellWidth: 16 },
-      7: { cellWidth: 14 },
-      8: { cellWidth: 50 },
+      0: { cellWidth: 8 }, 1: { cellWidth: 12 }, 2: { cellWidth: 10 },
+      3: { cellWidth: 55 }, 4: { cellWidth: 22 }, 5: { cellWidth: 14 },
+      6: { cellWidth: 16 }, 7: { cellWidth: 14 }, 8: { cellWidth: 50 },
       9: { cellWidth: 45 },
     },
     alternateRowStyles: { fillColor: [248, 250, 252] },
     margin: { left: 14, right: 14 },
   });
 
-  // Footer on each page
   const pageCount = doc.getNumberOfPages();
   for (let i = 1; i <= pageCount; i++) {
     doc.setPage(i);
     doc.setFontSize(7);
     doc.setTextColor(180, 180, 180);
     const footY = doc.internal.pageSize.height - 8;
-    doc.text('MedIntel v3.20 | Source: MHLW/MIC/IPSS Open Data | This report was generated from publicly available data, not created by the government.', 14, footY);
+    doc.text('MedIntel | Source: MHLW/MIC/IPSS Open Data (PDL1.0) | Not created by the government.', 14, footY);
     doc.text(`Page ${i} / ${pageCount}`, doc.internal.pageSize.width - 30, footY);
   }
 
@@ -94,8 +87,8 @@ export function generateScoringPDF(facilities, options = {}) {
 export function generateKijunPDF(facilities, options = {}) {
   const { prefecture = '', date = new Date().toISOString().slice(0,10) } = options;
   const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-
   doc.setFont('helvetica');
+
   doc.setFontSize(18);
   doc.setTextColor(37, 99, 235);
   doc.text('MedIntel', 14, 15);
@@ -105,17 +98,17 @@ export function generateKijunPDF(facilities, options = {}) {
 
   doc.setFontSize(14);
   doc.setTextColor(30, 41, 59);
-  doc.text(`${prefecture} Facility Standards`, 14, 32);
+  doc.text(`${safeText(prefecture)} - Facility Standards`, 14, 32);
 
   doc.setFontSize(9);
   doc.setTextColor(100, 116, 139);
   doc.text(`${facilities.length} facilities | ${date} | Source: Regional Health Bureaus`, 14, 38);
 
-  const headers = [['Code','Facility','Address','Beds','Standards','Score','Tier','Conf']];
+  const headers = [['Code','Facility','Address','Beds','Stds','Score','Tier','Conf']];
   const rows = facilities.slice(0, 200).map(f => [
     f.code || '',
-    f.name || '',
-    f.addr || '',
+    safeText(f.name || ''),
+    safeText(f.addr || ''),
     f.beds || f.beds_text || '',
     f.std_count || '',
     f.score || '',
@@ -133,14 +126,9 @@ export function generateKijunPDF(facilities, options = {}) {
     styles: { fontSize: 7, cellPadding: 2, overflow: 'linebreak' },
     headStyles: { fillColor: [5, 150, 105], textColor: [255, 255, 255], fontStyle: 'bold', fontSize: 7 },
     columnStyles: {
-      0: { cellWidth: 18 },
-      1: { cellWidth: 60 },
-      2: { cellWidth: 55 },
-      3: { cellWidth: 18 },
-      4: { cellWidth: 16 },
-      5: { cellWidth: 14 },
-      6: { cellWidth: 12 },
-      7: { cellWidth: 14 },
+      0: { cellWidth: 18 }, 1: { cellWidth: 60 }, 2: { cellWidth: 55 },
+      3: { cellWidth: 18 }, 4: { cellWidth: 16 }, 5: { cellWidth: 14 },
+      6: { cellWidth: 12 }, 7: { cellWidth: 14 },
     },
     alternateRowStyles: { fillColor: [248, 250, 252] },
     margin: { left: 14, right: 14 },
@@ -152,9 +140,18 @@ export function generateKijunPDF(facilities, options = {}) {
     doc.setFontSize(7);
     doc.setTextColor(180, 180, 180);
     const footY = doc.internal.pageSize.height - 8;
-    doc.text('MedIntel v3.20 | Source: Regional Health Bureau Open Data (PDL1.0) | Not created by the government.', 14, footY);
+    doc.text('MedIntel | Source: Regional Health Bureau Open Data (PDL1.0) | Not created by the government.', 14, footY);
     doc.text(`Page ${i} / ${pageCount}`, doc.internal.pageSize.width - 30, footY);
   }
 
-  doc.save(`medintel_kijun_${date}.pdf`);
+  // Use blob URL for reliable download (doc.save can be blocked by some browsers)
+  const blob = doc.output('blob');
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `medintel_kijun_${date}.pdf`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
