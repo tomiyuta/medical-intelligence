@@ -274,7 +274,7 @@ export default function Home() {
                   <span>{maxA.toFixed(0)}%</span>
                 </div>
               </div>
-              <svg viewBox="60 40 380 470" style={{width:'100%',flex:1,minHeight:0}} preserveAspectRatio="xMidYMid meet">
+              <svg viewBox="-5 -5 448 526" style={{width:'100%',flex:1,minHeight:0}} preserveAspectRatio="xMidYMid meet">
                 {japanMap.prefs.map(pf=>{
                   const rate=agingRates[pf.ja]||0;
                   const isHov=hovPref===pf.ja;
