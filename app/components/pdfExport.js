@@ -156,7 +156,5 @@ export function generateKijunPDF(facilities, options = {}) {
     doc.text(`Page ${i} / ${pageCount}`, doc.internal.pageSize.width - 30, footY);
   }
 
-  const safeName = prefecture.replace(/[^\w]/g, '') || 'all';
-  const blobUrl = doc.output('bloburl');
-  window.open(blobUrl, '_blank');
+  doc.save(`medintel_kijun_${date}.pdf`);
 }
