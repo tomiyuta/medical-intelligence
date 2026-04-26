@@ -12,6 +12,9 @@ export async function GET(request) {
   const offset = parseInt(searchParams.get('offset') || '0');
 
   let data = getTopFacilities();
+  if (Array.isArray(data)) { /* already array */ }
+  else if (data?.data) { data = data.data; }
+  else { data = []; }
   if (tier) data = data.filter(f => f.tier === tier);
   if (prefecture) data = data.filter(f => f.prefecture_name === prefecture);
   if (q) data = data.filter(f => f.facility_name.includes(q));

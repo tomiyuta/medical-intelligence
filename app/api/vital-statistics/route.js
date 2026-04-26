@@ -9,13 +9,6 @@ function load() {
   return cache;
 }
 
-export async function GET(request) {
-  const { searchParams } = new URL(request.url);
-  const pref = searchParams.get('prefecture');
-  const data = load();
-  if (pref) {
-    const p = data.prefectures.find(x => x.pref === pref);
-    return NextResponse.json(p || { error: 'not found' });
-  }
-  return NextResponse.json(data);
+export async function GET() {
+  return NextResponse.json(load());
 }

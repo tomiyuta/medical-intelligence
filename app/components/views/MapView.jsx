@@ -14,7 +14,7 @@ export default function MapView({ mob, prefs, metric, setMetric, japanMap, hovPr
     const causeName = VITAL_MAP[metric];
     return vitalStats.prefectures.map(vp => {
       const c = vp.causes?.find(x => x.cause === causeName);
-      return { name: vp.pref, val: c?.deaths || 0, cause: c };
+      return { name: vp.pref, val: c?.rate || 0, cause: c };
     });
   }, [prefs, metric, vitalStats]);
 
@@ -61,7 +61,7 @@ export default function MapView({ mob, prefs, metric, setMetric, japanMap, hovPr
       {hovPref && (()=>{const d=dataByName[hovPref];return d?(
         <div style={{position:'absolute',left:Math.min(tooltipPos.x,mob?200:400),top:tooltipPos.y+60,background:'#1e293b',color:'#fff',padding:'8px 14px',borderRadius:8,fontSize:12,pointerEvents:'none',zIndex:10,boxShadow:'0 4px 12px rgba(0,0,0,0.15)',whiteSpace:'nowrap'}}>
           <div style={{fontWeight:700,marginBottom:2}}>{hovPref}</div>
-          <div>{metricLabel}: <span style={{color:'#fbbf24',fontWeight:600}}>{fmt(d.val)}{isVital(metric)?'人':''}</span></div>
+          <div>{metricLabel}: <span style={{color:'#fbbf24',fontWeight:600}}>{isVital(metric)?d.val.toFixed(1):fmt(d.val)}{isVital(metric)?'/10万':''}</span></div>
           {d.cause && <div style={{fontSize:10,color:'#94a3b8',marginTop:2}}>死因順位 第{d.cause.rank}位</div>}
         </div>
       ):null;})()}

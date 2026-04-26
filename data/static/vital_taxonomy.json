@@ -1,100 +1,52 @@
 {
   "悪性新生物": {
-    "code": "02100",
-    "short": "がん",
-    "capabilities": [
-      "oncology",
-      "imaging",
-      "surgery"
-    ]
+    "capabilities": ["oncology", "imaging", "surgery"],
+    "label": "がん",
+    "color": "#dc2626"
   },
   "心疾患": {
-    "code": "09200",
-    "short": "心疾患",
-    "capabilities": [
-      "acute",
-      "surgery",
-      "imaging"
-    ]
+    "capabilities": ["acute", "surgery", "imaging"],
+    "label": "心疾患",
+    "color": "#f59e0b"
   },
   "脳血管疾患": {
-    "code": "09300",
-    "short": "脳血管",
-    "capabilities": [
-      "acute",
-      "rehab",
-      "imaging"
-    ]
+    "capabilities": ["acute", "rehab", "imaging"],
+    "label": "脳血管",
+    "color": "#8b5cf6"
   },
   "老衰": {
-    "code": "18100",
-    "short": "老衰",
-    "capabilities": [
-      "homecare",
-      "rehab"
-    ]
+    "capabilities": ["homecare"],
+    "label": "老衰",
+    "color": "#94a3b8"
   },
   "肺炎": {
-    "code": "10200",
-    "short": "肺炎",
-    "capabilities": [
-      "acute",
-      "infection"
-    ]
+    "capabilities": ["acute", "infection"],
+    "label": "肺炎",
+    "color": "#3b82f6"
   },
   "誤嚥性肺炎": {
-    "code": "10601",
-    "short": "誤嚥性肺炎",
-    "capabilities": [
-      "rehab",
-      "homecare"
-    ]
-  },
-  "腎不全": {
-    "code": "14200",
-    "short": "腎不全",
-    "capabilities": [
-      "dx_it",
-      "acute"
-    ]
-  },
-  "アルツハイマー病": {
-    "code": "06400",
-    "short": "アルツハイマー",
-    "capabilities": [
-      "psychiatry",
-      "rehab"
-    ]
-  },
-  "血管性認知症": {
-    "code": "05100",
-    "short": "認知症",
-    "capabilities": [
-      "psychiatry",
-      "rehab"
-    ]
+    "capabilities": ["rehab", "homecare"],
+    "label": "誤嚥性肺炎",
+    "color": "#06b6d4"
   },
   "糖尿病": {
-    "code": "04100",
-    "short": "糖尿病",
-    "capabilities": [
-      "dx_it"
-    ]
+    "capabilities": ["dx_it"],
+    "label": "糖尿病",
+    "color": "#059669"
+  },
+  "腎不全": {
+    "capabilities": ["acute", "dx_it"],
+    "label": "腎不全",
+    "color": "#d946ef"
+  },
+  "高血圧性疾患": {
+    "capabilities": ["acute"],
+    "label": "高血圧",
+    "color": "#ea580c"
   },
   "不慮の事故": {
-    "code": "20100",
-    "short": "事故",
-    "capabilities": [
-      "acute",
-      "surgery"
-    ]
-  },
-  "大動脈瘤及び解離": {
-    "code": "09400",
-    "short": "大動脈瘤",
-    "capabilities": [
-      "surgery",
-      "acute"
-    ]
+    "capabilities": ["acute", "surgery"],
+    "label": "不慮の事故",
+    "color": "#64748b"
   }
 }
