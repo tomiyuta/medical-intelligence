@@ -1,0 +1,100 @@
+{
+  "悪性新生物": {
+    "code": "02100",
+    "short": "がん",
+    "capabilities": [
+      "oncology",
+      "imaging",
+      "surgery"
+    ]
+  },
+  "心疾患": {
+    "code": "09200",
+    "short": "心疾患",
+    "capabilities": [
+      "acute",
+      "surgery",
+      "imaging"
+    ]
+  },
+  "脳血管疾患": {
+    "code": "09300",
+    "short": "脳血管",
+    "capabilities": [
+      "acute",
+      "rehab",
+      "imaging"
+    ]
+  },
+  "老衰": {
+    "code": "18100",
+    "short": "老衰",
+    "capabilities": [
+      "homecare",
+      "rehab"
+    ]
+  },
+  "肺炎": {
+    "code": "10200",
+    "short": "肺炎",
+    "capabilities": [
+      "acute",
+      "infection"
+    ]
+  },
+  "誤嚥性肺炎": {
+    "code": "10601",
+    "short": "誤嚥性肺炎",
+    "capabilities": [
+      "rehab",
+      "homecare"
+    ]
+  },
+  "腎不全": {
+    "code": "14200",
+    "short": "腎不全",
+    "capabilities": [
+      "dx_it",
+      "acute"
+    ]
+  },
+  "アルツハイマー病": {
+    "code": "06400",
+    "short": "アルツハイマー",
+    "capabilities": [
+      "psychiatry",
+      "rehab"
+    ]
+  },
+  "血管性認知症": {
+    "code": "05100",
+    "short": "認知症",
+    "capabilities": [
+      "psychiatry",
+      "rehab"
+    ]
+  },
+  "糖尿病": {
+    "code": "04100",
+    "short": "糖尿病",
+    "capabilities": [
+      "dx_it"
+    ]
+  },
+  "不慮の事故": {
+    "code": "20100",
+    "short": "事故",
+    "capabilities": [
+      "acute",
+      "surgery"
+    ]
+  },
+  "大動脈瘤及び解離": {
+    "code": "09400",
+    "short": "大動脈瘤",
+    "capabilities": [
+      "surgery",
+      "acute"
+    ]
+  }
+}

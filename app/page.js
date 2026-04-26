@@ -63,6 +63,7 @@ export default function Home() {
   const [kijunExpanded, setKijunExpanded] = useState(null);
   const [futureDemo, setFutureDemo] = useState(null);
   const [futureYear, setFutureYear] = useState('2025');
+  const [vitalStats, setVitalStats] = useState(null);
 
   useEffect(() => {
     Promise.all([
@@ -86,6 +87,7 @@ export default function Home() {
     fetch('/api/ndb/diagnostics').then(r=>r.json()).then(d=>setNdbDiag(d));
     fetch('/api/ndb/health-checkup').then(r=>r.json()).then(d=>setNdbHc(d));
     fetch('/api/future-demographics').then(r=>r.json()).then(d=>setFutureDemo(d));
+    fetch('/api/vital-statistics').then(r=>r.json()).then(d=>setVitalStats(d));
     fetch('/api/facility-standards?summary=true').then(r=>r.json()).then(d=>setKijunSummary(d));
     fetch('/api/facility-standards?prefecture='+encodeURIComponent('東京都')).then(r=>r.json()).then(d=>setKijunData(d.data||[]));
   }, []);
@@ -151,13 +153,13 @@ export default function Home() {
       <main style={{flex:1,padding:mob?'16px 16px 80px':'28px 32px',maxWidth:1100,overflow:'auto'}}>
 
         {/* ═══ MAP VIEW ═══ */}
-        {view==='map' && <MapView mob={mob} prefs={prefs} metric={metric} setMetric={setMetric} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} setSelectedPref={setSelectedPref} setView={setView} />}
+        {view==='map' && <MapView mob={mob} prefs={prefs} metric={metric} setMetric={setMetric} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} setSelectedPref={setSelectedPref} setView={setView} vitalStats={vitalStats} />}
 
         {/* ═══ MUNI VIEW ═══ */}
         {view==='muni' && <MuniView mob={mob} areaDemoData={areaDemoData} demoPref={demoPref} setDemoPref={setDemoPref} demoArea={demoArea} setDemoArea={setDemoArea} demoPrefList={demoPrefList} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} futureDemo={futureDemo} futureYear={futureYear} setFutureYear={setFutureYear} />}
 
         {/* ═══ AREA VIEW ═══ */}
-        {view==='area' && <AreaView mob={mob} areaData={areaData} areaPref={areaPref} setAreaPref={setAreaPref} areaPrefList={areaPrefList} />}
+        {view==='area' && <AreaView mob={mob} areaData={areaData} areaPref={areaPref} setAreaPref={setAreaPref} areaPrefList={areaPrefList} vitalStats={vitalStats} />}
 
         {/* ═══ SCORING VIEW ═══ */}
         {view==='score' && <ScoringView mob={mob} tiers={tiers} topFac={topFac} facSearch={facSearch} setFacSearch={setFacSearch} searchResults={searchResults} doSearch={doSearch} />}

@@ -1,8 +1,22 @@
 'use client';
+import { useState } from 'react';
 import { fmt, TC, downloadCSV } from '../shared';
 import { generateScoringPDF } from '../pdfExport';
 
+const DISEASE_FILTERS = [
+  { id: 'all', label: '全施設', caps: [] },
+  { id: 'cancer', label: 'がん関連', caps: ['oncology'], color: '#7c3aed' },
+  { id: 'heart', label: '循環器', caps: ['acute', 'surgery'], color: '#dc2626' },
+  { id: 'stroke', label: '脳血管', caps: ['acute', 'rehab'], color: '#2563eb' },
+];
+
 export default function ScoringView({ mob, tiers, topFac, facSearch, setFacSearch, searchResults, doSearch }) {
+  const [diseaseFilter, setDiseaseFilter] = useState('all');
+  const activeFilter = DISEASE_FILTERS.find(f => f.id === diseaseFilter);
+  const filteredFac = diseaseFilter === 'all' ? topFac : topFac.filter(f => {
+    if (!f.cap) return false;
+    return activeFilter.caps.every(c => (f.cap[c] || 0) > 0);
+  });
   return <>
   <div style={{marginBottom:24}}>
     <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:4}}>Priority Scoring</div>
@@ -18,6 +32,17 @@ export default function ScoringView({ mob, tiers, topFac, facSearch, setFacSearc
         </div>
         <div style={{fontSize:22,fontWeight:700}}>{fmt(t.count)}</div>
       </div>))}
+  </div>
+  <div style={{display:'flex',gap:4,marginBottom:16,flexWrap:'wrap',alignItems:'center'}}>
+    <span style={{fontSize:11,color:'#94a3b8',marginRight:4}}>疾病フィルタ:</span>
+    {DISEASE_FILTERS.map(df=>(
+      <button key={df.id} onClick={()=>setDiseaseFilter(df.id)} style={{
+        padding:'4px 12px',borderRadius:16,border:diseaseFilter===df.id?`2px solid ${df.color||'#2563eb'}`:'1px solid #e2e8f0',
+        background:diseaseFilter===df.id?`${df.color||'#2563eb'}10`:'#fff',
+        color:diseaseFilter===df.id?(df.color||'#2563eb'):'#94a3b8',fontSize:11,fontWeight:diseaseFilter===df.id?600:400,cursor:'pointer',
+      }}>{df.label}</button>
+    ))}
+    {diseaseFilter !== 'all' && <span style={{fontSize:11,color:'#64748b',marginLeft:8}}>{filteredFac.length}施設 (capability該当)</span>}
   </div>
   <div style={{display:'flex',gap:8,marginBottom:20}}>
     <input value={facSearch} onChange={e=>setFacSearch(e.target.value)} onKeyDown={e=>e.key==='Enter'&&doSearch()} placeholder="施設名で検索（例: 東大, 慶應, 藤田）" style={{flex:1,padding:'10px 16px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:14,outline:'none'}}/>
@@ -57,13 +82,13 @@ export default function ScoringView({ mob, tiers, topFac, facSearch, setFacSearc
       </div>))}
   </div>}
   <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden',overflowX:'auto'}}>
-    <div style={{padding:'16px 20px',borderBottom:'1px solid #f0f0f0',fontSize:16,fontWeight:600}}>Tier S 施設一覧</div>
+    <div style={{padding:'16px 20px',borderBottom:'1px solid #f0f0f0',fontSize:16,fontWeight:600}}>{diseaseFilter==='all'?'Tier S 施設一覧':`${activeFilter.label} — ${filteredFac.length}施設`}</div>
     <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
       <thead><tr style={{background:'#fafbfc'}}>
         {(mob?['#','Score','施設名']:['#','Score','施設名','都道府県','病床','症例','信頼度','推奨理由']).map((h,i)=>(
           <th key={i} style={{padding:'10px 12px',fontSize:11,fontWeight:600,color:'#94a3b8',textAlign:i<3?'left':'right',borderBottom:'1px solid #f1f5f9'}}>{h}</th>))}
       </tr></thead>
-      <tbody>{topFac.map((f,i)=>{
+      <tbody>{filteredFac.map((f,i)=>{
         const confColor = f.confidence==='High'?'#059669':f.confidence==='Medium'?'#f59e0b':'#94a3b8';
         return (
         <tr key={i} style={{borderBottom:'1px solid #f8f9fa'}} onMouseEnter={e=>e.currentTarget.style.background='#f8faff'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>

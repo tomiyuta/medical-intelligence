@@ -2,7 +2,9 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import { fmt, Tip, sortPrefs } from '../shared';
 
-export default function AreaView({ mob, areaData, areaPref, setAreaPref, areaPrefList }) {
+export default function AreaView({ mob, areaData, areaPref, setAreaPref, areaPrefList, vitalStats }) {
+  const vp = vitalStats?.prefectures?.find(p => p.pref === areaPref);
+  const causes = vp?.causes || [];
   return <>
   <div style={{marginBottom:24,display:'flex',flexDirection:mob?'column':'row',justifyContent:'space-between',alignItems:mob?'flex-start':'flex-end',gap:12}}>
     <div>
@@ -50,5 +52,35 @@ export default function AreaView({ mob, areaData, areaPref, setAreaPref, areaPre
     </table>
     <div style={{padding:'12px 16px',fontSize:11,color:'#94a3b8',borderTop:'1px solid #f1f5f9'}}>出典: 厚労省 病床機能報告（令和元年度）全国339二次医療圏対応</div>
   </div>
+
+  {/* ═══ DEATH CAUSE STRUCTURE ═══ */}
+  {causes.length > 0 && <>
+    <div style={{background:'#fff',borderRadius:14,padding:'20px 24px',border:'1px solid #f0f0f0',marginTop:20}}>
+      <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:16}}>
+        <div>
+          <div style={{fontSize:14,fontWeight:600}}>死因構造 — {areaPref}</div>
+          <div style={{fontSize:11,color:'#94a3b8',marginTop:2}}>厚労省人口動態統計 2024年確定数 ｜ 死亡者計 {fmt(vp.total_deaths)}人</div>
+        </div>
+      </div>
+      <ResponsiveContainer width="100%" height={Math.max(250, causes.length * 28)}>
+        <BarChart data={causes} layout="vertical" margin={{left:10}}>
+          <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false}/>
+          <XAxis type="number" tick={{fontSize:10,fill:'#94a3b8'}} axisLine={false} tickLine={false}/>
+          <YAxis type="category" dataKey="short" tick={{fontSize:11,fill:'#475569'}} axisLine={false} tickLine={false} width={90}/>
+          <Tooltip content={<Tip/>}/>
+          <Bar dataKey="deaths" name="死亡数" fill="#7c3aed" radius={[0,4,4,0]} barSize={16}/>
+        </BarChart>
+      </ResponsiveContainer>
+      <div style={{display:'flex',flexWrap:'wrap',gap:6,marginTop:12}}>
+        {causes.slice(0,5).map((c,i)=>(
+          <div key={i} style={{display:'flex',alignItems:'center',gap:6,padding:'4px 10px',background:'#f5f3ff',borderRadius:16,fontSize:11}}>
+            <span style={{fontWeight:600,color:'#7c3aed'}}>{c.short}</span>
+            <span style={{color:'#64748b'}}>{fmt(c.deaths)}人</span>
+            <span style={{color:'#94a3b8'}}>({(c.deaths/vp.total_deaths*100).toFixed(1)}%)</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </>}
   </>;
 }
