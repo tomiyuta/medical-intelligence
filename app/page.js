@@ -62,7 +62,7 @@ export default function Home() {
   const [kijunSort, setKijunSort] = useState('std_count');
   const [kijunExpanded, setKijunExpanded] = useState(null);
   const [futureDemo, setFutureDemo] = useState(null);
-  const [futureYear, setFutureYear] = useState('2020');
+  const [futureYear, setFutureYear] = useState('2025');
 
   useEffect(() => {
     Promise.all([

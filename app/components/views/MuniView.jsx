@@ -18,9 +18,9 @@ export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, dem
   const r65=tPop?(t65/tPop*100).toFixed(1):'0';
 
   // Determine if using future projection
-  const isFuture = futureYear && futureYear !== '2020';
-  const yearLabel = isFuture ? `${futureYear}年推計` : '現在';
-  const YEAR_OPTIONS = ['2020','2025','2030','2035','2040','2045','2050'];
+  const isFuture = futureYear && futureYear !== '2025';
+  const yearLabel = isFuture ? `${futureYear}年推計` : '現在(2025)';
+  const YEAR_OPTIONS = ['2025','2030','2035','2040','2045','2050'];
 
   return <>
 
@@ -82,7 +82,7 @@ export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, dem
                     padding:'3px 10px',borderRadius:14,border:futureYear===y?'2px solid #2563EB':'1px solid #e2e8f0',
                     background:futureYear===y?'#eff6ff':'#fff',color:futureYear===y?'#2563EB':'#94a3b8',
                     fontSize:11,fontWeight:futureYear===y?700:400,cursor:'pointer',
-                  }}>{y==='2020'?'現在':y}</button>
+                  }}>{y==='2025'?'現在(2025)':y}</button>
                 ))}
                 {isFuture && <span style={{fontSize:10,color:'#f59e0b',marginLeft:6}}>※社人研 令和5年推計</span>}
               </div>
@@ -184,7 +184,7 @@ export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, dem
                   <td style={{padding:'9px 10px',textAlign:'right',fontVariantNumeric:'tabular-nums'}}>{fmt(m.hh)}</td>
                 </tr>))}</tbody>
             </table>
-            <div style={{padding:'10px 12px',fontSize:11,color:'#94a3b8',borderTop:'1px solid #f1f5f9'}}>出典: e-Stat 社会・人口統計体系（人口: 2020年国勢調査、出生・死亡: 2022年人口動態統計）{isFuture && ' / 将来推計: 社人研 令和5年推計'}</div>
+            <div style={{padding:'10px 12px',fontSize:11,color:'#94a3b8',borderTop:'1px solid #f1f5f9'}}>出典: 住民基本台帳人口（2025年1月1日現在）/ 出生・死亡: 住基に基づく令和6年中人口動態{isFuture && ' / 将来推計: 社人研 令和5年推計（2020年国勢調査ベース）'}</div>
           </div>
 
   </>;
