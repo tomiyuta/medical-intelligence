@@ -1,7 +1,7 @@
 'use client';
 import { fmt, sortPrefs } from '../shared';
 
-export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, demoArea, setDemoArea, demoPrefList, japanMap, hovPref, setHovPref, tooltipPos, setTooltipPos }) {
+export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, demoArea, setDemoArea, demoPrefList, japanMap, hovPref, setHovPref, tooltipPos, setTooltipPos, futureDemo, futureYear, setFutureYear }) {
   const areas = areaDemoData.filter(a=>a.pref===demoPref);
   const areaNames = areas.map(a=>a.area);
   const selArea = areas.find(a=>a.area===demoArea) || areas[0];
@@ -17,29 +17,82 @@ export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, dem
   const rW=tPop?(tW/tPop*100).toFixed(1):'0';
   const r65=tPop?(t65/tPop*100).toFixed(1):'0';
 
+  // Determine if using future projection
+  const isFuture = futureYear && futureYear !== '2020';
+  const yearLabel = isFuture ? `${futureYear}年推計` : '現在';
+  const YEAR_OPTIONS = ['2020','2025','2030','2035','2040','2045','2050'];
+
   return <>
 
-          {/* Aging rate map — full viewport */}
+          {/* Aging rate map — full viewport with year selector */}
           {(()=>{
-            const prefAging={};
-            areaDemoData.forEach(d=>{let pop=0,p65=0;(d.munis||[]).forEach(m=>{pop+=m.pop||0;p65+=m.p65||0;});if(pop>0)prefAging[d.pref]=(prefAging[d.pref]||{pop:0,p65:0});if(prefAging[d.pref]){prefAging[d.pref].pop+=pop;prefAging[d.pref].p65+=p65;}});
-            const agingRates={};Object.entries(prefAging).forEach(([p,s])=>{agingRates[p]=s.pop>0?(s.p65/s.pop*100):0;});
-            const vals=Object.values(agingRates).filter(v=>v>0);
-            const minA=Math.min(...vals)||20,maxA=Math.max(...vals)||40;
-            const agingColor=v=>{if(!v)return '#f5f5f5';const r=(v-minA)/(maxA-minA);return r>.8?'#b91c1c':r>.6?'#dc2626':r>.4?'#ea580c':r>.2?'#f59e0b':'#fef3c7';};
-            const selRate=agingRates[demoPref]||0;
-            const rankList=Object.entries(agingRates).sort((a,b)=>b[1]-a[1]);
-            const selRank=rankList.findIndex(([p])=>p===demoPref)+1;
-            const totalPop47=Object.values(prefAging).reduce((s,v)=>s+v.pop,0);
-            const total65_47=Object.values(prefAging).reduce((s,v)=>s+v.p65,0);
-            const natAvg=totalPop47>0?(total65_47/totalPop47*100):0;
-            return japanMap && vals.length>0 ? (
+            // Compute aging rates: current from areaDemoData, future from futureDemo
+            let agingRates = {};
+            let prefPops = {};
+            if (isFuture && futureDemo?.prefectures) {
+              futureDemo.prefectures.forEach(p => {
+                if (p.aging_rate_65?.[futureYear]) agingRates[p.pref] = p.aging_rate_65[futureYear];
+                if (p.total_pop?.[futureYear]) prefPops[p.pref] = p.total_pop[futureYear];
+              });
+            } else {
+              const prefAging = {};
+              areaDemoData.forEach(d => {
+                let pop=0, p65=0;
+                (d.munis||[]).forEach(m => { pop += m.pop||0; p65 += m.p65||0; });
+                if (!prefAging[d.pref]) prefAging[d.pref] = {pop:0, p65:0};
+                prefAging[d.pref].pop += pop;
+                prefAging[d.pref].p65 += p65;
+              });
+              Object.entries(prefAging).forEach(([p, s]) => {
+                agingRates[p] = s.pop > 0 ? (s.p65 / s.pop * 100) : 0;
+                prefPops[p] = s.pop;
+              });
+            }
+
+            const vals = Object.values(agingRates).filter(v => v > 0);
+            const minA = Math.min(...vals) || 20, maxA = Math.max(...vals) || 40;
+            const agingColor = v => { if (!v) return '#f5f5f5'; const r = (v - minA) / (maxA - minA); return r > .8 ? '#b91c1c' : r > .6 ? '#dc2626' : r > .4 ? '#ea580c' : r > .2 ? '#f59e0b' : '#fef3c7'; };
+            const selRate = agingRates[demoPref] || 0;
+            const rankList = Object.entries(agingRates).sort((a, b) => b[1] - a[1]);
+            const selRank = rankList.findIndex(([p]) => p === demoPref) + 1;
+            const totalPop47 = Object.values(prefPops).reduce((s, v) => s + v, 0);
+            const natAvg = vals.length > 0 ? vals.reduce((s, v) => s + v, 0) / vals.length : 0;
+
+            // Get current rate for delta display
+            let currentRate = 0;
+            if (isFuture) {
+              const pa = {};
+              areaDemoData.forEach(d => {
+                let pop=0, p65=0;
+                (d.munis||[]).forEach(m => { pop += m.pop||0; p65 += m.p65||0; });
+                if (!pa[d.pref]) pa[d.pref] = {pop:0, p65:0};
+                pa[d.pref].pop += pop; pa[d.pref].p65 += p65;
+              });
+              currentRate = pa[demoPref]?.pop > 0 ? (pa[demoPref].p65 / pa[demoPref].pop * 100) : 0;
+            }
+            const delta = isFuture ? selRate - currentRate : 0;
+
+            return japanMap && vals.length > 0 ? (
             <div style={{background:'#fff',borderRadius:14,padding:mob?'8px 8px 4px':'10px 16px 6px',border:'1px solid #f0f0f0',position:'relative',minHeight:mob?'calc(100vh - 170px)':'calc(100vh - 140px)',boxShadow:'0 1px 3px rgba(0,0,0,0.04)',display:'flex',flexDirection:'column'}}>
+              {/* Year selector */}
+              <div style={{display:'flex',gap:3,marginBottom:6,flexWrap:'wrap',alignItems:'center'}}>
+                <span style={{fontSize:11,color:'#94a3b8',marginRight:4}}>時点:</span>
+                {YEAR_OPTIONS.map(y => (
+                  <button key={y} onClick={()=>setFutureYear(y)} style={{
+                    padding:'3px 10px',borderRadius:14,border:futureYear===y?'2px solid #2563EB':'1px solid #e2e8f0',
+                    background:futureYear===y?'#eff6ff':'#fff',color:futureYear===y?'#2563EB':'#94a3b8',
+                    fontSize:11,fontWeight:futureYear===y?700:400,cursor:'pointer',
+                  }}>{y==='2020'?'現在':y}</button>
+                ))}
+                {isFuture && <span style={{fontSize:10,color:'#f59e0b',marginLeft:6}}>※社人研 令和5年推計</span>}
+              </div>
+
               <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',flexShrink:0}}>
                 <div style={{display:'flex',alignItems:'baseline',gap:10,flexWrap:'wrap'}}>
                   <span style={{fontSize:mob?26:32,fontWeight:700,color:'#b91c1c'}}>{selRate.toFixed(1)}%</span>
+                  {isFuture && delta !== 0 && <span style={{fontSize:14,fontWeight:700,color:delta>0?'#dc2626':'#059669'}}>{delta>0?'↑':'↓'}{Math.abs(delta).toFixed(1)}pt</span>}
                   <span style={{fontSize:14,fontWeight:600,color:'#1e293b'}}>{demoPref}</span>
-                  <span style={{fontSize:12,color:'#94a3b8'}}>({selRank}/47位 | 全国 {natAvg.toFixed(1)}%)</span>
+                  <span style={{fontSize:12,color:'#94a3b8'}}>({selRank}/47位 | 全国平均 {natAvg.toFixed(1)}%)</span>
                 </div>
                 <div style={{display:'flex',gap:3,alignItems:'center',fontSize:10,color:'#94a3b8',flexShrink:0}}>
                   <span>{minA.toFixed(0)}%</span>
@@ -47,6 +100,7 @@ export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, dem
                   <span>{maxA.toFixed(0)}%</span>
                 </div>
               </div>
+
               <svg viewBox="-5 -5 448 526" style={{width:'100%',flex:1,minHeight:0}} preserveAspectRatio="xMidYMid meet">
                 {japanMap.prefs.map(pf=>{
                   const rate=agingRates[pf.ja]||0;
@@ -63,10 +117,10 @@ export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, dem
                 })}
               </svg>
               {hovPref&&agingRates[hovPref]&&(
-                <div style={{position:'absolute',left:Math.min(tooltipPos.x,mob?200:400),top:tooltipPos.y+(mob?90:100),background:'#1e293b',color:'#fff',padding:'10px 16px',borderRadius:8,fontSize:12,pointerEvents:'none',zIndex:10,boxShadow:'0 4px 12px rgba(0,0,0,0.15)',whiteSpace:'nowrap'}}>
-                  <div style={{fontWeight:700,marginBottom:3,fontSize:13}}>{hovPref}</div>
+                <div style={{position:'absolute',left:Math.min(tooltipPos.x,mob?200:400),top:tooltipPos.y+(mob?90:120),background:'#1e293b',color:'#fff',padding:'10px 16px',borderRadius:8,fontSize:12,pointerEvents:'none',zIndex:10,boxShadow:'0 4px 12px rgba(0,0,0,0.15)',whiteSpace:'nowrap'}}>
+                  <div style={{fontWeight:700,marginBottom:3,fontSize:13}}>{hovPref} {isFuture?`(${futureYear}年推計)`:''}</div>
                   <div>高齢化率: <span style={{color:'#fbbf24',fontWeight:700,fontSize:15}}>{agingRates[hovPref].toFixed(1)}%</span></div>
-                  <div style={{fontSize:11,color:'#94a3b8',marginTop:2}}>人口: {fmt(prefAging[hovPref]?.pop||0)}</div>
+                  {prefPops[hovPref] && <div style={{fontSize:11,color:'#94a3b8',marginTop:2}}>人口: {fmt(prefPops[hovPref])}</div>}
                 </div>
               )}
             </div>
@@ -130,8 +184,8 @@ export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, dem
                   <td style={{padding:'9px 10px',textAlign:'right',fontVariantNumeric:'tabular-nums'}}>{fmt(m.hh)}</td>
                 </tr>))}</tbody>
             </table>
-            <div style={{padding:'10px 12px',fontSize:11,color:'#94a3b8',borderTop:'1px solid #f1f5f9'}}>出典: e-Stat 社会・人口統計体系 市区町村データ（人口: 2020年国勢調査、出生・死亡: 2022年人口動態統計）</div>
+            <div style={{padding:'10px 12px',fontSize:11,color:'#94a3b8',borderTop:'1px solid #f1f5f9'}}>出典: e-Stat 社会・人口統計体系（人口: 2020年国勢調査、出生・死亡: 2022年人口動態統計）{isFuture && ' / 将来推計: 社人研 令和5年推計'}</div>
           </div>
-        
+
   </>;
 }

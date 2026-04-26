@@ -8,3 +8,4 @@ docs/
 *.csv
 *.db
 data/static/facility_standards_compact.json
+data/raw_ipss/
