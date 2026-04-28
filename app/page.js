@@ -126,7 +126,7 @@ export default function Home() {
       {/* Desktop Sidebar / Mobile Bottom Nav */}
       {mob ? (
         <nav style={{position:'fixed',bottom:0,left:0,right:0,background:'#fff',borderTop:'1px solid #e2e8f0',display:'flex',zIndex:50,padding:'6px 0 env(safe-area-inset-bottom)',boxShadow:'0 -2px 8px rgba(0,0,0,0.06)',overflowX:'auto'}}>
-          {[['map','概況','M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z'],['muni','人口','M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z'],['area','医療圏','M22 12h-4l-3 9L9 3l-3 9H2'],['score','病院','M18 20V10M12 20V4M6 20v-6'],['ndb','NDB','M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'],['kijun','基準','M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'],['geomap','地図','M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z']].map(([id,l,ic])=>(
+          {[['map','概況','M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z'],['muni','人口','M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z'],['area','医療圏','M22 12h-4l-3 9L9 3l-3 9H2'],['ndb','診断書','M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'],['score','病院','M18 20V10M12 20V4M6 20v-6'],['kijun','基準','M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'],['geomap','地図','M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z']].map(([id,l,ic])=>(
             <button key={id} onClick={()=>setView(id)} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:2,padding:'6px 0',border:'none',background:'transparent',cursor:'pointer',color:view===id?'#2563EB':'#94a3b8',fontSize:10,fontWeight:view===id?700:400}}>
               <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={view===id?'#2563EB':'#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={ic}/></svg>
               {l}
@@ -144,7 +144,7 @@ export default function Home() {
         <Nav icon="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z" label="人口動態・将来推計" active={view==='muni'} onClick={()=>setView('muni')}/>
         <div style={{padding:'6px 14px 4px',fontSize:10,fontWeight:600,color:'#cbd5e1',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:8,borderTop:'1px solid #f0f0f0',paddingTop:12}}>疾患・診療</div>
         <Nav icon="M22 12h-4l-3 9L9 3l-3 9H2" label="医療圏・疾病構造" active={view==='area'} onClick={()=>setView('area')}/>
-        <Nav icon="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" label="NDB 診療動向" active={view==='ndb'} onClick={()=>setView('ndb')}/>
+        <Nav icon="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" label="医療プロファイル" active={view==='ndb'} onClick={()=>setView('ndb')}/>
         <div style={{padding:'6px 14px 4px',fontSize:10,fontWeight:600,color:'#cbd5e1',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:8,borderTop:'1px solid #f0f0f0',paddingTop:12}}>医療インフラ</div>
         <Nav icon="M18 20V10M12 20V4M6 20v-6" label="病院機能" active={view==='score'} onClick={()=>setView('score')}/>
         <Nav icon="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" label="施設基準" active={view==='kijun'} onClick={()=>setView('kijun')}/>
@@ -170,7 +170,7 @@ export default function Home() {
         {view==='score' && <ScoringView mob={mob} tiers={tiers} topFac={topFac} facSearch={facSearch} setFacSearch={setFacSearch} searchResults={searchResults} doSearch={doSearch} />}
 
         {/* ═══ NDB VIEW ═══ */}
-        {view==='ndb' && <NdbView mob={mob} ndbDiag={ndbDiag} ndbRx={ndbRx} ndbHc={ndbHc} ndbPref={ndbPref} setNdbPref={setNdbPref} setNdbRx={setNdbRx} />}
+        {view==='ndb' && <NdbView mob={mob} ndbDiag={ndbDiag} ndbRx={ndbRx} ndbHc={ndbHc} ndbPref={ndbPref} setNdbPref={setNdbPref} setNdbRx={setNdbRx} vitalStats={vitalStats} areaDemoData={areaDemoData} />}
 
         {/* ═══ FACILITY STANDARDS VIEW ═══ */}
         {view==='kijun' && <KijunView mob={mob} kijunData={kijunData} setKijunData={setKijunData} kijunSummary={kijunSummary} kijunPref={kijunPref} setKijunPref={setKijunPref} kijunPage={kijunPage} setKijunPage={setKijunPage} kijunSearch={kijunSearch} setKijunSearch={setKijunSearch} kijunSort={kijunSort} setKijunSort={setKijunSort} kijunExpanded={kijunExpanded} setKijunExpanded={setKijunExpanded} />}
