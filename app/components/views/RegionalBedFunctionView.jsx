@@ -80,6 +80,57 @@ export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegP
 
   const region = !isNational ? classifyRegion(prefShares, natShares, beds_per_75plus, nat_beds_per_75plus) : null;
 
+  // 在宅移行 補助分類 (v0) — 47県平均との比較
+  const compute47Avg = () => {
+    if (!agePyramid?.prefectures || !bedFunc?.prefectures || !ndbDiag) return null;
+    const prefs = Object.keys(agePyramid.prefectures);
+    let s75Sum = 0, s75N = 0, hcSum = 0, hcN = 0, recSum = 0, recN = 0, chrSum = 0, chrN = 0;
+    prefs.forEach(pp => {
+      const ap = agePyramid.prefectures[pp];
+      if (ap) {
+        const tot = ap.male.reduce((a,b)=>a+b,0) + ap.female.reduce((a,b)=>a+b,0);
+        const p75 = ap.male.slice(15).reduce((a,b)=>a+b,0) + ap.female.slice(15).reduce((a,b)=>a+b,0);
+        if (tot > 0) { s75Sum += p75/tot*100; s75N++; }
+        const ndbRec = ndbDiag.find(d => d.category === 'C_在宅医療' && d.prefecture === pp);
+        if (ndbRec && p75 > 0) { hcSum += ndbRec.total_claims/p75*100000; hcN++; }
+      }
+      const bd = bedFunc.prefectures[pp];
+      if (bd && bd['総床数'] > 0) {
+        recSum += bd['回復期'].beds/bd['総床数']*100; recN++;
+        chrSum += bd['慢性期'].beds/bd['総床数']*100; chrN++;
+      }
+    });
+    return {
+      share75plus_natAvg: s75N ? s75Sum/s75N : null,
+      homecarePer75_avg: hcN ? hcSum/hcN : null,
+      recoveryShare_natAvg: recN ? recSum/recN : null,
+      chronicShare_natAvg: chrN ? chrSum/chrN : null,
+    };
+  };
+
+  let homecareType = null;
+  if (!isNational && agePyramid?.prefectures?.[regPref] && prefShares) {
+    const ap = agePyramid.prefectures[regPref];
+    const tot = ap.male.reduce((a,b)=>a+b,0) + ap.female.reduce((a,b)=>a+b,0);
+    const p75 = ap.male.slice(15).reduce((a,b)=>a+b,0) + ap.female.slice(15).reduce((a,b)=>a+b,0);
+    const share75 = tot > 0 ? p75/tot*100 : null;
+    const ndbRec = ndbDiag?.find(d => d.category === 'C_在宅医療' && d.prefecture === regPref);
+    const hcPer75 = (ndbRec && p75 > 0) ? ndbRec.total_claims/p75*100000 : null;
+    const ref = compute47Avg();
+    if (ref) {
+      homecareType = classifyHomecareType({
+        share75plus: share75,
+        share75plus_natAvg: ref.share75plus_natAvg,
+        homecarePer75: hcPer75,
+        homecarePer75_avg: ref.homecarePer75_avg,
+        recoveryShare: prefShares['回復期'],
+        recoveryShare_natAvg: ref.recoveryShare_natAvg,
+        chronicShare: prefShares['慢性期'],
+        chronicShare_natAvg: ref.chronicShare_natAvg,
+      });
+    }
+  }
+
   return <>
   {/* Header */}
   <div style={{marginBottom:20}}>
