@@ -40,7 +40,10 @@
       "label": "睡眠充足",
       "question": "睡眠で休養が十分とれている（特定健診Q20）",
       "risk_label": "睡眠充足率"
-    }
+    },
+    "hypertension_med": "現在、血圧を下げる薬を使用しているか (Q1, %)",
+    "heart_disease": "医師から心臓病(狭心症・心筋梗塞等)にかかっているといわれた、または治療を受けたことがあるか (Q5, %)",
+    "ckd_history": "医師から慢性腎臓病や腎不全にかかっているといわれた、または治療(人工透析)を受けたことがあるか (Q6, %)"
   },
   "prefectures": {
     "北海道": {
@@ -51,7 +54,10 @@
       "late_dinner": 26.2,
       "drinking_daily": 26.1,
       "heavy_drinker": 18.7,
-      "sleep_ok": 67.7
+      "sleep_ok": 67.7,
+      "hypertension_med": 22.7,
+      "heart_disease": 3.8,
+      "ckd_history": 0.6
     },
     "青森県": {
       "smoking": 26.8,
@@ -61,7 +67,10 @@
       "late_dinner": 28.4,
       "drinking_daily": 29.1,
       "heavy_drinker": 21.2,
-      "sleep_ok": 68.0
+      "sleep_ok": 68.0,
+      "hypertension_med": 28.9,
+      "heart_disease": 3.7,
+      "ckd_history": 0.7
     },
     "岩手県": {
       "smoking": 24.6,
@@ -71,7 +80,10 @@
       "late_dinner": 29.6,
       "drinking_daily": 30.3,
       "heavy_drinker": 19.9,
-      "sleep_ok": 66.2
+      "sleep_ok": 66.2,
+      "hypertension_med": 26.3,
+      "heart_disease": 5.6,
+      "ckd_history": 0.5
     },
     "宮城県": {
       "smoking": 24.6,
@@ -81,7 +93,10 @@
       "late_dinner": 26.3,
       "drinking_daily": 27.9,
       "heavy_drinker": 17.4,
-      "sleep_ok": 65.8
+      "sleep_ok": 65.8,
+      "hypertension_med": 26.3,
+      "heart_disease": 4.1,
+      "ckd_history": 0.6
     },
     "秋田県": {
       "smoking": 24.4,
@@ -91,7 +106,10 @@
       "late_dinner": 23.8,
       "drinking_daily": 32.3,
       "heavy_drinker": 20.1,
-      "sleep_ok": 71.2
+      "sleep_ok": 71.2,
+      "hypertension_med": 28.7,
+      "heart_disease": 4.2,
+      "ckd_history": 0.4
     },
     "山形県": {
       "smoking": 22.7,
@@ -101,7 +119,10 @@
       "late_dinner": 21.5,
       "drinking_daily": 27.7,
       "heavy_drinker": 13.4,
-      "sleep_ok": 67.2
+      "sleep_ok": 67.2,
+      "hypertension_med": 28.2,
+      "heart_disease": 3.0,
+      "ckd_history": 0.6
     },
     "福島県": {
       "smoking": 25.0,
@@ -111,7 +132,10 @@
       "late_dinner": 25.1,
       "drinking_daily": 27.7,
       "heavy_drinker": 14.9,
-      "sleep_ok": 67.6
+      "sleep_ok": 67.6,
+      "hypertension_med": 28.0,
+      "heart_disease": 3.9,
+      "ckd_history": 0.6
     },
     "茨城県": {
       "smoking": 23.3,
@@ -121,7 +145,10 @@
       "late_dinner": 28.8,
       "drinking_daily": 25.3,
       "heavy_drinker": 15.7,
-      "sleep_ok": 66.3
+      "sleep_ok": 66.3,
+      "hypertension_med": 23.0,
+      "heart_disease": 3.3,
+      "ckd_history": 0.5
     },
     "栃木県": {
       "smoking": 23.8,
@@ -131,7 +158,10 @@
       "late_dinner": 27.0,
       "drinking_daily": 24.1,
       "heavy_drinker": 15.2,
-      "sleep_ok": 67.8
+      "sleep_ok": 67.8,
+      "hypertension_med": 23.7,
+      "heart_disease": 3.5,
+      "ckd_history": 0.6
     },
     "群馬県": {
       "smoking": 22.7,
@@ -141,7 +171,10 @@
       "late_dinner": 27.3,
       "drinking_daily": 25.1,
       "heavy_drinker": 15.3,
-      "sleep_ok": 67.8
+      "sleep_ok": 67.8,
+      "hypertension_med": 23.7,
+      "heart_disease": 3.4,
+      "ckd_history": 0.7
     },
     "埼玉県": {
       "smoking": 22.1,
@@ -151,7 +184,10 @@
       "late_dinner": 29.7,
       "drinking_daily": 26.5,
       "heavy_drinker": 14.8,
-      "sleep_ok": 65.4
+      "sleep_ok": 65.4,
+      "hypertension_med": 21.6,
+      "heart_disease": 3.0,
+      "ckd_history": 0.5
     },
     "千葉県": {
       "smoking": 21.6,
@@ -161,7 +197,10 @@
       "late_dinner": 30.1,
       "drinking_daily": 25.8,
       "heavy_drinker": 15.5,
-      "sleep_ok": 65.7
+      "sleep_ok": 65.7,
+      "hypertension_med": 21.4,
+      "heart_disease": 3.3,
+      "ckd_history": 0.6
     },
     "東京都": {
       "smoking": 19.9,
@@ -171,7 +210,10 @@
       "late_dinner": 29.0,
       "drinking_daily": 26.9,
       "heavy_drinker": 17.8,
-      "sleep_ok": 65.8
+      "sleep_ok": 65.8,
+      "hypertension_med": 18.9,
+      "heart_disease": 3.0,
+      "ckd_history": 0.6
     },
     "神奈川県": {
       "smoking": 20.8,
@@ -181,7 +223,10 @@
       "late_dinner": 29.7,
       "drinking_daily": 26.5,
       "heavy_drinker": 16.1,
-      "sleep_ok": 65.6
+      "sleep_ok": 65.6,
+      "hypertension_med": 19.1,
+      "heart_disease": 3.0,
+      "ckd_history": 0.6
     },
     "新潟県": {
       "smoking": 22.9,
@@ -191,7 +236,10 @@
       "late_dinner": 24.8,
       "drinking_daily": 31.1,
       "heavy_drinker": 15.5,
-      "sleep_ok": 67.9
+      "sleep_ok": 67.9,
+      "hypertension_med": 23.2,
+      "heart_disease": 3.3,
+      "ckd_history": 0.8
     },
     "富山県": {
       "smoking": 22.0,
@@ -201,7 +249,10 @@
       "late_dinner": 25.1,
       "drinking_daily": 28.2,
       "heavy_drinker": 13.7,
-      "sleep_ok": 58.5
+      "sleep_ok": 58.5,
+      "hypertension_med": 22.9,
+      "heart_disease": 3.4,
+      "ckd_history": 0.7
     },
     "石川県": {
       "smoking": 21.6,
@@ -211,7 +262,10 @@
       "late_dinner": 26.1,
       "drinking_daily": 25.5,
       "heavy_drinker": 14.4,
-      "sleep_ok": 66.1
+      "sleep_ok": 66.1,
+      "hypertension_med": 22.5,
+      "heart_disease": 3.0,
+      "ckd_history": 0.8
     },
     "福井県": {
       "smoking": 21.5,
@@ -221,7 +275,10 @@
       "late_dinner": 25.1,
       "drinking_daily": 25.3,
       "heavy_drinker": 14.8,
-      "sleep_ok": 64.2
+      "sleep_ok": 64.2,
+      "hypertension_med": 21.7,
+      "heart_disease": 3.1,
+      "ckd_history": 1.0
     },
     "山梨県": {
       "smoking": 23.0,
@@ -231,7 +288,10 @@
       "late_dinner": 23.7,
       "drinking_daily": 23.8,
       "heavy_drinker": 17.1,
-      "sleep_ok": 60.5
+      "sleep_ok": 60.5,
+      "hypertension_med": 24.1,
+      "heart_disease": 3.9,
+      "ckd_history": 0.6
     },
     "長野県": {
       "smoking": 21.0,
@@ -241,7 +301,10 @@
       "late_dinner": 25.8,
       "drinking_daily": 25.8,
       "heavy_drinker": 14.7,
-      "sleep_ok": 66.9
+      "sleep_ok": 66.9,
+      "hypertension_med": 22.6,
+      "heart_disease": 3.4,
+      "ckd_history": 0.6
     },
     "岐阜県": {
       "smoking": 20.7,
@@ -251,7 +314,10 @@
       "late_dinner": 22.7,
       "drinking_daily": 24.7,
       "heavy_drinker": 14.8,
-      "sleep_ok": 63.3
+      "sleep_ok": 63.3,
+      "hypertension_med": 22.1,
+      "heart_disease": 3.5,
+      "ckd_history": 0.5
     },
     "静岡県": {
       "smoking": 21.7,
@@ -261,7 +327,10 @@
       "late_dinner": 23.8,
       "drinking_daily": 22.2,
       "heavy_drinker": 16.4,
-      "sleep_ok": 64.5
+      "sleep_ok": 64.5,
+      "hypertension_med": 21.7,
+      "heart_disease": 3.4,
+      "ckd_history": 0.6
     },
     "愛知県": {
       "smoking": 20.8,
@@ -271,7 +340,10 @@
       "late_dinner": 25.5,
       "drinking_daily": 23.5,
       "heavy_drinker": 14.5,
-      "sleep_ok": 66.2
+      "sleep_ok": 66.2,
+      "hypertension_med": 20.7,
+      "heart_disease": 3.0,
+      "ckd_history": 0.5
     },
     "三重県": {
       "smoking": 21.2,
@@ -281,7 +353,10 @@
       "late_dinner": 23.8,
       "drinking_daily": 23.6,
       "heavy_drinker": 11.8,
-      "sleep_ok": 66.2
+      "sleep_ok": 66.2,
+      "hypertension_med": 23.2,
+      "heart_disease": 3.3,
+      "ckd_history": 0.6
     },
     "滋賀県": {
       "smoking": 20.0,
@@ -291,7 +366,10 @@
       "late_dinner": 27.2,
       "drinking_daily": 24.9,
       "heavy_drinker": 13.4,
-      "sleep_ok": 63.0
+      "sleep_ok": 63.0,
+      "hypertension_med": 21.4,
+      "heart_disease": 3.1,
+      "ckd_history": 0.5
     },
     "京都府": {
       "smoking": 19.9,
@@ -301,7 +379,10 @@
       "late_dinner": 27.5,
       "drinking_daily": 26.0,
       "heavy_drinker": 13.8,
-      "sleep_ok": 64.9
+      "sleep_ok": 64.9,
+      "hypertension_med": 19.7,
+      "heart_disease": 3.5,
+      "ckd_history": 0.4
     },
     "大阪府": {
       "smoking": 22.0,
@@ -311,7 +392,10 @@
       "late_dinner": 29.6,
       "drinking_daily": 27.9,
       "heavy_drinker": 17.7,
-      "sleep_ok": 61.0
+      "sleep_ok": 61.0,
+      "hypertension_med": 20.2,
+      "heart_disease": 3.2,
+      "ckd_history": 0.7
     },
     "兵庫県": {
       "smoking": 19.4,
@@ -321,7 +405,10 @@
       "late_dinner": 26.7,
       "drinking_daily": 26.5,
       "heavy_drinker": 14.8,
-      "sleep_ok": 63.5
+      "sleep_ok": 63.5,
+      "hypertension_med": 20.3,
+      "heart_disease": 3.4,
+      "ckd_history": 0.6
     },
     "奈良県": {
       "smoking": 18.7,
@@ -331,7 +418,10 @@
       "late_dinner": 25.6,
       "drinking_daily": 24.9,
       "heavy_drinker": 12.7,
-      "sleep_ok": 62.1
+      "sleep_ok": 62.1,
+      "hypertension_med": 21.7,
+      "heart_disease": 3.4,
+      "ckd_history": 0.8
     },
     "和歌山県": {
       "smoking": 21.7,
@@ -341,7 +431,10 @@
       "late_dinner": 23.5,
       "drinking_daily": 28.1,
       "heavy_drinker": 14.5,
-      "sleep_ok": 68.2
+      "sleep_ok": 68.2,
+      "hypertension_med": 25.5,
+      "heart_disease": 3.8,
+      "ckd_history": 0.7
     },
     "鳥取県": {
       "smoking": 20.7,
@@ -351,7 +444,10 @@
       "late_dinner": 24.5,
       "drinking_daily": 27.1,
       "heavy_drinker": 16.0,
-      "sleep_ok": 63.8
+      "sleep_ok": 63.8,
+      "hypertension_med": 21.5,
+      "heart_disease": 3.4,
+      "ckd_history": 0.6
     },
     "島根県": {
       "smoking": 20.1,
@@ -361,7 +457,10 @@
       "late_dinner": 24.0,
       "drinking_daily": 28.0,
       "heavy_drinker": 13.4,
-      "sleep_ok": 69.1
+      "sleep_ok": 69.1,
+      "hypertension_med": 25.0,
+      "heart_disease": 4.1,
+      "ckd_history": 0.5
     },
     "岡山県": {
       "smoking": 21.2,
@@ -371,7 +470,10 @@
       "late_dinner": 26.4,
       "drinking_daily": 25.0,
       "heavy_drinker": 14.3,
-      "sleep_ok": 65.5
+      "sleep_ok": 65.5,
+      "hypertension_med": 21.1,
+      "heart_disease": 2.9,
+      "ckd_history": 0.6
     },
     "広島県": {
       "smoking": 21.1,
@@ -381,7 +483,10 @@
       "late_dinner": 28.5,
       "drinking_daily": 29.3,
       "heavy_drinker": 13.1,
-      "sleep_ok": 61.0
+      "sleep_ok": 61.0,
+      "hypertension_med": 20.0,
+      "heart_disease": 2.8,
+      "ckd_history": 0.5
     },
     "山口県": {
       "smoking": 21.3,
@@ -391,7 +496,10 @@
       "late_dinner": 25.8,
       "drinking_daily": 27.8,
       "heavy_drinker": 13.7,
-      "sleep_ok": 66.5
+      "sleep_ok": 66.5,
+      "hypertension_med": 23.2,
+      "heart_disease": 3.9,
+      "ckd_history": 0.7
     },
     "徳島県": {
       "smoking": 19.1,
@@ -401,7 +509,10 @@
       "late_dinner": 24.6,
       "drinking_daily": 25.6,
       "heavy_drinker": 15.4,
-      "sleep_ok": 64.3
+      "sleep_ok": 64.3,
+      "hypertension_med": 24.3,
+      "heart_disease": 3.7,
+      "ckd_history": 0.8
     },
     "香川県": {
       "smoking": 19.8,
@@ -411,7 +522,10 @@
       "late_dinner": 25.0,
       "drinking_daily": 24.1,
       "heavy_drinker": 13.2,
-      "sleep_ok": 66.0
+      "sleep_ok": 66.0,
+      "hypertension_med": 23.1,
+      "heart_disease": 3.6,
+      "ckd_history": 0.9
     },
     "愛媛県": {
       "smoking": 20.5,
@@ -421,7 +535,10 @@
       "late_dinner": 25.7,
       "drinking_daily": 23.2,
       "heavy_drinker": 15.9,
-      "sleep_ok": 63.1
+      "sleep_ok": 63.1,
+      "hypertension_med": 22.1,
+      "heart_disease": 4.7,
+      "ckd_history": 0.8
     },
     "高知県": {
       "smoking": 22.7,
@@ -431,7 +548,10 @@
       "late_dinner": 25.8,
       "drinking_daily": 30.2,
       "heavy_drinker": 20.4,
-      "sleep_ok": 66.1
+      "sleep_ok": 66.1,
+      "hypertension_med": 24.0,
+      "heart_disease": 3.0,
+      "ckd_history": 0.6
     },
     "福岡県": {
       "smoking": 24.0,
@@ -441,7 +561,10 @@
       "late_dinner": 28.0,
       "drinking_daily": 27.5,
       "heavy_drinker": 15.5,
-      "sleep_ok": 66.8
+      "sleep_ok": 66.8,
+      "hypertension_med": 21.9,
+      "heart_disease": 3.8,
+      "ckd_history": 0.7
     },
     "佐賀県": {
       "smoking": 24.2,
@@ -451,7 +574,10 @@
       "late_dinner": 25.1,
       "drinking_daily": 27.1,
       "heavy_drinker": 14.6,
-      "sleep_ok": 66.6
+      "sleep_ok": 66.6,
+      "hypertension_med": 24.4,
+      "heart_disease": 2.3,
+      "ckd_history": 0.6
     },
     "長崎県": {
       "smoking": 22.2,
@@ -461,7 +587,10 @@
       "late_dinner": 22.7,
       "drinking_daily": 25.8,
       "heavy_drinker": 12.1,
-      "sleep_ok": 69.9
+      "sleep_ok": 69.9,
+      "hypertension_med": 28.1,
+      "heart_disease": 4.3,
+      "ckd_history": 0.6
     },
     "熊本県": {
       "smoking": 23.0,
@@ -471,7 +600,10 @@
       "late_dinner": 25.6,
       "drinking_daily": 27.5,
       "heavy_drinker": 12.1,
-      "sleep_ok": 67.0
+      "sleep_ok": 67.0,
+      "hypertension_med": 25.7,
+      "heart_disease": 3.7,
+      "ckd_history": 0.5
     },
     "大分県": {
       "smoking": 22.5,
@@ -481,7 +613,10 @@
       "late_dinner": 24.5,
       "drinking_daily": 26.7,
       "heavy_drinker": 12.9,
-      "sleep_ok": 70.1
+      "sleep_ok": 70.1,
+      "hypertension_med": 24.4,
+      "heart_disease": 4.1,
+      "ckd_history": 0.9
     },
     "宮崎県": {
       "smoking": 23.7,
@@ -491,7 +626,10 @@
       "late_dinner": 26.1,
       "drinking_daily": 29.8,
       "heavy_drinker": 14.4,
-      "sleep_ok": 68.8
+      "sleep_ok": 68.8,
+      "hypertension_med": 27.4,
+      "heart_disease": 4.0,
+      "ckd_history": 0.7
     },
     "鹿児島県": {
       "smoking": 21.1,
@@ -501,7 +639,10 @@
       "late_dinner": 27.3,
       "drinking_daily": 27.6,
       "heavy_drinker": 11.0,
-      "sleep_ok": 70.3
+      "sleep_ok": 70.3,
+      "hypertension_med": 29.5,
+      "heart_disease": 4.3,
+      "ckd_history": 1.1
     },
     "沖縄県": {
       "smoking": 19.6,
@@ -511,7 +652,10 @@
       "late_dinner": 29.6,
       "drinking_daily": 21.1,
       "heavy_drinker": 22.3,
-      "sleep_ok": 63.3
+      "sleep_ok": 63.3,
+      "hypertension_med": 27.1,
+      "heart_disease": 4.9,
+      "ckd_history": 0.6
     },
     "都道府県判別不可": {
       "smoking": 21.9,
@@ -521,7 +665,8 @@
       "late_dinner": 29.8,
       "drinking_daily": 23.5,
       "heavy_drinker": 17.6,
-      "sleep_ok": 65.9
+      "sleep_ok": 65.9,
+      "ckd_history": 0.5
     }
   }
 }
