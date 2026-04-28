@@ -1,6 +1,21 @@
-# priority_score Methodology — 内製複合指標の透明性開示
+# priority_score Observed Methodology — 観測ベース逆算分析
 
-**作成日**: 2026-04-28 **対象**: `data/static/top_facilities.json` の `priority_score` および `tier` フィールド **目的**: peer review に向けた内製スコアの透明性確保 **ステータス**: **暫定 (Phase 2)** — 完全な式・重みは内部実装にあり、本書はデータからの逆算 + 既知の構成要素を統合
+**作成日**: 2026-04-28 **対象**: `data/static/top_facilities.json` の `priority_score` および `tier` フィールド **目的**: peer review に向けた内製スコアの透明性確保 **ステータス**: **暫定 (Phase 2)** — ETL内部の正式な式・重みは未開示
+
+---
+
+## 🚨 本ドキュメントの性質 — 必ず読むこと
+
+> 本ドキュメントは `top_facilities.json` の **観測値から priority_score の性質を逆算・分析した** ものであり、
+> ETL内部の正確な **算出式・重みを保証するものではありません**。
+>
+> - ❌ 内部実装の式の写しではない
+> - ❌ 「9因子」と呼称される因子の正確な定義は未確認
+> - ❌ 重み係数 (w1, w2, ...) の値は不明
+> - ✅ 既存データから観測される相関・閾値・分布の記述
+> - ✅ peer reviewer に対する暫定的な透明性開示
+>
+> 内部実装からの正式仕様書化は Phase 2 課題。本書は実装変更により陳腐化する可能性があります。
 
 ---
 
@@ -182,4 +197,15 @@ for fld in ['total_beds', 'annual_cases', 'avg_los', 'case_growth_pct', 'is_dpc_
 
 **End of methodology**
 
-> 本書は priority_score を完全に開示するものではなく、データから逆算した暫定的な透明性ノートです。 Phase 2 で内部実装からの正式な仕様書化を予定。 本書の数値・解釈は実装変更により変動する可能性があります。
+---
+
+## 改訂履歴
+
+| 日付 | 変更 |
+|---|---|
+| 2026-04-28 | 初版作成 (top_facilities.json 観測ベース逆算分析) |
+| 2026-04-28 | 冒頭 disclaimer 強化 (peer review feedback反映) |
+
+> 本書は priority_score の **観測ベース逆算分析** であり、内部実装の正式仕様書ではありません。
+> Phase 2 で内部実装からの **正式な spec exporter** を作成予定。
+> 本書の数値・解釈は実装変更により陳腐化する可能性があります。

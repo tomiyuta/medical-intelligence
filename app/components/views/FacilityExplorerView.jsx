@@ -321,9 +321,12 @@ export default function FacilityExplorerView({
   {/* ==== Tab 3: スコア説明 ==== */}
   {tab === 'score' && (
     <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'24px 28px'}}>
-      <h3 style={{fontSize:16,fontWeight:700,margin:'0 0 12px',color:'#1e293b'}}>priority_score / Tier の透明性ノート</h3>
-      <div style={{padding:'10px 14px',background:'#fef3c7',borderLeft:'4px solid #f59e0b',borderRadius:6,fontSize:12,color:'#92400e',marginBottom:16}}>
+      <h3 style={{fontSize:16,fontWeight:700,margin:'0 0 12px',color:'#1e293b'}}>priority_score / Tier の透明性ノート (観測ベース分析)</h3>
+      <div style={{padding:'10px 14px',background:'#fef3c7',borderLeft:'4px solid #f59e0b',borderRadius:6,fontSize:12,color:'#92400e',marginBottom:12}}>
         <b>⚠️ 重要</b>: priority_score / Tier は本サイト独自の<b>内製複合指標</b>であり、厚労省・公的機関による公式ランキングではありません。施設探索の補助として参照してください。
+      </div>
+      <div style={{padding:'10px 14px',background:'#fef2f2',borderLeft:'4px solid #dc2626',borderRadius:6,fontSize:11,color:'#991b1b',marginBottom:16}}>
+        <b>📌 本ノートの性質</b>: 以下は <code>top_facilities.json</code> の<b>観測値から逆算した分析</b>であり、ETL内部の正確な算出式・重みではありません。9因子の正式な定義・重み係数は未確認。Phase 2 で内部実装からの正式 spec exporter を作成予定。
       </div>
       <div style={{fontSize:13,color:'#475569',lineHeight:1.8}}>
         <p><b>現在 priority_score に含まれる(と認識している)要素</b>:</p>
@@ -349,7 +352,7 @@ export default function FacilityExplorerView({
           <li>capability スコア計算ロジック (届出件数→数値の変換式)</li>
         </ul>
         <p style={{fontSize:12,color:'#475569',marginTop:16,padding:'10px 14px',background:'#eff6ff',borderRadius:6,borderLeft:'3px solid #2563EB'}}>
-          📄 詳細な逆算分析・相関係数・偏向リスクは <a href="https://github.com/tomiyuta/medical-intelligence/blob/main/docs/priority_score_methodology.md" target="_blank" rel="noopener" style={{color:'#2563EB',fontWeight:600,textDecoration:'underline'}}><code>docs/priority_score_methodology.md</code></a> を参照。<br/>
+          📄 観測ベース逆算分析の詳細 (相関係数・偏向リスク・Tier境界実測値) は <a href="https://github.com/tomiyuta/medical-intelligence/blob/main/docs/priority_score_methodology.md" target="_blank" rel="noopener" style={{color:'#2563EB',fontWeight:600,textDecoration:'underline'}}><code>docs/priority_score_methodology.md</code></a> を参照。<br/>
           <span style={{fontSize:11,color:'#64748b'}}>主成分分析: <b>annual_cases (r=0.877)</b> + <b>total_beds (r=0.804)</b> で大半が説明される = 実質的に「規模スコア」。専門特化型小病院が過小評価される傾向あり。</span>
         </p>
       </div>
