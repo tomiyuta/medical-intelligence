@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import { fmt, sortPrefs } from '../shared';
 
+import DomainSupplyDemandBridge from './DomainSupplyDemandBridge';
 const CAT_LABELS = {'A_初再診料':'外来受診','B_医学管理等':'慢性疾患管理','C_在宅医療':'在宅医療'};
 const RISK_META = {
   'ヘモグロビン': {unit:'g/dL', note:'低値=貧血リスク', icon:'🩸'},
@@ -65,7 +66,7 @@ const GAP_TEMPLATES = [
     note:'X軸は睡眠で休養がとれている人の割合（高=低リスク）。睡眠不足と循環器の関連は確立。'},
 ];
 
-export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ, agePyramid, futureDemo, patientSurvey }) {
+export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ, agePyramid, futureDemo, patientSurvey, bedFunc }) {
   const diagByPref = ndbDiag.filter(d=>d.prefecture===ndbPref);
   const hcPref = ndbHc.filter(d=>d.pref===ndbPref);
   const vp = vitalStats?.prefectures?.find(p=>p.pref===ndbPref);
@@ -616,6 +617,17 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
       </div>
     </div>);
   })()}
+
+  {/* ═══ Layer 6: SUPPLY-DEMAND BRIDGE v0 (疾患別 需要・供給・結果サマリー) ═══ */}
+  <DomainSupplyDemandBridge
+    mob={mob}
+    ndbPref={ndbPref}
+    patientSurvey={patientSurvey}
+    ndbQ={ndbQ}
+    vitalStats={vitalStats}
+    bedFunc={bedFunc}
+  />
+
   <div style={{padding:'10px 0',fontSize:11,color:'#94a3b8',marginTop:8,lineHeight:1.8}}>
     出典: 厚生労働省 第10回NDBオープンデータ（令和5年度レセプト・令和4年度特定健診）<br/>
     厚労省 人口動態統計 2024年確定数 / 住民基本台帳 2025年1月1日<br/>
