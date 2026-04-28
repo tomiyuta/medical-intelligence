@@ -1,0 +1,333 @@
+{
+  "methodology": "kijun_shards 47都道府県走査。cap.homecare/cap.rehab>0 の施設数を集計、75歳以上10万人あたりに補正。",
+  "reference_avg": {
+    "homecare_per75_avg": 332.55150750263516,
+    "rehab_per75_avg": 74.9924854202559
+  },
+  "distributions": {
+    "homecare_facilities": {
+      "label": "cap.homecare 施設数",
+      "n": 47,
+      "min": 374,
+      "max": 7328,
+      "mean": 1460.1063829787233,
+      "median": 850,
+      "p25": 541,
+      "p75": 1832
+    },
+    "rehab_facilities": {
+      "label": "cap.rehab 施設数",
+      "n": 47,
+      "min": 75,
+      "max": 1288,
+      "mean": 310.4255319148936,
+      "median": 200,
+      "p25": 139,
+      "p75": 366
+    },
+    "homecare_per75": {
+      "label": "cap.homecare/75+10万対",
+      "n": 47,
+      "min": 174.4044859482968,
+      "max": 901.36476426799,
+      "mean": 332.55150750263516,
+      "median": 312.4363899542169,
+      "p25": 244.68324242760917,
+      "p75": 371.2508070669719
+    },
+    "rehab_per75": {
+      "label": "cap.rehab/75+10万対",
+      "n": 47,
+      "min": 41.273436516924626,
+      "max": 135.75264828936827,
+      "mean": 74.99248542025589,
+      "median": 70.06301863904763,
+      "p25": 61.15876680455599,
+      "p75": 85.29804234530845
+    }
+  },
+  "by_prefecture": {
+    "北海道": {
+      "homecare_facilities": 2381,
+      "rehab_facilities": 715,
+      "homecare_per75": 253.0520887690998,
+      "rehab_per75": 75.99002245691153
+    },
+    "青森県": {
+      "homecare_facilities": 434,
+      "rehab_facilities": 132,
+      "homecare_per75": 189.10510583785762,
+      "rehab_per75": 57.515838641929044
+    },
+    "岩手県": {
+      "homecare_facilities": 395,
+      "rehab_facilities": 142,
+      "homecare_per75": 174.4044859482968,
+      "rehab_per75": 62.69730887255226
+    },
+    "宮城県": {
+      "homecare_facilities": 902,
+      "rehab_facilities": 194,
+      "homecare_per75": 253.1098558508504,
+      "rehab_per75": 54.43826167967292
+    },
+    "秋田県": {
+      "homecare_facilities": 374,
+      "rehab_facilities": 86,
+      "homecare_per75": 187.06173037102243,
+      "rehab_per75": 43.0141946842458
+    },
+    "山形県": {
+      "homecare_facilities": 384,
+      "rehab_facilities": 82,
+      "homecare_per75": 193.280483201208,
+      "rehab_per75": 41.273436516924626
+    },
+    "福島県": {
+      "homecare_facilities": 588,
+      "rehab_facilities": 156,
+      "homecare_per75": 185.92415053532244,
+      "rehab_per75": 49.32681544814677
+    },
+    "茨城県": {
+      "homecare_facilities": 1038,
+      "rehab_facilities": 305,
+      "homecare_per75": 216.8114513208162,
+      "rehab_per75": 63.706640320663716
+    },
+    "栃木県": {
+      "homecare_facilities": 810,
+      "rehab_facilities": 216,
+      "homecare_per75": 260.7914537674706,
+      "rehab_per75": 69.5443876713255
+    },
+    "群馬県": {
+      "homecare_facilities": 915,
+      "rehab_facilities": 226,
+      "homecare_per75": 274.7987061936325,
+      "rehab_per75": 67.87377879755294
+    },
+    "埼玉県": {
+      "homecare_facilities": 2501,
+      "rehab_facilities": 631,
+      "homecare_per75": 217.57531838115614,
+      "rehab_per75": 54.89405273830848
+    },
+    "千葉県": {
+      "homecare_facilities": 1993,
+      "rehab_facilities": 502,
+      "homecare_per75": 196.30439493331758,
+      "rehab_per75": 49.44546224612415
+    },
+    "東京都": {
+      "homecare_facilities": 7328,
+      "rehab_facilities": 1288,
+      "homecare_per75": 398.61941039358777,
+      "rehab_per75": 70.06301863904763
+    },
+    "神奈川県": {
+      "homecare_facilities": 3323,
+      "rehab_facilities": 668,
+      "homecare_per75": 239.95274598947472,
+      "rehab_per75": 48.236062088765905
+    },
+    "新潟県": {
+      "homecare_facilities": 850,
+      "rehab_facilities": 189,
+      "homecare_per75": 210.0066955075862,
+      "rehab_per75": 46.695606412863285
+    },
+    "富山県": {
+      "homecare_facilities": 541,
+      "rehab_facilities": 133,
+      "homecare_per75": 274.0128446686521,
+      "rehab_per75": 67.36360136955773
+    },
+    "石川県": {
+      "homecare_facilities": 615,
+      "rehab_facilities": 148,
+      "homecare_per75": 313.7322919801864,
+      "rehab_per75": 75.49980359848388
+    },
+    "福井県": {
+      "homecare_facilities": 424,
+      "rehab_facilities": 97,
+      "homecare_per75": 319.1689563024578,
+      "rehab_per75": 73.01742632391132
+    },
+    "山梨県": {
+      "homecare_facilities": 381,
+      "rehab_facilities": 118,
+      "homecare_per75": 263.62038664323376,
+      "rehab_per75": 81.64620898661833
+    },
+    "長野県": {
+      "homecare_facilities": 947,
+      "rehab_facilities": 241,
+      "homecare_per75": 244.68324242760917,
+      "rehab_per75": 62.26891385961331
+    },
+    "岐阜県": {
+      "homecare_facilities": 1104,
+      "rehab_facilities": 218,
+      "homecare_per75": 314.27920746982466,
+      "rehab_per75": 62.05875654748348
+    },
+    "静岡県": {
+      "homecare_facilities": 1717,
+      "rehab_facilities": 365,
+      "homecare_per75": 270.36900566562423,
+      "rehab_per75": 57.475065269628914
+    },
+    "愛知県": {
+      "homecare_facilities": 4099,
+      "rehab_facilities": 764,
+      "homecare_per75": 368.83700715628373,
+      "rehab_per75": 68.746395088412
+    },
+    "三重県": {
+      "homecare_facilities": 975,
+      "rehab_facilities": 197,
+      "homecare_per75": 316.41358988255377,
+      "rehab_per75": 63.93177149421856
+    },
+    "滋賀県": {
+      "homecare_facilities": 686,
+      "rehab_facilities": 117,
+      "homecare_per75": 319.19447598131364,
+      "rehab_per75": 54.43987418340189
+    },
+    "京都府": {
+      "homecare_facilities": 1755,
+      "rehab_facilities": 271,
+      "homecare_per75": 396.0650765387297,
+      "rehab_per75": 61.15876680455599
+    },
+    "大阪府": {
+      "homecare_facilities": 6276,
+      "rehab_facilities": 1064,
+      "homecare_per75": 442.23873140338924,
+      "rehab_per75": 74.97482635647006
+    },
+    "兵庫県": {
+      "homecare_facilities": 3622,
+      "rehab_facilities": 693,
+      "homecare_per75": 391.22751683941743,
+      "rehab_per75": 74.8538567558576
+    },
+    "奈良県": {
+      "homecare_facilities": 819,
+      "rehab_facilities": 184,
+      "homecare_per75": 327.5161558640988,
+      "rehab_per75": 73.58116322221511
+    },
+    "和歌山県": {
+      "homecare_facilities": 638,
+      "rehab_facilities": 139,
+      "homecare_per75": 356.0069192567379,
+      "rehab_per75": 77.5626360136153
+    },
+    "鳥取県": {
+      "homecare_facilities": 692,
+      "rehab_facilities": 75,
+      "homecare_per75": 689.0988936577011,
+      "rehab_per75": 74.68557373457743
+    },
+    "島根県": {
+      "homecare_facilities": 743,
+      "rehab_facilities": 110,
+      "homecare_per75": 562.56767090927,
+      "rehab_per75": 83.2872729475366
+    },
+    "岡山県": {
+      "homecare_facilities": 1919,
+      "rehab_facilities": 391,
+      "homecare_per75": 572.6306994509429,
+      "rehab_per75": 116.67462401527811
+    },
+    "広島県": {
+      "homecare_facilities": 4359,
+      "rehab_facilities": 529,
+      "homecare_per75": 901.36476426799,
+      "rehab_per75": 109.38792390405294
+    },
+    "山口県": {
+      "homecare_facilities": 1832,
+      "rehab_facilities": 366,
+      "homecare_per75": 679.5050591970565,
+      "rehab_per75": 135.75264828936827
+    },
+    "徳島県": {
+      "homecare_facilities": 472,
+      "rehab_facilities": 144,
+      "homecare_per75": 342.24474850086654,
+      "rehab_per75": 104.41365208501011
+    },
+    "香川県": {
+      "homecare_facilities": 641,
+      "rehab_facilities": 200,
+      "homecare_per75": 363.67349949221875,
+      "rehab_per75": 113.47067066839898
+    },
+    "愛媛県": {
+      "homecare_facilities": 816,
+      "rehab_facilities": 224,
+      "homecare_per75": 321.8909515506781,
+      "rehab_per75": 88.3622219943038
+    },
+    "高知県": {
+      "homecare_facilities": 403,
+      "rehab_facilities": 162,
+      "homecare_per75": 281.67045255984624,
+      "rehab_per75": 113.22732832430543
+    },
+    "福岡県": {
+      "homecare_facilities": 3154,
+      "rehab_facilities": 758,
+      "homecare_per75": 394.596258216585,
+      "rehab_per75": 94.83321614716914
+    },
+    "佐賀県": {
+      "homecare_facilities": 506,
+      "rehab_facilities": 152,
+      "homecare_per75": 371.2508070669719,
+      "rehab_per75": 111.52198156952515
+    },
+    "長崎県": {
+      "homecare_facilities": 931,
+      "rehab_facilities": 259,
+      "homecare_per75": 384.70756440029425,
+      "rehab_per75": 107.02390889331492
+    },
+    "熊本県": {
+      "homecare_facilities": 967,
+      "rehab_facilities": 264,
+      "homecare_per75": 312.4363899542169,
+      "rehab_per75": 85.29804234530845
+    },
+    "大分県": {
+      "homecare_facilities": 587,
+      "rehab_facilities": 154,
+      "homecare_per75": 273.55254818625804,
+      "rehab_per75": 71.7667673265481
+    },
+    "宮崎県": {
+      "homecare_facilities": 431,
+      "rehab_facilities": 133,
+      "homecare_per75": 220.93160347134298,
+      "rehab_per75": 68.17610965589006
+    },
+    "鹿児島県": {
+      "homecare_facilities": 866,
+      "rehab_facilities": 270,
+      "homecare_per75": 304.62602406756645,
+      "rehab_per75": 94.97578117580017
+    },
+    "沖縄県": {
+      "homecare_facilities": 491,
+      "rehab_facilities": 118,
+      "homecare_per75": 285.0094325932376,
+      "rehab_per75": 68.49513858656218
+    }
+  }
+}
