@@ -10,46 +10,57 @@ const FUNC_COLORS = {
 const ACTIVE_FUNCS = ['高度急性期', '急性期', '回復期', '慢性期'];
 
 // ════════════════════════════════════════════════════════════════════════════
-// 在宅移行 補助分類 (v0, peer review 2026-04-28 採択)
+// 在宅移行 補助分類 (v1, peer review 2026-04-28 採択)
 // ════════════════════════════════════════════════════════════════════════════
+// v1 改善 (vs v0):
+// - 3指標 → 5指標化 (cap.homecare/cap.rehab/75+ を追加)
+// - 二値high/low → 三値 high/neutral/low (±5% neutral zone)
+// - 病床シェア → 75歳以上人口あたり病床数 (絶対供給量) へ変更
+// - mixed/中間型 が自然に発生 (peer review #2 補正反映)
+//
 // Gate: 75歳以上割合 ≥ 47県平均 → 高齢化県のみ判定対象
-// 3指標 (NDB在宅/75+10万対 / 回復期シェア / 慢性期シェア) を47県平均比で評価
-// high≥2 → 在宅移行支援型の可能性 / low≥2 → 在宅移行ギャップ型の可能性
+// 5指標を high/neutral/low に三値化 (47県平均比 ±5%)
+// high≥3 → 在宅移行支援型の可能性
+// low≥3  → 在宅移行ギャップ型の可能性
+// それ以外 → 中間型/判定保留
 // 表現は必ず「可能性」とし、断定しない
+const NEUTRAL_PCT = 5;
 function classifyHomecareType(stats) {
   if (!stats) return null;
-  const { share75plus, share75plus_natAvg, homecarePer75, homecarePer75_avg, recoveryShare, recoveryShare_natAvg, chronicShare, chronicShare_natAvg } = stats;
+  const { share75plus, share75plus_natAvg } = stats;
   if (share75plus == null || share75plus_natAvg == null) return null;
 
   const isAging = share75plus >= share75plus_natAvg;
-  if (!isAging) return { type:'該当なし', icon:'➖', color:'#94a3b8', desc:'75歳以上割合が全国平均未満のため、本分類は判定対象外', signals:[] };
+  if (!isAging) return { type:'該当なし', subType:'gate_not_aging', icon:'➖', color:'#94a3b8', desc:'75歳以上割合が全国平均未満のため、本分類は判定対象外', signals:[] };
+
+  const indicators = [
+    { key:'ndb', label:'NDB在宅医療(75+10万対)', value:stats.m1_ndb, ref:stats.m1_ndb_avg },
+    { key:'rec', label:'回復期病床/75+10万対', value:stats.m2_recovery_beds, ref:stats.m2_recovery_beds_avg },
+    { key:'chr', label:'慢性期病床/75+10万対', value:stats.m3_chronic_beds, ref:stats.m3_chronic_beds_avg },
+    { key:'hcc', label:'cap.homecare/75+10万対', value:stats.m4_homecare_cap, ref:stats.m4_homecare_cap_avg },
+    { key:'rhc', label:'cap.rehab/75+10万対', value:stats.m5_rehab_cap, ref:stats.m5_rehab_cap_avg },
+  ];
 
   const signals = [];
-  let highCount = 0, lowCount = 0;
-  if (homecarePer75 != null && homecarePer75_avg != null && homecarePer75_avg > 0) {
-    const isHigh = homecarePer75 > homecarePer75_avg;
-    signals.push({ name:'NDB在宅医療(75+10万対)', value:homecarePer75, ref:homecarePer75_avg, isHigh, delta:((homecarePer75/homecarePer75_avg-1)*100).toFixed(1) });
-    if (isHigh) highCount++; else lowCount++;
-  }
-  if (recoveryShare != null && recoveryShare_natAvg != null) {
-    const isHigh = recoveryShare > recoveryShare_natAvg;
-    signals.push({ name:'回復期病床シェア', value:recoveryShare, ref:recoveryShare_natAvg, isHigh, delta:(recoveryShare-recoveryShare_natAvg).toFixed(1) });
-    if (isHigh) highCount++; else lowCount++;
-  }
-  if (chronicShare != null && chronicShare_natAvg != null) {
-    const isHigh = chronicShare > chronicShare_natAvg;
-    signals.push({ name:'慢性期病床シェア', value:chronicShare, ref:chronicShare_natAvg, isHigh, delta:(chronicShare-chronicShare_natAvg).toFixed(1) });
-    if (isHigh) highCount++; else lowCount++;
+  let high = 0, neutral = 0, low = 0;
+  for (const ind of indicators) {
+    if (ind.value == null || ind.ref == null || ind.ref === 0) continue;
+    const deltaPct = (ind.value/ind.ref - 1) * 100;
+    let level;
+    if (deltaPct > NEUTRAL_PCT) { level = 'high'; high++; }
+    else if (deltaPct < -NEUTRAL_PCT) { level = 'low'; low++; }
+    else { level = 'neutral'; neutral++; }
+    signals.push({ name:ind.label, value:ind.value, ref:ind.ref, level, delta:deltaPct.toFixed(1) });
   }
   if (signals.length === 0) return null;
 
-  if (highCount >= 2) {
-    return { type:'在宅移行支援型の可能性', color:'#059669', icon:'🏠', desc:`75歳以上割合が全国平均以上(${share75plus.toFixed(1)}%) かつ 在宅・回復期・慢性期の${highCount}/3指標が47県平均より高い。在宅・退院後受け皿が比較的厚い構造の可能性。`, signals };
+  if (high >= 3) {
+    return { type:'在宅移行支援型の可能性', subType:'support', color:'#059669', icon:'🏠', desc:`75歳以上割合が全国平均以上(${share75plus.toFixed(1)}%) かつ 5指標中 ${high}/${signals.length} が47県平均より明確に高い (>+${NEUTRAL_PCT}%)。在宅・退院後受け皿が比較的厚い構造の可能性。`, signals, counts:{high, neutral, low} };
   }
-  if (lowCount >= 2) {
-    return { type:'在宅移行ギャップ型の可能性', color:'#dc2626', icon:'⚠️', desc:`75歳以上割合が全国平均以上(${share75plus.toFixed(1)}%) かつ 在宅・回復期・慢性期の${lowCount}/3指標が47県平均より低い。高齢化に対し在宅・退院後受け皿が薄い可能性 — 追加検証要。`, signals };
+  if (low >= 3) {
+    return { type:'在宅移行ギャップ型の可能性', subType:'gap', color:'#dc2626', icon:'⚠️', desc:`75歳以上割合が全国平均以上(${share75plus.toFixed(1)}%) かつ 5指標中 ${low}/${signals.length} が47県平均より明確に低い (<-${NEUTRAL_PCT}%)。高齢化に対し在宅・退院後受け皿が薄い可能性 — 追加検証要。`, signals, counts:{high, neutral, low} };
   }
-  return { type:'該当なし', icon:'➖', color:'#94a3b8', desc:`高齢化はあるが指標が拮抗(high=${highCount}, low=${lowCount})`, signals };
+  return { type:'中間型/判定保留', subType:'mixed', color:'#64748b', icon:'➖', desc:`75歳以上割合は全国平均以上だが、5指標が high=${high}/neutral=${neutral}/low=${low} で拮抗 (どちらも3未満)。明確な支援型・ギャップ型判定は保留。`, signals, counts:{high, neutral, low} };
 }
 
 // 地域類型 (5-pattern, 優先順位順に評価)
@@ -82,7 +93,7 @@ function classifyRegion(prefShares, natShares, beds_per_75plus, nat_beds_per_75p
   return { type:'標準型', color:'#64748b', desc:'機能配分は全国平均に近い。', icon:'➖' };
 }
 
-export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegPref, agePyramid, ndbDiag }) {
+export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegPref, agePyramid, ndbDiag, homecareCapability }) {
   const isNational = !regPref || regPref === '全国';
   const bf = bedFunc?.prefectures?.[regPref];
   const bfNat = bedFunc?.national;
@@ -123,55 +134,81 @@ export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegP
 
   const region = !isNational ? classifyRegion(prefShares, natShares, beds_per_75plus, nat_beds_per_75plus) : null;
 
-  // 在宅移行 補助分類 (v0) — 47県平均との比較
+  // 47県平均 (v1 在宅文脈型判定の reference, 5指標)
   const compute47Avg = () => {
-    if (!agePyramid?.prefectures || !bedFunc?.prefectures || !ndbDiag) return null;
-    const prefs = Object.keys(agePyramid.prefectures);
-    let s75Sum = 0, s75N = 0, hcSum = 0, hcN = 0, recSum = 0, recN = 0, chrSum = 0, chrN = 0;
-    prefs.forEach(pp => {
-      const ap = agePyramid.prefectures[pp];
-      if (ap) {
-        const tot = ap.male.reduce((a,b)=>a+b,0) + ap.female.reduce((a,b)=>a+b,0);
-        const p75 = ap.male.slice(15).reduce((a,b)=>a+b,0) + ap.female.slice(15).reduce((a,b)=>a+b,0);
+    try {
+      if (!agePyramid?.prefectures || !bedFunc?.prefectures || !Array.isArray(ndbDiag)) return null;
+      const prefs = Object.keys(agePyramid.prefectures);
+      let s75Sum = 0, s75N = 0;
+      let m1Sum = 0, m1N = 0, m2Sum = 0, m2N = 0, m3Sum = 0, m3N = 0, m4Sum = 0, m4N = 0, m5Sum = 0, m5N = 0;
+      prefs.forEach(pp => {
+        const ap = agePyramid.prefectures[pp];
+        if (!ap || !Array.isArray(ap.male) || !Array.isArray(ap.female)) return;
+        const tot = ap.male.reduce((a,b)=>a+(b||0),0) + ap.female.reduce((a,b)=>a+(b||0),0);
+        const p75 = ap.male.slice(15).reduce((a,b)=>a+(b||0),0) + ap.female.slice(15).reduce((a,b)=>a+(b||0),0);
         if (tot > 0) { s75Sum += p75/tot*100; s75N++; }
-        const ndbRec = ndbDiag.find(d => d.category === 'C_在宅医療' && d.prefecture === pp);
-        if (ndbRec && p75 > 0) { hcSum += ndbRec.total_claims/p75*100000; hcN++; }
-      }
-      const bd = bedFunc.prefectures[pp];
-      if (bd && bd['総床数'] > 0) {
-        recSum += bd['回復期'].beds/bd['総床数']*100; recN++;
-        chrSum += bd['慢性期'].beds/bd['総床数']*100; chrN++;
-      }
-    });
-    return {
-      share75plus_natAvg: s75N ? s75Sum/s75N : null,
-      homecarePer75_avg: hcN ? hcSum/hcN : null,
-      recoveryShare_natAvg: recN ? recSum/recN : null,
-      chronicShare_natAvg: chrN ? chrSum/chrN : null,
-    };
+        if (p75 > 0) {
+          const ndbRec = ndbDiag.find(d => d && d.category === 'C_在宅医療' && d.prefecture === pp);
+          if (ndbRec) { m1Sum += (ndbRec.total_claims||0)/p75*100000; m1N++; }
+          const bd = bedFunc.prefectures[pp];
+          if (bd && bd['回復期'] && bd['慢性期']) {
+            m2Sum += (bd['回復期'].beds||0)/p75*100000; m2N++;
+            m3Sum += (bd['慢性期'].beds||0)/p75*100000; m3N++;
+          }
+          const hc = homecareCapability?.by_prefecture?.[pp];
+          if (hc) {
+            if (hc.homecare_per75 != null) { m4Sum += hc.homecare_per75; m4N++; }
+            if (hc.rehab_per75 != null) { m5Sum += hc.rehab_per75; m5N++; }
+          }
+        }
+      });
+      return {
+        share75plus_natAvg: s75N ? s75Sum/s75N : null,
+        m1_ndb_avg: m1N ? m1Sum/m1N : null,
+        m2_recovery_beds_avg: m2N ? m2Sum/m2N : null,
+        m3_chronic_beds_avg: m3N ? m3Sum/m3N : null,
+        m4_homecare_cap_avg: m4N ? m4Sum/m4N : null,
+        m5_rehab_cap_avg: m5N ? m5Sum/m5N : null,
+      };
+    } catch (e) {
+      console.error('compute47Avg v1 failed:', e);
+      return null;
+    }
   };
 
   let homecareType = null;
-  if (!isNational && agePyramid?.prefectures?.[regPref] && prefShares) {
-    const ap = agePyramid.prefectures[regPref];
-    const tot = ap.male.reduce((a,b)=>a+b,0) + ap.female.reduce((a,b)=>a+b,0);
-    const p75 = ap.male.slice(15).reduce((a,b)=>a+b,0) + ap.female.slice(15).reduce((a,b)=>a+b,0);
-    const share75 = tot > 0 ? p75/tot*100 : null;
-    const ndbRec = ndbDiag?.find(d => d.category === 'C_在宅医療' && d.prefecture === regPref);
-    const hcPer75 = (ndbRec && p75 > 0) ? ndbRec.total_claims/p75*100000 : null;
-    const ref = compute47Avg();
-    if (ref) {
-      homecareType = classifyHomecareType({
-        share75plus: share75,
-        share75plus_natAvg: ref.share75plus_natAvg,
-        homecarePer75: hcPer75,
-        homecarePer75_avg: ref.homecarePer75_avg,
-        recoveryShare: prefShares['回復期'],
-        recoveryShare_natAvg: ref.recoveryShare_natAvg,
-        chronicShare: prefShares['慢性期'],
-        chronicShare_natAvg: ref.chronicShare_natAvg,
-      });
+  try {
+    if (!isNational && agePyramid?.prefectures?.[regPref] && Array.isArray(ndbDiag) && ndbDiag.length > 0) {
+      const ap = agePyramid.prefectures[regPref];
+      const bd = bedFunc?.prefectures?.[regPref];
+      const hc = homecareCapability?.by_prefecture?.[regPref];
+      if (ap && Array.isArray(ap.male) && Array.isArray(ap.female) && bd) {
+        const tot = ap.male.reduce((a,b)=>a+(b||0),0) + ap.female.reduce((a,b)=>a+(b||0),0);
+        const p75 = ap.male.slice(15).reduce((a,b)=>a+(b||0),0) + ap.female.slice(15).reduce((a,b)=>a+(b||0),0);
+        const share75 = tot > 0 ? p75/tot*100 : null;
+        const ndbRec = ndbDiag.find(d => d && d.category === 'C_在宅医療' && d.prefecture === regPref);
+        const m1_ndb = (ndbRec && p75 > 0) ? ndbRec.total_claims/p75*100000 : null;
+        const m2_recovery_beds = (bd['回復期'] && p75 > 0) ? bd['回復期'].beds/p75*100000 : null;
+        const m3_chronic_beds = (bd['慢性期'] && p75 > 0) ? bd['慢性期'].beds/p75*100000 : null;
+        const m4_homecare_cap = hc?.homecare_per75 ?? null;
+        const m5_rehab_cap = hc?.rehab_per75 ?? null;
+        const ref = compute47Avg();
+        if (ref) {
+          homecareType = classifyHomecareType({
+            share75plus: share75,
+            share75plus_natAvg: ref.share75plus_natAvg,
+            m1_ndb, m1_ndb_avg: ref.m1_ndb_avg,
+            m2_recovery_beds, m2_recovery_beds_avg: ref.m2_recovery_beds_avg,
+            m3_chronic_beds, m3_chronic_beds_avg: ref.m3_chronic_beds_avg,
+            m4_homecare_cap, m4_homecare_cap_avg: ref.m4_homecare_cap_avg,
+            m5_rehab_cap, m5_rehab_cap_avg: ref.m5_rehab_cap_avg,
+          });
+        }
+      }
     }
+  } catch (e) {
+    console.error('homecareType v1 calc failed:', e);
+    homecareType = null;
   }
 
   return <>
@@ -282,25 +319,35 @@ export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegP
       <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6,flexWrap:'wrap'}}>
         <span style={{fontSize:20}}>{homecareType.icon || '➖'}</span>
         <div style={{fontSize:13,fontWeight:700,color:homecareType.color || '#64748b'}}>在宅移行 補助分類: {homecareType.type}</div>
-        <span style={{fontSize:9,padding:'1px 6px',borderRadius:3,background:'#fef3c7',color:'#92400e',fontWeight:600}}>v0</span>
+        <span style={{fontSize:9,padding:'1px 6px',borderRadius:3,background:'#dcfce7',color:'#166534',fontWeight:600}}>v1</span>
+        {homecareType.counts && (
+          <span style={{fontSize:9,padding:'1px 6px',borderRadius:3,background:'#f1f5f9',color:'#475569',fontWeight:500}}>
+            high {homecareType.counts.high} / neutral {homecareType.counts.neutral} / low {homecareType.counts.low}
+          </span>
+        )}
       </div>
       <div style={{fontSize:12,color:'#475569',lineHeight:1.6,marginBottom:8}}>{homecareType.desc}</div>
       {Array.isArray(homecareType.signals) && homecareType.signals.length > 0 && (
         <div style={{marginTop:8,padding:'8px 12px',background:'#f8fafc',borderRadius:6,fontSize:11}}>
-          <div style={{fontWeight:600,color:'#64748b',marginBottom:4}}>判定根拠 (47県平均比):</div>
+          <div style={{fontWeight:600,color:'#64748b',marginBottom:4}}>判定根拠 (47県平均比、±5%超で high/low、±5%以内で neutral):</div>
           <ul style={{paddingLeft:18,margin:0,lineHeight:1.7,color:'#475569'}}>
-            {homecareType.signals.map((sig, i) => (
-              <li key={i}>
-                {sig.name}: <b style={{color:sig.isHigh?'#059669':'#dc2626'}}>{sig.isHigh?'平均より高い':'平均より低い'}</b> ({Number(sig.delta) > 0 ? '+' : ''}{sig.delta}{(sig.name||'').includes('シェア') ? 'pt' : '%'})
-              </li>
-            ))}
+            {homecareType.signals.map((sig, i) => {
+              const lvl = sig.level || (sig.isHigh ? 'high' : 'low');
+              const colorMap = {high:'#059669', low:'#dc2626', neutral:'#94a3b8'};
+              const labelMap = {high:'平均より高い', low:'平均より低い', neutral:'平均近傍'};
+              return (
+                <li key={i}>
+                  {sig.name}: <b style={{color:colorMap[lvl]}}>{labelMap[lvl]}</b> ({Number(sig.delta) > 0 ? '+' : ''}{sig.delta}%)
+                </li>
+              );
+            })}
           </ul>
         </div>
       )}
       <div style={{fontSize:10,color:'#94a3b8',marginTop:8,padding:'6px 10px',background:'#fff7ed',borderRadius:4,lineHeight:1.5}}>
-        ⚠️ 本分類はNDB在宅医療算定・病床機能からみた地域構造の<b>暫定分類</b>です。
-        実際の訪問診療件数、看取り件数、在宅酸素実施数、cap.homecare/cap.rehab施設密度を直接示すものではありません。
-        cap proxyはv1で追加予定。
+        ⚠️ 本分類は NDB在宅医療 / 病床機能 / cap.homecare / cap.rehab から見た地域構造の<b>暫定分類</b>です。
+        実際の訪問診療件数、看取り件数、在宅酸素実施数を直接示すものではありません。
+        v1では 5指標化 + ±5% neutral zone + per75+補正で判定。
       </div>
     </div>
   )}

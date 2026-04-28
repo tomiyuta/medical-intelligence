@@ -47,6 +47,7 @@ export default function Home() {
   const [demoArea, setDemoArea] = useState('区中央部');
   const [demoPrefList, setDemoPrefList] = useState([]);
   const [ndbDiag, setNdbDiag] = useState([]);
+  const [homecareCapability, setHomecareCapability] = useState(null);
   const [ndbRx, setNdbRx] = useState([]);
   const [ndbHc, setNdbHc] = useState([]);
   const [kijunData, setKijunData] = useState([]);
@@ -83,6 +84,7 @@ export default function Home() {
       setAreaDemoData(d.data||[]);
     });
     fetch('/api/ndb/diagnostics').then(r=>r.json()).then(d=>setNdbDiag(d));
+    fetch('/api/homecare-capability').then(r=>r.json()).then(d=>setHomecareCapability(d));
     fetch('/api/ndb/health-checkup').then(r=>r.json()).then(d=>setNdbHc(d));
     fetch('/api/future-demographics').then(r=>r.json()).then(d=>setFutureDemo(d));
     fetch('/api/vital-statistics').then(r=>r.json()).then(d=>setVitalStats(d));
@@ -168,7 +170,7 @@ export default function Home() {
         {view==='area' && <AreaView mob={mob} areaData={areaData} areaPref={globalPref} setAreaPref={setGlobalPref} areaPrefList={areaPrefList} vitalStats={vitalStats} />}
 
         {/* ═══ SCORING VIEW ═══ */}
-        {view==='bedfunc' && <RegionalBedFunctionView mob={mob} bedFunc={bedFunc} regPref={globalPref} setRegPref={setGlobalPref} agePyramid={agePyramid} ndbDiag={ndbDiag} />}
+        {view==='bedfunc' && <RegionalBedFunctionView mob={mob} bedFunc={bedFunc} regPref={globalPref} setRegPref={setGlobalPref} agePyramid={agePyramid} ndbDiag={ndbDiag} homecareCapability={homecareCapability} />}
 
         {/* ═══ NDB VIEW ═══ */}
         {view==='ndb' && <NdbView mob={mob} ndbDiag={ndbDiag} ndbRx={ndbRx} ndbHc={ndbHc} ndbPref={globalPref} setNdbPref={setGlobalPref} setNdbRx={setNdbRx} vitalStats={vitalStats} areaDemoData={areaDemoData} ndbQ={ndbQ} agePyramid={agePyramid} futureDemo={futureDemo} patientSurvey={patientSurvey} bedFunc={bedFunc} />}
