@@ -1,0 +1,92 @@
+{
+  "source": "NDB第10回 特定健診 BMI集計から導出 (全47県合算 sex × age_group)",
+  "method": "47県の40-74歳健診受診者を標準集団として、性年齢階級の構成比を算出",
+  "total_population": 29117467,
+  "distribution": {
+    "female_40-44": {
+      "sex": "female",
+      "age_group": "40-44",
+      "population": 1829569,
+      "weight": 0.062834
+    },
+    "female_45-49": {
+      "sex": "female",
+      "age_group": "45-49",
+      "population": 2225167,
+      "weight": 0.07642
+    },
+    "female_50-54": {
+      "sex": "female",
+      "age_group": "50-54",
+      "population": 2291761,
+      "weight": 0.078707
+    },
+    "female_55-59": {
+      "sex": "female",
+      "age_group": "55-59",
+      "population": 1930453,
+      "weight": 0.066299
+    },
+    "female_60-64": {
+      "sex": "female",
+      "age_group": "60-64",
+      "population": 1612499,
+      "weight": 0.055379
+    },
+    "female_65-69": {
+      "sex": "female",
+      "age_group": "65-69",
+      "population": 1504634,
+      "weight": 0.051675
+    },
+    "female_70-74": {
+      "sex": "female",
+      "age_group": "70-74",
+      "population": 1910373,
+      "weight": 0.065609
+    },
+    "male_40-44": {
+      "sex": "male",
+      "age_group": "40-44",
+      "population": 2414265,
+      "weight": 0.082915
+    },
+    "male_45-49": {
+      "sex": "male",
+      "age_group": "45-49",
+      "population": 2889521,
+      "weight": 0.099237
+    },
+    "male_50-54": {
+      "sex": "male",
+      "age_group": "50-54",
+      "population": 2927358,
+      "weight": 0.100536
+    },
+    "male_55-59": {
+      "sex": "male",
+      "age_group": "55-59",
+      "population": 2443092,
+      "weight": 0.083905
+    },
+    "male_60-64": {
+      "sex": "male",
+      "age_group": "60-64",
+      "population": 1950147,
+      "weight": 0.066975
+    },
+    "male_65-69": {
+      "sex": "male",
+      "age_group": "65-69",
+      "population": 1517974,
+      "weight": 0.052133
+    },
+    "male_70-74": {
+      "sex": "male",
+      "age_group": "70-74",
+      "population": 1670654,
+      "weight": 0.057376
+    }
+  },
+  "weight_sum_check": 1.0
+}

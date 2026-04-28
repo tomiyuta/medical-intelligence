@@ -1,0 +1,1717 @@
+{
+  "source": "NDB第10回オープンデータ 特定健診 リスク該当者率 (粗率 + 年齢標準化率)",
+  "method": "direct standardization with NDB internal standard population (47県合算 sex × age_group)",
+  "risk_rates": {
+    "bmi_ge_25": {
+      "metric": "BMI",
+      "risk_label": "BMI ≥25 (肥満)",
+      "risk_bins": [
+        "25.0以上30.0未満",
+        "30.0以上35.0未満",
+        "35.0以上40.0未満",
+        "40.0以上"
+      ],
+      "unit": "kg/m²",
+      "standardization_method": "NDB internal standard population (47県合算 sex × age_group)",
+      "by_pref": {
+        "三重県": {
+          "crude_rate": 29.2,
+          "age_standardized_rate": 29.1,
+          "delta_pp": -0.1,
+          "denominator": 446616,
+          "numerator": 130327
+        },
+        "京都府": {
+          "crude_rate": 26.1,
+          "age_standardized_rate": 26.1,
+          "delta_pp": 0.0,
+          "denominator": 549048,
+          "numerator": 143084
+        },
+        "佐賀県": {
+          "crude_rate": 29.6,
+          "age_standardized_rate": 30.0,
+          "delta_pp": 0.4,
+          "denominator": 181637,
+          "numerator": 53751
+        },
+        "兵庫県": {
+          "crude_rate": 27.5,
+          "age_standardized_rate": 27.5,
+          "delta_pp": 0.0,
+          "denominator": 1204811,
+          "numerator": 331892
+        },
+        "北海道": {
+          "crude_rate": 33.9,
+          "age_standardized_rate": 33.6,
+          "delta_pp": -0.3,
+          "denominator": 975364,
+          "numerator": 330224
+        },
+        "千葉県": {
+          "crude_rate": 31.0,
+          "age_standardized_rate": 30.9,
+          "delta_pp": -0.1,
+          "denominator": 1446187,
+          "numerator": 448020
+        },
+        "和歌山県": {
+          "crude_rate": 28.9,
+          "age_standardized_rate": 29.2,
+          "delta_pp": 0.3,
+          "denominator": 196033,
+          "numerator": 56655
+        },
+        "埼玉県": {
+          "crude_rate": 30.5,
+          "age_standardized_rate": 30.4,
+          "delta_pp": -0.1,
+          "denominator": 1720946,
+          "numerator": 525603
+        },
+        "大分県": {
+          "crude_rate": 31.6,
+          "age_standardized_rate": 31.9,
+          "delta_pp": 0.3,
+          "denominator": 260726,
+          "numerator": 82326
+        },
+        "大阪府": {
+          "crude_rate": 28.8,
+          "age_standardized_rate": 28.7,
+          "delta_pp": -0.1,
+          "denominator": 1784945,
+          "numerator": 514777
+        },
+        "奈良県": {
+          "crude_rate": 27.9,
+          "age_standardized_rate": 28.3,
+          "delta_pp": 0.4,
+          "denominator": 283424,
+          "numerator": 79179
+        },
+        "宮城県": {
+          "crude_rate": 32.7,
+          "age_standardized_rate": 32.9,
+          "delta_pp": 0.2,
+          "denominator": 586957,
+          "numerator": 191873
+        },
+        "宮崎県": {
+          "crude_rate": 31.5,
+          "age_standardized_rate": 32.0,
+          "delta_pp": 0.5,
+          "denominator": 239295,
+          "numerator": 75497
+        },
+        "富山県": {
+          "crude_rate": 28.2,
+          "age_standardized_rate": 28.2,
+          "delta_pp": 0.0,
+          "denominator": 276345,
+          "numerator": 77857
+        },
+        "山口県": {
+          "crude_rate": 27.9,
+          "age_standardized_rate": 28.0,
+          "delta_pp": 0.1,
+          "denominator": 287669,
+          "numerator": 80313
+        },
+        "山形県": {
+          "crude_rate": 31.3,
+          "age_standardized_rate": 31.8,
+          "delta_pp": 0.5,
+          "denominator": 306432,
+          "numerator": 95870
+        },
+        "山梨県": {
+          "crude_rate": 28.0,
+          "age_standardized_rate": 28.4,
+          "delta_pp": 0.4,
+          "denominator": 212234,
+          "numerator": 59474
+        },
+        "岐阜県": {
+          "crude_rate": 27.7,
+          "age_standardized_rate": 27.7,
+          "delta_pp": 0.0,
+          "denominator": 478072,
+          "numerator": 132379
+        },
+        "岡山県": {
+          "crude_rate": 29.4,
+          "age_standardized_rate": 29.4,
+          "delta_pp": 0.0,
+          "denominator": 418952,
+          "numerator": 123064
+        },
+        "岩手県": {
+          "crude_rate": 33.4,
+          "age_standardized_rate": 33.7,
+          "delta_pp": 0.3,
+          "denominator": 309109,
+          "numerator": 103270
+        },
+        "島根県": {
+          "crude_rate": 27.1,
+          "age_standardized_rate": 27.4,
+          "delta_pp": 0.3,
+          "denominator": 168085,
+          "numerator": 45555
+        },
+        "広島県": {
+          "crude_rate": 29.0,
+          "age_standardized_rate": 28.7,
+          "delta_pp": -0.3,
+          "denominator": 607649,
+          "numerator": 176022
+        },
+        "徳島県": {
+          "crude_rate": 31.4,
+          "age_standardized_rate": 32.0,
+          "delta_pp": 0.6,
+          "denominator": 163361,
+          "numerator": 51320
+        },
+        "愛媛県": {
+          "crude_rate": 31.2,
+          "age_standardized_rate": 31.4,
+          "delta_pp": 0.2,
+          "denominator": 301162,
+          "numerator": 93838
+        },
+        "愛知県": {
+          "crude_rate": 29.0,
+          "age_standardized_rate": 28.7,
+          "delta_pp": -0.3,
+          "denominator": 1760865,
+          "numerator": 511251
+        },
+        "新潟県": {
+          "crude_rate": 27.3,
+          "age_standardized_rate": 27.4,
+          "delta_pp": 0.1,
+          "denominator": 587321,
+          "numerator": 160265
+        },
+        "東京都": {
+          "crude_rate": 27.9,
+          "age_standardized_rate": 28.1,
+          "delta_pp": 0.2,
+          "denominator": 3481133,
+          "numerator": 972760
+        },
+        "栃木県": {
+          "crude_rate": 32.2,
+          "age_standardized_rate": 32.0,
+          "delta_pp": -0.2,
+          "denominator": 472587,
+          "numerator": 151995
+        },
+        "沖縄県": {
+          "crude_rate": 39.8,
+          "age_standardized_rate": 40.3,
+          "delta_pp": 0.5,
+          "denominator": 299470,
+          "numerator": 119327
+        },
+        "滋賀県": {
+          "crude_rate": 27.6,
+          "age_standardized_rate": 27.6,
+          "delta_pp": 0.0,
+          "denominator": 341153,
+          "numerator": 94078
+        },
+        "熊本県": {
+          "crude_rate": 31.4,
+          "age_standardized_rate": 31.9,
+          "delta_pp": 0.5,
+          "denominator": 390714,
+          "numerator": 122545
+        },
+        "石川県": {
+          "crude_rate": 28.2,
+          "age_standardized_rate": 28.4,
+          "delta_pp": 0.2,
+          "denominator": 285266,
+          "numerator": 80388
+        },
+        "神奈川県": {
+          "crude_rate": 28.9,
+          "age_standardized_rate": 28.5,
+          "delta_pp": -0.4,
+          "denominator": 2140458,
+          "numerator": 619210
+        },
+        "福井県": {
+          "crude_rate": 28.4,
+          "age_standardized_rate": 28.5,
+          "delta_pp": 0.1,
+          "denominator": 182294,
+          "numerator": 51687
+        },
+        "福岡県": {
+          "crude_rate": 29.0,
+          "age_standardized_rate": 29.2,
+          "delta_pp": 0.2,
+          "denominator": 1088467,
+          "numerator": 315809
+        },
+        "福島県": {
+          "crude_rate": 33.4,
+          "age_standardized_rate": 33.7,
+          "delta_pp": 0.3,
+          "denominator": 455724,
+          "numerator": 152241
+        },
+        "秋田県": {
+          "crude_rate": 32.8,
+          "age_standardized_rate": 33.3,
+          "delta_pp": 0.5,
+          "denominator": 232091,
+          "numerator": 76239
+        },
+        "群馬県": {
+          "crude_rate": 30.4,
+          "age_standardized_rate": 30.4,
+          "delta_pp": 0.0,
+          "denominator": 463126,
+          "numerator": 140678
+        },
+        "茨城県": {
+          "crude_rate": 32.3,
+          "age_standardized_rate": 32.2,
+          "delta_pp": -0.1,
+          "denominator": 670245,
+          "numerator": 216292
+        },
+        "長崎県": {
+          "crude_rate": 30.9,
+          "age_standardized_rate": 31.5,
+          "delta_pp": 0.6,
+          "denominator": 288009,
+          "numerator": 89011
+        },
+        "長野県": {
+          "crude_rate": 27.1,
+          "age_standardized_rate": 27.2,
+          "delta_pp": 0.1,
+          "denominator": 527653,
+          "numerator": 142997
+        },
+        "青森県": {
+          "crude_rate": 34.0,
+          "age_standardized_rate": 34.4,
+          "delta_pp": 0.4,
+          "denominator": 293105,
+          "numerator": 99691
+        },
+        "静岡県": {
+          "crude_rate": 28.2,
+          "age_standardized_rate": 28.1,
+          "delta_pp": -0.1,
+          "denominator": 900228,
+          "numerator": 254119
+        },
+        "香川県": {
+          "crude_rate": 30.5,
+          "age_standardized_rate": 30.7,
+          "delta_pp": 0.2,
+          "denominator": 224125,
+          "numerator": 68334
+        },
+        "高知県": {
+          "crude_rate": 31.1,
+          "age_standardized_rate": 31.6,
+          "delta_pp": 0.5,
+          "denominator": 157437,
+          "numerator": 48954
+        },
+        "鳥取県": {
+          "crude_rate": 27.1,
+          "age_standardized_rate": 27.3,
+          "delta_pp": 0.2,
+          "denominator": 120089,
+          "numerator": 32540
+        },
+        "鹿児島県": {
+          "crude_rate": 32.5,
+          "age_standardized_rate": 33.0,
+          "delta_pp": 0.5,
+          "denominator": 350848,
+          "numerator": 114066
+        }
+      }
+    },
+    "hba1c_ge_6_5": {
+      "metric": "HbA1c",
+      "risk_label": "HbA1c ≥6.5% (糖尿病型)",
+      "risk_bins": [
+        "6.5以上8.0未満",
+        "8.0以上8.4未満",
+        "8.4以上"
+      ],
+      "unit": "%",
+      "standardization_method": "NDB internal standard population (47県合算 sex × age_group)",
+      "by_pref": {
+        "三重県": {
+          "crude_rate": 8.0,
+          "age_standardized_rate": 7.6,
+          "delta_pp": -0.4,
+          "denominator": 338663,
+          "numerator": 27018
+        },
+        "京都府": {
+          "crude_rate": 6.5,
+          "age_standardized_rate": 6.4,
+          "delta_pp": -0.1,
+          "denominator": 430570,
+          "numerator": 27844
+        },
+        "佐賀県": {
+          "crude_rate": 9.7,
+          "age_standardized_rate": 8.5,
+          "delta_pp": -1.2,
+          "denominator": 113749,
+          "numerator": 10981
+        },
+        "兵庫県": {
+          "crude_rate": 6.7,
+          "age_standardized_rate": 6.6,
+          "delta_pp": -0.1,
+          "denominator": 1014444,
+          "numerator": 68408
+        },
+        "北海道": {
+          "crude_rate": 7.6,
+          "age_standardized_rate": 7.6,
+          "delta_pp": 0.0,
+          "denominator": 744276,
+          "numerator": 56848
+        },
+        "千葉県": {
+          "crude_rate": 7.4,
+          "age_standardized_rate": 7.3,
+          "delta_pp": -0.1,
+          "denominator": 1233541,
+          "numerator": 91415
+        },
+        "和歌山県": {
+          "crude_rate": 8.6,
+          "age_standardized_rate": 7.7,
+          "delta_pp": -0.9,
+          "denominator": 126524,
+          "numerator": 10844
+        },
+        "埼玉県": {
+          "crude_rate": 7.5,
+          "age_standardized_rate": 7.3,
+          "delta_pp": -0.2,
+          "denominator": 1422807,
+          "numerator": 106537
+        },
+        "大分県": {
+          "crude_rate": 8.0,
+          "age_standardized_rate": 7.5,
+          "delta_pp": -0.5,
+          "denominator": 173805,
+          "numerator": 13990
+        },
+        "大阪府": {
+          "crude_rate": 6.8,
+          "age_standardized_rate": 6.9,
+          "delta_pp": 0.1,
+          "denominator": 1486600,
+          "numerator": 100681
+        },
+        "奈良県": {
+          "crude_rate": 6.9,
+          "age_standardized_rate": 6.6,
+          "delta_pp": -0.3,
+          "denominator": 226793,
+          "numerator": 15592
+        },
+        "宮城県": {
+          "crude_rate": 9.1,
+          "age_standardized_rate": 8.5,
+          "delta_pp": -0.6,
+          "denominator": 416299,
+          "numerator": 37909
+        },
+        "宮崎県": {
+          "crude_rate": 8.0,
+          "age_standardized_rate": 7.4,
+          "delta_pp": -0.6,
+          "denominator": 150153,
+          "numerator": 12056
+        },
+        "富山県": {
+          "crude_rate": 8.0,
+          "age_standardized_rate": 7.8,
+          "delta_pp": -0.2,
+          "denominator": 231134,
+          "numerator": 18515
+        },
+        "山口県": {
+          "crude_rate": 7.5,
+          "age_standardized_rate": 7.1,
+          "delta_pp": -0.4,
+          "denominator": 175753,
+          "numerator": 13262
+        },
+        "山形県": {
+          "crude_rate": 8.2,
+          "age_standardized_rate": 7.3,
+          "delta_pp": -0.9,
+          "denominator": 182608,
+          "numerator": 14909
+        },
+        "山梨県": {
+          "crude_rate": 7.9,
+          "age_standardized_rate": 7.4,
+          "delta_pp": -0.5,
+          "denominator": 178499,
+          "numerator": 14134
+        },
+        "岐阜県": {
+          "crude_rate": 7.2,
+          "age_standardized_rate": 6.9,
+          "delta_pp": -0.3,
+          "denominator": 423418,
+          "numerator": 30599
+        },
+        "岡山県": {
+          "crude_rate": 7.7,
+          "age_standardized_rate": 7.5,
+          "delta_pp": -0.2,
+          "denominator": 288105,
+          "numerator": 22227
+        },
+        "岩手県": {
+          "crude_rate": 7.4,
+          "age_standardized_rate": 6.9,
+          "delta_pp": -0.5,
+          "denominator": 216928,
+          "numerator": 16147
+        },
+        "島根県": {
+          "crude_rate": 7.8,
+          "age_standardized_rate": 7.2,
+          "delta_pp": -0.6,
+          "denominator": 131871,
+          "numerator": 10253
+        },
+        "広島県": {
+          "crude_rate": 7.1,
+          "age_standardized_rate": 7.0,
+          "delta_pp": -0.1,
+          "denominator": 442716,
+          "numerator": 31626
+        },
+        "徳島県": {
+          "crude_rate": 7.5,
+          "age_standardized_rate": 7.0,
+          "delta_pp": -0.5,
+          "denominator": 112815,
+          "numerator": 8490
+        },
+        "愛媛県": {
+          "crude_rate": 7.1,
+          "age_standardized_rate": 7.0,
+          "delta_pp": -0.1,
+          "denominator": 247357,
+          "numerator": 17685
+        },
+        "愛知県": {
+          "crude_rate": 7.5,
+          "age_standardized_rate": 7.5,
+          "delta_pp": 0.0,
+          "denominator": 1435464,
+          "numerator": 107803
+        },
+        "新潟県": {
+          "crude_rate": 7.4,
+          "age_standardized_rate": 6.7,
+          "delta_pp": -0.7,
+          "denominator": 395720,
+          "numerator": 29132
+        },
+        "東京都": {
+          "crude_rate": 6.0,
+          "age_standardized_rate": 6.3,
+          "delta_pp": 0.3,
+          "denominator": 2995605,
+          "numerator": 178774
+        },
+        "栃木県": {
+          "crude_rate": 8.1,
+          "age_standardized_rate": 7.8,
+          "delta_pp": -0.3,
+          "denominator": 364673,
+          "numerator": 29492
+        },
+        "沖縄県": {
+          "crude_rate": 8.7,
+          "age_standardized_rate": 8.4,
+          "delta_pp": -0.3,
+          "denominator": 205108,
+          "numerator": 17893
+        },
+        "滋賀県": {
+          "crude_rate": 6.7,
+          "age_standardized_rate": 6.6,
+          "delta_pp": -0.1,
+          "denominator": 272509,
+          "numerator": 18141
+        },
+        "熊本県": {
+          "crude_rate": 9.0,
+          "age_standardized_rate": 8.3,
+          "delta_pp": -0.7,
+          "denominator": 237926,
+          "numerator": 21445
+        },
+        "石川県": {
+          "crude_rate": 8.3,
+          "age_standardized_rate": 8.2,
+          "delta_pp": -0.1,
+          "denominator": 254746,
+          "numerator": 21230
+        },
+        "神奈川県": {
+          "crude_rate": 6.1,
+          "age_standardized_rate": 6.3,
+          "delta_pp": 0.2,
+          "denominator": 1800766,
+          "numerator": 110467
+        },
+        "福井県": {
+          "crude_rate": 7.4,
+          "age_standardized_rate": 7.3,
+          "delta_pp": -0.1,
+          "denominator": 152464,
+          "numerator": 11294
+        },
+        "福岡県": {
+          "crude_rate": 7.7,
+          "age_standardized_rate": 7.6,
+          "delta_pp": -0.1,
+          "denominator": 821984,
+          "numerator": 63525
+        },
+        "福島県": {
+          "crude_rate": 8.5,
+          "age_standardized_rate": 7.8,
+          "delta_pp": -0.7,
+          "denominator": 305331,
+          "numerator": 26014
+        },
+        "秋田県": {
+          "crude_rate": 7.5,
+          "age_standardized_rate": 7.0,
+          "delta_pp": -0.5,
+          "denominator": 152354,
+          "numerator": 11448
+        },
+        "群馬県": {
+          "crude_rate": 8.3,
+          "age_standardized_rate": 7.7,
+          "delta_pp": -0.6,
+          "denominator": 369662,
+          "numerator": 30517
+        },
+        "茨城県": {
+          "crude_rate": 8.7,
+          "age_standardized_rate": 8.5,
+          "delta_pp": -0.2,
+          "denominator": 567271,
+          "numerator": 49633
+        },
+        "長崎県": {
+          "crude_rate": 7.6,
+          "age_standardized_rate": 6.9,
+          "delta_pp": -0.7,
+          "denominator": 193443,
+          "numerator": 14656
+        },
+        "長野県": {
+          "crude_rate": 6.6,
+          "age_standardized_rate": 6.2,
+          "delta_pp": -0.4,
+          "denominator": 439512,
+          "numerator": 29113
+        },
+        "青森県": {
+          "crude_rate": 8.6,
+          "age_standardized_rate": 7.8,
+          "delta_pp": -0.8,
+          "denominator": 171535,
+          "numerator": 14691
+        },
+        "静岡県": {
+          "crude_rate": 7.8,
+          "age_standardized_rate": 7.5,
+          "delta_pp": -0.3,
+          "denominator": 665082,
+          "numerator": 51603
+        },
+        "香川県": {
+          "crude_rate": 7.3,
+          "age_standardized_rate": 6.9,
+          "delta_pp": -0.4,
+          "denominator": 178455,
+          "numerator": 13065
+        },
+        "高知県": {
+          "crude_rate": 8.1,
+          "age_standardized_rate": 7.6,
+          "delta_pp": -0.5,
+          "denominator": 95995,
+          "numerator": 7815
+        },
+        "鳥取県": {
+          "crude_rate": 6.7,
+          "age_standardized_rate": 6.5,
+          "delta_pp": -0.2,
+          "denominator": 71401,
+          "numerator": 4809
+        },
+        "鹿児島県": {
+          "crude_rate": 9.0,
+          "age_standardized_rate": 8.0,
+          "delta_pp": -1.0,
+          "denominator": 263128,
+          "numerator": 23666
+        }
+      }
+    },
+    "sbp_ge_140": {
+      "metric": "収縮期血圧",
+      "risk_label": "収縮期血圧 ≥140 mmHg (高血圧)",
+      "risk_bins": [
+        "140以上160未満",
+        "160以上180未満",
+        "180以上"
+      ],
+      "unit": "mmHg",
+      "standardization_method": "NDB internal standard population (47県合算 sex × age_group)",
+      "by_pref": {
+        "三重県": {
+          "crude_rate": 19.4,
+          "age_standardized_rate": 18.9,
+          "delta_pp": -0.5,
+          "denominator": 446649,
+          "numerator": 86719
+        },
+        "京都府": {
+          "crude_rate": 17.7,
+          "age_standardized_rate": 17.8,
+          "delta_pp": 0.1,
+          "denominator": 549080,
+          "numerator": 97292
+        },
+        "佐賀県": {
+          "crude_rate": 16.9,
+          "age_standardized_rate": 16.2,
+          "delta_pp": -0.7,
+          "denominator": 181659,
+          "numerator": 30620
+        },
+        "兵庫県": {
+          "crude_rate": 17.5,
+          "age_standardized_rate": 17.5,
+          "delta_pp": 0.0,
+          "denominator": 1204843,
+          "numerator": 210389
+        },
+        "北海道": {
+          "crude_rate": 20.6,
+          "age_standardized_rate": 20.7,
+          "delta_pp": 0.1,
+          "denominator": 975254,
+          "numerator": 200738
+        },
+        "千葉県": {
+          "crude_rate": 17.9,
+          "age_standardized_rate": 17.9,
+          "delta_pp": 0.0,
+          "denominator": 1446190,
+          "numerator": 258340
+        },
+        "和歌山県": {
+          "crude_rate": 21.5,
+          "age_standardized_rate": 20.7,
+          "delta_pp": -0.8,
+          "denominator": 196042,
+          "numerator": 42141
+        },
+        "埼玉県": {
+          "crude_rate": 18.6,
+          "age_standardized_rate": 18.6,
+          "delta_pp": 0.0,
+          "denominator": 1720926,
+          "numerator": 320379
+        },
+        "大分県": {
+          "crude_rate": 18.7,
+          "age_standardized_rate": 18.1,
+          "delta_pp": -0.6,
+          "denominator": 260728,
+          "numerator": 48809
+        },
+        "大阪府": {
+          "crude_rate": 17.4,
+          "age_standardized_rate": 17.9,
+          "delta_pp": 0.5,
+          "denominator": 1784970,
+          "numerator": 310948
+        },
+        "奈良県": {
+          "crude_rate": 17.8,
+          "age_standardized_rate": 17.4,
+          "delta_pp": -0.4,
+          "denominator": 283428,
+          "numerator": 50421
+        },
+        "宮城県": {
+          "crude_rate": 20.3,
+          "age_standardized_rate": 20.0,
+          "delta_pp": -0.3,
+          "denominator": 586956,
+          "numerator": 119416
+        },
+        "宮崎県": {
+          "crude_rate": 19.3,
+          "age_standardized_rate": 18.6,
+          "delta_pp": -0.7,
+          "denominator": 239308,
+          "numerator": 46289
+        },
+        "富山県": {
+          "crude_rate": 19.4,
+          "age_standardized_rate": 19.2,
+          "delta_pp": -0.2,
+          "denominator": 276391,
+          "numerator": 53580
+        },
+        "山口県": {
+          "crude_rate": 20.5,
+          "age_standardized_rate": 19.9,
+          "delta_pp": -0.6,
+          "denominator": 287679,
+          "numerator": 58992
+        },
+        "山形県": {
+          "crude_rate": 24.0,
+          "age_standardized_rate": 23.0,
+          "delta_pp": -1.0,
+          "denominator": 306475,
+          "numerator": 73665
+        },
+        "山梨県": {
+          "crude_rate": 23.3,
+          "age_standardized_rate": 22.5,
+          "delta_pp": -0.8,
+          "denominator": 212259,
+          "numerator": 49398
+        },
+        "岐阜県": {
+          "crude_rate": 18.9,
+          "age_standardized_rate": 18.4,
+          "delta_pp": -0.5,
+          "denominator": 478089,
+          "numerator": 90272
+        },
+        "岡山県": {
+          "crude_rate": 20.2,
+          "age_standardized_rate": 20.3,
+          "delta_pp": 0.1,
+          "denominator": 418953,
+          "numerator": 84708
+        },
+        "岩手県": {
+          "crude_rate": 22.4,
+          "age_standardized_rate": 21.4,
+          "delta_pp": -1.0,
+          "denominator": 309111,
+          "numerator": 69283
+        },
+        "島根県": {
+          "crude_rate": 21.2,
+          "age_standardized_rate": 20.4,
+          "delta_pp": -0.8,
+          "denominator": 168129,
+          "numerator": 35655
+        },
+        "広島県": {
+          "crude_rate": 18.2,
+          "age_standardized_rate": 18.4,
+          "delta_pp": 0.2,
+          "denominator": 607667,
+          "numerator": 110531
+        },
+        "徳島県": {
+          "crude_rate": 18.5,
+          "age_standardized_rate": 17.7,
+          "delta_pp": -0.8,
+          "denominator": 163389,
+          "numerator": 30247
+        },
+        "愛媛県": {
+          "crude_rate": 21.6,
+          "age_standardized_rate": 21.5,
+          "delta_pp": -0.1,
+          "denominator": 301182,
+          "numerator": 65179
+        },
+        "愛知県": {
+          "crude_rate": 18.4,
+          "age_standardized_rate": 18.7,
+          "delta_pp": 0.3,
+          "denominator": 1760829,
+          "numerator": 324330
+        },
+        "新潟県": {
+          "crude_rate": 16.5,
+          "age_standardized_rate": 16.0,
+          "delta_pp": -0.5,
+          "denominator": 587348,
+          "numerator": 97013
+        },
+        "東京都": {
+          "crude_rate": 14.5,
+          "age_standardized_rate": 15.3,
+          "delta_pp": 0.8,
+          "denominator": 3481192,
+          "numerator": 503935
+        },
+        "栃木県": {
+          "crude_rate": 20.1,
+          "age_standardized_rate": 19.8,
+          "delta_pp": -0.3,
+          "denominator": 472610,
+          "numerator": 94796
+        },
+        "沖縄県": {
+          "crude_rate": 20.7,
+          "age_standardized_rate": 20.8,
+          "delta_pp": 0.1,
+          "denominator": 299470,
+          "numerator": 62052
+        },
+        "滋賀県": {
+          "crude_rate": 19.0,
+          "age_standardized_rate": 19.1,
+          "delta_pp": 0.1,
+          "denominator": 341195,
+          "numerator": 64746
+        },
+        "熊本県": {
+          "crude_rate": 18.8,
+          "age_standardized_rate": 18.4,
+          "delta_pp": -0.4,
+          "denominator": 390718,
+          "numerator": 73608
+        },
+        "石川県": {
+          "crude_rate": 19.3,
+          "age_standardized_rate": 19.2,
+          "delta_pp": -0.1,
+          "denominator": 285298,
+          "numerator": 54965
+        },
+        "神奈川県": {
+          "crude_rate": 15.2,
+          "age_standardized_rate": 15.9,
+          "delta_pp": 0.7,
+          "denominator": 2140435,
+          "numerator": 325448
+        },
+        "福井県": {
+          "crude_rate": 20.9,
+          "age_standardized_rate": 20.9,
+          "delta_pp": 0.0,
+          "denominator": 182317,
+          "numerator": 38076
+        },
+        "福岡県": {
+          "crude_rate": 17.8,
+          "age_standardized_rate": 17.9,
+          "delta_pp": 0.1,
+          "denominator": 1088456,
+          "numerator": 193684
+        },
+        "福島県": {
+          "crude_rate": 20.4,
+          "age_standardized_rate": 19.7,
+          "delta_pp": -0.7,
+          "denominator": 455746,
+          "numerator": 92902
+        },
+        "秋田県": {
+          "crude_rate": 22.6,
+          "age_standardized_rate": 21.6,
+          "delta_pp": -1.0,
+          "denominator": 232106,
+          "numerator": 52443
+        },
+        "群馬県": {
+          "crude_rate": 21.2,
+          "age_standardized_rate": 20.5,
+          "delta_pp": -0.7,
+          "denominator": 463148,
+          "numerator": 98034
+        },
+        "茨城県": {
+          "crude_rate": 19.2,
+          "age_standardized_rate": 19.0,
+          "delta_pp": -0.2,
+          "denominator": 670262,
+          "numerator": 128563
+        },
+        "長崎県": {
+          "crude_rate": 20.7,
+          "age_standardized_rate": 19.7,
+          "delta_pp": -1.0,
+          "denominator": 287976,
+          "numerator": 59522
+        },
+        "長野県": {
+          "crude_rate": 18.1,
+          "age_standardized_rate": 17.6,
+          "delta_pp": -0.5,
+          "denominator": 527656,
+          "numerator": 95536
+        },
+        "青森県": {
+          "crude_rate": 19.9,
+          "age_standardized_rate": 19.3,
+          "delta_pp": -0.6,
+          "denominator": 293120,
+          "numerator": 58251
+        },
+        "静岡県": {
+          "crude_rate": 18.6,
+          "age_standardized_rate": 18.4,
+          "delta_pp": -0.2,
+          "denominator": 900229,
+          "numerator": 167175
+        },
+        "香川県": {
+          "crude_rate": 19.3,
+          "age_standardized_rate": 18.5,
+          "delta_pp": -0.8,
+          "denominator": 224134,
+          "numerator": 43166
+        },
+        "高知県": {
+          "crude_rate": 21.7,
+          "age_standardized_rate": 21.2,
+          "delta_pp": -0.5,
+          "denominator": 157442,
+          "numerator": 34136
+        },
+        "鳥取県": {
+          "crude_rate": 23.0,
+          "age_standardized_rate": 22.4,
+          "delta_pp": -0.6,
+          "denominator": 120108,
+          "numerator": 27577
+        },
+        "鹿児島県": {
+          "crude_rate": 19.3,
+          "age_standardized_rate": 18.2,
+          "delta_pp": -1.1,
+          "denominator": 350859,
+          "numerator": 67783
+        }
+      }
+    },
+    "ldl_ge_140": {
+      "metric": "LDL",
+      "risk_label": "LDL ≥140 mg/dL (脂質異常症)",
+      "risk_bins": [
+        "140以上160未満",
+        "160以上180未満",
+        "180以上"
+      ],
+      "unit": "mg/dL",
+      "standardization_method": "NDB internal standard population (47県合算 sex × age_group)",
+      "by_pref": {
+        "三重県": {
+          "crude_rate": 27.7,
+          "age_standardized_rate": 27.7,
+          "delta_pp": 0.0,
+          "denominator": 446180,
+          "numerator": 123530
+        },
+        "京都府": {
+          "crude_rate": 27.0,
+          "age_standardized_rate": 27.0,
+          "delta_pp": 0.0,
+          "denominator": 548305,
+          "numerator": 148064
+        },
+        "佐賀県": {
+          "crude_rate": 26.8,
+          "age_standardized_rate": 27.0,
+          "delta_pp": 0.2,
+          "denominator": 181517,
+          "numerator": 48566
+        },
+        "兵庫県": {
+          "crude_rate": 29.0,
+          "age_standardized_rate": 28.9,
+          "delta_pp": -0.1,
+          "denominator": 1203309,
+          "numerator": 348514
+        },
+        "北海道": {
+          "crude_rate": 27.9,
+          "age_standardized_rate": 27.8,
+          "delta_pp": -0.1,
+          "denominator": 968751,
+          "numerator": 270201
+        },
+        "千葉県": {
+          "crude_rate": 29.1,
+          "age_standardized_rate": 29.1,
+          "delta_pp": 0.0,
+          "denominator": 1439130,
+          "numerator": 418812
+        },
+        "和歌山県": {
+          "crude_rate": 30.2,
+          "age_standardized_rate": 30.1,
+          "delta_pp": -0.1,
+          "denominator": 195896,
+          "numerator": 59130
+        },
+        "埼玉県": {
+          "crude_rate": 29.0,
+          "age_standardized_rate": 29.0,
+          "delta_pp": 0.0,
+          "denominator": 1716375,
+          "numerator": 498006
+        },
+        "大分県": {
+          "crude_rate": 28.2,
+          "age_standardized_rate": 28.3,
+          "delta_pp": 0.1,
+          "denominator": 260529,
+          "numerator": 73459
+        },
+        "大阪府": {
+          "crude_rate": 28.8,
+          "age_standardized_rate": 28.7,
+          "delta_pp": -0.1,
+          "denominator": 1778954,
+          "numerator": 511726
+        },
+        "奈良県": {
+          "crude_rate": 29.1,
+          "age_standardized_rate": 29.1,
+          "delta_pp": 0.0,
+          "denominator": 282832,
+          "numerator": 82371
+        },
+        "宮城県": {
+          "crude_rate": 27.1,
+          "age_standardized_rate": 27.4,
+          "delta_pp": 0.3,
+          "denominator": 585992,
+          "numerator": 158941
+        },
+        "宮崎県": {
+          "crude_rate": 27.2,
+          "age_standardized_rate": 27.4,
+          "delta_pp": 0.2,
+          "denominator": 239247,
+          "numerator": 65183
+        },
+        "富山県": {
+          "crude_rate": 28.4,
+          "age_standardized_rate": 28.4,
+          "delta_pp": 0.0,
+          "denominator": 276169,
+          "numerator": 78438
+        },
+        "山口県": {
+          "crude_rate": 30.4,
+          "age_standardized_rate": 30.4,
+          "delta_pp": 0.0,
+          "denominator": 287536,
+          "numerator": 87379
+        },
+        "山形県": {
+          "crude_rate": 25.7,
+          "age_standardized_rate": 26.0,
+          "delta_pp": 0.3,
+          "denominator": 305628,
+          "numerator": 78451
+        },
+        "山梨県": {
+          "crude_rate": 28.2,
+          "age_standardized_rate": 28.2,
+          "delta_pp": 0.0,
+          "denominator": 211647,
+          "numerator": 59610
+        },
+        "岐阜県": {
+          "crude_rate": 28.3,
+          "age_standardized_rate": 28.2,
+          "delta_pp": -0.1,
+          "denominator": 476742,
+          "numerator": 134850
+        },
+        "岡山県": {
+          "crude_rate": 28.6,
+          "age_standardized_rate": 28.5,
+          "delta_pp": -0.1,
+          "denominator": 418593,
+          "numerator": 119520
+        },
+        "岩手県": {
+          "crude_rate": 25.4,
+          "age_standardized_rate": 25.7,
+          "delta_pp": 0.3,
+          "denominator": 308822,
+          "numerator": 78332
+        },
+        "島根県": {
+          "crude_rate": 27.2,
+          "age_standardized_rate": 27.6,
+          "delta_pp": 0.4,
+          "denominator": 168032,
+          "numerator": 45729
+        },
+        "広島県": {
+          "crude_rate": 30.1,
+          "age_standardized_rate": 30.1,
+          "delta_pp": 0.0,
+          "denominator": 605447,
+          "numerator": 182426
+        },
+        "徳島県": {
+          "crude_rate": 28.9,
+          "age_standardized_rate": 29.0,
+          "delta_pp": 0.1,
+          "denominator": 163125,
+          "numerator": 47198
+        },
+        "愛媛県": {
+          "crude_rate": 29.2,
+          "age_standardized_rate": 29.2,
+          "delta_pp": 0.0,
+          "denominator": 300839,
+          "numerator": 87938
+        },
+        "愛知県": {
+          "crude_rate": 29.1,
+          "age_standardized_rate": 29.0,
+          "delta_pp": -0.1,
+          "denominator": 1756522,
+          "numerator": 511028
+        },
+        "新潟県": {
+          "crude_rate": 27.0,
+          "age_standardized_rate": 27.2,
+          "delta_pp": 0.2,
+          "denominator": 586606,
+          "numerator": 158304
+        },
+        "東京都": {
+          "crude_rate": 28.2,
+          "age_standardized_rate": 28.2,
+          "delta_pp": 0.0,
+          "denominator": 3452443,
+          "numerator": 973158
+        },
+        "栃木県": {
+          "crude_rate": 26.7,
+          "age_standardized_rate": 26.8,
+          "delta_pp": 0.1,
+          "denominator": 471923,
+          "numerator": 126176
+        },
+        "沖縄県": {
+          "crude_rate": 28.0,
+          "age_standardized_rate": 28.2,
+          "delta_pp": 0.2,
+          "denominator": 295385,
+          "numerator": 82747
+        },
+        "滋賀県": {
+          "crude_rate": 27.1,
+          "age_standardized_rate": 27.1,
+          "delta_pp": 0.0,
+          "denominator": 340915,
+          "numerator": 92368
+        },
+        "熊本県": {
+          "crude_rate": 26.3,
+          "age_standardized_rate": 26.5,
+          "delta_pp": 0.2,
+          "denominator": 388942,
+          "numerator": 102343
+        },
+        "石川県": {
+          "crude_rate": 25.7,
+          "age_standardized_rate": 25.8,
+          "delta_pp": 0.1,
+          "denominator": 285009,
+          "numerator": 73299
+        },
+        "神奈川県": {
+          "crude_rate": 28.9,
+          "age_standardized_rate": 28.8,
+          "delta_pp": -0.1,
+          "denominator": 2135366,
+          "numerator": 617274
+        },
+        "福井県": {
+          "crude_rate": 27.0,
+          "age_standardized_rate": 27.0,
+          "delta_pp": 0.0,
+          "denominator": 182193,
+          "numerator": 49213
+        },
+        "福岡県": {
+          "crude_rate": 29.1,
+          "age_standardized_rate": 29.3,
+          "delta_pp": 0.2,
+          "denominator": 1086219,
+          "numerator": 316379
+        },
+        "福島県": {
+          "crude_rate": 26.0,
+          "age_standardized_rate": 26.2,
+          "delta_pp": 0.2,
+          "denominator": 454330,
+          "numerator": 117931
+        },
+        "秋田県": {
+          "crude_rate": 25.5,
+          "age_standardized_rate": 25.8,
+          "delta_pp": 0.3,
+          "denominator": 231375,
+          "numerator": 59020
+        },
+        "群馬県": {
+          "crude_rate": 28.4,
+          "age_standardized_rate": 28.4,
+          "delta_pp": 0.0,
+          "denominator": 462076,
+          "numerator": 131432
+        },
+        "茨城県": {
+          "crude_rate": 28.8,
+          "age_standardized_rate": 28.8,
+          "delta_pp": 0.0,
+          "denominator": 669036,
+          "numerator": 192448
+        },
+        "長崎県": {
+          "crude_rate": 26.9,
+          "age_standardized_rate": 27.3,
+          "delta_pp": 0.4,
+          "denominator": 287890,
+          "numerator": 77583
+        },
+        "長野県": {
+          "crude_rate": 27.2,
+          "age_standardized_rate": 27.2,
+          "delta_pp": 0.0,
+          "denominator": 527085,
+          "numerator": 143172
+        },
+        "青森県": {
+          "crude_rate": 28.8,
+          "age_standardized_rate": 29.0,
+          "delta_pp": 0.2,
+          "denominator": 292824,
+          "numerator": 84434
+        },
+        "静岡県": {
+          "crude_rate": 28.4,
+          "age_standardized_rate": 28.3,
+          "delta_pp": -0.1,
+          "denominator": 889701,
+          "numerator": 252637
+        },
+        "香川県": {
+          "crude_rate": 27.8,
+          "age_standardized_rate": 28.0,
+          "delta_pp": 0.2,
+          "denominator": 223670,
+          "numerator": 62225
+        },
+        "高知県": {
+          "crude_rate": 25.8,
+          "age_standardized_rate": 25.9,
+          "delta_pp": 0.1,
+          "denominator": 157267,
+          "numerator": 40557
+        },
+        "鳥取県": {
+          "crude_rate": 28.4,
+          "age_standardized_rate": 28.5,
+          "delta_pp": 0.1,
+          "denominator": 116937,
+          "numerator": 33266
+        },
+        "鹿児島県": {
+          "crude_rate": 28.1,
+          "age_standardized_rate": 28.5,
+          "delta_pp": 0.4,
+          "denominator": 350547,
+          "numerator": 98486
+        }
+      }
+    },
+    "urine_protein_ge_1plus": {
+      "metric": "尿蛋白",
+      "risk_label": "尿蛋白 1+以上 (CKDリスク)",
+      "risk_bins": [
+        "＋",
+        "＋＋",
+        "＋＋＋"
+      ],
+      "unit": "定性",
+      "standardization_method": "NDB internal standard population (47県合算 sex × age_group)",
+      "by_pref": {
+        "三重県": {
+          "crude_rate": 3.4,
+          "age_standardized_rate": 3.3,
+          "delta_pp": -0.1,
+          "denominator": 444928,
+          "numerator": 14992
+        },
+        "京都府": {
+          "crude_rate": 3.5,
+          "age_standardized_rate": 3.5,
+          "delta_pp": 0.0,
+          "denominator": 547272,
+          "numerator": 19041
+        },
+        "佐賀県": {
+          "crude_rate": 3.7,
+          "age_standardized_rate": 3.7,
+          "delta_pp": 0.0,
+          "denominator": 181120,
+          "numerator": 6726
+        },
+        "兵庫県": {
+          "crude_rate": 3.5,
+          "age_standardized_rate": 3.5,
+          "delta_pp": 0.0,
+          "denominator": 1200702,
+          "numerator": 41845
+        },
+        "北海道": {
+          "crude_rate": 3.4,
+          "age_standardized_rate": 3.4,
+          "delta_pp": 0.0,
+          "denominator": 969791,
+          "numerator": 33296
+        },
+        "千葉県": {
+          "crude_rate": 3.1,
+          "age_standardized_rate": 3.1,
+          "delta_pp": 0.0,
+          "denominator": 1434275,
+          "numerator": 44179
+        },
+        "和歌山県": {
+          "crude_rate": 4.1,
+          "age_standardized_rate": 4.0,
+          "delta_pp": -0.1,
+          "denominator": 195182,
+          "numerator": 7975
+        },
+        "埼玉県": {
+          "crude_rate": 3.1,
+          "age_standardized_rate": 3.0,
+          "delta_pp": -0.1,
+          "denominator": 1711642,
+          "numerator": 52258
+        },
+        "大分県": {
+          "crude_rate": 3.5,
+          "age_standardized_rate": 3.5,
+          "delta_pp": 0.0,
+          "denominator": 260173,
+          "numerator": 9191
+        },
+        "大阪府": {
+          "crude_rate": 3.7,
+          "age_standardized_rate": 3.8,
+          "delta_pp": 0.1,
+          "denominator": 1777819,
+          "numerator": 65856
+        },
+        "奈良県": {
+          "crude_rate": 3.4,
+          "age_standardized_rate": 3.3,
+          "delta_pp": -0.1,
+          "denominator": 282468,
+          "numerator": 9514
+        },
+        "宮城県": {
+          "crude_rate": 2.7,
+          "age_standardized_rate": 2.7,
+          "delta_pp": 0.0,
+          "denominator": 585213,
+          "numerator": 16078
+        },
+        "宮崎県": {
+          "crude_rate": 3.8,
+          "age_standardized_rate": 3.7,
+          "delta_pp": -0.1,
+          "denominator": 238702,
+          "numerator": 8978
+        },
+        "富山県": {
+          "crude_rate": 3.7,
+          "age_standardized_rate": 3.7,
+          "delta_pp": 0.0,
+          "denominator": 274815,
+          "numerator": 10149
+        },
+        "山口県": {
+          "crude_rate": 3.7,
+          "age_standardized_rate": 3.6,
+          "delta_pp": -0.1,
+          "denominator": 287179,
+          "numerator": 10502
+        },
+        "山形県": {
+          "crude_rate": 2.0,
+          "age_standardized_rate": 2.0,
+          "delta_pp": 0.0,
+          "denominator": 306177,
+          "numerator": 6215
+        },
+        "山梨県": {
+          "crude_rate": 2.7,
+          "age_standardized_rate": 2.7,
+          "delta_pp": 0.0,
+          "denominator": 209344,
+          "numerator": 5705
+        },
+        "岐阜県": {
+          "crude_rate": 3.9,
+          "age_standardized_rate": 3.8,
+          "delta_pp": -0.1,
+          "denominator": 476402,
+          "numerator": 18437
+        },
+        "岡山県": {
+          "crude_rate": 2.8,
+          "age_standardized_rate": 2.8,
+          "delta_pp": 0.0,
+          "denominator": 417737,
+          "numerator": 11855
+        },
+        "岩手県": {
+          "crude_rate": 2.9,
+          "age_standardized_rate": 2.9,
+          "delta_pp": 0.0,
+          "denominator": 308078,
+          "numerator": 9020
+        },
+        "島根県": {
+          "crude_rate": 4.2,
+          "age_standardized_rate": 4.1,
+          "delta_pp": -0.1,
+          "denominator": 167536,
+          "numerator": 7073
+        },
+        "広島県": {
+          "crude_rate": 3.2,
+          "age_standardized_rate": 3.2,
+          "delta_pp": 0.0,
+          "denominator": 606484,
+          "numerator": 19183
+        },
+        "徳島県": {
+          "crude_rate": 5.1,
+          "age_standardized_rate": 5.0,
+          "delta_pp": -0.1,
+          "denominator": 162682,
+          "numerator": 8237
+        },
+        "愛媛県": {
+          "crude_rate": 3.8,
+          "age_standardized_rate": 3.8,
+          "delta_pp": 0.0,
+          "denominator": 300755,
+          "numerator": 11344
+        },
+        "愛知県": {
+          "crude_rate": 3.8,
+          "age_standardized_rate": 3.8,
+          "delta_pp": 0.0,
+          "denominator": 1753438,
+          "numerator": 66636
+        },
+        "新潟県": {
+          "crude_rate": 3.7,
+          "age_standardized_rate": 3.6,
+          "delta_pp": -0.1,
+          "denominator": 581977,
+          "numerator": 21264
+        },
+        "東京都": {
+          "crude_rate": 3.1,
+          "age_standardized_rate": 3.3,
+          "delta_pp": 0.2,
+          "denominator": 3448812,
+          "numerator": 106650
+        },
+        "栃木県": {
+          "crude_rate": 2.8,
+          "age_standardized_rate": 2.7,
+          "delta_pp": -0.1,
+          "denominator": 470150,
+          "numerator": 13125
+        },
+        "沖縄県": {
+          "crude_rate": 3.8,
+          "age_standardized_rate": 3.8,
+          "delta_pp": 0.0,
+          "denominator": 296989,
+          "numerator": 11331
+        },
+        "滋賀県": {
+          "crude_rate": 3.0,
+          "age_standardized_rate": 3.0,
+          "delta_pp": 0.0,
+          "denominator": 339535,
+          "numerator": 10314
+        },
+        "熊本県": {
+          "crude_rate": 3.0,
+          "age_standardized_rate": 3.0,
+          "delta_pp": 0.0,
+          "denominator": 389553,
+          "numerator": 11762
+        },
+        "石川県": {
+          "crude_rate": 3.8,
+          "age_standardized_rate": 3.8,
+          "delta_pp": 0.0,
+          "denominator": 284190,
+          "numerator": 10923
+        },
+        "神奈川県": {
+          "crude_rate": 2.8,
+          "age_standardized_rate": 2.9,
+          "delta_pp": 0.1,
+          "denominator": 2131899,
+          "numerator": 60066
+        },
+        "福井県": {
+          "crude_rate": 3.2,
+          "age_standardized_rate": 3.2,
+          "delta_pp": 0.0,
+          "denominator": 181703,
+          "numerator": 5761
+        },
+        "福岡県": {
+          "crude_rate": 3.4,
+          "age_standardized_rate": 3.4,
+          "delta_pp": 0.0,
+          "denominator": 1086213,
+          "numerator": 36680
+        },
+        "福島県": {
+          "crude_rate": 3.0,
+          "age_standardized_rate": 2.9,
+          "delta_pp": -0.1,
+          "denominator": 453719,
+          "numerator": 13477
+        },
+        "秋田県": {
+          "crude_rate": 3.5,
+          "age_standardized_rate": 3.4,
+          "delta_pp": -0.1,
+          "denominator": 230578,
+          "numerator": 8105
+        },
+        "群馬県": {
+          "crude_rate": 3.2,
+          "age_standardized_rate": 3.1,
+          "delta_pp": -0.1,
+          "denominator": 461166,
+          "numerator": 14876
+        },
+        "茨城県": {
+          "crude_rate": 2.5,
+          "age_standardized_rate": 2.5,
+          "delta_pp": 0.0,
+          "denominator": 667556,
+          "numerator": 16916
+        },
+        "長崎県": {
+          "crude_rate": 4.3,
+          "age_standardized_rate": 4.1,
+          "delta_pp": -0.2,
+          "denominator": 286952,
+          "numerator": 12283
+        },
+        "長野県": {
+          "crude_rate": 2.7,
+          "age_standardized_rate": 2.6,
+          "delta_pp": -0.1,
+          "denominator": 523891,
+          "numerator": 13940
+        },
+        "青森県": {
+          "crude_rate": 4.0,
+          "age_standardized_rate": 3.9,
+          "delta_pp": -0.1,
+          "denominator": 291194,
+          "numerator": 11683
+        },
+        "静岡県": {
+          "crude_rate": 2.5,
+          "age_standardized_rate": 2.5,
+          "delta_pp": 0.0,
+          "denominator": 888337,
+          "numerator": 22573
+        },
+        "香川県": {
+          "crude_rate": 3.5,
+          "age_standardized_rate": 3.4,
+          "delta_pp": -0.1,
+          "denominator": 223386,
+          "numerator": 7793
+        },
+        "高知県": {
+          "crude_rate": 3.8,
+          "age_standardized_rate": 3.9,
+          "delta_pp": 0.1,
+          "denominator": 157212,
+          "numerator": 6036
+        },
+        "鳥取県": {
+          "crude_rate": 3.1,
+          "age_standardized_rate": 3.1,
+          "delta_pp": 0.0,
+          "denominator": 116807,
+          "numerator": 3614
+        },
+        "鹿児島県": {
+          "crude_rate": 4.3,
+          "age_standardized_rate": 4.1,
+          "delta_pp": -0.2,
+          "denominator": 349741,
+          "numerator": 15003
+        }
+      }
+    }
+  }
+}
