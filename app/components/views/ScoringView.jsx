@@ -19,9 +19,9 @@ export default function ScoringView({ mob, tiers, topFac, facSearch, setFacSearc
   });
   return <>
   <div style={{marginBottom:24}}>
-    <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:4}}>Priority Scoring</div>
-    <h1 style={{fontSize:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>訪問優先度スコアリング</h1>
-    <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>9因子複合スコア（v4）— Tier S/A/B 上位2,802施設をDPC件数×病床数×成長率で自動ランク付け</p>
+    <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:4}}>Hospital Profile</div>
+    <h1 style={{fontSize:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>病院機能プロファイル</h1>
+    <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>規模・DPC実績・施設基準から病院の総合的な機能を9因子で評価 — 上位2,802施設</p>
   </div>
   <div style={{display:'grid',gridTemplateColumns:mob?'1fr 1fr':'repeat(5,1fr)',gap:10,marginBottom:24}}>
     {tiers.map(t=>(
@@ -45,10 +45,10 @@ export default function ScoringView({ mob, tiers, topFac, facSearch, setFacSearc
     {diseaseFilter !== 'all' && <span style={{fontSize:11,color:'#64748b',marginLeft:8}}>{filteredFac.length}施設 (capability該当)</span>}
   </div>
   <div style={{display:'flex',gap:8,marginBottom:20}}>
-    <input value={facSearch} onChange={e=>setFacSearch(e.target.value)} onKeyDown={e=>e.key==='Enter'&&doSearch()} placeholder="施設名で検索（例: 東大, 慶應, 藤田）" style={{flex:1,padding:'10px 16px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:14,outline:'none'}}/>
+    <input value={facSearch} onChange={e=>setFacSearch(e.target.value)} onKeyDown={e=>e.key==='Enter'&&doSearch()} placeholder="病院名で検索（例: 東大, 慶應, 藤田）" style={{flex:1,padding:'10px 16px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:14,outline:'none'}}/>
     <button onClick={doSearch} style={{padding:'10px 20px',borderRadius:8,border:'none',background:'#2563EB',color:'#fff',fontWeight:600,cursor:'pointer'}}>検索</button>
     <button onClick={()=>{
-      const header=['Rank','Score','Tier','施設名','都道府県','住所','病床数','年間症例数','平均在院日数','Confidence','推奨理由','不足情報','出典','取得日'];
+      const header=['Rank','Score','Tier','施設名','都道府県','住所','病床数','年間症例数','平均在院日数','Confidence','特徴','不足情報','出典','取得日'];
       const data=topFac.map(f=>{
         const reasons=[];
         if(f.total_beds>=1000) reasons.push('1000床超大規模');
@@ -69,7 +69,7 @@ export default function ScoringView({ mob, tiers, topFac, facSearch, setFacSearc
       });
       downloadCSV([header,...data],`medintel_scoring_${new Date().toISOString().slice(0,10)}.csv`);
     }} style={{padding:'10px 16px',borderRadius:8,border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',fontSize:13,cursor:'pointer',whiteSpace:'nowrap'}}>📥 CSV</button>
-    <button onClick={()=>generateScoringPDF(topFac,{title:'Priority Target List — Tier S'})} style={{padding:'10px 16px',borderRadius:8,border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',fontSize:13,cursor:'pointer',whiteSpace:'nowrap'}}>📄 PDF</button>
+    <button onClick={()=>generateScoringPDF(topFac,{title:'Hospital Function Profile — Tier S'})} style={{padding:'10px 16px',borderRadius:8,border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',fontSize:13,cursor:'pointer',whiteSpace:'nowrap'}}>📄 PDF</button>
   </div>
   {searchResults&&<div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:20,marginBottom:24}}>
     <div style={{fontSize:14,fontWeight:600,marginBottom:12}}>検索結果: {searchResults.total}件</div>
@@ -82,10 +82,10 @@ export default function ScoringView({ mob, tiers, topFac, facSearch, setFacSearc
       </div>))}
   </div>}
   <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden',overflowX:'auto'}}>
-    <div style={{padding:'16px 20px',borderBottom:'1px solid #f0f0f0',fontSize:16,fontWeight:600}}>{diseaseFilter==='all'?'Tier S 施設一覧':`${activeFilter.label} — ${filteredFac.length}施設`}</div>
+    <div style={{padding:'16px 20px',borderBottom:'1px solid #f0f0f0',fontSize:16,fontWeight:600}}>{diseaseFilter==='all'?'高機能施設一覧（Tier S）':`${activeFilter.label} — ${filteredFac.length}施設`}</div>
     <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
       <thead><tr style={{background:'#fafbfc'}}>
-        {(mob?['#','Score','施設名']:['#','Score','施設名','都道府県','病床','症例','信頼度','推奨理由']).map((h,i)=>(
+        {(mob?['#','Score','施設名']:['#','Score','施設名','都道府県','病床','症例','信頼度','特徴']).map((h,i)=>(
           <th key={i} style={{padding:'10px 12px',fontSize:11,fontWeight:600,color:'#94a3b8',textAlign:i<3?'left':'right',borderBottom:'1px solid #f1f5f9'}}>{h}</th>))}
       </tr></thead>
       <tbody>{filteredFac.map((f,i)=>{

@@ -1,6 +1,6 @@
 export const metadata = {
-  title: 'MedIntel',
-  description: '医療市場インテリジェンス — Tier S/A/B 上位2,802施設 × 9因子スコアリング',
+  title: 'MedIntel — 日本の医療と高齢社会',
+  description: '厚労省・総務省・社人研オープンデータによる医療インフラ・人口動態・病院機能の俯瞰分析',
 };
 export default function RootLayout({ children }) {
   return (

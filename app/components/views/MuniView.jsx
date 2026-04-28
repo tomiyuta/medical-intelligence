@@ -127,9 +127,9 @@ export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, dem
             ) : null;
           })()}
           <div style={{marginBottom:12}}>
-            <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:4}}>Demographics</div>
-            <h1 style={{fontSize:mob?20:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>市区町村別 人口動態</h1>
-            <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>1次医療圏単位で人口構成・高齢化率・出生死亡の自然増減を分析。都道府県をクリックで選択。</p>
+            <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:4}}>Demographics & Projection</div>
+            <h1 style={{fontSize:mob?20:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>人口動態・将来推計</h1>
+            <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>市区町村別の人口構成・高齢化率・自然増減を分析。社人研推計で2050年までの将来予測を俯瞰。</p>
           </div>
           <div style={{display:'flex',gap:8,marginBottom:16,flexWrap:'wrap'}}>
             <select value={demoPref} onChange={e=>{setDemoPref(e.target.value);const a=areaDemoData.filter(x=>x.pref===e.target.value);if(a.length)setDemoArea(a[0].area);}} style={{padding:'8px 12px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,background:'#fff'}}>

@@ -124,7 +124,7 @@ export default function Home() {
       {/* Desktop Sidebar / Mobile Bottom Nav */}
       {mob ? (
         <nav style={{position:'fixed',bottom:0,left:0,right:0,background:'#fff',borderTop:'1px solid #e2e8f0',display:'flex',zIndex:50,padding:'6px 0 env(safe-area-inset-bottom)',boxShadow:'0 -2px 8px rgba(0,0,0,0.06)',overflowX:'auto'}}>
-          {[['map','分布','M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z'],['muni','人口','M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z'],['area','医療圏','M22 12h-4l-3 9L9 3l-3 9H2'],['score','Score','M18 20V10M12 20V4M6 20v-6'],['ndb','NDB','M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'],['kijun','基準','M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'],['geomap','地図','M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z']].map(([id,l,ic])=>(
+          {[['map','概況','M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z'],['muni','人口','M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z'],['area','医療圏','M22 12h-4l-3 9L9 3l-3 9H2'],['score','病院','M18 20V10M12 20V4M6 20v-6'],['ndb','NDB','M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'],['kijun','基準','M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'],['geomap','地図','M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z']].map(([id,l,ic])=>(
             <button key={id} onClick={()=>setView(id)} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:2,padding:'6px 0',border:'none',background:'transparent',cursor:'pointer',color:view===id?'#2563EB':'#94a3b8',fontSize:10,fontWeight:view===id?700:400}}>
               <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={view===id?'#2563EB':'#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={ic}/></svg>
               {l}
@@ -135,18 +135,18 @@ export default function Home() {
       <aside style={{width:230,background:'#fff',borderRight:'1px solid #f0f0f0',padding:'20px 12px',flexShrink:0,position:'sticky',top:0,height:'100vh',boxSizing:'border-box',display:'flex',flexDirection:'column',gap:2}}>
         <div style={{padding:'0 14px 16px',borderBottom:'1px solid #f0f0f0',marginBottom:8}}>
           <div style={{fontSize:18,fontWeight:700,letterSpacing:'-0.03em'}}>MedIntel</div>
-          <div style={{fontSize:11,color:'#94a3b8',marginTop:2}}>医療市場インテリジェンス</div>
+          <div style={{fontSize:11,color:'#94a3b8',marginTop:2}}>日本の医療と高齢社会</div>
         </div>
-        <Nav icon="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z" label="都道府県別 分布" active={view==='map'} onClick={()=>setView('map')}/>
-        <Nav icon="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z" label="市区町村 人口動態" active={view==='muni'} onClick={()=>setView('muni')}/>
+        <Nav icon="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z" label="高齢社会 概況" active={view==='map'} onClick={()=>setView('map')}/>
+        <Nav icon="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z" label="人口動態・将来推計" active={view==='muni'} onClick={()=>setView('muni')}/>
         <Nav icon="M22 12h-4l-3 9L9 3l-3 9H2" label="医療圏分析" active={view==='area'} onClick={()=>setView('area')}/>
-        <Nav icon="M18 20V10M12 20V4M6 20v-6" label="スコアリング" active={view==='score'} onClick={()=>setView('score')}/>
-        <Nav icon="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" label="NDB分析" active={view==='ndb'} onClick={()=>setView('ndb')}/>
+        <Nav icon="M18 20V10M12 20V4M6 20v-6" label="病院機能" active={view==='score'} onClick={()=>setView('score')}/>
+        <Nav icon="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" label="NDB 診療動向" active={view==='ndb'} onClick={()=>setView('ndb')}/>
         <Nav icon="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" label="施設基準" active={view==='kijun'} onClick={()=>setView('kijun')}/>
         <Nav icon="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" label="施設マップ" active={view==='geomap'} onClick={()=>setView('geomap')}/>
         <div style={{flex:1}}/>
         <div style={{padding:'12px 14px',borderTop:'1px solid #f0f0f0',fontSize:11,color:'#cbd5e1'}}>
-          出典: 厚労省/総務省/社人研<br/>Tier S/A/B 上位2,802施設 × 9因子スコアリング
+          出典: 厚労省/総務省/社人研<br/>97,024施設 × 976,149届出 × 住基2025
         </div>
       </aside>
       )}
@@ -174,8 +174,8 @@ export default function Home() {
         {view==='geomap' && <GeoMapView mob={mob} geoFacilities={geoFacilities} selectedFacility={selectedFacility} setSelectedFacility={setSelectedFacility} mapPref={mapPref} setMapPref={setMapPref} />}
 
         <div style={{fontSize:11,color:'#cbd5e1',textAlign:'center',marginTop:32,lineHeight:1.6}}>
-          MedIntel v3.16 — 厚労省/総務省/社人研/全国8地方厚生局 オープンデータを加工して作成<br/>
-          本サービスは公的統計データを独自に統合・スコアリングしたものであり、政府が作成したものではありません
+          MedIntel — 厚労省/総務省/社人研/全国8地方厚生局 オープンデータを加工して作成<br/>
+          本サイトは公的統計データを独自に統合・分析したものであり、政府が作成したものではありません
         </div>
       </main>
     </div>

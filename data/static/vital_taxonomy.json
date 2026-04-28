@@ -1,52 +1,58 @@
 {
-  "悪性新生物": {
+  "がん(悪性新生物)": {
     "capabilities": ["oncology", "imaging", "surgery"],
-    "label": "がん",
     "color": "#dc2626"
   },
   "心疾患": {
     "capabilities": ["acute", "surgery", "imaging"],
-    "label": "心疾患",
-    "color": "#f59e0b"
+    "color": "#ea580c"
   },
   "脳血管疾患": {
     "capabilities": ["acute", "rehab", "imaging"],
-    "label": "脳血管",
-    "color": "#8b5cf6"
+    "color": "#d97706"
   },
   "老衰": {
     "capabilities": ["homecare"],
-    "label": "老衰",
-    "color": "#94a3b8"
+    "color": "#6b7280"
   },
   "肺炎": {
     "capabilities": ["acute", "infection"],
-    "label": "肺炎",
-    "color": "#3b82f6"
+    "color": "#0ea5e9"
   },
   "誤嚥性肺炎": {
-    "capabilities": ["rehab", "homecare"],
-    "label": "誤嚥性肺炎",
+    "capabilities": ["acute", "rehab", "homecare"],
     "color": "#06b6d4"
-  },
-  "糖尿病": {
-    "capabilities": ["dx_it"],
-    "label": "糖尿病",
-    "color": "#059669"
   },
   "腎不全": {
     "capabilities": ["acute", "dx_it"],
-    "label": "腎不全",
-    "color": "#d946ef"
+    "color": "#8b5cf6"
   },
-  "高血圧性疾患": {
-    "capabilities": ["acute"],
-    "label": "高血圧",
-    "color": "#ea580c"
+  "糖尿病": {
+    "capabilities": ["dx_it"],
+    "color": "#f59e0b"
+  },
+  "肝疾患": {
+    "capabilities": ["acute", "surgery"],
+    "color": "#10b981"
   },
   "不慮の事故": {
     "capabilities": ["acute", "surgery"],
-    "label": "不慮の事故",
     "color": "#64748b"
+  },
+  "自殺": {
+    "capabilities": ["psychiatry"],
+    "color": "#475569"
+  },
+  "アルツハイマー病": {
+    "capabilities": ["psychiatry", "homecare"],
+    "color": "#a855f7"
+  },
+  "血管性認知症": {
+    "capabilities": ["psychiatry", "rehab"],
+    "color": "#c084fc"
+  },
+  "高血圧性疾患": {
+    "capabilities": ["acute"],
+    "color": "#ef4444"
   }
 }
