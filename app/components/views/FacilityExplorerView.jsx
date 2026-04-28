@@ -22,9 +22,12 @@ export default function FacilityExplorerView({
   const [capFilter, setCapFilter] = useState('');
   const [tierFilter, setTierFilter] = useState('');
   const [dpcPage, setDpcPage] = useState(0);
+  const [dpcSearch, setDpcSearch] = useState('');
+  const [dpcSort, setDpcSort] = useState('score'); // 'score' | 'beds' | 'cases' | 'los' | 'growth' | 'rank'
+  const [dpcExpanded, setDpcExpanded] = useState(null);
   const PER_PAGE = 25;
   // capability/tier filter変化時にdpcPageを0リセット
-  const resetDpcPage = () => setDpcPage(0);
+  const resetDpcPage = () => { setDpcPage(0); setDpcExpanded(null); };
 
   // Build geo lookup by code
   const geoByCode = {};
@@ -62,7 +65,20 @@ export default function FacilityExplorerView({
     if (capFilter && (!f.cap || !(f.cap[capFilter] > 0))) return false;
     if (tierFilter && f.tier !== tierFilter) return false;
     if (kijunPref && f.prefecture_name !== kijunPref) return false;
+    if (dpcSearch) {
+      const q = dpcSearch;
+      if (!(f.facility_name || '').includes(q) && !(f.address || '').includes(q)) return false;
+    }
     return true;
+  });
+  const dpcSorted = [...dpcFiltered].sort((a, b) => {
+    if (dpcSort === 'score') return (b.priority_score || 0) - (a.priority_score || 0);
+    if (dpcSort === 'beds') return (b.total_beds || 0) - (a.total_beds || 0);
+    if (dpcSort === 'cases') return (b.annual_cases || 0) - (a.annual_cases || 0);
+    if (dpcSort === 'los') return (a.avg_los || 99) - (b.avg_los || 99); // 短い方が上
+    if (dpcSort === 'growth') return (b.case_growth_pct || 0) - (a.case_growth_pct || 0);
+    if (dpcSort === 'rank') return (a.rank || 99999) - (b.rank || 99999);
+    return 0;
   });
 
   return <>
@@ -252,44 +268,114 @@ export default function FacilityExplorerView({
       {['', 'S', 'A', 'B'].map(t => (
         <button key={t} onClick={() => { setTierFilter(tierFilter === t ? '' : t); resetDpcPage(); }} style={{padding:'3px 10px',borderRadius:12,border:tierFilter===t?`2px solid ${TC2[t]||'#64748b'}`:'1px solid #e2e8f0',background:tierFilter===t?(TC2[t]||'#64748b')+'18':'#fff',color:tierFilter===t?(TC2[t]||'#64748b'):'#94a3b8',fontSize:11,fontWeight:tierFilter===t?600:400,cursor:'pointer'}}>{t || '全て'}</button>
       ))}
-      <span style={{fontSize:11,color:'#64748b',marginLeft:8}}>{fmt(dpcFiltered.length)} 施設絞込済 (都道府県:{kijunPref || '全国'})</span>
       <span style={{fontSize:10,color:'#cbd5e1',marginLeft:'auto'}}>※Tier/scoreは内製複合指標</span>
     </div>
+    {/* 検索 + sort + CSV (Tab 2) */}
+    <div style={{display:'flex',gap:8,marginBottom:10,flexWrap:'wrap',alignItems:'center'}}>
+      <input value={dpcSearch} onChange={e => { setDpcSearch(e.target.value); resetDpcPage(); }} placeholder="施設名・住所で検索" style={{padding:'7px 12px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,background:'#fff',width:mob?'100%':180}}/>
+      <select value={dpcSort} onChange={e => setDpcSort(e.target.value)} style={{padding:'7px 10px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:12,background:'#fff'}}>
+        <option value="score">規模・実績スコア順</option>
+        <option value="rank">全国順位</option>
+        <option value="beds">病床数順</option>
+        <option value="cases">症例数順</option>
+        <option value="los">在院日数順 (短い順)</option>
+        <option value="growth">成長率順</option>
+      </select>
+      <span style={{fontSize:12,color:'#64748b'}}>{fmt(dpcFiltered.length)} 施設 (都道府県:{kijunPref || '全国'})</span>
+      <button onClick={() => {
+        const header = ['順位','施設コード','施設名','都道府県','住所','病床数','年間症例','平均在院日数','成長率%','スコア','ティア','特徴','出典'];
+        const data = dpcSorted.map(f => [f.rank, f.facility_code_10, f.facility_name, f.prefecture_name, f.address || '', f.total_beds || '', f.annual_cases || '', f.avg_los || '', f.case_growth_pct || '', f.priority_score || '', f.tier || '', (f.reasons || []).join('/'), '厚労省DPC + G-MIS']);
+        downloadCSV([header, ...data], `medintel_explorer_dpc_${kijunPref || 'all'}_${new Date().toISOString().slice(0,10)}.csv`);
+      }} style={{padding:'5px 12px',borderRadius:6,border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',fontSize:12,cursor:'pointer'}}>📥 CSV</button>
+    </div>
 
-    {/* DPC施設テーブル (pagination化) */}
+    {/* DPC施設テーブル (pagination化 + 検索 + sort + 行詳細) */}
     {(() => {
-      const dpcTotalPages = Math.ceil(dpcFiltered.length / PER_PAGE) || 1;
+      const dpcTotalPages = Math.ceil(dpcSorted.length / PER_PAGE) || 1;
       const dpg = Math.min(dpcPage, dpcTotalPages - 1);
-      const dpcPaged = dpcFiltered.slice(dpg * PER_PAGE, (dpg + 1) * PER_PAGE);
+      const dpcPaged = dpcSorted.slice(dpg * PER_PAGE, (dpg + 1) * PER_PAGE);
       const totalCount = (topFac || []).length;
       return (
         <>
-          {dpcFiltered.length === 0 ? (
+          {dpcSorted.length === 0 ? (
             <div style={{padding:'24px',textAlign:'center',color:'#94a3b8',fontSize:13,background:'#f8fafc',borderRadius:8}}>
-              該当する施設がありません ({fmt(totalCount)}施設のキャッシュから絞り込み中){kijunPref && ` / 都道府県=${kijunPref}`}{capFilter && ` / capability=${CAT_LABELS[capFilter]}`}{tierFilter && ` / Tier=${tierFilter}`}
+              該当する施設がありません ({fmt(totalCount)}施設のキャッシュから絞り込み中){kijunPref && ` / 都道府県=${kijunPref}`}{capFilter && ` / capability=${CAT_LABELS[capFilter]}`}{tierFilter && ` / Tier=${tierFilter}`}{dpcSearch && ` / 検索="${dpcSearch}"`}
             </div>
           ) : (
             <>
               <div style={{background:'#fff',borderRadius:12,border:'1px solid #f0f0f0',overflow:'hidden'}}>
-                <div style={{maxHeight:'calc(100vh - 380px)',overflowY:'auto',overflowX:'auto'}}>
+                <div style={{maxHeight:'calc(100vh - 420px)',overflowY:'auto',overflowX:'auto'}}>
                   <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
                     <thead><tr style={{background:'#fafbfc',position:'sticky',top:0,zIndex:1}}>
-                      {(mob ? ['#', 'Score', '施設名'] : ['#', 'Score', '施設名', '都道府県', '病床', '症例', '在院日数', '特徴']).map((h, i) => (
+                      {(mob ? ['#', 'Score', '施設名'] : ['#', '規模・実績', '施設名', '都道府県', '病床', '症例', '在院日数', '特徴']).map((h, i) => (
                         <th key={i} style={{padding:'10px 12px',fontSize:11,fontWeight:600,color:'#94a3b8',textAlign:i<3?'left':'right',borderBottom:'1px solid #f1f5f9',background:'#fafbfc'}}>{h}</th>
                       ))}
                     </tr></thead>
-                    <tbody>{dpcPaged.map((f, i) => (
-                      <tr key={i} style={{borderBottom:'1px solid #f8f9fa'}} onMouseEnter={e => e.currentTarget.style.background='#f8faff'} onMouseLeave={e => e.currentTarget.style.background='transparent'}>
-                        <td style={{padding:'10px 12px',color:'#94a3b8'}}>#{f.rank}</td>
-                        <td style={{padding:'10px 12px'}}><span style={{padding:'2px 10px',borderRadius:20,fontSize:12,fontWeight:700,background:(TC[f.tier]||'#ccc')+'18',color:TC[f.tier]||'#999'}}>{f.priority_score}</span></td>
-                        <td style={{padding:'10px 12px',fontWeight:500,color:'#1e293b'}}>{f.facility_name}{f.missing && f.missing.length > 0 && <span style={{fontSize:10,color:'#f59e0b',marginLeft:4}} title={f.missing.join(', ')}>⚠</span>}</td>
-                        {!mob && <td style={{padding:'10px 12px',textAlign:'right',color:'#64748b'}}>{f.prefecture_name}</td>}
-                        {!mob && <td style={{padding:'10px 12px',textAlign:'right',fontVariantNumeric:'tabular-nums'}}>{fmt(f.total_beds)}</td>}
-                        {!mob && <td style={{padding:'10px 12px',textAlign:'right',color:'#2563EB',fontWeight:600,fontVariantNumeric:'tabular-nums'}}>{fmt(f.annual_cases)}</td>}
-                        {!mob && <td style={{padding:'10px 12px',textAlign:'right'}}>{f.avg_los || '—'}</td>}
-                        {!mob && <td style={{padding:'10px 12px',fontSize:11,color:'#64748b',maxWidth:180}}>{(f.reasons || []).slice(0, 3).join(' / ') || '—'}</td>}
-                      </tr>
-                    ))}</tbody>
+                    <tbody>{dpcPaged.map((f, i) => {
+                      const dIdx = dpg * PER_PAGE + i;
+                      const isExp = dpcExpanded === dIdx;
+                      const geo = geoByCode[f.facility_code_10];
+                      const mapQ = encodeURIComponent((f.facility_name || '') + ' ' + (f.address || ''));
+                      return [
+                        <tr key={dIdx} onClick={() => setDpcExpanded(isExp ? null : dIdx)} style={{borderBottom:isExp?'none':'1px solid #f8f9fa',cursor:'pointer',background:isExp?'#f0f7ff':'transparent'}}>
+                          <td style={{padding:'10px 12px',color:'#94a3b8'}}>#{f.rank}</td>
+                          <td style={{padding:'10px 12px'}}><span style={{padding:'2px 10px',borderRadius:20,fontSize:12,fontWeight:700,background:(TC[f.tier]||'#ccc')+'18',color:TC[f.tier]||'#999'}}>{f.priority_score}</span></td>
+                          <td style={{padding:'10px 12px',fontWeight:500,color:isExp?'#2563EB':'#1e293b'}}>{f.facility_name}{f.missing && f.missing.length > 0 && <span style={{fontSize:10,color:'#f59e0b',marginLeft:4}} title={f.missing.join(', ')}>⚠</span>}</td>
+                          {!mob && <td style={{padding:'10px 12px',textAlign:'right',color:'#64748b'}}>{f.prefecture_name}</td>}
+                          {!mob && <td style={{padding:'10px 12px',textAlign:'right',fontVariantNumeric:'tabular-nums'}}>{fmt(f.total_beds)}</td>}
+                          {!mob && <td style={{padding:'10px 12px',textAlign:'right',color:'#2563EB',fontWeight:600,fontVariantNumeric:'tabular-nums'}}>{fmt(f.annual_cases)}</td>}
+                          {!mob && <td style={{padding:'10px 12px',textAlign:'right'}}>{f.avg_los || '—'}</td>}
+                          {!mob && <td style={{padding:'10px 12px',fontSize:11,color:'#64748b',maxWidth:180}}>{(f.reasons || []).slice(0, 3).join(' / ') || '—'}</td>}
+                        </tr>,
+                        isExp && <tr key={dIdx + 'd'}><td colSpan={mob ? 3 : 8} style={{padding:0,background:'#f8faff',borderBottom:'1px solid #e8ecf0'}}>
+                          <div style={{padding:'14px 18px',display:'grid',gridTemplateColumns:mob?'1fr':'2fr 1fr',gap:14}}>
+                            <div>
+                              <div style={{fontSize:11,color:'#94a3b8',marginBottom:2}}>住所</div>
+                              <div style={{fontSize:13,marginBottom:10}}>{f.address || '—'}</div>
+                              <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:8,marginBottom:10}}>
+                                <div><div style={{fontSize:10,color:'#94a3b8'}}>規模・実績</div><div style={{fontSize:14,fontWeight:600,color:TC[f.tier]||'#999'}}>{f.priority_score} pt (Tier {f.tier})</div></div>
+                                <div><div style={{fontSize:10,color:'#94a3b8'}}>病床数</div><div style={{fontSize:14,fontWeight:600}}>{fmt(f.total_beds)}</div></div>
+                                <div><div style={{fontSize:10,color:'#94a3b8'}}>年間症例</div><div style={{fontSize:14,fontWeight:600,color:'#2563EB'}}>{fmt(f.annual_cases)}</div></div>
+                                <div><div style={{fontSize:10,color:'#94a3b8'}}>平均在院日数</div><div style={{fontSize:14,fontWeight:600}}>{f.avg_los || '—'}日</div></div>
+                                <div><div style={{fontSize:10,color:'#94a3b8'}}>成長率</div><div style={{fontSize:14,fontWeight:600}}>{f.case_growth_pct ? `${f.case_growth_pct > 0 ? '+' : ''}${f.case_growth_pct}%` : '—'}</div></div>
+                                <div><div style={{fontSize:10,color:'#94a3b8'}}>DPC参加</div><div style={{fontSize:14,fontWeight:600}}>{f.is_dpc_participant ? '✓ 参加' : '—'}</div></div>
+                              </div>
+                              {f.cap && Object.keys(f.cap).length > 0 && (
+                                <div style={{marginTop:6}}>
+                                  <div style={{fontSize:11,color:'#94a3b8',marginBottom:4}}>capability proxy</div>
+                                  <div style={{display:'flex',gap:4,flexWrap:'wrap'}}>
+                                    {Object.entries(f.cap).filter(([,v]) => v > 0).sort((a, b) => b[1] - a[1]).map(([k, v]) => (
+                                      <span key={k} style={{padding:'2px 8px',borderRadius:10,fontSize:10,fontWeight:600,background:(CAT_COLORS[k]||'#ccc')+'18',color:CAT_COLORS[k]||'#999'}}>{CAT_LABELS[k] || k} {v}</span>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+                              {f.reasons && f.reasons.length > 0 && (
+                                <div style={{marginTop:8}}>
+                                  <div style={{fontSize:11,color:'#94a3b8',marginBottom:4}}>スコア寄与ラベル</div>
+                                  <div style={{fontSize:11,color:'#475569'}}>{f.reasons.join(' / ')}</div>
+                                </div>
+                              )}
+                              {f.missing && f.missing.length > 0 && (
+                                <div style={{marginTop:8,padding:'4px 8px',background:'#fef3c7',borderRadius:4}}>
+                                  <div style={{fontSize:10,color:'#92400e'}}>⚠ 欠損: {f.missing.join(', ')}</div>
+                                </div>
+                              )}
+                            </div>
+                            {/* Google Maps iframe */}
+                            <div style={{minHeight:200,borderRadius:8,overflow:'hidden',border:'1px solid #e2e8f0'}}>
+                              <iframe
+                                width="100%" height="100%" frameBorder="0" style={{border:0,minHeight:200}}
+                                src={geo
+                                  ? `https://maps.google.com/maps?q=${geo.lat},${geo.lng}&t=m&z=15&output=embed`
+                                  : `https://maps.google.com/maps?q=${mapQ}&t=m&z=15&output=embed`}
+                                allowFullScreen
+                              />
+                            </div>
+                          </div>
+                        </td></tr>
+                      ];
+                    })}</tbody>
                   </table>
                 </div>
               </div>
