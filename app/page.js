@@ -68,7 +68,7 @@ export default function Home() {
       fetch('/api/prefectures-full').then(r=>r.json()),
       fetch('/api/municipalities').then(r=>r.json()),
       fetch('/api/tiers').then(r=>r.json()),
-      fetch('/api/facilities?limit=500').then(r=>r.json()),
+      fetch('/api/facilities?limit=3000').then(r=>r.json()),
     ]).then(([p,m,t,f]) => {
       setPrefs(p); setMunis(m.data||[]); setTiers(t); setTopFac(f.data||[]);
     });

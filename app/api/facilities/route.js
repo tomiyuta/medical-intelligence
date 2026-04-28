@@ -8,7 +8,7 @@ export async function GET(request) {
   const prefecture = searchParams.get('prefecture');
   const q = searchParams.get('q');
   const minBeds = parseInt(searchParams.get('min_beds') || '0');
-  const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 200);
+  const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 3000);
   const offset = parseInt(searchParams.get('offset') || '0');
 
   let data = getTopFacilities();

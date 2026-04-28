@@ -22,19 +22,19 @@ function classifyRegion(prefShares, natShares, beds_per_75plus, nat_beds_per_75p
 
   // 優先順位:供給薄型 > 大都市・高機能集中型 > 急性期偏重型 > 高齢化・慢性期型 > 回復期補完型 > 標準型
   if (supplyRatio != null && supplyRatio < 0.85) {
-    return { type:'供給薄型', color:'#dc2626', desc:'75歳以上あたり病床数が全国の0.85倍未満。アクセス・在宅代替の確認が必要。', icon:'⚠️' };
+    return { type:'供給薄型の可能性', color:'#dc2626', desc:'75歳以上人口に対する病床数が全国平均の0.85倍未満。アクセス・在宅代替の確認が示唆される。', icon:'⚠️' };
   }
   if (dHi > 2) {
-    return { type:'大都市・高機能集中型', color:'#7c3aed', desc:`高度急性期シェアが全国比 +${dHi.toFixed(1)}pt。大学病院・専門病院の集積する大都市型構造。`, icon:'🏙️' };
+    return { type:'大都市・高機能集中型', color:'#7c3aed', desc:`高度急性期シェアが全国比 +${dHi.toFixed(1)}pt。大学病院・専門病院の集積する大都市型の傾向。`, icon:'🏙️' };
   }
   if (acuteShare > 50) {
-    return { type:'急性期偏重型', color:'#f59e0b', desc:`急性期シェアが${acuteShare.toFixed(1)}%と過半。回復期・慢性期とのバランス確認が必要。`, icon:'⚖️' };
+    return { type:'急性期偏重型の傾向', color:'#f59e0b', desc:`急性期シェアが${acuteShare.toFixed(1)}%と過半。回復期・慢性期とのバランスは要確認。`, icon:'⚖️' };
   }
   if (dCh > 5) {
-    return { type:'高齢化・慢性期型', color:'#2563eb', desc:`慢性期シェアが全国比 +${dCh.toFixed(1)}pt。長期療養・慢性疾患需要が大きい構造。`, icon:'🌿' };
+    return { type:'高齢化・慢性期型の傾向', color:'#2563eb', desc:`慢性期シェアが全国比 +${dCh.toFixed(1)}pt。長期療養・慢性疾患需要が相対的に大きい構造。`, icon:'🌿' };
   }
   if (dRe > 3) {
-    return { type:'回復期補完型', color:'#059669', desc:`回復期シェアが全国比 +${dRe.toFixed(1)}pt。脳卒中・整形後の受け皿が厚い構造。`, icon:'🔄' };
+    return { type:'回復期補完型の傾向', color:'#059669', desc:`回復期シェアが全国比 +${dRe.toFixed(1)}pt。脳卒中・整形後の受け皿が厚めの構造。`, icon:'🔄' };
   }
   return { type:'標準型', color:'#64748b', desc:'機能配分は全国平均に近い。', icon:'➖' };
 }
@@ -103,7 +103,7 @@ export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegP
         {l:'総床数', v: totalBeds ? fmt(totalBeds) : '—', sub:'許可病床(一般+療養)', c:'#2563eb'},
         {l:'病棟数', v: totalWards ? fmt(totalWards) : '—', sub:'4機能合計', c:'#059669'},
         {l:'75歳以上人口', v: pop75 ? fmt(pop75) : '—', sub:'住基2025', c:'#9f1239'},
-        {l:'75+あたり病床数', v: beds_per_75plus ? beds_per_75plus.toFixed(0) : '—', sub:'人口10万対',
+        {l:'75+あたり病床数', v: beds_per_75plus ? beds_per_75plus.toFixed(0) : '—', sub:'人口10万対 ※年次差あり',
          c:'#f59e0b',
          delta: (beds_per_75plus && nat_beds_per_75plus && !isNational) ? ((beds_per_75plus/nat_beds_per_75plus-1)*100) : null},
         {l: isNational ? '基準' : '全国比', v: isNational ? '—' : (nat_total ? `${(totalBeds/nat_total*100).toFixed(2)}%` : '—'), sub:'総床数の全国シェア', c:'#64748b'},
@@ -181,6 +181,16 @@ export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegP
       <div style={{fontSize:12,color:'#475569',lineHeight:1.6}}>{region.desc}</div>
     </div>
   )}
+
+  {/* データの取扱いについて (注記) */}
+  <div style={{background:'#fffbeb',borderRadius:14,border:'1px solid #fde68a',padding:'14px 18px',marginBottom:16}}>
+    <div style={{fontSize:12,fontWeight:600,color:'#92400e',marginBottom:6}}>📋 データの取扱いについて</div>
+    <ul style={{margin:0,paddingLeft:18,fontSize:11,color:'#78350f',lineHeight:1.7}}>
+      <li><b>自己申告</b>: 病床機能区分は施設の自己申告(2024/7/1時点)に基づき、実際の患者構成と乖離する可能性。</li>
+      <li><b>時点差</b>: 病床機能=2024/7/1時点、人口データ=住基2025年1月。年次差があり厳密な同年比較ではなく現況把握用。</li>
+      <li><b>地域類型は暫定ルール</b>: 「供給薄型の可能性」「急性期偏重型の傾向」等は経験則に基づく暫定分類で、z-score化等の統計的根拠は未実装(Phase 2課題)。</li>
+    </ul>
+  </div>
 
   {/* 需要との接続 (Phase 2 placeholder) */}
   <div style={{background:'#fafbfc',borderRadius:14,border:'1px dashed #cbd5e1',padding:'16px 20px',marginBottom:16}}>

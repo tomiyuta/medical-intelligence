@@ -21,7 +21,10 @@ export default function FacilityExplorerView({
   const [tab, setTab] = useState('kijun'); // 'kijun' | 'dpc' | 'score'
   const [capFilter, setCapFilter] = useState('');
   const [tierFilter, setTierFilter] = useState('');
+  const [dpcPage, setDpcPage] = useState(0);
   const PER_PAGE = 25;
+  // capability/tier filter変化時にdpcPageを0リセット
+  const resetDpcPage = () => setDpcPage(0);
 
   // Build geo lookup by code
   const geoByCode = {};
@@ -239,47 +242,80 @@ export default function FacilityExplorerView({
   {tab === 'dpc' && <>
     <div style={{display:'flex',gap:4,marginBottom:8,flexWrap:'wrap',alignItems:'center'}}>
       <span style={{fontSize:11,color:'#94a3b8',marginRight:4}}>capability:</span>
-      <button onClick={() => setCapFilter('')} style={{padding:'3px 10px',borderRadius:12,border:!capFilter?'2px solid #2563EB':'1px solid #e2e8f0',background:!capFilter?'#eff6ff':'#fff',color:!capFilter?'#2563EB':'#94a3b8',fontSize:11,fontWeight:!capFilter?600:400,cursor:'pointer'}}>全て</button>
+      <button onClick={() => { setCapFilter(''); resetDpcPage(); }} style={{padding:'3px 10px',borderRadius:12,border:!capFilter?'2px solid #2563EB':'1px solid #e2e8f0',background:!capFilter?'#eff6ff':'#fff',color:!capFilter?'#2563EB':'#94a3b8',fontSize:11,fontWeight:!capFilter?600:400,cursor:'pointer'}}>全て</button>
       {Object.entries(CAT_LABELS).map(([k, v]) => (
-        <button key={k} onClick={() => setCapFilter(capFilter === k ? '' : k)} style={{padding:'3px 10px',borderRadius:12,border:capFilter===k?`2px solid ${CAT_COLORS[k]}`:'1px solid #e2e8f0',background:capFilter===k?CAT_COLORS[k]+'18':'#fff',color:capFilter===k?CAT_COLORS[k]:'#94a3b8',fontSize:11,fontWeight:capFilter===k?600:400,cursor:'pointer'}}>{v}</button>
+        <button key={k} onClick={() => { setCapFilter(capFilter === k ? '' : k); resetDpcPage(); }} style={{padding:'3px 10px',borderRadius:12,border:capFilter===k?`2px solid ${CAT_COLORS[k]}`:'1px solid #e2e8f0',background:capFilter===k?CAT_COLORS[k]+'18':'#fff',color:capFilter===k?CAT_COLORS[k]:'#94a3b8',fontSize:11,fontWeight:capFilter===k?600:400,cursor:'pointer'}}>{v}</button>
       ))}
     </div>
     <div style={{display:'flex',gap:4,marginBottom:10,flexWrap:'wrap',alignItems:'center'}}>
       <span style={{fontSize:11,color:'#94a3b8',marginRight:4}}>Tier:</span>
       {['', 'S', 'A', 'B'].map(t => (
-        <button key={t} onClick={() => setTierFilter(tierFilter === t ? '' : t)} style={{padding:'3px 10px',borderRadius:12,border:tierFilter===t?`2px solid ${TC2[t]||'#64748b'}`:'1px solid #e2e8f0',background:tierFilter===t?(TC2[t]||'#64748b')+'18':'#fff',color:tierFilter===t?(TC2[t]||'#64748b'):'#94a3b8',fontSize:11,fontWeight:tierFilter===t?600:400,cursor:'pointer'}}>{t || '全て'}</button>
+        <button key={t} onClick={() => { setTierFilter(tierFilter === t ? '' : t); resetDpcPage(); }} style={{padding:'3px 10px',borderRadius:12,border:tierFilter===t?`2px solid ${TC2[t]||'#64748b'}`:'1px solid #e2e8f0',background:tierFilter===t?(TC2[t]||'#64748b')+'18':'#fff',color:tierFilter===t?(TC2[t]||'#64748b'):'#94a3b8',fontSize:11,fontWeight:tierFilter===t?600:400,cursor:'pointer'}}>{t || '全て'}</button>
       ))}
-      <span style={{fontSize:11,color:'#64748b',marginLeft:8}}>{dpcFiltered.length} 施設 (都道府県:{kijunPref})</span>
+      <span style={{fontSize:11,color:'#64748b',marginLeft:8}}>{fmt(dpcFiltered.length)} 施設絞込済 (都道府県:{kijunPref || '全国'})</span>
       <span style={{fontSize:10,color:'#cbd5e1',marginLeft:'auto'}}>※Tier/scoreは内製複合指標</span>
     </div>
 
-    {/* DPC施設テーブル */}
-    <div style={{background:'#fff',borderRadius:12,border:'1px solid #f0f0f0',overflow:'hidden'}}>
-      <div style={{maxHeight:'calc(100vh - 320px)',overflowY:'auto',overflowX:'auto'}}>
-        <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
-          <thead><tr style={{background:'#fafbfc',position:'sticky',top:0,zIndex:1}}>
-            {(mob ? ['#', 'Score', '施設名'] : ['#', 'Score', '施設名', '都道府県', '病床', '症例', '在院日数', '特徴']).map((h, i) => (
-              <th key={i} style={{padding:'10px 12px',fontSize:11,fontWeight:600,color:'#94a3b8',textAlign:i<3?'left':'right',borderBottom:'1px solid #f1f5f9',background:'#fafbfc'}}>{h}</th>
-            ))}
-          </tr></thead>
-          <tbody>{dpcFiltered.slice(0, 100).map((f, i) => (
-            <tr key={i} style={{borderBottom:'1px solid #f8f9fa'}} onMouseEnter={e => e.currentTarget.style.background='#f8faff'} onMouseLeave={e => e.currentTarget.style.background='transparent'}>
-              <td style={{padding:'10px 12px',color:'#94a3b8'}}>#{f.rank}</td>
-              <td style={{padding:'10px 12px'}}><span style={{padding:'2px 10px',borderRadius:20,fontSize:12,fontWeight:700,background:(TC[f.tier]||'#ccc')+'18',color:TC[f.tier]||'#999'}}>{f.priority_score}</span></td>
-              <td style={{padding:'10px 12px',fontWeight:500,color:'#1e293b'}}>{f.facility_name}{f.missing && f.missing.length > 0 && <span style={{fontSize:10,color:'#f59e0b',marginLeft:4}} title={f.missing.join(', ')}>⚠</span>}</td>
-              {!mob && <td style={{padding:'10px 12px',textAlign:'right',color:'#64748b'}}>{f.prefecture_name}</td>}
-              {!mob && <td style={{padding:'10px 12px',textAlign:'right',fontVariantNumeric:'tabular-nums'}}>{fmt(f.total_beds)}</td>}
-              {!mob && <td style={{padding:'10px 12px',textAlign:'right',color:'#2563EB',fontWeight:600,fontVariantNumeric:'tabular-nums'}}>{fmt(f.annual_cases)}</td>}
-              {!mob && <td style={{padding:'10px 12px',textAlign:'right'}}>{f.avg_los || '—'}</td>}
-              {!mob && <td style={{padding:'10px 12px',fontSize:11,color:'#64748b',maxWidth:180}}>{(f.reasons || []).slice(0, 3).join(' / ') || '—'}</td>}
-            </tr>
-          ))}</tbody>
-        </table>
-      </div>
-    </div>
-    <div style={{fontSize:10,color:'#94a3b8',marginTop:10,lineHeight:1.5}}>
-      ※全国上位{(topFac || []).length}施設(Tier S=22 / Tier A=280 / Tier B=2,500のサブセット)。100件まで表示。出典: 厚労省DPC公開データ + G-MIS。
-    </div>
+    {/* DPC施設テーブル (pagination化) */}
+    {(() => {
+      const dpcTotalPages = Math.ceil(dpcFiltered.length / PER_PAGE) || 1;
+      const dpg = Math.min(dpcPage, dpcTotalPages - 1);
+      const dpcPaged = dpcFiltered.slice(dpg * PER_PAGE, (dpg + 1) * PER_PAGE);
+      const totalCount = (topFac || []).length;
+      return (
+        <>
+          {dpcFiltered.length === 0 ? (
+            <div style={{padding:'24px',textAlign:'center',color:'#94a3b8',fontSize:13,background:'#f8fafc',borderRadius:8}}>
+              該当する施設がありません ({fmt(totalCount)}施設のキャッシュから絞り込み中){kijunPref && ` / 都道府県=${kijunPref}`}{capFilter && ` / capability=${CAT_LABELS[capFilter]}`}{tierFilter && ` / Tier=${tierFilter}`}
+            </div>
+          ) : (
+            <>
+              <div style={{background:'#fff',borderRadius:12,border:'1px solid #f0f0f0',overflow:'hidden'}}>
+                <div style={{maxHeight:'calc(100vh - 380px)',overflowY:'auto',overflowX:'auto'}}>
+                  <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
+                    <thead><tr style={{background:'#fafbfc',position:'sticky',top:0,zIndex:1}}>
+                      {(mob ? ['#', 'Score', '施設名'] : ['#', 'Score', '施設名', '都道府県', '病床', '症例', '在院日数', '特徴']).map((h, i) => (
+                        <th key={i} style={{padding:'10px 12px',fontSize:11,fontWeight:600,color:'#94a3b8',textAlign:i<3?'left':'right',borderBottom:'1px solid #f1f5f9',background:'#fafbfc'}}>{h}</th>
+                      ))}
+                    </tr></thead>
+                    <tbody>{dpcPaged.map((f, i) => (
+                      <tr key={i} style={{borderBottom:'1px solid #f8f9fa'}} onMouseEnter={e => e.currentTarget.style.background='#f8faff'} onMouseLeave={e => e.currentTarget.style.background='transparent'}>
+                        <td style={{padding:'10px 12px',color:'#94a3b8'}}>#{f.rank}</td>
+                        <td style={{padding:'10px 12px'}}><span style={{padding:'2px 10px',borderRadius:20,fontSize:12,fontWeight:700,background:(TC[f.tier]||'#ccc')+'18',color:TC[f.tier]||'#999'}}>{f.priority_score}</span></td>
+                        <td style={{padding:'10px 12px',fontWeight:500,color:'#1e293b'}}>{f.facility_name}{f.missing && f.missing.length > 0 && <span style={{fontSize:10,color:'#f59e0b',marginLeft:4}} title={f.missing.join(', ')}>⚠</span>}</td>
+                        {!mob && <td style={{padding:'10px 12px',textAlign:'right',color:'#64748b'}}>{f.prefecture_name}</td>}
+                        {!mob && <td style={{padding:'10px 12px',textAlign:'right',fontVariantNumeric:'tabular-nums'}}>{fmt(f.total_beds)}</td>}
+                        {!mob && <td style={{padding:'10px 12px',textAlign:'right',color:'#2563EB',fontWeight:600,fontVariantNumeric:'tabular-nums'}}>{fmt(f.annual_cases)}</td>}
+                        {!mob && <td style={{padding:'10px 12px',textAlign:'right'}}>{f.avg_los || '—'}</td>}
+                        {!mob && <td style={{padding:'10px 12px',fontSize:11,color:'#64748b',maxWidth:180}}>{(f.reasons || []).slice(0, 3).join(' / ') || '—'}</td>}
+                      </tr>
+                    ))}</tbody>
+                  </table>
+                </div>
+              </div>
+              {/* Pagination */}
+              {dpcTotalPages > 1 && (
+                <div style={{display:'flex',justifyContent:'center',gap:4,marginTop:12,flexWrap:'wrap'}}>
+                  <button onClick={() => setDpcPage(Math.max(0, dpg - 1))} disabled={dpg === 0} style={{padding:'6px 12px',borderRadius:6,border:'1px solid #e2e8f0',background:dpg===0?'#f8f9fa':'#fff',cursor:dpg===0?'default':'pointer',fontSize:12,color:dpg===0?'#cbd5e1':'#64748b'}}>◀ 前へ</button>
+                  {[...Array(Math.min(7, dpcTotalPages))].map((_, i) => {
+                    let p2;
+                    if (dpcTotalPages <= 7) p2 = i;
+                    else if (dpg < 3) p2 = i;
+                    else if (dpg > dpcTotalPages - 4) p2 = dpcTotalPages - 7 + i;
+                    else p2 = dpg - 3 + i;
+                    return <button key={p2} onClick={() => setDpcPage(p2)} style={{padding:'6px 10px',borderRadius:6,border:p2===dpg?'1px solid #2563EB':'1px solid #e2e8f0',background:p2===dpg?'#2563EB':'#fff',color:p2===dpg?'#fff':'#64748b',cursor:'pointer',fontSize:12,fontWeight:p2===dpg?700:400}}>{p2+1}</button>;
+                  })}
+                  <button onClick={() => setDpcPage(Math.min(dpcTotalPages - 1, dpg + 1))} disabled={dpg >= dpcTotalPages - 1} style={{padding:'6px 12px',borderRadius:6,border:'1px solid #e2e8f0',background:dpg>=dpcTotalPages-1?'#f8f9fa':'#fff',cursor:dpg>=dpcTotalPages-1?'default':'pointer',fontSize:12,color:dpg>=dpcTotalPages-1?'#cbd5e1':'#64748b'}}>次へ ▶</button>
+                </div>
+              )}
+            </>
+          )}
+          <div style={{fontSize:10,color:'#94a3b8',marginTop:10,lineHeight:1.5}}>
+            出典: 厚労省DPC公開データ + G-MIS。全{fmt(totalCount)}施設(Tier S=22 / A=280 / B=2,500)から絞込み {fmt(dpcFiltered.length)} 件 ({PER_PAGE}件/ページ)。
+          </div>
+        </>
+      );
+    })()}
   </>}
 
   {/* ==== Tab 3: スコア説明 ==== */}
@@ -312,8 +348,9 @@ export default function FacilityExplorerView({
           <li>Tier境界の統計的根拠 (現在は経験値)</li>
           <li>capability スコア計算ロジック (届出件数→数値の変換式)</li>
         </ul>
-        <p style={{fontSize:11,color:'#94a3b8',marginTop:16}}>
-          peer reviewer は本仕様を別途 <code style={{padding:'1px 4px',background:'#f1f5f9',borderRadius:3}}>priority_score_methodology.md</code> として要求する可能性があります。本ノートはその文書化が完了するまでの暫定的な開示です。
+        <p style={{fontSize:12,color:'#475569',marginTop:16,padding:'10px 14px',background:'#eff6ff',borderRadius:6,borderLeft:'3px solid #2563EB'}}>
+          📄 詳細な逆算分析・相関係数・偏向リスクは <a href="https://github.com/tomiyuta/medical-intelligence/blob/main/docs/priority_score_methodology.md" target="_blank" rel="noopener" style={{color:'#2563EB',fontWeight:600,textDecoration:'underline'}}><code>docs/priority_score_methodology.md</code></a> を参照。<br/>
+          <span style={{fontSize:11,color:'#64748b'}}>主成分分析: <b>annual_cases (r=0.877)</b> + <b>total_beds (r=0.804)</b> で大半が説明される = 実質的に「規模スコア」。専門特化型小病院が過小評価される傾向あり。</span>
         </p>
       </div>
     </div>
