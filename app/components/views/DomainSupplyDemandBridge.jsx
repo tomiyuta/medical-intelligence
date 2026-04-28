@@ -1,9 +1,15 @@
 'use client';
+import { useState } from 'react';
 import { DOMAIN_MAPPING, describeDelta, DATA_BADGE } from '../../../lib/domainMapping';
+
+const MAX_RISKS_COLLAPSED = 3;
 
 const ACTIVE_FUNCS = ['高度急性期', '急性期', '回復期', '慢性期'];
 
 export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ, vitalStats, bedFunc, ndbRx, agePyramid, mob, ndbHc, ndbCheckupRiskRates }) {
+  // Phase 2A: risks[] が4件以上の領域は3件で折りたたみ表示
+  const [expandedRisks, setExpandedRisks] = useState({});
+  const toggleExpand = (id) => setExpandedRisks(prev => ({ ...prev, [id]: !prev[id] }));
   if (!ndbPref) return null;
 
   // 各データソースから pref/national を抽出
@@ -227,41 +233,55 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
                   <td style={{padding:'12px 8px',verticalAlign:'top'}}>
                     {riskCells.length === 0 ? (
                       <span style={{fontSize:11,color:'#cbd5e1'}}>—</span>
-                    ) : (
-                      <div style={{display:'flex',flexDirection:'column',gap:8}}>
-                        {riskCells.map((rc, ri) => (
-                          <div key={ri} style={{paddingBottom: ri < riskCells.length-1 ? 6 : 0, borderBottom: ri < riskCells.length-1 ? '1px dashed #e2e8f0' : 'none'}}>
-                            {rc.missing ? (
-                              <div>
-                                <div style={{fontSize:11,color:'#cbd5e1'}}>データなし</div>
-                                <div style={{fontSize:9,color:'#cbd5e1',marginTop:2}}>{rc.label}</div>
-                              </div>
-                            ) : (
-                              <div>
-                                <div style={{display:'flex',alignItems:'baseline',gap:4,flexWrap:'wrap'}}>
-                                  <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>
-                                    {fmtVal(rc.prefVal, rc.unit === '%' ? '%' : '')}
-                                    {rc.unit !== '%' && <span style={{fontSize:10,color:'#94a3b8',marginLeft:2}}>{rc.unit}</span>}
-                                  </span>
-                                  {rc.legacy && (
-                                    <span style={{fontSize:8,padding:'1px 4px',background:'#e5e7eb',color:'#6b7280',borderRadius:3,fontWeight:500}}>v0継承</span>
+                    ) : (() => {
+                      // Phase 2A: 3件超で折りたたみ
+                      const isExpanded = !!expandedRisks[domain.id];
+                      const visibleCells = isExpanded ? riskCells : riskCells.slice(0, MAX_RISKS_COLLAPSED);
+                      const hiddenCount = riskCells.length - visibleCells.length;
+                      return (
+                        <div style={{display:'flex',flexDirection:'column',gap:8}}>
+                          {visibleCells.map((rc, ri) => (
+                            <div key={ri} style={{paddingBottom: ri < visibleCells.length-1 ? 6 : 0, borderBottom: ri < visibleCells.length-1 ? '1px dashed #e2e8f0' : 'none'}}>
+                              {rc.missing ? (
+                                <div>
+                                  <div style={{fontSize:11,color:'#cbd5e1'}}>データなし</div>
+                                  <div style={{fontSize:9,color:'#cbd5e1',marginTop:2}}>{rc.label}</div>
+                                </div>
+                              ) : (
+                                <div>
+                                  <div style={{display:'flex',alignItems:'baseline',gap:4,flexWrap:'wrap'}}>
+                                    <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>
+                                      {fmtVal(rc.prefVal, rc.unit === '%' ? '%' : '')}
+                                      {rc.unit !== '%' && <span style={{fontSize:10,color:'#94a3b8',marginLeft:2}}>{rc.unit}</span>}
+                                    </span>
+                                    {rc.legacy && (
+                                      <span title="Bridge v0 から継承した旧risk proxy" style={{fontSize:8,padding:'0 4px',background:'transparent',color:'#cbd5e1',border:'1px solid #e2e8f0',borderRadius:3,fontWeight:500}}>v0</span>
+                                    )}
+                                  </div>
+                                  {rc.delta && (
+                                    <div style={{fontSize:10,color:rc.delta.color,fontWeight:600,marginTop:1}}>
+                                      {rc.delta.label} ({rc.delta.deltaPct > 0 ? '+' : ''}{rc.delta.deltaPct.toFixed(1)}%)
+                                    </div>
+                                  )}
+                                  <div style={{fontSize:9,color:'#94a3b8',marginTop:2,lineHeight:1.4}}>{rc.label}</div>
+                                  {rc.note && (
+                                    <div style={{fontSize:8,color:'#cbd5e1',marginTop:1,lineHeight:1.4,fontStyle:'italic'}}>※{rc.note}</div>
                                   )}
                                 </div>
-                                {rc.delta && (
-                                  <div style={{fontSize:10,color:rc.delta.color,fontWeight:600,marginTop:1}}>
-                                    {rc.delta.label} ({rc.delta.deltaPct > 0 ? '+' : ''}{rc.delta.deltaPct.toFixed(1)}%)
-                                  </div>
-                                )}
-                                <div style={{fontSize:9,color:'#94a3b8',marginTop:2,lineHeight:1.4}}>{rc.label}</div>
-                                {rc.note && (
-                                  <div style={{fontSize:8,color:'#cbd5e1',marginTop:1,lineHeight:1.4,fontStyle:'italic'}}>※{rc.note}</div>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                              )}
+                            </div>
+                          ))}
+                          {(hiddenCount > 0 || isExpanded) && (
+                            <button
+                              onClick={() => toggleExpand(domain.id)}
+                              style={{marginTop:4,padding:'3px 8px',fontSize:10,fontWeight:600,color:'#475569',background:'#f1f5f9',border:'1px solid #e2e8f0',borderRadius:4,cursor:'pointer',alignSelf:'flex-start'}}
+                            >
+                              {isExpanded ? '▲ 折りたたむ' : `▼ +${hiddenCount}指標を表示`}
+                            </button>
+                          )}
+                        </div>
+                      );
+                    })()}
                   </td>
                   <td style={{padding:'12px 8px',verticalAlign:'top'}}>
                     {demand
@@ -331,7 +351,9 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
       <div style={{fontSize:10,color:'#94a3b8',marginTop:14,lineHeight:1.7,padding:'10px 14px',background:'#f8fafc',borderRadius:6}}>
         <b style={{color:'#475569'}}>📌 Bridge Risk Model v1 の制約と注意点</b><br/>
         ・<b>v1 (2026-04-28 採択):</b> リスク列は単一proxyから <code>risks[]</code> 配列(複数指標)へ移行。NDB健診リスク率 (BMI/HbA1c/SBP/LDL/尿蛋白) と質問票 (服薬・既往) を統合。<br/>
-        ・既存リスクは <span style={{padding:'1px 4px',background:'#e5e7eb',color:'#6b7280',borderRadius:3,fontSize:9}}>v0継承</span> ラベルで保持。新規追加リスクと並列表示。<br/>
+        ・既存リスクは <span style={{padding:'0 4px',background:'transparent',color:'#cbd5e1',border:'1px solid #e2e8f0',borderRadius:3,fontSize:9}}>v0</span> ラベル(Bridge v0からの継承指標)で保持。新規追加リスクと並列表示。<br/>
+        ・リスク4件以上の領域はデフォルト3件表示。「+N指標を表示」で展開できます。<br/>
+        ・📖 解釈仕様: <a href="https://github.com/tomiyuta/medical-intelligence/blob/main/docs/BRIDGE_V1_INTERPRETATION.md" target="_blank" rel="noopener noreferrer" style={{color:'#2563eb',textDecoration:'underline'}}>Bridge Risk Model v1 解釈仕様</a> (GitHub)<br/>
         ・脳血管/呼吸器/腎疾患は <b>v1 experimental</b> (5列中の一部空白あり)。<br/>
         ・本サマリーは <b>スコア化を行わず</b>、データ並べ表示のみ。Gap指標化はPhase 2で検討。<br/>
         ・「医療利用」列は<b>NDB処方薬の薬効分類ベース proxy</b>(人口10万対補正)。<u>疾患患者数ではない</u>。比較基準は47都道府県平均(処方薬集計に全国値なし)。<br/>
