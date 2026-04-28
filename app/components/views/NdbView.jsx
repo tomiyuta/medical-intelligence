@@ -65,11 +65,66 @@ const GAP_TEMPLATES = [
     note:'X軸は睡眠で休養がとれている人の割合（高=低リスク）。睡眠不足と循環器の関連は確立。'},
 ];
 
-export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ }) {
+export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ, agePyramid, futureDemo }) {
   const diagByPref = ndbDiag.filter(d=>d.prefecture===ndbPref);
   const hcPref = ndbHc.filter(d=>d.pref===ndbPref);
   const vp = vitalStats?.prefectures?.find(p=>p.pref===ndbPref);
   const causes = vp?.causes || [];
+
+  // ── 人口KPI: age_pyramid (住基2025) + future_demographics (社人研2050) ──
+  // age_groups 21帯: idx 13=65-69, 15=75-79, 17=85-89
+  const computeAgeRates = (ap) => {
+    if (!ap || !ap.male || !ap.female) return null;
+    const sum = arr => arr.reduce((s,v)=>s+(v||0),0);
+    const m = ap.male, f = ap.female;
+    const total = sum(m) + sum(f);
+    if (total <= 0) return null;
+    return {
+      total,
+      rate65: (sum(m.slice(13)) + sum(f.slice(13))) / total * 100,
+      rate75: (sum(m.slice(15)) + sum(f.slice(15))) / total * 100,
+      rate85: (sum(m.slice(17)) + sum(f.slice(17))) / total * 100,
+    };
+  };
+  const demoKpi = (()=>{
+    if (!agePyramid?.prefectures?.[ndbPref]) return null;
+    const r = computeAgeRates(agePyramid.prefectures[ndbPref]);
+    if (!r) return null;
+    let change2050 = null, rate75_2050 = null;
+    if (futureDemo?.prefectures) {
+      const fp = futureDemo.prefectures.find(p => p.pref === ndbPref && (p.type === 'a' || p.type === 1));
+      if (fp) {
+        const p20 = fp.total_pop?.['2020'], p50 = fp.total_pop?.['2050'];
+        if (p20 && p50) change2050 = (p50/p20 - 1) * 100;
+        rate75_2050 = fp.aging_rate_75?.['2050'];
+      }
+    }
+    return { ...r, change2050, rate75_2050 };
+  })();
+  // 全国平均（人口加重）
+  const demoNat = (()=>{
+    if (!agePyramid?.prefectures) return null;
+    let totals = {tot:0, s65:0, s75:0, s85:0};
+    Object.values(agePyramid.prefectures).forEach(ap => {
+      const sum = arr => arr.reduce((s,v)=>s+(v||0),0);
+      totals.tot += sum(ap.male) + sum(ap.female);
+      totals.s65 += sum(ap.male.slice(13)) + sum(ap.female.slice(13));
+      totals.s75 += sum(ap.male.slice(15)) + sum(ap.female.slice(15));
+      totals.s85 += sum(ap.male.slice(17)) + sum(ap.female.slice(17));
+    });
+    if (totals.tot <= 0) return null;
+    return { rate65: totals.s65/totals.tot*100, rate75: totals.s75/totals.tot*100, rate85: totals.s85/totals.tot*100 };
+  })();
+  // 75+順位（47都道府県中, 高い順）
+  const rank75 = (()=>{
+    if (!agePyramid?.prefectures || !demoKpi) return null;
+    const arr = Object.entries(agePyramid.prefectures).map(([p, ap]) => {
+      const r = computeAgeRates(ap);
+      return r ? { pref: p, rate75: r.rate75 } : null;
+    }).filter(Boolean).sort((a,b)=>b.rate75-a.rate75);
+    const idx = arr.findIndex(x=>x.pref===ndbPref);
+    return idx >= 0 ? { rank: idx+1, total: arr.length } : null;
+  })();
 
   // Population for per-capita
   const prefPop = (()=>{
@@ -135,6 +190,73 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     {prefPop > 0 && <span style={{fontSize:12,color:'#94a3b8'}}>人口 {fmt(prefPop)}人</span>}
   </div>
 
+  {/* ═══ DEMOGRAPHIC CONTEXT (人口KPI) ═══ */}
+  {demoKpi && (
+    <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'16px 24px',marginBottom:16}}>
+      <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:12}}>
+        <span style={{fontSize:18}}>👥</span>
+        <div>
+          <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>
+            人口コンテキスト
+            <span style={{marginLeft:8,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#f1f5f9',color:'#64748b',fontWeight:500}}>実測+推計</span>
+          </div>
+          <div style={{fontSize:11,color:'#94a3b8'}}>NDB指標を解釈する基盤として — 住基2025 + 社人研2050</div>
+        </div>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:mob?'repeat(2,1fr)':'repeat(5,1fr)',gap:8}}>
+        {/* 1: 総人口 */}
+        <div style={{background:'#f8fafc',borderRadius:8,padding:'10px 12px'}}>
+          <div style={{fontSize:10,color:'#64748b',marginBottom:2}}>総人口</div>
+          <div style={{fontSize:mob?15:18,fontWeight:700,color:'#1e293b'}}>{fmt(demoKpi.total)}</div>
+          <div style={{fontSize:10,color:'#94a3b8'}}>2025年1月（人）</div>
+        </div>
+        {/* 2: 65+ */}
+        <div style={{background:'#f8fafc',borderRadius:8,padding:'10px 12px'}}>
+          <div style={{fontSize:10,color:'#64748b',marginBottom:2}}>65歳以上</div>
+          <div style={{fontSize:mob?15:18,fontWeight:700,color:'#1e293b'}}>{demoKpi.rate65.toFixed(1)}%</div>
+          {demoNat && <div style={{fontSize:10,color:demoKpi.rate65>demoNat.rate65?'#dc2626':'#059669'}}>
+            全国比 {demoKpi.rate65>demoNat.rate65?'+':''}{(demoKpi.rate65-demoNat.rate65).toFixed(1)}pt
+          </div>}
+        </div>
+        {/* 3: 75+ */}
+        <div style={{background:'#f8fafc',borderRadius:8,padding:'10px 12px'}}>
+          <div style={{fontSize:10,color:'#64748b',marginBottom:2}}>75歳以上 {rank75 && <span style={{fontSize:9,color:'#94a3b8'}}>#{rank75.rank}/{rank75.total}</span>}</div>
+          <div style={{fontSize:mob?15:18,fontWeight:700,color:'#1e293b'}}>{demoKpi.rate75.toFixed(1)}%</div>
+          {demoNat && <div style={{fontSize:10,color:demoKpi.rate75>demoNat.rate75?'#dc2626':'#059669'}}>
+            全国比 {demoKpi.rate75>demoNat.rate75?'+':''}{(demoKpi.rate75-demoNat.rate75).toFixed(1)}pt
+          </div>}
+        </div>
+        {/* 4: 85+ */}
+        <div style={{background:'#f8fafc',borderRadius:8,padding:'10px 12px'}}>
+          <div style={{fontSize:10,color:'#64748b',marginBottom:2}}>85歳以上</div>
+          <div style={{fontSize:mob?15:18,fontWeight:700,color:'#1e293b'}}>{demoKpi.rate85.toFixed(1)}%</div>
+          {demoNat && <div style={{fontSize:10,color:demoKpi.rate85>demoNat.rate85?'#dc2626':'#059669'}}>
+            全国比 {demoKpi.rate85>demoNat.rate85?'+':''}{(demoKpi.rate85-demoNat.rate85).toFixed(1)}pt
+          </div>}
+        </div>
+        {/* 5: 2050 */}
+        <div style={{background:'#fef3c7',borderRadius:8,padding:'10px 12px'}}>
+          <div style={{fontSize:10,color:'#92400e',marginBottom:2}}>2050年予測</div>
+          <div style={{fontSize:mob?15:18,fontWeight:700,color:'#92400e'}}>
+            {demoKpi.change2050!=null ? `${demoKpi.change2050>0?'+':''}${demoKpi.change2050.toFixed(1)}%` : '—'}
+          </div>
+          <div style={{fontSize:10,color:'#92400e'}}>
+            {demoKpi.rate75_2050!=null ? `75+→${demoKpi.rate75_2050.toFixed(1)}%` : '人口変化(2020比)'}
+          </div>
+        </div>
+      </div>
+      {/* 解釈文（自動生成） */}
+      {demoNat && (()=>{
+        const d75 = demoKpi.rate75 - demoNat.rate75;
+        let msg;
+        if (d75 > 1.5) msg = `${ndbPref}は75歳以上割合が全国平均より${d75.toFixed(1)}pt高く、在宅医療・処方薬・慢性期医療の需要が大きく見えやすい構造です。`;
+        else if (d75 < -1.5) msg = `${ndbPref}は75歳以上割合が全国平均より${Math.abs(d75).toFixed(1)}pt低く、NDB算定回数の多さは人口規模の影響を受けている可能性があります。`;
+        else msg = `${ndbPref}の75歳以上割合は全国平均水準。NDB指標は人口構造補正の影響を受けにくい解釈となります。`;
+        return <div style={{fontSize:11,color:'#475569',marginTop:10,padding:'8px 12px',background:'#f8fafc',borderRadius:6,lineHeight:1.5,borderLeft:'3px solid #2563EB'}}>💡 {msg}</div>;
+      })()}
+    </div>
+  )}
+
   {/* ═══ Layer 1: ROOT CAUSE (生活習慣リスク) ═══ */}
   {ndbQ && ndbQ.prefectures?.[ndbPref] && (()=>{
     const qd = ndbQ.prefectures[ndbPref];
@@ -156,7 +278,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
       <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
         <span style={{fontSize:18}}>⚠️</span>
         <div>
-          <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>生活習慣リスク</div>
+          <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>生活習慣リスク <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#e0e7ff',color:'#3730a3',fontWeight:500}}>生活習慣</span></div>
           <div style={{fontSize:11,color:'#94a3b8'}}>特定健診 質問票（40〜74歳）— 全国平均との差をΔ表示</div>
         </div>
       </div>
@@ -186,7 +308,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
       <span style={{fontSize:18}}>🔬</span>
       <div>
-        <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>健診リスク</div>
+        <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>健診リスク <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#dbeafe',color:'#1e40af',fontWeight:500}}>検査値</span></div>
         <div style={{fontSize:11,color:'#94a3b8'}}>特定健診 検査値平均（40〜74歳受診者）</div>
       </div>
     </div>
@@ -213,7 +335,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
       <span style={{fontSize:18}}>🏥</span>
       <div>
-        <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>医療利用</div>
+        <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>医療利用 <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#cffafe',color:'#155e75',fontWeight:500}}>医療利用量</span></div>
         <div style={{fontSize:11,color:'#94a3b8'}}>医科診療行為 算定回数（令和5年度レセプト）</div>
       </div>
     </div>
@@ -233,7 +355,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
       <span style={{fontSize:18}}>💊</span>
       <div>
-        <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>治療パターン — 疾患領域別</div>
+        <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>治療パターン — 疾患領域別 <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#fef3c7',color:'#92400e',fontWeight:500}}>治療代理</span></div>
         <div style={{fontSize:11,color:'#94a3b8'}}>処方薬を疾患領域にマッピング（薬効分類ベース）</div>
       </div>
     </div>
@@ -256,7 +378,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
       <span style={{fontSize:18}}>📋</span>
       <div>
-        <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>処方薬 薬効分類別 Top10</div>
+        <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>処方薬 薬効分類別 Top10 <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#fef3c7',color:'#92400e',fontWeight:500}}>治療代理</span></div>
         <div style={{fontSize:11,color:'#94a3b8'}}>NDB第10回（令和5年度）処方数量上位</div>
       </div>
     </div>
@@ -284,7 +406,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
       <span style={{fontSize:18}}>📊</span>
       <div>
-        <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>死因構造</div>
+        <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>死因構造 <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#fce7f3',color:'#9f1239',fontWeight:500}}>結果</span></div>
         <div style={{fontSize:11,color:'#94a3b8'}}>厚労省人口動態統計 2024年確定数（死亡率 人口10万対）</div>
       </div>
     </div>
