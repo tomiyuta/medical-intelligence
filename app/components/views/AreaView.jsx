@@ -59,24 +59,23 @@ export default function AreaView({ mob, areaData, areaPref, setAreaPref, areaPre
       <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:16}}>
         <div>
           <div style={{fontSize:14,fontWeight:600}}>死因構造 — {areaPref}</div>
-          <div style={{fontSize:11,color:'#94a3b8',marginTop:2}}>厚労省人口動態統計 2024年確定数 ｜ 死亡者計 {fmt(vp.total_deaths)}人</div>
+          <div style={{fontSize:11,color:'#94a3b8',marginTop:2}}>厚労省人口動態統計 2024年確定数 ｜ 死亡率（人口10万対）</div>
         </div>
       </div>
       <ResponsiveContainer width="100%" height={Math.max(250, causes.length * 28)}>
-        <BarChart data={causes} layout="vertical" margin={{left:10}}>
+        <BarChart data={causes.map(c=>({...c, label: c.cause?.replace(/\(.+\)/,'') || c.cause}))} layout="vertical" margin={{left:10}}>
           <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false}/>
           <XAxis type="number" tick={{fontSize:10,fill:'#94a3b8'}} axisLine={false} tickLine={false}/>
-          <YAxis type="category" dataKey="short" tick={{fontSize:11,fill:'#475569'}} axisLine={false} tickLine={false} width={90}/>
+          <YAxis type="category" dataKey="label" tick={{fontSize:11,fill:'#475569'}} axisLine={false} tickLine={false} width={90}/>
           <Tooltip content={<Tip/>}/>
-          <Bar dataKey="deaths" name="死亡数" fill="#7c3aed" radius={[0,4,4,0]} barSize={16}/>
+          <Bar dataKey="rate" name="死亡率(/10万)" fill="#7c3aed" radius={[0,4,4,0]} barSize={16}/>
         </BarChart>
       </ResponsiveContainer>
       <div style={{display:'flex',flexWrap:'wrap',gap:6,marginTop:12}}>
         {causes.slice(0,5).map((c,i)=>(
           <div key={i} style={{display:'flex',alignItems:'center',gap:6,padding:'4px 10px',background:'#f5f3ff',borderRadius:16,fontSize:11}}>
-            <span style={{fontWeight:600,color:'#7c3aed'}}>{c.short}</span>
-            <span style={{color:'#64748b'}}>{fmt(c.deaths)}人</span>
-            <span style={{color:'#94a3b8'}}>({(c.deaths/vp.total_deaths*100).toFixed(1)}%)</span>
+            <span style={{fontWeight:600,color:'#7c3aed'}}>{c.cause?.replace(/\(.+\)/,'') || c.cause}</span>
+            <span style={{color:'#64748b'}}>{c.rate}/10万</span>
           </div>
         ))}
       </div>
