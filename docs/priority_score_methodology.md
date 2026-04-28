@@ -1,4 +1,4 @@
-# priority_score Observed Methodology — 観測ベース逆算分析
+# priority_score Observed Methodology — 観測ベース逆算分析 (UI: 「規模・実績参考スコア」)
 
 **作成日**: 2026-04-28 **対象**: `data/static/top_facilities.json` の `priority_score` および `tier` フィールド **目的**: peer review に向けた内製スコアの透明性確保 **ステータス**: **暫定 (Phase 2)** — ETL内部の正式な式・重みは未開示
 
@@ -29,6 +29,16 @@
 - ✅ 規模・実績・基準充足度を組み合わせた**内製の複合プロキシ指標**
 
 施設探索の補助として参照することを推奨。地域医療政策の評価には R6 病床機能報告 (RegionalBedFunctionView) を使用。
+
+### UI表記との関係 (commit 12ea3d2 以降)
+
+| 階層 | 表記 |
+|---|---|
+| 内部変数名 | `priority_score` (本書全体で使用) |
+| UI label | **「規模・実績参考スコア」** (FacilityExplorerView Tab 2/3) |
+| 簡易UI表記 | 「規模・実績」 (詳細パネル内) |
+
+理由: annual_cases (r=0.877) + total_beds (r=0.804) で大半説明される実態を「規模・実績」と明示するため。
 
 ---
 

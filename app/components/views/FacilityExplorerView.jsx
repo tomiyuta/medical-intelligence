@@ -142,7 +142,7 @@ export default function FacilityExplorerView({
       {['', 'S', 'A', 'B', 'C', 'D'].map(t => (
         <button key={t} onClick={() => { setTierFilter(tierFilter === t ? '' : t); setKijunPage(0); }} style={{padding:'3px 10px',borderRadius:12,border:tierFilter===t?`2px solid ${TC2[t]||'#64748b'}`:'1px solid #e2e8f0',background:tierFilter===t?(TC2[t]||'#64748b')+'18':'#fff',color:tierFilter===t?(TC2[t]||'#64748b'):'#94a3b8',fontSize:11,fontWeight:tierFilter===t?600:400,cursor:'pointer'}}>{t || '全て'}</button>
       ))}
-      <span style={{fontSize:10,color:'#cbd5e1',marginLeft:8}}>※Tier=内製複合指標(参考値)</span>
+      <span style={{fontSize:10,color:'#cbd5e1',marginLeft:8}}>※Tier=内製の規模・実績参考分類</span>
     </div>
 
     {/* selectors + search */}
@@ -157,7 +157,7 @@ export default function FacilityExplorerView({
         <option value="std_count">届出数順</option>
         <option value="beds">病床数順</option>
         <option value="cases">症例数順</option>
-        <option value="score">スコア順</option>
+        <option value="score">規模・実績スコア順</option>
       </select>
       <span style={{fontSize:12,color:'#64748b'}}>{kijunFiltered.length > 0 ? `${fmt(kijunFiltered.length)}施設` : '—'}{kijunTotalPages > 1 ? ` (${kpg+1}/${kijunTotalPages}p)` : ''}</span>
       <button onClick={() => {
@@ -200,7 +200,7 @@ export default function FacilityExplorerView({
                       <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:8,marginBottom:10}}>
                         <div><div style={{fontSize:10,color:'#94a3b8'}}>病床数</div><div style={{fontSize:14,fontWeight:600}}>{f.beds ? fmt(f.beds) : f.beds_text || '—'}</div></div>
                         <div><div style={{fontSize:10,color:'#94a3b8'}}>届出数</div><div style={{fontSize:14,fontWeight:600,color:'#2563EB'}}>{f.std_count}</div></div>
-                        {f.score ? <div><div style={{fontSize:10,color:'#94a3b8'}}>スコア</div><div style={{fontSize:14,fontWeight:600}}>{f.score}pt</div></div> : null}
+                        {f.score ? <div><div style={{fontSize:10,color:'#94a3b8'}}>規模・実績</div><div style={{fontSize:14,fontWeight:600}}>{f.score}pt</div></div> : null}
                         {f.cases ? <div><div style={{fontSize:10,color:'#94a3b8'}}>症例数</div><div style={{fontSize:14,fontWeight:600,color:'#059669'}}>{fmt(f.cases)}</div></div> : null}
                         {f.los ? <div><div style={{fontSize:10,color:'#94a3b8'}}>平均在院日数</div><div style={{fontSize:14,fontWeight:600}}>{f.los}日</div></div> : null}
                         {f.tier ? <div><div style={{fontSize:10,color:'#94a3b8'}}>ティア</div><div style={{fontSize:14,fontWeight:700,color:TC2[f.tier]||'#999'}}>{f.tier}</div></div> : null}
@@ -268,7 +268,7 @@ export default function FacilityExplorerView({
       {['', 'S', 'A', 'B'].map(t => (
         <button key={t} onClick={() => { setTierFilter(tierFilter === t ? '' : t); resetDpcPage(); }} style={{padding:'3px 10px',borderRadius:12,border:tierFilter===t?`2px solid ${TC2[t]||'#64748b'}`:'1px solid #e2e8f0',background:tierFilter===t?(TC2[t]||'#64748b')+'18':'#fff',color:tierFilter===t?(TC2[t]||'#64748b'):'#94a3b8',fontSize:11,fontWeight:tierFilter===t?600:400,cursor:'pointer'}}>{t || '全て'}</button>
       ))}
-      <span style={{fontSize:10,color:'#cbd5e1',marginLeft:'auto'}}>※Tier/scoreは内製複合指標</span>
+      <span style={{fontSize:10,color:'#cbd5e1',marginLeft:'auto'}}>※Tier/スコア=規模・実績参考指標</span>
     </div>
     {/* 検索 + sort + CSV (Tab 2) */}
     <div style={{display:'flex',gap:8,marginBottom:10,flexWrap:'wrap',alignItems:'center'}}>
@@ -407,15 +407,15 @@ export default function FacilityExplorerView({
   {/* ==== Tab 3: スコア説明 ==== */}
   {tab === 'score' && (
     <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'24px 28px'}}>
-      <h3 style={{fontSize:16,fontWeight:700,margin:'0 0 12px',color:'#1e293b'}}>priority_score / Tier の透明性ノート (観測ベース分析)</h3>
+      <h3 style={{fontSize:16,fontWeight:700,margin:'0 0 12px',color:'#1e293b'}}>規模・実績参考スコア (priority_score / Tier) の透明性ノート (観測ベース分析)</h3>
       <div style={{padding:'10px 14px',background:'#fef3c7',borderLeft:'4px solid #f59e0b',borderRadius:6,fontSize:12,color:'#92400e',marginBottom:12}}>
-        <b>⚠️ 重要</b>: priority_score / Tier は本サイト独自の<b>内製複合指標</b>であり、厚労省・公的機関による公式ランキングではありません。施設探索の補助として参照してください。
+        <b>⚠️ 重要</b>: 本サイトの「規模・実績参考スコア」(<code>priority_score</code> / Tier) は本サイト独自の<b>内製複合指標</b>であり、厚労省・公的機関による公式ランキングではありません。<b>「総合的な病院機能評価」ではなく、規模(病床数)・実績(DPC症例数)を主成分とした参考指標</b>です。施設探索の補助として参照してください。
       </div>
       <div style={{padding:'10px 14px',background:'#fef2f2',borderLeft:'4px solid #dc2626',borderRadius:6,fontSize:11,color:'#991b1b',marginBottom:16}}>
         <b>📌 本ノートの性質</b>: 以下は <code>top_facilities.json</code> の<b>観測値から逆算した分析</b>であり、ETL内部の正確な算出式・重みではありません。9因子の正式な定義・重み係数は未確認。Phase 2 で内部実装からの正式 spec exporter を作成予定。
       </div>
       <div style={{fontSize:13,color:'#475569',lineHeight:1.8}}>
-        <p><b>現在 priority_score に含まれる(と認識している)要素</b>:</p>
+        <p><b>現在 規模・実績参考スコア に含まれる(と認識している)要素</b>:</p>
         <ul style={{paddingLeft:20,margin:'8px 0'}}>
           <li>許可病床数 (規模)</li>
           <li>DPC年間症例数</li>
@@ -426,9 +426,10 @@ export default function FacilityExplorerView({
         </ul>
         <p><b>Tier境界 (現在の閾値)</b>:</p>
         <div style={{padding:'8px 12px',background:'#f8fafc',borderRadius:6,fontSize:12,marginBottom:12,fontFamily:'monospace'}}>
-          Tier S: priority_score &ge; 60.0 (全国22施設)<br/>
-          Tier A: priority_score &ge; ~45 (全国280施設)<br/>
-          Tier B: priority_score &lt; 45 (全国2,500施設)
+          Tier S: スコア &ge; 60.0 (全国22施設)<br/>
+          Tier A: スコア &ge; ~45 (全国280施設)<br/>
+          Tier B: スコア &lt; 45 (全国2,500施設)
+          <div style={{fontSize:10,color:'#94a3b8',marginTop:6,fontFamily:'system-ui'}}>※ 内部変数名は <code>priority_score</code>。UI上は「規模・実績参考スコア」と表記。</div>
         </div>
         <p style={{color:'#dc2626'}}><b>未文書化 (Phase 2課題)</b>:</p>
         <ul style={{paddingLeft:20,margin:'8px 0'}}>
@@ -439,7 +440,7 @@ export default function FacilityExplorerView({
         </ul>
         <p style={{fontSize:12,color:'#475569',marginTop:16,padding:'10px 14px',background:'#eff6ff',borderRadius:6,borderLeft:'3px solid #2563EB'}}>
           📄 観測ベース逆算分析の詳細 (相関係数・偏向リスク・Tier境界実測値) は <a href="https://github.com/tomiyuta/medical-intelligence/blob/main/docs/priority_score_methodology.md" target="_blank" rel="noopener" style={{color:'#2563EB',fontWeight:600,textDecoration:'underline'}}><code>docs/priority_score_methodology.md</code></a> を参照。<br/>
-          <span style={{fontSize:11,color:'#64748b'}}>主成分分析: <b>annual_cases (r=0.877)</b> + <b>total_beds (r=0.804)</b> で大半が説明される = 実質的に「規模スコア」。専門特化型小病院が過小評価される傾向あり。</span>
+          <span style={{fontSize:11,color:'#64748b'}}>主成分分析: <b>annual_cases (r=0.877)</b> + <b>total_beds (r=0.804)</b> で大半が説明される = 実質的に「<b>規模・実績スコア</b>」(本サイトのUI表記と整合)。専門特化型小病院・在宅慢性期型病院が過小評価される傾向あり。</span>
         </p>
       </div>
     </div>
