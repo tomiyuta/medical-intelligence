@@ -2,20 +2,48 @@
 import { fmt, sortPrefs } from '../shared';
 
 export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, demoArea, setDemoArea, demoPrefList, japanMap, hovPref, setHovPref, tooltipPos, setTooltipPos, futureDemo, futureYear, setFutureYear, agePyramid }) {
-  const areas = areaDemoData.filter(a=>a.pref===demoPref);
-  const areaNames = areas.map(a=>a.area);
-  const selArea = areas.find(a=>a.area===demoArea) || areas[0];
-  const ms = selArea?.munis || [];
-  const tPop=ms.reduce((s,m)=>s+m.pop,0);
-  const t15=ms.reduce((s,m)=>s+m.p15,0);
-  const t65=ms.reduce((s,m)=>s+m.p65,0);
-  const tW=tPop-t15-t65;
-  const tB=ms.reduce((s,m)=>s+m.births,0);
-  const tD=ms.reduce((s,m)=>s+m.deaths,0);
-  const tNC=tB-tD;
-  const r15=tPop?(t15/tPop*100).toFixed(1):'0';
-  const rW=tPop?(tW/tPop*100).toFixed(1):'0';
-  const r65=tPop?(t65/tPop*100).toFixed(1):'0';
+  // 全国表示モード判定 (demoPref が null/'全国' の時)
+  const isNationalView = !demoPref || demoPref === '全国';
+
+  // 全国合計 / 県表示の集計
+  let ms, areas, areaNames, selArea, tPop, t15, t65, tW, tB, tD, tNC, r15, rW, r65;
+  if (isNationalView) {
+    // 全国: 全47都道府県の全市区町村を集計
+    ms = []; // 全国の市区町村は表示しない (47県 × 数十市区町村 = 数千件で重い)
+    areas = [];
+    areaNames = [];
+    selArea = null;
+    tPop = 0; t15 = 0; t65 = 0; tB = 0; tD = 0;
+    areaDemoData.forEach(d => {
+      (d.munis || []).forEach(m => {
+        tPop += m.pop || 0;
+        t15 += m.p15 || 0;
+        t65 += m.p65 || 0;
+        tB += m.births || 0;
+        tD += m.deaths || 0;
+      });
+    });
+    tW = tPop - t15 - t65;
+    tNC = tB - tD;
+    r15 = tPop ? (t15/tPop*100).toFixed(1) : '0';
+    rW  = tPop ? (tW/tPop*100).toFixed(1) : '0';
+    r65 = tPop ? (t65/tPop*100).toFixed(1) : '0';
+  } else {
+    areas = areaDemoData.filter(a=>a.pref===demoPref);
+    areaNames = areas.map(a=>a.area);
+    selArea = areas.find(a=>a.area===demoArea) || areas[0];
+    ms = selArea?.munis || [];
+    tPop = ms.reduce((s,m)=>s+m.pop,0);
+    t15 = ms.reduce((s,m)=>s+m.p15,0);
+    t65 = ms.reduce((s,m)=>s+m.p65,0);
+    tW = tPop - t15 - t65;
+    tB = ms.reduce((s,m)=>s+m.births,0);
+    tD = ms.reduce((s,m)=>s+m.deaths,0);
+    tNC = tB - tD;
+    r15 = tPop ? (t15/tPop*100).toFixed(1) : '0';
+    rW  = tPop ? (tW/tPop*100).toFixed(1) : '0';
+    r65 = tPop ? (t65/tPop*100).toFixed(1) : '0';
+  }
 
   // Determine if using future projection
   const isFuture = futureYear && futureYear !== '2025';
@@ -52,23 +80,34 @@ export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, dem
             const vals = Object.values(agingRates).filter(v => v > 0);
             const minA = Math.min(...vals) || 20, maxA = Math.max(...vals) || 40;
             const agingColor = v => { if (!v) return '#f5f5f5'; const r = (v - minA) / (maxA - minA); return r > .8 ? '#b91c1c' : r > .6 ? '#dc2626' : r > .4 ? '#ea580c' : r > .2 ? '#f59e0b' : '#fef3c7'; };
-            const selRate = agingRates[demoPref] || 0;
-            const rankList = Object.entries(agingRates).sort((a, b) => b[1] - a[1]);
-            const selRank = rankList.findIndex(([p]) => p === demoPref) + 1;
             const totalPop47 = Object.values(prefPops).reduce((s, v) => s + v, 0);
             const natAvg = vals.length > 0 ? vals.reduce((s, v) => s + v, 0) / vals.length : 0;
+            // 全国モード時: selRate=全国加重平均, selRank=null
+            let totalP65_47 = 0;
+            Object.entries(prefPops).forEach(([p, pop]) => { totalP65_47 += (agingRates[p] || 0) * pop / 100; });
+            const natWeighted = totalPop47 > 0 ? totalP65_47/totalPop47*100 : 0;
+            const selRate = isNationalView ? natWeighted : (agingRates[demoPref] || 0);
+            const rankList = Object.entries(agingRates).sort((a, b) => b[1] - a[1]);
+            const selRank = isNationalView ? null : (rankList.findIndex(([p]) => p === demoPref) + 1);
 
             // Get current rate for delta display
             let currentRate = 0;
             if (isFuture) {
-              const pa = {};
-              areaDemoData.forEach(d => {
-                let pop=0, p65=0;
-                (d.munis||[]).forEach(m => { pop += m.pop||0; p65 += m.p65||0; });
-                if (!pa[d.pref]) pa[d.pref] = {pop:0, p65:0};
-                pa[d.pref].pop += pop; pa[d.pref].p65 += p65;
-              });
-              currentRate = pa[demoPref]?.pop > 0 ? (pa[demoPref].p65 / pa[demoPref].pop * 100) : 0;
+              if (isNationalView) {
+                // 全国 weighted current rate
+                let cPop = 0, cP65 = 0;
+                areaDemoData.forEach(d => (d.munis||[]).forEach(m => { cPop += m.pop||0; cP65 += m.p65||0; }));
+                currentRate = cPop > 0 ? cP65/cPop*100 : 0;
+              } else {
+                const pa = {};
+                areaDemoData.forEach(d => {
+                  let pop=0, p65=0;
+                  (d.munis||[]).forEach(m => { pop += m.pop||0; p65 += m.p65||0; });
+                  if (!pa[d.pref]) pa[d.pref] = {pop:0, p65:0};
+                  pa[d.pref].pop += pop; pa[d.pref].p65 += p65;
+                });
+                currentRate = pa[demoPref]?.pop > 0 ? (pa[demoPref].p65 / pa[demoPref].pop * 100) : 0;
+              }
             }
             const delta = isFuture ? selRate - currentRate : 0;
 
@@ -91,8 +130,8 @@ export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, dem
                 <div style={{display:'flex',alignItems:'baseline',gap:10,flexWrap:'wrap'}}>
                   <span style={{fontSize:mob?26:32,fontWeight:700,color:'#b91c1c'}}>{selRate.toFixed(1)}%</span>
                   {isFuture && delta !== 0 && <span style={{fontSize:14,fontWeight:700,color:delta>0?'#dc2626':'#059669'}}>{delta>0?'↑':'↓'}{Math.abs(delta).toFixed(1)}pt</span>}
-                  <span style={{fontSize:14,fontWeight:600,color:'#1e293b'}}>{demoPref}</span>
-                  <span style={{fontSize:12,color:'#94a3b8'}}>({selRank}/47位 | 全国平均 {natAvg.toFixed(1)}%)</span>
+                  <span style={{fontSize:14,fontWeight:600,color:'#1e293b'}}>{isNationalView ? '全国合計' : demoPref}</span>
+                  <span style={{fontSize:12,color:'#94a3b8'}}>{isNationalView ? `(47県加重平均 | 単純平均 ${natAvg.toFixed(1)}%)` : `(${selRank}/47位 | 全国平均 ${natAvg.toFixed(1)}%)`}</span>
                 </div>
                 <div style={{display:'flex',gap:3,alignItems:'center',fontSize:10,color:'#94a3b8',flexShrink:0}}>
                   <span>{minA.toFixed(0)}%</span>
@@ -132,14 +171,21 @@ export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, dem
             <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>市区町村別の人口構成・高齢化率・自然増減を分析。社人研推計で2050年までの将来予測を俯瞰。</p>
           </div>
           <div style={{display:'flex',gap:8,marginBottom:16,flexWrap:'wrap'}}>
-            <select value={demoPref} onChange={e=>{setDemoPref(e.target.value);const a=areaDemoData.filter(x=>x.pref===e.target.value);if(a.length)setDemoArea(a[0].area);}} style={{padding:'8px 12px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,background:'#fff'}}>
+            <select value={demoPref || '全国'} onChange={e=>{
+              const v = e.target.value === '全国' ? null : e.target.value;
+              setDemoPref(v);
+              if (v) { const a=areaDemoData.filter(x=>x.pref===v); if(a.length)setDemoArea(a[0].area); }
+            }} style={{padding:'8px 12px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,background:'#fff'}}>
+              <option value="全国">全国</option>
               {sortPrefs(demoPrefList).map(p=><option key={p} value={p}>{p}</option>)}
             </select>
-            <select value={demoArea} onChange={e=>setDemoArea(e.target.value)} style={{padding:'8px 12px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,background:'#fff'}}>
-              {areaNames.map(a=><option key={a} value={a}>{a}</option>)}
-            </select>
+            {!isNationalView && (
+              <select value={demoArea} onChange={e=>setDemoArea(e.target.value)} style={{padding:'8px 12px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,background:'#fff'}}>
+                {areaNames.map(a=><option key={a} value={a}>{a}</option>)}
+              </select>
+            )}
           </div>
-          <h2 style={{fontSize:mob?16:18,fontWeight:600,margin:'0 0 16px',color:'#1e293b'}}>人口・人口動態 — {demoPref} {selArea?.area||''}</h2>
+          <h2 style={{fontSize:mob?16:18,fontWeight:600,margin:'0 0 16px',color:'#1e293b'}}>人口・人口動態 — {isNationalView ? '全国合計 (47都道府県)' : `${demoPref} ${selArea?.area||''}`}</h2>
           <div style={{display:'grid',gridTemplateColumns:mob?'1fr 1fr':'repeat(4,1fr)',gap:10,marginBottom:12}}>
             {[{l:'総人口',v:fmt(tPop),s:'',c:'#2563EB'},{l:'高齢化率',v:r65+'%',s:'65歳以上',c:'#dc2626'},{l:'年少人口',v:fmt(t15),s:'0-14歳',c:'#3b82f6'},{l:'生産年齢',v:fmt(tW),s:'15-64歳',c:'#059669'}].map((k,i)=>(
               <div key={i} style={{background:'#fff',borderRadius:10,padding:'12px 16px',border:'1px solid #f0f0f0'}}>
@@ -168,9 +214,9 @@ export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, dem
           </div>}
           {/* Age Pyramid */}
           {agePyramid && agePyramid.national && (()=>{
-            const prefData = agePyramid.prefectures?.[demoPref];
+            const prefData = isNationalView ? null : agePyramid.prefectures?.[demoPref];
             const pd = prefData || agePyramid.national;
-            const label = prefData ? demoPref : '全国';
+            const label = isNationalView ? '全国合計' : (prefData ? demoPref : '全国');
             const ags = agePyramid.age_groups || [];
             const male = pd.male || [];
             const female = pd.female || [];
@@ -207,6 +253,7 @@ export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, dem
               <div style={{fontSize:10,color:'#94a3b8',marginTop:4}}>※赤色=65歳以上 / 住民基本台帳 2025年1月1日</div>
             </div>);
           })()}
+          {!isNationalView && (
           <div style={{background:'#fff',borderRadius:12,border:'1px solid #f0f0f0',overflow:'hidden',overflowX:'auto'}}>
             <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
               <thead><tr style={{background:'#fafbfc'}}>
@@ -227,6 +274,12 @@ export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, dem
             </table>
             <div style={{padding:'10px 12px',fontSize:11,color:'#94a3b8',borderTop:'1px solid #f1f5f9'}}>出典: 住民基本台帳人口（2025年1月1日現在）/ 出生・死亡: 住基に基づく令和6年中人口動態{isFuture && ' / 将来推計: 社人研 令和5年推計（2020年国勢調査ベース）'}</div>
           </div>
+          )}
+          {isNationalView && (
+            <div style={{background:'#fff',borderRadius:12,border:'1px solid #f0f0f0',padding:'14px 16px',fontSize:12,color:'#64748b',lineHeight:1.6}}>
+              ※ 全国モードでは市区町村別の明細は省略しています。詳細を見るには上のセレクタで都道府県を選択してください。出典: 住民基本台帳人口（2025年1月1日現在）/ 出生・死亡: 住基に基づく令和6年中人口動態{isFuture && ' / 将来推計: 社人研 令和5年推計（2020年国勢調査ベース）'}
+            </div>
+          )}
 
   </>;
 }

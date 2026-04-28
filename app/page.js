@@ -32,6 +32,7 @@ export default function Home() {
   const [tiers, setTiers] = useState([]);
   const [topFac, setTopFac] = useState([]);
   const [globalPref, setGlobalPref] = useState('東京都');
+  const [muniPref, setMuniPref] = useState(null); // 人口動態・将来推計 (null=全国)
   const [muniSearch, setMuniSearch] = useState('');
   const [muniSort, setMuniSort] = useState('pop');
   const [facSearch, setFacSearch] = useState('');
@@ -164,7 +165,7 @@ export default function Home() {
         {view==='map' && <MapView mob={mob} prefs={prefs} metric={metric} setMetric={setMetric} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} setGlobalPref={setGlobalPref} setView={setView} vitalStats={vitalStats} />}
 
         {/* ═══ MUNI VIEW ═══ */}
-        {view==='muni' && <MuniView mob={mob} areaDemoData={areaDemoData} demoPref={globalPref} setDemoPref={setGlobalPref} demoArea={demoArea} setDemoArea={setDemoArea} demoPrefList={demoPrefList} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} futureDemo={futureDemo} futureYear={futureYear} setFutureYear={setFutureYear} agePyramid={agePyramid} />}
+        {view==='muni' && <MuniView mob={mob} areaDemoData={areaDemoData} demoPref={muniPref} setDemoPref={setMuniPref} demoArea={demoArea} setDemoArea={setDemoArea} demoPrefList={demoPrefList} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} futureDemo={futureDemo} futureYear={futureYear} setFutureYear={setFutureYear} agePyramid={agePyramid} />}
 
         {/* ═══ AREA VIEW ═══ */}
         {view==='area' && <AreaView mob={mob} areaData={areaData} areaPref={globalPref} setAreaPref={setGlobalPref} areaPrefList={areaPrefList} vitalStats={vitalStats} />}
