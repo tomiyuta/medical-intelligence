@@ -5,7 +5,7 @@
 - **本番URL**: <https://medical-intelligence-two.vercel.app>
 - **GitHub**: <https://github.com/tomiyuta/medical-intelligence> (public)
 - **ローカル**: `~/Projects/medical-intelligence/`
-- **HEAD**: (phase6 commit pending) — 5afbefe (sanity check) + phase6 (患者調査R5)
+- **HEAD**: 0ceca52 (phase6: 患者調査R5受療率レイヤー追加)
 - **フレームワーク**: Next.js 14 App Router + Vercel + SQLite (25テーブル/1,227,835行) + Static JSON (27ファイル/\~52MB)
 
 ---
