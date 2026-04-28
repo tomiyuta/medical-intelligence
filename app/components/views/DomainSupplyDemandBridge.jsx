@@ -6,7 +6,7 @@ const MAX_RISKS_COLLAPSED = 3;
 
 const ACTIVE_FUNCS = ['高度急性期', '急性期', '回復期', '慢性期'];
 
-export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ, vitalStats, bedFunc, ndbRx, agePyramid, mob, ndbHc, ndbCheckupRiskRates }) {
+export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ, vitalStats, bedFunc, ndbRx, agePyramid, mob, ndbHc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd }) {
   // Phase 2A: risks[] が4件以上の領域は3件で折りたたみ表示
   const [expandedRisks, setExpandedRisks] = useState({});
   const toggleExpand = (id) => setExpandedRisks(prev => ({ ...prev, [id]: !prev[id] }));
@@ -89,6 +89,15 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
         prefVal = rates.by_pref?.[ndbPref]?.rate;
         const all = Object.values(rates.by_pref || {}).map(v => v.rate).filter(v => typeof v === 'number');
         if (all.length > 0) natVal = all.reduce((s,v) => s+v, 0) / all.length;
+      }
+      // Phase 2C-1: 年齢標準化率も併記 (47県内標準人口で直接標準化)
+      const stdRates = ndbCheckupRiskRatesStd?.risk_rates?.[riskCfg.riskKey];
+      if (stdRates?.by_pref?.[ndbPref]) {
+        const e = stdRates.by_pref[ndbPref];
+        riskCfg._stdInfo = {
+          stdRate: e.age_standardized_rate,
+          deltaPp: e.delta_pp,
+        };
       }
     } else if (riskCfg.source === 'ndbHc') {
       // NDB健診 平均値 (eGFR等)。男女平均を県値とする
@@ -264,6 +273,11 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
                                     </div>
                                   )}
                                   <div style={{fontSize:9,color:'#94a3b8',marginTop:2,lineHeight:1.4}}>{rc.label}</div>
+                                  {rc._stdInfo && rc._stdInfo.stdRate != null && (
+                                    <div title="NDB内標準人口で直接標準化 (47県合算 sex × age_group)" style={{fontSize:9,color:'#7c3aed',marginTop:1,lineHeight:1.4,fontWeight:500}}>
+                                      年齢標準化: {rc._stdInfo.stdRate.toFixed(1)}% ({rc._stdInfo.deltaPp >= 0 ? '+' : ''}{rc._stdInfo.deltaPp.toFixed(1)}pp)
+                                    </div>
+                                  )}
                                   {rc.note && (
                                     <div style={{fontSize:8,color:'#cbd5e1',marginTop:1,lineHeight:1.4,fontStyle:'italic'}}>※{rc.note}</div>
                                   )}
@@ -354,6 +368,7 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
         ・既存リスクは <span style={{padding:'0 4px',background:'transparent',color:'#cbd5e1',border:'1px solid #e2e8f0',borderRadius:3,fontSize:9}}>v0</span> ラベル(Bridge v0からの継承指標)で保持。新規追加リスクと並列表示。<br/>
         ・リスク4件以上の領域はデフォルト3件表示。「+N指標を表示」で展開できます。<br/>
         ・📖 解釈仕様: <a href="https://github.com/tomiyuta/medical-intelligence/blob/main/docs/BRIDGE_V1_INTERPRETATION.md" target="_blank" rel="noopener noreferrer" style={{color:'#2563eb',textDecoration:'underline'}}>Bridge Risk Model v1 解釈仕様</a> (GitHub)<br/>
+        ・<span style={{color:'#7c3aed',fontWeight:500}}>年齢標準化率</span>: NDB特定健診の5項目(BMI/HbA1c/SBP/LDL/尿蛋白)について、47県合算の性年齢階級構成を標準人口とした直接標準化率を併記。地域差が年齢構成由来かを判別可能 (Phase 2C-1)。<br/>
         ・脳血管/呼吸器/腎疾患は <b>v1 experimental</b> (5列中の一部空白あり)。<br/>
         ・本サマリーは <b>スコア化を行わず</b>、データ並べ表示のみ。Gap指標化はPhase 2で検討。<br/>
         ・「医療利用」列は<b>NDB処方薬の薬効分類ベース proxy</b>(人口10万対補正)。<u>疾患患者数ではない</u>。比較基準は47都道府県平均(処方薬集計に全国値なし)。<br/>
