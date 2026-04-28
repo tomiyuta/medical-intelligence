@@ -87,6 +87,7 @@ export default function Home() {
     });
     fetch('/api/ndb/diagnostics').then(r=>r.json()).then(d=>setNdbDiag(d));
     fetch('/api/ndb/health-checkup').then(r=>r.json()).then(d=>setNdbHc(d));
+    fetch('/api/ndb/prescriptions?prefecture='+encodeURIComponent('東京都')).then(r=>r.json()).then(d=>setNdbRx(d));
     fetch('/api/future-demographics').then(r=>r.json()).then(d=>setFutureDemo(d));
     fetch('/api/vital-statistics').then(r=>r.json()).then(d=>setVitalStats(d));
     fetch('/api/age-pyramid').then(r=>r.json()).then(d=>setAgePyramid(d));
