@@ -5,7 +5,7 @@
 - **本番URL**: <https://medical-intelligence-two.vercel.app>
 - **GitHub**: <https://github.com/tomiyuta/medical-intelligence> (public)
 - **ローカル**: `~/Projects/medical-intelligence/`
-- **HEAD**: a2cb66f (MuniView 全国デフォルト表示)
+- **HEAD**: (next commit) — Bridge 腎疾患 v1 追加 (6領域目, experimental)
 - **フレームワーク**: Next.js 14 App Router + Vercel + SQLite (25テーブル/1,227,835行) + Static JSON (27ファイル/\~52MB)
 
 ---

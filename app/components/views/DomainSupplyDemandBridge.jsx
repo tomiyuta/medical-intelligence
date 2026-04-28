@@ -3,7 +3,7 @@ import { DOMAIN_MAPPING, describeDelta, DATA_BADGE } from '../../../lib/domainMa
 
 const ACTIVE_FUNCS = ['高度急性期', '急性期', '回復期', '慢性期'];
 
-export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ, vitalStats, bedFunc, ndbRx, agePyramid, mob }) {
+export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ, vitalStats, bedFunc, ndbRx, agePyramid, mob, ndbHc }) {
   if (!ndbPref) return null;
 
   // 各データソースから pref/national を抽出
@@ -77,9 +77,20 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
 
     let refLabel = '全国平均';
     if (type === 'risk') {
-      prefVal = ndbQPref?.[cfg.ndbQKey];
-      natVal = ndbQNat?.[cfg.ndbQKey];
-      refLabel = '47都道府県平均'; // ndbQに'全国'エントリなし、47県単純平均を代理使用
+      if (cfg.ndbHcMetric) {
+        // NDB健診 (eGFR等)。男女平均を県値とする
+        const hcRecs = Array.isArray(ndbHc) ? ndbHc.filter(h => h.metric === cfg.ndbHcMetric) : [];
+        const prefRec = hcRecs.find(h => h.pref === ndbPref);
+        if (prefRec) prefVal = (prefRec.male + prefRec.female) / 2;
+        // 47県単純平均 (ndb_health_checkup には '全国' エントリがあるが、47県平均を統一して使用)
+        const valid = hcRecs.filter(h => h.pref !== '全国');
+        if (valid.length > 0) natVal = valid.reduce((s,h) => s + (h.male+h.female)/2, 0) / valid.length;
+        refLabel = '47都道府県平均';
+      } else {
+        prefVal = ndbQPref?.[cfg.ndbQKey];
+        natVal = ndbQNat?.[cfg.ndbQKey];
+        refLabel = '47都道府県平均'; // ndbQに'全国'エントリなし、47県単純平均を代理使用
+      }
     } else if (type === 'demand') {
       const psKey = cfg.patientSurveyKey;
       prefVal = psPref?.categories?.[psKey]?.outpatient;
