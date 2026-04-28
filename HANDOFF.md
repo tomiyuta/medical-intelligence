@@ -5,7 +5,7 @@
 - **本番URL**: <https://medical-intelligence-two.vercel.app>
 - **GitHub**: <https://github.com/tomiyuta/medical-intelligence> (public)
 - **ローカル**: `~/Projects/medical-intelligence/`
-- **HEAD**: 52cbcef (phase5: 病床機能報告 令和6年度更新)
+- **HEAD**: (phase6 commit pending) — 5afbefe (sanity check) + phase6 (患者調査R5)
 - **フレームワーク**: Next.js 14 App Router + Vercel + SQLite (25テーブル/1,227,835行) + Static JSON (27ファイル/\~52MB)
 
 ---
@@ -15,6 +15,7 @@
 #作業コミット1Phase A: サイト目的変更(タイトル/ナビ/ScoringViewリブランド)b5ec5ad2Phase C: 3層ナビ構造 + 年齢ピラミッド239c7113fix: がん死亡率0表示(VITAL_MAP名称不一致)e1374eb4fix: AreaView死因構造非表示(c.short/c.deaths→c.cause/c.rate)72ad5cb5NDB 2.0: 5レイヤー都道府県医療プロファイル全面再構築a58215f6処方薬初期フェッチ + DRUG_DOMAIN 16→28薬効分類拡充72efa677特定健診質問票ETL(喫煙/体重/運動/歩行/夕食 5問)a82f7bc8全国平均Δ比較 + Gap Finder(喫煙率×がん死亡率scatter)7dff10a9診療行為データクリーンアップ(D/E/K不整合72件削除)eb1e7fa10全ビュー都道府県連動(globalPrefグローバル化)047a28f
 
 ---
+
 ## 現在のサイト構成(7ビュー)
 
 ```
@@ -185,31 +186,52 @@ by_pref = defaultdict(lambda: {'h':0,'w':0,'b':0})
 for d in r6:
     by_pref[d['pref']]['h'] += d['hosp']
     by_pref[d['pref']]['w'] += d['wards']
-    by_pref[d['pref']]['b'] += d['beds']
-ranked = sorted(by_pref.items(), key=lambda x: -x[1]['b'])
-print('全47都道府県:', len(by_pref))
-for p, v in ranked[:5] + [('---',{'h':0,'w':0,'b':0})] + ranked[-5:]:
-    print(f'{p}: h={v[\"h\"]} w={v[\"w\"]} b={v[\"b\"]:,}')
-"
+```
+by_pref[d['pref']]['b'] += d['beds']
+```
+
+ranked = sorted(by_pref.items(), key=lambda x: -x\[1\]\['b'\]) print('全47都道府県:', len(by_pref)) for p, v in ranked\[:5\] + \[('---',{'h':0,'w':0,'b':0})\] + ranked\[-5:\]: print(f'{p}: h={v\["h"\]} w={v\["w"\]} b={v\["b"\]:,}') "
+
 ```
 
 ---
 
-### Priority 6: 患者調査（令和5年・受療率・大分類限定）← 次の最優先タスク
+### Priority 6: 患者調査（令和5年・受療率・大分類限定）— 完了 (phase6)
 
-**スコープ厳格化**（ChatGPTレビュー条件付き採択）:
+**実装内容**:
 
-- 採用: 令和5年患者調査 / 都道府県別 / 傷病大分類または中分類 / 受療率 / 入院・外来別
-- 不採用: 推計患者数の絶対値前面表示 / 小分類フル投入 / 「疾患別罹患率」という表現 / 二次医療圏推定
+- ETL: `scripts/etl_patient_survey_r5.py` (再現可能・冪等)
+  - 出典: 厚労省 令和5年患者調査 都道府県編 第39表（2024-12-20公表）
+  - 対象: 都道府県 × 傷病大分類(21) × 入院/外来 の受療率（人口10万対）
+  - 留意点修正: e-Stat T39 はpref名suffix省略 (`京都`/`東京`等) → `_strip_suffix()`で対応
+- API: `app/api/patient-survey/route.js` 新設
+- データ: `data/static/patient_survey_r5.json` (213KB, 48 prefs × 21 大分類)
+- UI統合: NdbView の **Layer 2.5「需要 — 受療率」**（健診リスクと医療利用の間）
+  - 入院/外来 トグル（デフォルト外来）
+  - 都道府県全体総数 + 全国比 % 表示
+  - 大分類 Top 7 を横棒グラフで可視化（全国比 % delta 付き）
+  - データ意味バッジ「需要・標本推計」(rose色)
+  - 注釈: 「NDB（供給）とは異なり、患者住所地ベースの標本推計」を明記
 
-**開始時タスク**:
+**スコープ厳守確認**:
 
-1. 厚労省 患者調査 公式ページで R5 公表データのURL確認
-2. 受療率（人口10万対）を 都道府県 × 大分類 × 入院/外来 で抽出
-3. NdbView または AreaView に「需要側」レイヤーとして統合
-4. 「これはNDB（供給）とは異なり、受療側の標本推計である」旨を明記
+- ✅ 受療率（人口10万対）のみ採用 — 推計患者数の絶対値は前面表示せず
+- ✅ 大分類のみ（21項目）— 中・小分類は不採用
+- ✅ 「疾患別罹患率」という表現は使用せず「受療率」で統一
+- ✅ 都道府県粒度のみ — 二次医療圏推定は行わず
 
-### Priority 7-8: Disease領域タブ(NdbView内)/per capita切替
+**サニティチェック結果**:
+
+- 全国 入院=945 / 外来=5850 (人口10万対) — 公表値と完全一致
+- 高知県 入院=1785 (全国の1.89倍) — 高齢化率が高く慢性期需要が大きい既知パターン
+- 東京都 入院=671 / 外来=5569 — 入院は全国より少ないが外来はほぼ全国並 (大都市の通院アクセス性)
+- 京都府 入院=917 / 外来=4867 — 全国並
+
+### Priority 7: NdbView内 Disease領域タブ ← 次の最優先タスク
+
+ChatGPTレビュー条件付き採択。独立ビューではなくNdbView内タブで実装。
+
+### Priority 8: per capita切替（NdbView限定）
 
 ---
 
@@ -219,7 +241,6 @@ for p, v in ranked[:5] + [('---',{'h':0,'w':0,'b':0})] + ranked[-5:]:
 // page.js — 5つの独立prefStateを1つに統合
 const [globalPref, setGlobalPref] = useState('東京都');
 ```
-
 useEffect(() => {
 ```
 ```

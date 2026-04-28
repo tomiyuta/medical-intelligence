@@ -65,7 +65,7 @@ const GAP_TEMPLATES = [
     note:'X軸は睡眠で休養がとれている人の割合（高=低リスク）。睡眠不足と循環器の関連は確立。'},
 ];
 
-export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ, agePyramid, futureDemo }) {
+export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ, agePyramid, futureDemo, patientSurvey }) {
   const diagByPref = ndbDiag.filter(d=>d.prefecture===ndbPref);
   const hcPref = ndbHc.filter(d=>d.pref===ndbPref);
   const vp = vitalStats?.prefectures?.find(p=>p.pref===ndbPref);
@@ -147,6 +147,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
 
   // ── Gap Finder: state & 全都道府県メトリック計算 ──
   const [gapTemplate, setGapTemplate] = useState('smoke_cancer');
+  const [psMode, setPsMode] = useState('outpatient'); // 患者調査: 入院/外来切替
   const prefMaps = (()=>{
     const popByPref = {}, p65ByPref = {};
     if (areaDemoData) {
@@ -329,6 +330,83 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
       })}
     </div>
   </div>}
+
+  {/* ═══ Layer 2.5: DEMAND-SIDE (受療率 — 患者調査) ═══ */}
+  {patientSurvey?.prefectures?.[ndbPref] && (()=>{
+    const ps = patientSurvey.prefectures[ndbPref];
+    const nat = patientSurvey.prefectures['全国'];
+    if (!ps?.categories || !nat?.categories) return null;
+    const metricKey = psMode; // 'inpatient' | 'outpatient'
+    const totalLabel = psMode === 'inpatient' ? '入院' : '外来';
+    const myTotal = ps.total?.[metricKey];
+    const natTotal = nat.total?.[metricKey];
+    // Top 7 大分類 by 当該県の受療率
+    const items = Object.entries(ps.categories)
+      .map(([k, v]) => ({ key: k, name: v.name, chapter: v.chapter, val: v[metricKey], natVal: nat.categories[k]?.[metricKey] }))
+      .filter(x => x.val != null && x.val > 0)
+      .sort((a,b)=>b.val-a.val)
+      .slice(0, 7);
+    const maxVal = items[0]?.val || 1;
+    return (
+    <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16}}>
+      <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14,flexWrap:'wrap'}}>
+        <span style={{fontSize:18}}>📈</span>
+        <div style={{flex:1,minWidth:0}}>
+          <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>
+            受療率 — {totalLabel}
+            <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#fce7f3',color:'#9f1239',fontWeight:500}}>需要・標本推計</span>
+          </div>
+          <div style={{fontSize:11,color:'#94a3b8'}}>厚労省 令和5年患者調査(2023) 第39表 — 人口10万対（患者住所地ベース）</div>
+        </div>
+        {/* 入院/外来 トグル */}
+        <div style={{display:'flex',gap:0,border:'1px solid #e2e8f0',borderRadius:6,overflow:'hidden'}}>
+          {[['outpatient','外来'],['inpatient','入院']].map(([k,l])=>(
+            <button key={k} onClick={()=>setPsMode(k)}
+              style={{padding:'5px 12px',border:'none',background:psMode===k?'#9f1239':'#fff',color:psMode===k?'#fff':'#475569',fontSize:11,fontWeight:600,cursor:'pointer'}}>{l}</button>
+          ))}
+        </div>
+      </div>
+      {/* 県全体総数 */}
+      {myTotal != null && natTotal != null && (
+        <div style={{display:'flex',gap:16,marginBottom:14,padding:'10px 14px',background:'#fef3f5',borderRadius:8}}>
+          <div>
+            <div style={{fontSize:10,color:'#9f1239'}}>{ndbPref} {totalLabel}総数</div>
+            <div style={{fontSize:mob?16:20,fontWeight:700,color:'#9f1239'}}>{myTotal}</div>
+          </div>
+          <div>
+            <div style={{fontSize:10,color:'#94a3b8'}}>全国 {totalLabel}総数</div>
+            <div style={{fontSize:mob?16:20,fontWeight:700,color:'#64748b'}}>{natTotal}</div>
+          </div>
+          <div>
+            <div style={{fontSize:10,color:'#94a3b8'}}>全国比</div>
+            <div style={{fontSize:mob?16:20,fontWeight:700,color:myTotal>natTotal?'#dc2626':'#059669'}}>
+              {myTotal>natTotal?'+':''}{((myTotal/natTotal-1)*100).toFixed(1)}%
+            </div>
+          </div>
+        </div>
+      )}
+      {/* 大分類 Top 7 */}
+      <div style={{display:'flex',flexDirection:'column',gap:5}}>
+        {items.map(it => {
+          const delta = it.natVal != null ? ((it.val/it.natVal - 1) * 100) : null;
+          const chapterShort = it.chapter; // ローマ数字
+          return <div key={it.key} style={{display:'flex',alignItems:'center',gap:8}}>
+            <span style={{width:mob?20:30,fontSize:10,fontWeight:600,color:'#9f1239',flexShrink:0}}>{chapterShort}</span>
+            <span style={{width:mob?100:160,fontSize:12,color:'#475569',flexShrink:0,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{it.name}</span>
+            <div style={{flex:1,height:18,background:'#fef3f5',borderRadius:3,overflow:'hidden'}}>
+              <div style={{height:'100%',borderRadius:3,background:'#9f1239',width:`${it.val/maxVal*100}%`,opacity:0.75}}/>
+            </div>
+            <span style={{fontSize:11,fontWeight:600,color:'#9f1239',fontVariantNumeric:'tabular-nums',width:42,textAlign:'right',flexShrink:0}}>{it.val}</span>
+            {delta != null && <span style={{fontSize:10,fontWeight:600,color:delta>0?'#dc2626':'#059669',width:48,textAlign:'right',flexShrink:0}}>{delta>0?'+':''}{delta.toFixed(0)}%</span>}
+          </div>;
+        })}
+      </div>
+      <div style={{fontSize:10,color:'#94a3b8',marginTop:10,lineHeight:1.6}}>
+        ※受療率は「人口10万対」で標準化済み。<b>NDB（供給）とは異なり、患者住所地ベースの標本推計</b>です。
+        標本誤差を含むため、地域差の細かな比較には注意。3年に1回の調査で、次回は令和8年。
+      </div>
+    </div>);
+  })()}
 
   {/* ═══ Layer 3: DEMAND (医療利用) ═══ */}
   {diagByPref.length > 0 && <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16}}>

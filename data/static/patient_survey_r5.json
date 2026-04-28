@@ -1,0 +1,6465 @@
+{
+  "source": "厚労省 令和5年患者調査 都道府県編 第39表",
+  "source_url": "https://www.e-stat.go.jp/stat-search/file-download?statInfId=000040234483&fileKind=1",
+  "published": "2024-12-20",
+  "survey_year": 2023,
+  "unit": "受療率（人口10万対, 患者住所地ベース）",
+  "note": "NDB（供給）とは異なる、医療施設利用者の標本推計。3年に1回の調査。",
+  "categories": [
+    "Ⅰ_感染症及び寄生虫症",
+    "Ⅱ_新生物＜腫瘍＞",
+    "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害",
+    "Ⅳ_内分泌，栄養及び代謝疾患",
+    "Ⅴ_精神及び行動の障害",
+    "Ⅵ_神経系の疾患",
+    "Ⅶ_眼及び付属器の疾患",
+    "Ⅷ_耳及び乳様突起の疾患",
+    "Ⅸ_循環器系の疾患",
+    "Ⅹ_呼吸器系の疾患",
+    "ⅩⅠ_消化器系の疾患",
+    "ⅩⅡ_皮膚及び皮下組織の疾患",
+    "ⅩⅢ_筋骨格系及び結合組織の疾患",
+    "ⅩⅣ_腎尿路生殖器系の疾患",
+    "ⅩⅤ_妊娠，分娩及び産じょく",
+    "ⅩⅥ_周産期に発生した病態",
+    "ⅩⅦ_先天奇形，変形及び染色体異常",
+    "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+    "ⅩⅨ_損傷，中毒及びその他の外因の影響",
+    "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用",
+    "ⅩⅩⅡ_特殊目的用コード"
+  ],
+  "prefectures": {
+    "全国": {
+      "total": {
+        "inpatient": 945,
+        "outpatient": 5850
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 13,
+          "outpatient": 119
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 96,
+          "outpatient": 208
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 5,
+          "outpatient": 16
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 23,
+          "outpatient": 348
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 171,
+          "outpatient": 197
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 99,
+          "outpatient": 130
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 8,
+          "outpatient": 268
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 2,
+          "outpatient": 65
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 147,
+          "outpatient": 677
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 67,
+          "outpatient": 503
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 48,
+          "outpatient": 994
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 10,
+          "outpatient": 253
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 59,
+          "outpatient": 647
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 41,
+          "outpatient": 271
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 11,
+          "outpatient": 10
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 3
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 4,
+          "outpatient": 13
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 12,
+          "outpatient": 75
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 107,
+          "outpatient": 227
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 5,
+          "outpatient": 803
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 12,
+          "outpatient": 24
+        }
+      }
+    },
+    "北海道": {
+      "total": {
+        "inpatient": 1326,
+        "outpatient": 5331
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 13,
+          "outpatient": 108
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 141,
+          "outpatient": 235
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 5,
+          "outpatient": 14
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 31,
+          "outpatient": 344
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 245,
+          "outpatient": 295
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 177,
+          "outpatient": 168
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 11,
+          "outpatient": 206
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 2,
+          "outpatient": 40
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 234,
+          "outpatient": 745
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 81,
+          "outpatient": 308
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 63,
+          "outpatient": 851
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 9,
+          "outpatient": 199
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 84,
+          "outpatient": 490
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 62,
+          "outpatient": 308
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 9,
+          "outpatient": 8
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 3
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 5,
+          "outpatient": 8
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 16,
+          "outpatient": 60
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 114,
+          "outpatient": 172
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 6,
+          "outpatient": 743
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 13,
+          "outpatient": 24
+        }
+      }
+    },
+    "青森県": {
+      "total": {
+        "inpatient": 1070,
+        "outpatient": 5981
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 9,
+          "outpatient": 101
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 138,
+          "outpatient": 232
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 6,
+          "outpatient": 11
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 29,
+          "outpatient": 338
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 214,
+          "outpatient": 256
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 137,
+          "outpatient": 112
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 7,
+          "outpatient": 456
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 1,
+          "outpatient": 35
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 151,
+          "outpatient": 673
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 63,
+          "outpatient": 289
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 53,
+          "outpatient": 798
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 11,
+          "outpatient": 198
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 55,
+          "outpatient": 964
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 40,
+          "outpatient": 317
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 19,
+          "outpatient": 16
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 3
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 5,
+          "outpatient": 8
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 8,
+          "outpatient": 62
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 106,
+          "outpatient": 201
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 3,
+          "outpatient": 899
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 11,
+          "outpatient": 12
+        }
+      }
+    },
+    "岩手県": {
+      "total": {
+        "inpatient": 1032,
+        "outpatient": 5369
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 12,
+          "outpatient": 160
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 106,
+          "outpatient": 215
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 3,
+          "outpatient": 16
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 28,
+          "outpatient": 346
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 235,
+          "outpatient": 170
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 112,
+          "outpatient": 107
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 5,
+          "outpatient": 345
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 1,
+          "outpatient": 41
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 167,
+          "outpatient": 673
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 76,
+          "outpatient": 351
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 47,
+          "outpatient": 831
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 11,
+          "outpatient": 317
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 44,
+          "outpatient": 573
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 38,
+          "outpatient": 285
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 16,
+          "outpatient": 14
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 4,
+          "outpatient": 2
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 7,
+          "outpatient": 7
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 15,
+          "outpatient": 55
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 93,
+          "outpatient": 162
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 2,
+          "outpatient": 676
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 10,
+          "outpatient": 22
+        }
+      }
+    },
+    "宮城県": {
+      "total": {
+        "inpatient": 836,
+        "outpatient": 5381
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 14,
+          "outpatient": 90
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 98,
+          "outpatient": 228
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 5,
+          "outpatient": 14
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 16,
+          "outpatient": 397
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 145,
+          "outpatient": 162
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 108,
+          "outpatient": 169
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 6,
+          "outpatient": 254
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 2,
+          "outpatient": 56
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 119,
+          "outpatient": 691
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 50,
+          "outpatient": 366
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 43,
+          "outpatient": 836
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 6,
+          "outpatient": 183
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 56,
+          "outpatient": 598
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 36,
+          "outpatient": 381
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 12,
+          "outpatient": 10
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 2
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 5,
+          "outpatient": 10
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 12,
+          "outpatient": 53
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 83,
+          "outpatient": 145
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 8,
+          "outpatient": 719
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 8,
+          "outpatient": 16
+        }
+      }
+    },
+    "秋田県": {
+      "total": {
+        "inpatient": 1204,
+        "outpatient": 5631
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 15,
+          "outpatient": 88
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 139,
+          "outpatient": 264
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 6,
+          "outpatient": 22
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 29,
+          "outpatient": 365
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 256,
+          "outpatient": 238
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 209,
+          "outpatient": 186
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 10,
+          "outpatient": 371
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 2,
+          "outpatient": 58
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 163,
+          "outpatient": 864
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 81,
+          "outpatient": 514
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 55,
+          "outpatient": 763
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 5,
+          "outpatient": 260
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 57,
+          "outpatient": 521
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 41,
+          "outpatient": 312
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 13,
+          "outpatient": 7
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 0
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 4,
+          "outpatient": 15
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 8,
+          "outpatient": 60
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 88,
+          "outpatient": 124
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 7,
+          "outpatient": 589
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 12,
+          "outpatient": 10
+        }
+      }
+    },
+    "山形県": {
+      "total": {
+        "inpatient": 1032,
+        "outpatient": 6008
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 14,
+          "outpatient": 96
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 102,
+          "outpatient": 267
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 4,
+          "outpatient": 19
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 27,
+          "outpatient": 487
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 205,
+          "outpatient": 196
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 162,
+          "outpatient": 124
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 11,
+          "outpatient": 355
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 2,
+          "outpatient": 58
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 133,
+          "outpatient": 943
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 68,
+          "outpatient": 537
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 47,
+          "outpatient": 961
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 9,
+          "outpatient": 150
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 53,
+          "outpatient": 652
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 52,
+          "outpatient": 238
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 17,
+          "outpatient": 8
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 1
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 7,
+          "outpatient": 8
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 12,
+          "outpatient": 47
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 87,
+          "outpatient": 156
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 7,
+          "outpatient": 685
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 7,
+          "outpatient": 19
+        }
+      }
+    },
+    "福島県": {
+      "total": {
+        "inpatient": 954,
+        "outpatient": 5752
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 9,
+          "outpatient": 109
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 109,
+          "outpatient": 184
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 4,
+          "outpatient": 13
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 26,
+          "outpatient": 387
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 193,
+          "outpatient": 265
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 99,
+          "outpatient": 179
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 9,
+          "outpatient": 259
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 1,
+          "outpatient": 50
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 131,
+          "outpatient": 763
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 67,
+          "outpatient": 471
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 53,
+          "outpatient": 897
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 10,
+          "outpatient": 197
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 48,
+          "outpatient": 727
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 40,
+          "outpatient": 265
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 16,
+          "outpatient": 12
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 6,
+          "outpatient": 4
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 5,
+          "outpatient": 11
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 10,
+          "outpatient": 65
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 100,
+          "outpatient": 199
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 2,
+          "outpatient": 681
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 13,
+          "outpatient": 14
+        }
+      }
+    },
+    "茨城県": {
+      "total": {
+        "inpatient": 802,
+        "outpatient": 5153
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 13,
+          "outpatient": 87
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 80,
+          "outpatient": 251
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 4,
+          "outpatient": 14
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 18,
+          "outpatient": 269
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 161,
+          "outpatient": 127
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 64,
+          "outpatient": 113
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 11,
+          "outpatient": 201
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 2,
+          "outpatient": 70
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 118,
+          "outpatient": 593
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 67,
+          "outpatient": 535
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 45,
+          "outpatient": 939
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 9,
+          "outpatient": 179
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 43,
+          "outpatient": 323
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 33,
+          "outpatient": 341
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 13,
+          "outpatient": 9
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 2
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 6,
+          "outpatient": 10
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 11,
+          "outpatient": 96
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 83,
+          "outpatient": 147
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 4,
+          "outpatient": 824
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 13,
+          "outpatient": 25
+        }
+      }
+    },
+    "栃木県": {
+      "total": {
+        "inpatient": 846,
+        "outpatient": 5637
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 11,
+          "outpatient": 134
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 92,
+          "outpatient": 235
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 4,
+          "outpatient": 14
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 20,
+          "outpatient": 372
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 172,
+          "outpatient": 178
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 73,
+          "outpatient": 130
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 10,
+          "outpatient": 325
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 1,
+          "outpatient": 97
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 134,
+          "outpatient": 705
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 63,
+          "outpatient": 527
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 45,
+          "outpatient": 865
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 8,
+          "outpatient": 314
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 43,
+          "outpatient": 463
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 42,
+          "outpatient": 309
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 8,
+          "outpatient": 10
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 4
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 6,
+          "outpatient": 14
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 10,
+          "outpatient": 90
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 82,
+          "outpatient": 189
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 2,
+          "outpatient": 645
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 13,
+          "outpatient": 15
+        }
+      }
+    },
+    "群馬県": {
+      "total": {
+        "inpatient": 976,
+        "outpatient": 6114
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 14,
+          "outpatient": 108
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 100,
+          "outpatient": 226
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 6,
+          "outpatient": 21
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 24,
+          "outpatient": 369
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 200,
+          "outpatient": 230
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 81,
+          "outpatient": 123
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 4,
+          "outpatient": 291
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 2,
+          "outpatient": 67
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 128,
+          "outpatient": 699
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 78,
+          "outpatient": 515
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 60,
+          "outpatient": 978
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 11,
+          "outpatient": 192
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 55,
+          "outpatient": 693
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 47,
+          "outpatient": 267
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 14,
+          "outpatient": 6
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 6,
+          "outpatient": 4
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 6,
+          "outpatient": 15
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 12,
+          "outpatient": 63
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 113,
+          "outpatient": 308
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 0,
+          "outpatient": 905
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 14,
+          "outpatient": 35
+        }
+      }
+    },
+    "埼玉県": {
+      "total": {
+        "inpatient": 702,
+        "outpatient": 5435
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 10,
+          "outpatient": 111
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 77,
+          "outpatient": 187
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 4,
+          "outpatient": 18
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 17,
+          "outpatient": 258
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 111,
+          "outpatient": 130
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 71,
+          "outpatient": 106
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 5,
+          "outpatient": 272
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 1,
+          "outpatient": 41
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 119,
+          "outpatient": 544
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 53,
+          "outpatient": 560
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 41,
+          "outpatient": 1009
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 9,
+          "outpatient": 242
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 39,
+          "outpatient": 666
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 32,
+          "outpatient": 231
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 11,
+          "outpatient": 5
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 2
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 4,
+          "outpatient": 18
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 8,
+          "outpatient": 79
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 74,
+          "outpatient": 251
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 4,
+          "outpatient": 689
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 9,
+          "outpatient": 17
+        }
+      }
+    },
+    "千葉県": {
+      "total": {
+        "inpatient": 741,
+        "outpatient": 5632
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 10,
+          "outpatient": 107
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 82,
+          "outpatient": 185
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 3,
+          "outpatient": 12
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 18,
+          "outpatient": 304
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 132,
+          "outpatient": 118
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 55,
+          "outpatient": 81
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 6,
+          "outpatient": 272
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 1,
+          "outpatient": 51
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 132,
+          "outpatient": 574
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 51,
+          "outpatient": 477
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 40,
+          "outpatient": 929
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 8,
+          "outpatient": 248
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 44,
+          "outpatient": 774
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 30,
+          "outpatient": 293
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 11,
+          "outpatient": 8
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 1
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 6,
+          "outpatient": 12
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 8,
+          "outpatient": 81
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 83,
+          "outpatient": 293
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 4,
+          "outpatient": 796
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 12,
+          "outpatient": 16
+        }
+      }
+    },
+    "東京都": {
+      "total": {
+        "inpatient": 671,
+        "outpatient": 5569
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 10,
+          "outpatient": 145
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 73,
+          "outpatient": 191
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 3,
+          "outpatient": 17
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 16,
+          "outpatient": 336
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 110,
+          "outpatient": 163
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 57,
+          "outpatient": 106
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 6,
+          "outpatient": 232
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 1,
+          "outpatient": 91
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 108,
+          "outpatient": 521
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 46,
+          "outpatient": 644
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 37,
+          "outpatient": 823
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 6,
+          "outpatient": 286
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 48,
+          "outpatient": 550
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 31,
+          "outpatient": 240
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 10,
+          "outpatient": 11
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 6,
+          "outpatient": 3
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 4,
+          "outpatient": 16
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 8,
+          "outpatient": 81
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 74,
+          "outpatient": 193
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 5,
+          "outpatient": 895
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 12,
+          "outpatient": 25
+        }
+      }
+    },
+    "神奈川県": {
+      "total": {
+        "inpatient": 665,
+        "outpatient": 5356
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 8,
+          "outpatient": 98
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 72,
+          "outpatient": 183
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 3,
+          "outpatient": 14
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 15,
+          "outpatient": 245
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 103,
+          "outpatient": 123
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 56,
+          "outpatient": 119
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 8,
+          "outpatient": 200
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 1,
+          "outpatient": 45
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 115,
+          "outpatient": 502
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 48,
+          "outpatient": 412
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 41,
+          "outpatient": 1361
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 7,
+          "outpatient": 202
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 42,
+          "outpatient": 675
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 32,
+          "outpatient": 209
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 8,
+          "outpatient": 4
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 4,
+          "outpatient": 3
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 2,
+          "outpatient": 10
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 6,
+          "outpatient": 67
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 77,
+          "outpatient": 175
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 3,
+          "outpatient": 688
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 11,
+          "outpatient": 20
+        }
+      }
+    },
+    "新潟県": {
+      "total": {
+        "inpatient": 939,
+        "outpatient": 5427
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 11,
+          "outpatient": 110
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 105,
+          "outpatient": 226
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 4,
+          "outpatient": 22
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 23,
+          "outpatient": 328
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 185,
+          "outpatient": 188
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 120,
+          "outpatient": 123
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 7,
+          "outpatient": 174
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 1,
+          "outpatient": 66
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 134,
+          "outpatient": 651
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 73,
+          "outpatient": 459
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 51,
+          "outpatient": 997
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 9,
+          "outpatient": 295
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 41,
+          "outpatient": 533
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 49,
+          "outpatient": 185
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 9,
+          "outpatient": 4
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 4,
+          "outpatient": 3
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 3,
+          "outpatient": 10
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 8,
+          "outpatient": 60
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 89,
+          "outpatient": 142
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 3,
+          "outpatient": 838
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 11,
+          "outpatient": 12
+        }
+      }
+    },
+    "富山県": {
+      "total": {
+        "inpatient": 1193,
+        "outpatient": 5394
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 17,
+          "outpatient": 93
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 110,
+          "outpatient": 221
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 5,
+          "outpatient": 15
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 34,
+          "outpatient": 383
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 213,
+          "outpatient": 253
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 173,
+          "outpatient": 100
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 14,
+          "outpatient": 211
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 3,
+          "outpatient": 69
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 195,
+          "outpatient": 676
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 81,
+          "outpatient": 381
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 53,
+          "outpatient": 810
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 14,
+          "outpatient": 191
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 68,
+          "outpatient": 650
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 49,
+          "outpatient": 261
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 12,
+          "outpatient": 8
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 2
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 5,
+          "outpatient": 13
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 14,
+          "outpatient": 75
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 109,
+          "outpatient": 175
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 1,
+          "outpatient": 790
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 19,
+          "outpatient": 16
+        }
+      }
+    },
+    "石川県": {
+      "total": {
+        "inpatient": 1158,
+        "outpatient": 5368
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 14,
+          "outpatient": 113
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 129,
+          "outpatient": 219
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 6,
+          "outpatient": 20
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 32,
+          "outpatient": 328
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 218,
+          "outpatient": 194
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 138,
+          "outpatient": 134
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 22,
+          "outpatient": 270
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 2,
+          "outpatient": 67
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 172,
+          "outpatient": 488
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 75,
+          "outpatient": 436
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 54,
+          "outpatient": 880
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 8,
+          "outpatient": 205
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 61,
+          "outpatient": 564
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 39,
+          "outpatient": 265
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 25,
+          "outpatient": 18
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 6,
+          "outpatient": 3
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 4,
+          "outpatient": 20
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 14,
+          "outpatient": 69
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 126,
+          "outpatient": 185
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 2,
+          "outpatient": 862
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 12,
+          "outpatient": 28
+        }
+      }
+    },
+    "福井県": {
+      "total": {
+        "inpatient": 1082,
+        "outpatient": 5709
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 14,
+          "outpatient": 118
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 110,
+          "outpatient": 207
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 3,
+          "outpatient": 19
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 27,
+          "outpatient": 383
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 185,
+          "outpatient": 230
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 113,
+          "outpatient": 141
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 9,
+          "outpatient": 200
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 3,
+          "outpatient": 48
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 162,
+          "outpatient": 774
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 90,
+          "outpatient": 432
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 61,
+          "outpatient": 740
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 13,
+          "outpatient": 329
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 73,
+          "outpatient": 656
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 43,
+          "outpatient": 245
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 12,
+          "outpatient": 9
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 2
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 3,
+          "outpatient": 15
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 15,
+          "outpatient": 96
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 133,
+          "outpatient": 227
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 1,
+          "outpatient": 818
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 8,
+          "outpatient": 22
+        }
+      }
+    },
+    "山梨県": {
+      "total": {
+        "inpatient": 985,
+        "outpatient": 5952
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 12,
+          "outpatient": 110
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 85,
+          "outpatient": 239
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 4,
+          "outpatient": 16
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 22,
+          "outpatient": 374
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 187,
+          "outpatient": 243
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 94,
+          "outpatient": 116
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 11,
+          "outpatient": 262
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 2,
+          "outpatient": 50
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 153,
+          "outpatient": 729
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 75,
+          "outpatient": 460
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 47,
+          "outpatient": 888
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 11,
+          "outpatient": 237
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 73,
+          "outpatient": 780
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 33,
+          "outpatient": 316
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 9,
+          "outpatient": 10
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 7,
+          "outpatient": 3
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 4,
+          "outpatient": 12
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 14,
+          "outpatient": 64
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 126,
+          "outpatient": 224
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 3,
+          "outpatient": 800
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 17,
+          "outpatient": 20
+        }
+      }
+    },
+    "長野県": {
+      "total": {
+        "inpatient": 879,
+        "outpatient": 5201
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 10,
+          "outpatient": 84
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 94,
+          "outpatient": 270
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 3,
+          "outpatient": 14
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 21,
+          "outpatient": 330
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 163,
+          "outpatient": 306
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 80,
+          "outpatient": 121
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 6,
+          "outpatient": 170
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 2,
+          "outpatient": 93
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 133,
+          "outpatient": 650
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 71,
+          "outpatient": 465
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 48,
+          "outpatient": 887
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 7,
+          "outpatient": 149
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 66,
+          "outpatient": 470
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 39,
+          "outpatient": 259
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 7,
+          "outpatient": 10
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 5
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 5,
+          "outpatient": 26
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 7,
+          "outpatient": 78
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 96,
+          "outpatient": 148
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 4,
+          "outpatient": 643
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 11,
+          "outpatient": 22
+        }
+      }
+    },
+    "岐阜県": {
+      "total": {
+        "inpatient": 793,
+        "outpatient": 6219
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 9,
+          "outpatient": 149
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 93,
+          "outpatient": 205
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 4,
+          "outpatient": 19
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 16,
+          "outpatient": 409
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 151,
+          "outpatient": 174
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 62,
+          "outpatient": 171
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 5,
+          "outpatient": 374
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 2,
+          "outpatient": 65
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 128,
+          "outpatient": 658
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 63,
+          "outpatient": 451
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 39,
+          "outpatient": 1053
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 7,
+          "outpatient": 254
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 43,
+          "outpatient": 636
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 41,
+          "outpatient": 433
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 16,
+          "outpatient": 22
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 6,
+          "outpatient": 4
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 3,
+          "outpatient": 19
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 6,
+          "outpatient": 74
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 88,
+          "outpatient": 232
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 1,
+          "outpatient": 797
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 9,
+          "outpatient": 20
+        }
+      }
+    },
+    "静岡県": {
+      "total": {
+        "inpatient": 808,
+        "outpatient": 5816
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 11,
+          "outpatient": 137
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 83,
+          "outpatient": 221
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 4,
+          "outpatient": 20
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 17,
+          "outpatient": 476
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 133,
+          "outpatient": 162
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 70,
+          "outpatient": 117
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 5,
+          "outpatient": 149
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 1,
+          "outpatient": 45
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 148,
+          "outpatient": 825
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 58,
+          "outpatient": 415
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 41,
+          "outpatient": 910
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 11,
+          "outpatient": 306
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 51,
+          "outpatient": 635
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 37,
+          "outpatient": 290
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 16,
+          "outpatient": 6
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 4,
+          "outpatient": 3
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 5,
+          "outpatient": 12
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 6,
+          "outpatient": 72
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 99,
+          "outpatient": 202
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 1,
+          "outpatient": 791
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 9,
+          "outpatient": 23
+        }
+      }
+    },
+    "愛知県": {
+      "total": {
+        "inpatient": 712,
+        "outpatient": 6504
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 11,
+          "outpatient": 178
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 80,
+          "outpatient": 193
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 4,
+          "outpatient": 17
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 20,
+          "outpatient": 361
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 123,
+          "outpatient": 185
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 54,
+          "outpatient": 114
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 8,
+          "outpatient": 301
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 1,
+          "outpatient": 79
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 111,
+          "outpatient": 645
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 57,
+          "outpatient": 545
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 39,
+          "outpatient": 1054
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 8,
+          "outpatient": 458
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 35,
+          "outpatient": 708
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 31,
+          "outpatient": 312
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 10,
+          "outpatient": 8
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 3
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 3,
+          "outpatient": 13
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 9,
+          "outpatient": 77
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 88,
+          "outpatient": 294
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 2,
+          "outpatient": 934
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 9,
+          "outpatient": 24
+        }
+      }
+    },
+    "三重県": {
+      "total": {
+        "inpatient": 915,
+        "outpatient": 6459
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 15,
+          "outpatient": 140
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 80,
+          "outpatient": 196
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 9,
+          "outpatient": 15
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 20,
+          "outpatient": 407
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 202,
+          "outpatient": 217
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 81,
+          "outpatient": 192
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 7,
+          "outpatient": 297
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 1,
+          "outpatient": 65
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 138,
+          "outpatient": 845
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 69,
+          "outpatient": 571
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 47,
+          "outpatient": 1115
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 11,
+          "outpatient": 305
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 48,
+          "outpatient": 704
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 41,
+          "outpatient": 171
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 11,
+          "outpatient": 11
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 1
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 3,
+          "outpatient": 13
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 11,
+          "outpatient": 67
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 105,
+          "outpatient": 245
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 1,
+          "outpatient": 871
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 9,
+          "outpatient": 12
+        }
+      }
+    },
+    "滋賀県": {
+      "total": {
+        "inpatient": 812,
+        "outpatient": 5144
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 12,
+          "outpatient": 87
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 96,
+          "outpatient": 190
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 4,
+          "outpatient": 22
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 25,
+          "outpatient": 333
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 106,
+          "outpatient": 192
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 95,
+          "outpatient": 112
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 8,
+          "outpatient": 242
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 1,
+          "outpatient": 45
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 133,
+          "outpatient": 646
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 64,
+          "outpatient": 411
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 43,
+          "outpatient": 833
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 12,
+          "outpatient": 164
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 45,
+          "outpatient": 548
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 30,
+          "outpatient": 209
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 12,
+          "outpatient": 9
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 5
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 6,
+          "outpatient": 11
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 10,
+          "outpatient": 73
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 89,
+          "outpatient": 201
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 2,
+          "outpatient": 785
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 13,
+          "outpatient": 26
+        }
+      }
+    },
+    "京都府": {
+      "total": {
+        "inpatient": 917,
+        "outpatient": 4867
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 12,
+          "outpatient": 97
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 101,
+          "outpatient": 228
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 5,
+          "outpatient": 15
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 24,
+          "outpatient": 300
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 118,
+          "outpatient": 329
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 120,
+          "outpatient": 150
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 10,
+          "outpatient": 259
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 1,
+          "outpatient": 60
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 137,
+          "outpatient": 624
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 66,
+          "outpatient": 390
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 47,
+          "outpatient": 575
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 10,
+          "outpatient": 259
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 67,
+          "outpatient": 530
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 44,
+          "outpatient": 228
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 11,
+          "outpatient": 11
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 3
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 4,
+          "outpatient": 7
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 9,
+          "outpatient": 47
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 111,
+          "outpatient": 171
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 1,
+          "outpatient": 560
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 13,
+          "outpatient": 23
+        }
+      }
+    },
+    "大阪府": {
+      "total": {
+        "inpatient": 921,
+        "outpatient": 6222
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 13,
+          "outpatient": 107
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 97,
+          "outpatient": 218
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 5,
+          "outpatient": 11
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 25,
+          "outpatient": 372
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 138,
+          "outpatient": 216
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 79,
+          "outpatient": 138
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 10,
+          "outpatient": 234
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 2,
+          "outpatient": 76
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 153,
+          "outpatient": 769
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 71,
+          "outpatient": 579
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 46,
+          "outpatient": 1226
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 10,
+          "outpatient": 252
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 68,
+          "outpatient": 565
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 39,
+          "outpatient": 264
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 10,
+          "outpatient": 12
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 6,
+          "outpatient": 3
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 4,
+          "outpatient": 17
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 20,
+          "outpatient": 76
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 106,
+          "outpatient": 199
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 5,
+          "outpatient": 834
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 13,
+          "outpatient": 54
+        }
+      }
+    },
+    "兵庫県": {
+      "total": {
+        "inpatient": 957,
+        "outpatient": 6223
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 13,
+          "outpatient": 109
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 97,
+          "outpatient": 205
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 5,
+          "outpatient": 14
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 24,
+          "outpatient": 382
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 145,
+          "outpatient": 207
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 86,
+          "outpatient": 110
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 9,
+          "outpatient": 344
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 2,
+          "outpatient": 92
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 142,
+          "outpatient": 729
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 74,
+          "outpatient": 500
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 49,
+          "outpatient": 965
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 11,
+          "outpatient": 245
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 68,
+          "outpatient": 896
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 42,
+          "outpatient": 223
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 14,
+          "outpatient": 13
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 6,
+          "outpatient": 3
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 4,
+          "outpatient": 8
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 16,
+          "outpatient": 97
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 124,
+          "outpatient": 221
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 16,
+          "outpatient": 822
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 11,
+          "outpatient": 39
+        }
+      }
+    },
+    "奈良県": {
+      "total": {
+        "inpatient": 926,
+        "outpatient": 5305
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 12,
+          "outpatient": 121
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 91,
+          "outpatient": 248
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 5,
+          "outpatient": 18
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 26,
+          "outpatient": 279
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 152,
+          "outpatient": 133
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 95,
+          "outpatient": 136
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 11,
+          "outpatient": 235
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 2,
+          "outpatient": 60
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 133,
+          "outpatient": 580
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 80,
+          "outpatient": 389
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 49,
+          "outpatient": 994
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 10,
+          "outpatient": 284
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 58,
+          "outpatient": 681
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 39,
+          "outpatient": 191
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 8,
+          "outpatient": 8
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 3
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 3,
+          "outpatient": 12
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 11,
+          "outpatient": 68
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 120,
+          "outpatient": 202
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 2,
+          "outpatient": 650
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 14,
+          "outpatient": 13
+        }
+      }
+    },
+    "和歌山県": {
+      "total": {
+        "inpatient": 1105,
+        "outpatient": 6846
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 14,
+          "outpatient": 156
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 117,
+          "outpatient": 306
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 4,
+          "outpatient": 24
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 32,
+          "outpatient": 412
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 171,
+          "outpatient": 189
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 86,
+          "outpatient": 166
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 9,
+          "outpatient": 270
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 2,
+          "outpatient": 62
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 172,
+          "outpatient": 955
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 85,
+          "outpatient": 493
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 61,
+          "outpatient": 1159
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 12,
+          "outpatient": 378
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 83,
+          "outpatient": 655
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 51,
+          "outpatient": 318
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 12,
+          "outpatient": 18
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 4
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 8,
+          "outpatient": 23
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 15,
+          "outpatient": 91
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 153,
+          "outpatient": 275
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 2,
+          "outpatient": 869
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 11,
+          "outpatient": 24
+        }
+      }
+    },
+    "鳥取県": {
+      "total": {
+        "inpatient": 1126,
+        "outpatient": 5914
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 13,
+          "outpatient": 104
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 131,
+          "outpatient": 278
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 4,
+          "outpatient": 16
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 28,
+          "outpatient": 368
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 204,
+          "outpatient": 315
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 118,
+          "outpatient": 184
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 9,
+          "outpatient": 282
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 1,
+          "outpatient": 72
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 169,
+          "outpatient": 743
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 85,
+          "outpatient": 479
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 51,
+          "outpatient": 901
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 14,
+          "outpatient": 183
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 69,
+          "outpatient": 643
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 49,
+          "outpatient": 300
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 13,
+          "outpatient": 16
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 7,
+          "outpatient": 2
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 7,
+          "outpatient": 17
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 10,
+          "outpatient": 67
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 130,
+          "outpatient": 199
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 1,
+          "outpatient": 721
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 13,
+          "outpatient": 21
+        }
+      }
+    },
+    "島根県": {
+      "total": {
+        "inpatient": 1254,
+        "outpatient": 6399
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 13,
+          "outpatient": 127
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 130,
+          "outpatient": 216
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 5,
+          "outpatient": 21
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 41,
+          "outpatient": 419
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 223,
+          "outpatient": 310
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 131,
+          "outpatient": 204
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 19,
+          "outpatient": 309
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 3,
+          "outpatient": 44
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 163,
+          "outpatient": 936
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 86,
+          "outpatient": 527
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 112,
+          "outpatient": 933
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 13,
+          "outpatient": 222
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 71,
+          "outpatient": 732
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 50,
+          "outpatient": 268
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 12,
+          "outpatient": 4
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 8,
+          "outpatient": 4
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 7,
+          "outpatient": 24
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 12,
+          "outpatient": 86
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 138,
+          "outpatient": 223
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 3,
+          "outpatient": 778
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 11,
+          "outpatient": 11
+        }
+      }
+    },
+    "岡山県": {
+      "total": {
+        "inpatient": 1054,
+        "outpatient": 5420
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 20,
+          "outpatient": 107
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 104,
+          "outpatient": 169
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 5,
+          "outpatient": 16
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 29,
+          "outpatient": 347
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 141,
+          "outpatient": 188
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 119,
+          "outpatient": 124
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 9,
+          "outpatient": 298
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 1,
+          "outpatient": 59
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 155,
+          "outpatient": 589
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 84,
+          "outpatient": 475
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 68,
+          "outpatient": 937
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 10,
+          "outpatient": 230
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 66,
+          "outpatient": 493
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 51,
+          "outpatient": 202
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 18,
+          "outpatient": 11
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 2
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 5,
+          "outpatient": 10
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 9,
+          "outpatient": 66
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 136,
+          "outpatient": 329
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 5,
+          "outpatient": 742
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 13,
+          "outpatient": 25
+        }
+      }
+    },
+    "広島県": {
+      "total": {
+        "inpatient": 1084,
+        "outpatient": 6346
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 12,
+          "outpatient": 85
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 111,
+          "outpatient": 217
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 5,
+          "outpatient": 20
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 27,
+          "outpatient": 414
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 210,
+          "outpatient": 295
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 118,
+          "outpatient": 160
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 5,
+          "outpatient": 287
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 1,
+          "outpatient": 82
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 146,
+          "outpatient": 673
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 70,
+          "outpatient": 499
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 50,
+          "outpatient": 971
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 9,
+          "outpatient": 164
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 67,
+          "outpatient": 803
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 62,
+          "outpatient": 405
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 8,
+          "outpatient": 8
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 1
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 5,
+          "outpatient": 10
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 16,
+          "outpatient": 81
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 139,
+          "outpatient": 287
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 7,
+          "outpatient": 866
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 12,
+          "outpatient": 20
+        }
+      }
+    },
+    "山口県": {
+      "total": {
+        "inpatient": 1534,
+        "outpatient": 6582
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 14,
+          "outpatient": 95
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 143,
+          "outpatient": 190
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 8,
+          "outpatient": 25
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 46,
+          "outpatient": 451
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 292,
+          "outpatient": 258
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 216,
+          "outpatient": 166
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 8,
+          "outpatient": 415
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 2,
+          "outpatient": 68
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 227,
+          "outpatient": 881
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 105,
+          "outpatient": 497
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 62,
+          "outpatient": 1238
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 17,
+          "outpatient": 256
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 92,
+          "outpatient": 644
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 71,
+          "outpatient": 294
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 10,
+          "outpatient": 14
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 7,
+          "outpatient": 2
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 3,
+          "outpatient": 13
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 21,
+          "outpatient": 68
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 169,
+          "outpatient": 217
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 3,
+          "outpatient": 770
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 17,
+          "outpatient": 21
+        }
+      }
+    },
+    "徳島県": {
+      "total": {
+        "inpatient": 1418,
+        "outpatient": 6058
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 21,
+          "outpatient": 96
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 93,
+          "outpatient": 178
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 6,
+          "outpatient": 21
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 33,
+          "outpatient": 379
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 306,
+          "outpatient": 250
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 144,
+          "outpatient": 175
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 0,
+          "outpatient": 371
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 1,
+          "outpatient": 97
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 211,
+          "outpatient": 884
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 103,
+          "outpatient": 488
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 60,
+          "outpatient": 928
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 15,
+          "outpatient": 185
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 119,
+          "outpatient": 591
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 51,
+          "outpatient": 280
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 12,
+          "outpatient": 22
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 6,
+          "outpatient": 4
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 7,
+          "outpatient": 5
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 25,
+          "outpatient": 64
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 183,
+          "outpatient": 259
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 8,
+          "outpatient": 758
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 14,
+          "outpatient": 23
+        }
+      }
+    },
+    "香川県": {
+      "total": {
+        "inpatient": 1195,
+        "outpatient": 6807
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 18,
+          "outpatient": 151
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 119,
+          "outpatient": 260
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 6,
+          "outpatient": 24
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 28,
+          "outpatient": 431
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 239,
+          "outpatient": 258
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 115,
+          "outpatient": 241
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 9,
+          "outpatient": 345
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 2,
+          "outpatient": 75
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 163,
+          "outpatient": 916
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 79,
+          "outpatient": 510
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 44,
+          "outpatient": 811
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 11,
+          "outpatient": 201
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 88,
+          "outpatient": 712
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 54,
+          "outpatient": 304
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 18,
+          "outpatient": 14
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 5,
+          "outpatient": 4
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 4,
+          "outpatient": 11
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 17,
+          "outpatient": 82
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 164,
+          "outpatient": 317
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 2,
+          "outpatient": 1109
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 12,
+          "outpatient": 31
+        }
+      }
+    },
+    "愛媛県": {
+      "total": {
+        "inpatient": 1217,
+        "outpatient": 6598
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 15,
+          "outpatient": 98
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 123,
+          "outpatient": 231
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 5,
+          "outpatient": 16
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 30,
+          "outpatient": 352
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 211,
+          "outpatient": 154
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 102,
+          "outpatient": 160
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 11,
+          "outpatient": 288
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 4,
+          "outpatient": 52
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 182,
+          "outpatient": 800
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 93,
+          "outpatient": 567
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 56,
+          "outpatient": 980
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 13,
+          "outpatient": 195
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 107,
+          "outpatient": 934
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 60,
+          "outpatient": 309
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 12,
+          "outpatient": 14
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 4,
+          "outpatient": 3
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 6,
+          "outpatient": 15
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 17,
+          "outpatient": 82
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 157,
+          "outpatient": 328
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 2,
+          "outpatient": 998
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 7,
+          "outpatient": 26
+        }
+      }
+    },
+    "高知県": {
+      "total": {
+        "inpatient": 1785,
+        "outpatient": 5548
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 21,
+          "outpatient": 110
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 121,
+          "outpatient": 181
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 7,
+          "outpatient": 21
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 67,
+          "outpatient": 319
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 279,
+          "outpatient": 314
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 230,
+          "outpatient": 135
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 4,
+          "outpatient": 211
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 2,
+          "outpatient": 98
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 303,
+          "outpatient": 690
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 123,
+          "outpatient": 456
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 72,
+          "outpatient": 819
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 23,
+          "outpatient": 211
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 138,
+          "outpatient": 613
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 89,
+          "outpatient": 325
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 14,
+          "outpatient": 10
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 7,
+          "outpatient": 4
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 5,
+          "outpatient": 10
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 22,
+          "outpatient": 55
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 237,
+          "outpatient": 291
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 3,
+          "outpatient": 665
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 19,
+          "outpatient": 10
+        }
+      }
+    },
+    "福岡県": {
+      "total": {
+        "inpatient": 1319,
+        "outpatient": 6363
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 16,
+          "outpatient": 121
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 108,
+          "outpatient": 212
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 6,
+          "outpatient": 17
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 28,
+          "outpatient": 388
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 276,
+          "outpatient": 236
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 162,
+          "outpatient": 144
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 9,
+          "outpatient": 378
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 2,
+          "outpatient": 51
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 198,
+          "outpatient": 779
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 87,
+          "outpatient": 496
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 60,
+          "outpatient": 1178
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 15,
+          "outpatient": 218
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 85,
+          "outpatient": 662
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 50,
+          "outpatient": 252
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 9,
+          "outpatient": 8
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 4,
+          "outpatient": 3
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 5,
+          "outpatient": 16
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 14,
+          "outpatient": 69
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 164,
+          "outpatient": 312
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 7,
+          "outpatient": 809
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 17,
+          "outpatient": 17
+        }
+      }
+    },
+    "佐賀県": {
+      "total": {
+        "inpatient": 1456,
+        "outpatient": 6565
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 17,
+          "outpatient": 172
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 116,
+          "outpatient": 249
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 5,
+          "outpatient": 20
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 30,
+          "outpatient": 420
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 339,
+          "outpatient": 281
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 200,
+          "outpatient": 136
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 6,
+          "outpatient": 301
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 1,
+          "outpatient": 40
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 203,
+          "outpatient": 805
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 93,
+          "outpatient": 468
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 55,
+          "outpatient": 969
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 15,
+          "outpatient": 273
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 85,
+          "outpatient": 832
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 50,
+          "outpatient": 364
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 21,
+          "outpatient": 14
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 8,
+          "outpatient": 1
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 8,
+          "outpatient": 18
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 16,
+          "outpatient": 67
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 179,
+          "outpatient": 395
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 1,
+          "outpatient": 726
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 9,
+          "outpatient": 12
+        }
+      }
+    },
+    "長崎県": {
+      "total": {
+        "inpatient": 1651,
+        "outpatient": 6579
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 20,
+          "outpatient": 109
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 131,
+          "outpatient": 169
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 6,
+          "outpatient": 25
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 38,
+          "outpatient": 344
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 392,
+          "outpatient": 173
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 218,
+          "outpatient": 134
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 6,
+          "outpatient": 338
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 2,
+          "outpatient": 76
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 242,
+          "outpatient": 1103
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 115,
+          "outpatient": 569
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 69,
+          "outpatient": 812
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 20,
+          "outpatient": 251
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 89,
+          "outpatient": 885
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 53,
+          "outpatient": 319
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 9,
+          "outpatient": 9
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 4,
+          "outpatient": 2
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 8,
+          "outpatient": 10
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 21,
+          "outpatient": 51
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 194,
+          "outpatient": 286
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 2,
+          "outpatient": 903
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 12,
+          "outpatient": 11
+        }
+      }
+    },
+    "熊本県": {
+      "total": {
+        "inpatient": 1531,
+        "outpatient": 6323
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 24,
+          "outpatient": 147
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 127,
+          "outpatient": 198
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 5,
+          "outpatient": 18
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 36,
+          "outpatient": 339
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 314,
+          "outpatient": 230
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 203,
+          "outpatient": 139
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 7,
+          "outpatient": 213
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 3,
+          "outpatient": 79
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 205,
+          "outpatient": 856
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 95,
+          "outpatient": 575
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 66,
+          "outpatient": 1024
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 20,
+          "outpatient": 186
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 106,
+          "outpatient": 782
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 49,
+          "outpatient": 361
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 8,
+          "outpatient": 13
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 6,
+          "outpatient": 1
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 8,
+          "outpatient": 12
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 21,
+          "outpatient": 77
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 210,
+          "outpatient": 306
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 1,
+          "outpatient": 752
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 18,
+          "outpatient": 14
+        }
+      }
+    },
+    "大分県": {
+      "total": {
+        "inpatient": 1469,
+        "outpatient": 5646
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 21,
+          "outpatient": 95
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 119,
+          "outpatient": 184
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 9,
+          "outpatient": 12
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 43,
+          "outpatient": 432
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 304,
+          "outpatient": 152
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 216,
+          "outpatient": 185
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 10,
+          "outpatient": 258
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 4,
+          "outpatient": 41
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 160,
+          "outpatient": 806
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 101,
+          "outpatient": 402
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 71,
+          "outpatient": 955
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 21,
+          "outpatient": 141
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 84,
+          "outpatient": 633
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 55,
+          "outpatient": 293
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 9,
+          "outpatient": 13
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 7,
+          "outpatient": 2
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 6,
+          "outpatient": 11
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 21,
+          "outpatient": 66
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 183,
+          "outpatient": 203
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 11,
+          "outpatient": 754
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 13,
+          "outpatient": 8
+        }
+      }
+    },
+    "宮崎県": {
+      "total": {
+        "inpatient": 1324,
+        "outpatient": 6565
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 15,
+          "outpatient": 112
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 106,
+          "outpatient": 218
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 5,
+          "outpatient": 16
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 28,
+          "outpatient": 382
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 318,
+          "outpatient": 200
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 195,
+          "outpatient": 165
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 4,
+          "outpatient": 287
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 3,
+          "outpatient": 72
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 178,
+          "outpatient": 890
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 79,
+          "outpatient": 541
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 68,
+          "outpatient": 948
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 16,
+          "outpatient": 260
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 74,
+          "outpatient": 784
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 40,
+          "outpatient": 277
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 10,
+          "outpatient": 17
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 6,
+          "outpatient": null
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 3,
+          "outpatient": 18
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 18,
+          "outpatient": 72
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 139,
+          "outpatient": 386
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 9,
+          "outpatient": 904
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 8,
+          "outpatient": 17
+        }
+      }
+    },
+    "鹿児島県": {
+      "total": {
+        "inpatient": 1743,
+        "outpatient": 6451
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 20,
+          "outpatient": 171
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 134,
+          "outpatient": 191
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 7,
+          "outpatient": 15
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 47,
+          "outpatient": 360
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 413,
+          "outpatient": 204
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 222,
+          "outpatient": 142
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 18,
+          "outpatient": 365
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 4,
+          "outpatient": 47
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 246,
+          "outpatient": 828
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 91,
+          "outpatient": 535
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 73,
+          "outpatient": 1044
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 15,
+          "outpatient": 318
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 112,
+          "outpatient": 673
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 52,
+          "outpatient": 249
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 15,
+          "outpatient": 14
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 7,
+          "outpatient": 4
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 7,
+          "outpatient": 12
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 22,
+          "outpatient": 78
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 206,
+          "outpatient": 262
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 12,
+          "outpatient": 925
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 20,
+          "outpatient": 15
+        }
+      }
+    },
+    "沖縄県": {
+      "total": {
+        "inpatient": 985,
+        "outpatient": 4528
+      },
+      "categories": {
+        "Ⅰ_感染症及び寄生虫症": {
+          "chapter": "Ⅰ",
+          "name": "感染症及び寄生虫症",
+          "inpatient": 20,
+          "outpatient": 87
+        },
+        "Ⅱ_新生物＜腫瘍＞": {
+          "chapter": "Ⅱ",
+          "name": "新生物＜腫瘍＞",
+          "inpatient": 61,
+          "outpatient": 111
+        },
+        "Ⅲ_血液及び造血器の疾患並びに免疫機構の障害": {
+          "chapter": "Ⅲ",
+          "name": "血液及び造血器の疾患並びに免疫機構の障害",
+          "inpatient": 4,
+          "outpatient": 14
+        },
+        "Ⅳ_内分泌，栄養及び代謝疾患": {
+          "chapter": "Ⅳ",
+          "name": "内分泌，栄養及び代謝疾患",
+          "inpatient": 23,
+          "outpatient": 184
+        },
+        "Ⅴ_精神及び行動の障害": {
+          "chapter": "Ⅴ",
+          "name": "精神及び行動の障害",
+          "inpatient": 225,
+          "outpatient": 344
+        },
+        "Ⅵ_神経系の疾患": {
+          "chapter": "Ⅵ",
+          "name": "神経系の疾患",
+          "inpatient": 119,
+          "outpatient": 92
+        },
+        "Ⅶ_眼及び付属器の疾患": {
+          "chapter": "Ⅶ",
+          "name": "眼及び付属器の疾患",
+          "inpatient": 2,
+          "outpatient": 267
+        },
+        "Ⅷ_耳及び乳様突起の疾患": {
+          "chapter": "Ⅷ",
+          "name": "耳及び乳様突起の疾患",
+          "inpatient": 1,
+          "outpatient": 47
+        },
+        "Ⅸ_循環器系の疾患": {
+          "chapter": "Ⅸ",
+          "name": "循環器系の疾患",
+          "inpatient": 154,
+          "outpatient": 521
+        },
+        "Ⅹ_呼吸器系の疾患": {
+          "chapter": "Ⅹ",
+          "name": "呼吸器系の疾患",
+          "inpatient": 74,
+          "outpatient": 416
+        },
+        "ⅩⅠ_消化器系の疾患": {
+          "chapter": "ⅩⅠ",
+          "name": "消化器系の疾患",
+          "inpatient": 48,
+          "outpatient": 694
+        },
+        "ⅩⅡ_皮膚及び皮下組織の疾患": {
+          "chapter": "ⅩⅡ",
+          "name": "皮膚及び皮下組織の疾患",
+          "inpatient": 17,
+          "outpatient": 171
+        },
+        "ⅩⅢ_筋骨格系及び結合組織の疾患": {
+          "chapter": "ⅩⅢ",
+          "name": "筋骨格系及び結合組織の疾患",
+          "inpatient": 51,
+          "outpatient": 476
+        },
+        "ⅩⅣ_腎尿路生殖器系の疾患": {
+          "chapter": "ⅩⅣ",
+          "name": "腎尿路生殖器系の疾患",
+          "inpatient": 43,
+          "outpatient": 220
+        },
+        "ⅩⅤ_妊娠，分娩及び産じょく": {
+          "chapter": "ⅩⅤ",
+          "name": "妊娠，分娩及び産じょく",
+          "inpatient": 17,
+          "outpatient": 23
+        },
+        "ⅩⅥ_周産期に発生した病態": {
+          "chapter": "ⅩⅥ",
+          "name": "周産期に発生した病態",
+          "inpatient": 4,
+          "outpatient": 2
+        },
+        "ⅩⅦ_先天奇形，変形及び染色体異常": {
+          "chapter": "ⅩⅦ",
+          "name": "先天奇形，変形及び染色体異常",
+          "inpatient": 3,
+          "outpatient": 6
+        },
+        "ⅩⅧ_症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの": {
+          "chapter": "ⅩⅧ",
+          "name": "症状，徴候及び異常臨床所見・異常検査所見で他に分類されないもの",
+          "inpatient": 7,
+          "outpatient": 78
+        },
+        "ⅩⅨ_損傷，中毒及びその他の外因の影響": {
+          "chapter": "ⅩⅨ",
+          "name": "損傷，中毒及びその他の外因の影響",
+          "inpatient": 92,
+          "outpatient": 141
+        },
+        "ⅩⅩⅠ_健康状態に影響を及ぼす要因及び保健サービスの利用": {
+          "chapter": "ⅩⅩⅠ",
+          "name": "健康状態に影響を及ぼす要因及び保健サービスの利用",
+          "inpatient": 9,
+          "outpatient": 614
+        },
+        "ⅩⅩⅡ_特殊目的用コード": {
+          "chapter": "ⅩⅩⅡ",
+          "name": "特殊目的用コード",
+          "inpatient": 11,
+          "outpatient": 18
+        }
+      }
+    }
+  }
+}
