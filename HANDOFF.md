@@ -5,7 +5,7 @@
 - **本番URL**: <https://medical-intelligence-two.vercel.app>
 - **GitHub**: <https://github.com/tomiyuta/medical-intelligence> (public)
 - **ローカル**: `~/Projects/medical-intelligence/`
-- **HEAD**: (next commit) — ⑤ 在宅移行 補助分類 v0 追加
+- **HEAD**: b402168 (⑤ 在宅移行 補助分類 v0 追加)
 - **フレームワーク**: Next.js 14 App Router + Vercel + SQLite (25テーブル/1,227,835行) + Static JSON (27ファイル/\~52MB)
 
 ---
