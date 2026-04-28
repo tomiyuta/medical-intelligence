@@ -50,7 +50,7 @@ export default function AreaView({ mob, areaData, areaPref, setAreaPref, areaPre
           <td style={{padding:'10px 14px',textAlign:'right',fontVariantNumeric:'tabular-nums'}}>{fmt(a.beds)}</td>
         </tr>))}</tbody>
     </table>
-    <div style={{padding:'12px 16px',fontSize:11,color:'#94a3b8',borderTop:'1px solid #f1f5f9'}}>出典: 厚労省 病床機能報告（令和元年度）全国339二次医療圏対応</div>
+    <div style={{padding:'12px 16px',fontSize:11,color:'#94a3b8',borderTop:'1px solid #f1f5f9'}}>出典: 厚労省 病床機能報告（令和6年度）2025/9/30公表 ・ 全国330二次医療圏対応</div>
   </div>
 
   {/* ═══ DEATH CAUSE STRUCTURE ═══ */}

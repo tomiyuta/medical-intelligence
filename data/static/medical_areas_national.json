@@ -1,1 +1,2642 @@
-[{"pref_code": "01", "pref": "北海道", "area": "札幌", "hosp": 200, "wards": 760, "beds": 24041}, {"pref_code": "01", "pref": "北海道", "area": "上川中部", "hosp": 37, "wards": 140, "beds": 4475}, {"pref_code": "01", "pref": "北海道", "area": "南渡島", "hosp": 32, "wards": 121, "beds": 4165}, {"pref_code": "01", "pref": "北海道", "area": "十勝", "hosp": 32, "wards": 92, "beds": 3209}, {"pref_code": "01", "pref": "北海道", "area": "北網", "hosp": 22, "wards": 55, "beds": 1781}, {"pref_code": "01", "pref": "北海道", "area": "釧路", "hosp": 19, "wards": 75, "beds": 2426}, {"pref_code": "01", "pref": "北海道", "area": "西胆振", "hosp": 18, "wards": 87, "beds": 1994}, {"pref_code": "01", "pref": "北海道", "area": "後志", "hosp": 16, "wards": 59, "beds": 1768}, {"pref_code": "01", "pref": "北海道", "area": "南空知", "hosp": 15, "wards": 42, "beds": 1226}, {"pref_code": "01", "pref": "北海道", "area": "中空知", "hosp": 14, "wards": 46, "beds": 991}, {"pref_code": "01", "pref": "北海道", "area": "東胆振", "hosp": 13, "wards": 48, "beds": 1512}, {"pref_code": "01", "pref": "北海道", "area": "遠紋", "hosp": 11, "wards": 24, "beds": 630}, {"pref_code": "01", "pref": "北海道", "area": "宗谷", "hosp": 8, "wards": 16, "beds": 510}, {"pref_code": "01", "pref": "北海道", "area": "上川北部", "hosp": 8, "wards": 21, "beds": 555}, {"pref_code": "01", "pref": "北海道", "area": "北渡島檜山", "hosp": 7, "wards": 21, "beds": 579}, {"pref_code": "01", "pref": "北海道", "area": "留萌", "hosp": 6, "wards": 15, "beds": 412}, {"pref_code": "01", "pref": "北海道", "area": "日高", "hosp": 6, "wards": 13, "beds": 405}, {"pref_code": "01", "pref": "北海道", "area": "根室", "hosp": 5, "wards": 13, "beds": 449}, {"pref_code": "01", "pref": "北海道", "area": "南檜山", "hosp": 5, "wards": 10, "beds": 265}, {"pref_code": "01", "pref": "北海道", "area": "富良野", "hosp": 4, "wards": 10, "beds": 332}, {"pref_code": "01", "pref": "北海道", "area": "北空知", "hosp": 3, "wards": 13, "beds": 199}, {"pref_code": "02", "pref": "青森県", "area": "八戸地域", "hosp": 22, "wards": 76, "beds": 2654}, {"pref_code": "02", "pref": "青森県", "area": "青森地域", "hosp": 18, "wards": 74, "beds": 2379}, {"pref_code": "02", "pref": "青森県", "area": "津軽地域", "hosp": 17, "wards": 77, "beds": 2795}, {"pref_code": "02", "pref": "青森県", "area": "上十三地域", "hosp": 8, "wards": 24, "beds": 948}, {"pref_code": "02", "pref": "青森県", "area": "西北五地域", "hosp": 7, "wards": 26, "beds": 610}, {"pref_code": "02", "pref": "青森県", "area": "下北地域", "hosp": 3, "wards": 11, "beds": 424}, {"pref_code": "03", "pref": "岩手県", "area": "盛岡", "hosp": 32, "wards": 121, "beds": 4362}, {"pref_code": "03", "pref": "岩手県", "area": "岩手中部", "hosp": 9, "wards": 27, "beds": 1357}, {"pref_code": "03", "pref": "岩手県", "area": "両磐", "hosp": 9, "wards": 23, "beds": 1098}, {"pref_code": "03", "pref": "岩手県", "area": "胆江", "hosp": 8, "wards": 27, "beds": 969}, {"pref_code": "03", "pref": "岩手県", "area": "釜石", "hosp": 5, "wards": 14, "beds": 673}, {"pref_code": "03", "pref": "岩手県", "area": "宮古", "hosp": 4, "wards": 12, "beds": 462}, {"pref_code": "03", "pref": "岩手県", "area": "気仙", "hosp": 3, "wards": 9, "beds": 430}, {"pref_code": "03", "pref": "岩手県", "area": "二戸", "hosp": 3, "wards": 8, "beds": 355}, {"pref_code": "03", "pref": "岩手県", "area": "久慈", "hosp": 3, "wards": 10, "beds": 367}, {"pref_code": "04", "pref": "宮城県", "area": "仙台", "hosp": 63, "wards": 306, "beds": 11011}, {"pref_code": "04", "pref": "宮城県", "area": "大崎・栗原", "hosp": 21, "wards": 62, "beds": 1510}, {"pref_code": "04", "pref": "宮城県", "area": "石巻・登米・気仙沼", "hosp": 17, "wards": 63, "beds": 2117}, {"pref_code": "04", "pref": "宮城県", "area": "仙南", "hosp": 11, "wards": 31, "beds": 955}, {"pref_code": "05", "pref": "秋田県", "area": "秋田周辺", "hosp": 20, "wards": 106, "beds": 3285}, {"pref_code": "05", "pref": "秋田県", "area": "大仙・仙北", "hosp": 7, "wards": 20, "beds": 773}, {"pref_code": "05", "pref": "秋田県", "area": "由利本荘・にかほ", "hosp": 6, "wards": 31, "beds": 1391}, {"pref_code": "05", "pref": "秋田県", "area": "大館・鹿角", "hosp": 6, "wards": 24, "beds": 828}, {"pref_code": "05", "pref": "秋田県", "area": "能代・山本", "hosp": 5, "wards": 19, "beds": 724}, {"pref_code": "05", "pref": "秋田県", "area": "横手", "hosp": 3, "wards": 20, "beds": 904}, {"pref_code": "05", "pref": "秋田県", "area": "湯沢・雄勝", "hosp": 2, "wards": 10, "beds": 476}, {"pref_code": "05", "pref": "秋田県", "area": "北秋田", "hosp": 1, "wards": 5, "beds": 272}, {"pref_code": "06", "pref": "山形県", "area": "村山", "hosp": 25, "wards": 130, "beds": 4587}, {"pref_code": "06", "pref": "山形県", "area": "置賜", "hosp": 13, "wards": 46, "beds": 1633}, {"pref_code": "06", "pref": "山形県", "area": "庄内", "hosp": 12, "wards": 58, "beds": 1736}, {"pref_code": "06", "pref": "山形県", "area": "最上", "hosp": 4, "wards": 17, "beds": 745}, {"pref_code": "07", "pref": "福島県", "area": "県中", "hosp": 26, "wards": 126, "beds": 4546}, {"pref_code": "07", "pref": "福島県", "area": "県北", "hosp": 22, "wards": 96, "beds": 3855}, {"pref_code": "07", "pref": "福島県", "area": "いわき", "hosp": 16, "wards": 68, "beds": 2080}, {"pref_code": "07", "pref": "福島県", "area": "会津・南会津", "hosp": 15, "wards": 64, "beds": 2205}, {"pref_code": "07", "pref": "福島県", "area": "相双", "hosp": 9, "wards": 25, "beds": 888}, {"pref_code": "07", "pref": "福島県", "area": "県南", "hosp": 5, "wards": 24, "beds": 902}, {"pref_code": "08", "pref": "茨城県", "area": "水戸", "hosp": 36, "wards": 125, "beds": 4109}, {"pref_code": "08", "pref": "茨城県", "area": "常陸太田・ひたちなか", "hosp": 19, "wards": 52, "beds": 1526}, {"pref_code": "08", "pref": "茨城県", "area": "取手・竜ヶ崎", "hosp": 19, "wards": 88, "beds": 2996}, {"pref_code": "08", "pref": "茨城県", "area": "日立", "hosp": 18, "wards": 63, "beds": 1856}, {"pref_code": "08", "pref": "茨城県", "area": "つくば", "hosp": 14, "wards": 85, "beds": 2601}, {"pref_code": "08", "pref": "茨城県", "area": "筑西・下妻", "hosp": 13, "wards": 44, "beds": 1114}, {"pref_code": "08", "pref": "茨城県", "area": "土浦", "hosp": 13, "wards": 54, "beds": 1494}, {"pref_code": "08", "pref": "茨城県", "area": "鹿行", "hosp": 11, "wards": 36, "beds": 941}, {"pref_code": "08", "pref": "茨城県", "area": "古河・坂東", "hosp": 10, "wards": 33, "beds": 1337}, {"pref_code": "09", "pref": "栃木県", "area": "宇都宮", "hosp": 26, "wards": 99, "beds": 2810}, {"pref_code": "09", "pref": "栃木県", "area": "県南", "hosp": 19, "wards": 122, "beds": 3761}, {"pref_code": "09", "pref": "栃木県", "area": "県北", "hosp": 17, "wards": 69, "beds": 2029}, {"pref_code": "09", "pref": "栃木県", "area": "両毛", "hosp": 12, "wards": 56, "beds": 1678}, {"pref_code": "09", "pref": "栃木県", "area": "県西", "hosp": 9, "wards": 29, "beds": 856}, {"pref_code": "09", "pref": "栃木県", "area": "県東", "hosp": 5, "wards": 19, "beds": 558}, {"pref_code": "10", "pref": "群馬県", "area": "高崎・安中", "hosp": 31, "wards": 83, "beds": 2767}, {"pref_code": "10", "pref": "群馬県", "area": "前橋", "hosp": 18, "wards": 84, "beds": 3044}, {"pref_code": "10", "pref": "群馬県", "area": "太田・館林", "hosp": 16, "wards": 77, "beds": 2216}, {"pref_code": "10", "pref": "群馬県", "area": "桐生", "hosp": 11, "wards": 41, "beds": 1246}, {"pref_code": "10", "pref": "群馬県", "area": "伊勢崎", "hosp": 9, "wards": 45, "beds": 1510}, {"pref_code": "10", "pref": "群馬県", "area": "吾妻", "hosp": 8, "wards": 22, "beds": 763}, {"pref_code": "10", "pref": "群馬県", "area": "渋川", "hosp": 7, "wards": 28, "beds": 1056}, {"pref_code": "10", "pref": "群馬県", "area": "沼田", "hosp": 7, "wards": 26, "beds": 688}, {"pref_code": "10", "pref": "群馬県", "area": "藤岡", "hosp": 5, "wards": 23, "beds": 707}, {"pref_code": "10", "pref": "群馬県", "area": "富岡", "hosp": 4, "wards": 19, "beds": 540}, {"pref_code": "11", "pref": "埼玉県", "area": "東部", "hosp": 42, "wards": 180, "beds": 5895}, {"pref_code": "11", "pref": "埼玉県", "area": "川越比企", "hosp": 42, "wards": 164, "beds": 5030}, {"pref_code": "11", "pref": "埼玉県", "area": "西部", "hosp": 40, "wards": 153, "beds": 3916}, {"pref_code": "11", "pref": "埼玉県", "area": "さいたま", "hosp": 35, "wards": 184, "beds": 5571}, {"pref_code": "11", "pref": "埼玉県", "area": "北部", "hosp": 30, "wards": 84, "beds": 2681}, {"pref_code": "11", "pref": "埼玉県", "area": "南部", "hosp": 27, "wards": 109, "beds": 3389}, {"pref_code": "11", "pref": "埼玉県", "area": "利根", "hosp": 26, "wards": 100, "beds": 3567}, {"pref_code": "11", "pref": "埼玉県", "area": "南西部", "hosp": 25, "wards": 113, "beds": 3539}, {"pref_code": "11", "pref": "埼玉県", "area": "県央", "hosp": 15, "wards": 80, "beds": 2363}, {"pref_code": "11", "pref": "埼玉県", "area": "秩父", "hosp": 8, "wards": 17, "beds": 512}, {"pref_code": "12", "pref": "千葉県", "area": "東葛北部", "hosp": 50, "wards": 228, "beds": 7814}, {"pref_code": "12", "pref": "千葉県", "area": "東葛南部", "hosp": 49, "wards": 258, "beds": 8430}, {"pref_code": "12", "pref": "千葉県", "area": "千葉", "hosp": 40, "wards": 191, "beds": 6366}, {"pref_code": "12", "pref": "千葉県", "area": "印旛", "hosp": 27, "wards": 130, "beds": 4171}, {"pref_code": "12", "pref": "千葉県", "area": "山武長生夷隅", "hosp": 22, "wards": 75, "beds": 2034}, {"pref_code": "12", "pref": "千葉県", "area": "香取海匝", "hosp": 18, "wards": 64, "beds": 2019}, {"pref_code": "12", "pref": "千葉県", "area": "君津", "hosp": 17, "wards": 55, "beds": 1556}, {"pref_code": "12", "pref": "千葉県", "area": "安房", "hosp": 13, "wards": 52, "beds": 1426}, {"pref_code": "12", "pref": "千葉県", "area": "市原", "hosp": 11, "wards": 48, "beds": 1628}, {"pref_code": "13", "pref": "東京都", "area": "区西北部", "hosp": 85, "wards": 348, "beds": 9796}, {"pref_code": "13", "pref": "東京都", "area": "区東北部", "hosp": 81, "wards": 224, "beds": 7252}, {"pref_code": "13", "pref": "東京都", "area": "南多摩", "hosp": 60, "wards": 229, "beds": 6085}, {"pref_code": "13", "pref": "東京都", "area": "区西南部", "hosp": 50, "wards": 228, "beds": 6959}, {"pref_code": "13", "pref": "東京都", "area": "区東部", "hosp": 50, "wards": 206, "beds": 6669}, {"pref_code": "13", "pref": "東京都", "area": "区中央部", "hosp": 45, "wards": 386, "beds": 12678}, {"pref_code": "13", "pref": "東京都", "area": "区南部", "hosp": 42, "wards": 201, "beds": 6141}, {"pref_code": "13", "pref": "東京都", "area": "区西部", "hosp": 39, "wards": 272, "beds": 8669}, {"pref_code": "13", "pref": "東京都", "area": "北多摩南部", "hosp": 37, "wards": 204, "beds": 6085}, {"pref_code": "13", "pref": "東京都", "area": "北多摩北部", "hosp": 32, "wards": 151, "beds": 4295}, {"pref_code": "13", "pref": "東京都", "area": "北多摩西部", "hosp": 25, "wards": 109, "beds": 3254}, {"pref_code": "13", "pref": "東京都", "area": "西多摩", "hosp": 21, "wards": 83, "beds": 1795}, {"pref_code": "13", "pref": "東京都", "area": "島しょ", "hosp": 1, "wards": 1, "beds": 52}, {"pref_code": "14", "pref": "神奈川県", "area": "横浜", "hosp": 111, "wards": 580, "beds": 18243}, {"pref_code": "14", "pref": "神奈川県", "area": "相模原", "hosp": 33, "wards": 153, "beds": 3617}, {"pref_code": "14", "pref": "神奈川県", "area": "県央", "hosp": 27, "wards": 127, "beds": 4233}, {"pref_code": "14", "pref": "神奈川県", "area": "横須賀・三浦", "hosp": 26, "wards": 123, "beds": 4179}, {"pref_code": "14", "pref": "神奈川県", "area": "県西", "hosp": 21, "wards": 70, "beds": 2073}, {"pref_code": "14", "pref": "神奈川県", "area": "湘南東部", "hosp": 20, "wards": 97, "beds": 2995}, {"pref_code": "14", "pref": "神奈川県", "area": "川崎南部", "hosp": 18, "wards": 122, "beds": 4367}, {"pref_code": "14", "pref": "神奈川県", "area": "湘南西部", "hosp": 15, "wards": 111, "beds": 3432}, {"pref_code": "14", "pref": "神奈川県", "area": "川崎北部", "hosp": 15, "wards": 103, "beds": 3509}, {"pref_code": "15", "pref": "新潟県", "area": "新潟", "hosp": 42, "wards": 210, "beds": 6779}, {"pref_code": "15", "pref": "新潟県", "area": "中越", "hosp": 17, "wards": 92, "beds": 3487}, {"pref_code": "15", "pref": "新潟県", "area": "下越", "hosp": 14, "wards": 39, "beds": 1331}, {"pref_code": "15", "pref": "新潟県", "area": "上越", "hosp": 11, "wards": 49, "beds": 2210}, {"pref_code": "15", "pref": "新潟県", "area": "魚沼", "hosp": 9, "wards": 32, "beds": 1136}, {"pref_code": "15", "pref": "新潟県", "area": "県央", "hosp": 9, "wards": 37, "beds": 1357}, {"pref_code": "15", "pref": "新潟県", "area": "佐渡", "hosp": 5, "wards": 12, "beds": 494}, {"pref_code": "16", "pref": "富山県", "area": "富山", "hosp": 43, "wards": 150, "beds": 4102}, {"pref_code": "16", "pref": "富山県", "area": "高岡", "hosp": 19, "wards": 63, "beds": 2150}, {"pref_code": "16", "pref": "富山県", "area": "砺波", "hosp": 13, "wards": 39, "beds": 980}, {"pref_code": "16", "pref": "富山県", "area": "新川", "hosp": 12, "wards": 33, "beds": 960}, {"pref_code": "17", "pref": "石川県", "area": "石川中央", "hosp": 49, "wards": 231, "beds": 6372}, {"pref_code": "17", "pref": "石川県", "area": "南加賀", "hosp": 16, "wards": 52, "beds": 1672}, {"pref_code": "17", "pref": "石川県", "area": "能登中部", "hosp": 10, "wards": 36, "beds": 1278}, {"pref_code": "17", "pref": "石川県", "area": "能登北部", "hosp": 5, "wards": 15, "beds": 503}, {"pref_code": "18", "pref": "福井県", "area": "福井・坂井", "hosp": 31, "wards": 131, "beds": 4240}, {"pref_code": "18", "pref": "福井県", "area": "丹南", "hosp": 14, "wards": 35, "beds": 912}, {"pref_code": "18", "pref": "福井県", "area": "嶺南", "hosp": 7, "wards": 36, "beds": 1017}, {"pref_code": "18", "pref": "福井県", "area": "奥越", "hosp": 5, "wards": 9, "beds": 282}, {"pref_code": "19", "pref": "山梨県", "area": "中北", "hosp": 27, "wards": 113, "beds": 3589}, {"pref_code": "19", "pref": "山梨県", "area": "峡東", "hosp": 13, "wards": 44, "beds": 1416}, {"pref_code": "19", "pref": "山梨県", "area": "峡南", "hosp": 6, "wards": 12, "beds": 395}, {"pref_code": "19", "pref": "山梨県", "area": "富士・東部", "hosp": 6, "wards": 26, "beds": 936}, {"pref_code": "20", "pref": "長野県", "area": "長野", "hosp": 30, "wards": 119, "beds": 3815}, {"pref_code": "20", "pref": "長野県", "area": "松本", "hosp": 21, "wards": 102, "beds": 3400}, {"pref_code": "20", "pref": "長野県", "area": "佐久", "hosp": 14, "wards": 54, "beds": 1723}, {"pref_code": "20", "pref": "長野県", "area": "上小", "hosp": 13, "wards": 46, "beds": 1352}, {"pref_code": "20", "pref": "長野県", "area": "諏訪", "hosp": 10, "wards": 50, "beds": 1565}, {"pref_code": "20", "pref": "長野県", "area": "飯伊", "hosp": 9, "wards": 36, "beds": 1121}, {"pref_code": "20", "pref": "長野県", "area": "上伊那", "hosp": 7, "wards": 31, "beds": 965}, {"pref_code": "20", "pref": "長野県", "area": "北信", "hosp": 3, "wards": 17, "beds": 597}, {"pref_code": "20", "pref": "長野県", "area": "大北", "hosp": 2, "wards": 8, "beds": 347}, {"pref_code": "20", "pref": "長野県", "area": "木曽", "hosp": 1, "wards": 4, "beds": 191}, {"pref_code": "21", "pref": "岐阜県", "area": "岐阜", "hosp": 36, "wards": 171, "beds": 5790}, {"pref_code": "21", "pref": "岐阜県", "area": "中濃", "hosp": 16, "wards": 62, "beds": 2050}, {"pref_code": "21", "pref": "岐阜県", "area": "西濃", "hosp": 12, "wards": 56, "beds": 1866}, {"pref_code": "21", "pref": "岐阜県", "area": "東濃", "hosp": 12, "wards": 53, "beds": 2015}, {"pref_code": "21", "pref": "岐阜県", "area": "飛騨", "hosp": 8, "wards": 30, "beds": 1103}, {"pref_code": "22", "pref": "静岡県", "area": "駿東田方", "hosp": 42, "wards": 146, "beds": 4571}, {"pref_code": "22", "pref": "静岡県", "area": "西部", "hosp": 28, "wards": 165, "beds": 5052}, {"pref_code": "22", "pref": "静岡県", "area": "静岡", "hosp": 22, "wards": 151, "beds": 4420}, {"pref_code": "22", "pref": "静岡県", "area": "中東遠", "hosp": 14, "wards": 62, "beds": 1622}, {"pref_code": "22", "pref": "静岡県", "area": "富士", "hosp": 12, "wards": 53, "beds": 1577}, {"pref_code": "22", "pref": "静岡県", "area": "志太榛原", "hosp": 11, "wards": 82, "beds": 2473}, {"pref_code": "22", "pref": "静岡県", "area": "熱海伊東", "hosp": 7, "wards": 24, "beds": 755}, {"pref_code": "22", "pref": "静岡県", "area": "賀茂", "hosp": 6, "wards": 17, "beds": 478}, {"pref_code": "23", "pref": "愛知県", "area": "名古屋・尾張中部", "hosp": 119, "wards": 493, "beds": 16013}, {"pref_code": "23", "pref": "愛知県", "area": "東三河南部", "hosp": 33, "wards": 139, "beds": 3453}, {"pref_code": "23", "pref": "愛知県", "area": "尾張北部", "hosp": 22, "wards": 115, "beds": 3375}, {"pref_code": "23", "pref": "愛知県", "area": "西三河南部西", "hosp": 21, "wards": 103, "beds": 3100}, {"pref_code": "23", "pref": "愛知県", "area": "尾張西部", "hosp": 18, "wards": 92, "beds": 2961}, {"pref_code": "23", "pref": "愛知県", "area": "西三河北部", "hosp": 16, "wards": 68, "beds": 2061}, {"pref_code": "23", "pref": "愛知県", "area": "知多半島", "hosp": 16, "wards": 77, "beds": 2588}, {"pref_code": "23", "pref": "愛知県", "area": "尾張東部", "hosp": 16, "wards": 123, "beds": 3589}, {"pref_code": "23", "pref": "愛知県", "area": "西三河南部東", "hosp": 12, "wards": 49, "beds": 1375}, {"pref_code": "23", "pref": "愛知県", "area": "海部", "hosp": 9, "wards": 43, "beds": 1180}, {"pref_code": "23", "pref": "愛知県", "area": "東三河北部", "hosp": 4, "wards": 8, "beds": 199}, {"pref_code": "24", "pref": "三重県", "area": "津", "hosp": 19, "wards": 86, "beds": 2630}, {"pref_code": "24", "pref": "三重県", "area": "三泗", "hosp": 13, "wards": 63, "beds": 1981}, {"pref_code": "24", "pref": "三重県", "area": "桑員", "hosp": 11, "wards": 41, "beds": 975}, {"pref_code": "24", "pref": "三重県", "area": "鈴亀", "hosp": 10, "wards": 38, "beds": 1367}, {"pref_code": "24", "pref": "三重県", "area": "松阪", "hosp": 10, "wards": 48, "beds": 1457}, {"pref_code": "24", "pref": "三重県", "area": "伊勢志摩", "hosp": 9, "wards": 52, "beds": 1367}, {"pref_code": "24", "pref": "三重県", "area": "伊賀", "hosp": 5, "wards": 22, "beds": 883}, {"pref_code": "24", "pref": "三重県", "area": "東紀州", "hosp": 4, "wards": 19, "beds": 426}, {"pref_code": "25", "pref": "滋賀県", "area": "大津", "hosp": 13, "wards": 74, "beds": 2420}, {"pref_code": "25", "pref": "滋賀県", "area": "湖南", "hosp": 11, "wards": 64, "beds": 2341}, {"pref_code": "25", "pref": "滋賀県", "area": "東近江", "hosp": 10, "wards": 50, "beds": 1336}, {"pref_code": "25", "pref": "滋賀県", "area": "甲賀", "hosp": 6, "wards": 24, "beds": 828}, {"pref_code": "25", "pref": "滋賀県", "area": "湖東", "hosp": 4, "wards": 26, "beds": 890}, {"pref_code": "25", "pref": "滋賀県", "area": "湖西", "hosp": 3, "wards": 9, "beds": 306}, {"pref_code": "25", "pref": "滋賀県", "area": "湖北", "hosp": 3, "wards": 29, "beds": 1009}, {"pref_code": "26", "pref": "京都府", "area": "京都・乙訓", "hosp": 98, "wards": 437, "beds": 15217}, {"pref_code": "26", "pref": "京都府", "area": "山城北", "hosp": 22, "wards": 84, "beds": 3021}, {"pref_code": "26", "pref": "京都府", "area": "中丹", "hosp": 14, "wards": 53, "beds": 1740}, {"pref_code": "26", "pref": "京都府", "area": "南丹", "hosp": 10, "wards": 28, "beds": 1123}, {"pref_code": "26", "pref": "京都府", "area": "丹後", "hosp": 6, "wards": 27, "beds": 957}, {"pref_code": "26", "pref": "京都府", "area": "山城南", "hosp": 3, "wards": 13, "beds": 611}, {"pref_code": "27", "pref": "大阪府", "area": "大阪市", "hosp": 171, "wards": 800, "beds": 25199}, {"pref_code": "27", "pref": "大阪府", "area": "泉州", "hosp": 60, "wards": 216, "beds": 4667}, {"pref_code": "27", "pref": "大阪府", "area": "北河内", "hosp": 57, "wards": 241, "beds": 7970}, {"pref_code": "27", "pref": "大阪府", "area": "豊能", "hosp": 43, "wards": 231, "beds": 7452}, {"pref_code": "27", "pref": "大阪府", "area": "堺市", "hosp": 38, "wards": 209, "beds": 5542}, {"pref_code": "27", "pref": "大阪府", "area": "南河内", "hosp": 35, "wards": 157, "beds": 4743}, {"pref_code": "27", "pref": "大阪府", "area": "三島", "hosp": 32, "wards": 159, "beds": 5248}, {"pref_code": "27", "pref": "大阪府", "area": "中河内", "hosp": 30, "wards": 138, "beds": 4275}, {"pref_code": "28", "pref": "兵庫県", "area": "神戸", "hosp": 98, "wards": 363, "beds": 11957}, {"pref_code": "28", "pref": "兵庫県", "area": "阪神", "hosp": 83, "wards": 379, "beds": 11343}, {"pref_code": "28", "pref": "兵庫県", "area": "播磨姫路", "hosp": 54, "wards": 183, "beds": 5997}, {"pref_code": "28", "pref": "兵庫県", "area": "東播磨", "hosp": 35, "wards": 150, "beds": 4633}, {"pref_code": "28", "pref": "兵庫県", "area": "北播磨", "hosp": 20, "wards": 79, "beds": 2575}, {"pref_code": "28", "pref": "兵庫県", "area": "淡路", "hosp": 10, "wards": 42, "beds": 767}, {"pref_code": "28", "pref": "兵庫県", "area": "但馬", "hosp": 9, "wards": 33, "beds": 1164}, {"pref_code": "28", "pref": "兵庫県", "area": "丹波", "hosp": 6, "wards": 26, "beds": 654}, {"pref_code": "29", "pref": "奈良県", "area": "奈良", "hosp": 22, "wards": 88, "beds": 3042}, {"pref_code": "29", "pref": "奈良県", "area": "西和", "hosp": 18, "wards": 73, "beds": 2498}, {"pref_code": "29", "pref": "奈良県", "area": "中和", "hosp": 18, "wards": 90, "beds": 2911}, {"pref_code": "29", "pref": "奈良県", "area": "東和", "hosp": 12, "wards": 61, "beds": 2047}, {"pref_code": "29", "pref": "奈良県", "area": "南和", "hosp": 5, "wards": 14, "beds": 365}, {"pref_code": "30", "pref": "和歌山県", "area": "和歌山", "hosp": 40, "wards": 130, "beds": 4434}, {"pref_code": "30", "pref": "和歌山県", "area": "田辺", "hosp": 8, "wards": 39, "beds": 1057}, {"pref_code": "30", "pref": "和歌山県", "area": "那賀", "hosp": 7, "wards": 19, "beds": 660}, {"pref_code": "30", "pref": "和歌山県", "area": "新宮", "hosp": 7, "wards": 20, "beds": 624}, {"pref_code": "30", "pref": "和歌山県", "area": "有田", "hosp": 5, "wards": 16, "beds": 472}, {"pref_code": "30", "pref": "和歌山県", "area": "橋本", "hosp": 4, "wards": 18, "beds": 652}, {"pref_code": "30", "pref": "和歌山県", "area": "御坊", "hosp": 4, "wards": 20, "beds": 799}, {"pref_code": "31", "pref": "鳥取県", "area": "西部", "hosp": 18, "wards": 70, "beds": 2014}, {"pref_code": "31", "pref": "鳥取県", "area": "東部", "hosp": 12, "wards": 61, "beds": 2000}, {"pref_code": "31", "pref": "鳥取県", "area": "中部", "hosp": 9, "wards": 28, "beds": 893}, {"pref_code": "32", "pref": "島根県", "area": "松江", "hosp": 10, "wards": 58, "beds": 2281}, {"pref_code": "32", "pref": "島根県", "area": "出雲", "hosp": 9, "wards": 59, "beds": 1616}, {"pref_code": "32", "pref": "島根県", "area": "浜田", "hosp": 7, "wards": 21, "beds": 617}, {"pref_code": "32", "pref": "島根県", "area": "雲南", "hosp": 4, "wards": 12, "beds": 389}, {"pref_code": "32", "pref": "島根県", "area": "益田", "hosp": 4, "wards": 17, "beds": 586}, {"pref_code": "32", "pref": "島根県", "area": "大田", "hosp": 3, "wards": 10, "beds": 382}, {"pref_code": "32", "pref": "島根県", "area": "隠岐", "hosp": 2, "wards": 4, "beds": 111}, {"pref_code": "33", "pref": "岡山県", "area": "県南東部", "hosp": 70, "wards": 265, "beds": 9450}, {"pref_code": "33", "pref": "岡山県", "area": "県南西部", "hosp": 45, "wards": 192, "beds": 6564}, {"pref_code": "33", "pref": "岡山県", "area": "津山・英田", "hosp": 15, "wards": 43, "beds": 1125}, {"pref_code": "33", "pref": "岡山県", "area": "高梁・新見", "hosp": 7, "wards": 18, "beds": 399}, {"pref_code": "33", "pref": "岡山県", "area": "真庭", "hosp": 6, "wards": 12, "beds": 422}, {"pref_code": "34", "pref": "広島県", "area": "広島", "hosp": 83, "wards": 306, "beds": 8792}, {"pref_code": "34", "pref": "広島県", "area": "福山・府中", "hosp": 40, "wards": 119, "beds": 3518}, {"pref_code": "34", "pref": "広島県", "area": "呉", "hosp": 23, "wards": 73, "beds": 2333}, {"pref_code": "34", "pref": "広島県", "area": "尾三", "hosp": 21, "wards": 84, "beds": 2500}, {"pref_code": "34", "pref": "広島県", "area": "広島中央", "hosp": 17, "wards": 49, "beds": 1637}, {"pref_code": "34", "pref": "広島県", "area": "広島西", "hosp": 12, "wards": 46, "beds": 1067}, {"pref_code": "34", "pref": "広島県", "area": "備北", "hosp": 10, "wards": 32, "beds": 797}, {"pref_code": "35", "pref": "山口県", "area": "宇部・小野田", "hosp": 22, "wards": 96, "beds": 2617}, {"pref_code": "35", "pref": "山口県", "area": "山口・防府", "hosp": 21, "wards": 81, "beds": 2107}, {"pref_code": "35", "pref": "山口県", "area": "周南", "hosp": 21, "wards": 70, "beds": 1799}, {"pref_code": "35", "pref": "山口県", "area": "下関", "hosp": 21, "wards": 91, "beds": 2161}, {"pref_code": "35", "pref": "山口県", "area": "岩国", "hosp": 15, "wards": 39, "beds": 1035}, {"pref_code": "35", "pref": "山口県", "area": "柳井", "hosp": 7, "wards": 39, "beds": 861}, {"pref_code": "35", "pref": "山口県", "area": "萩", "hosp": 6, "wards": 18, "beds": 331}, {"pref_code": "35", "pref": "山口県", "area": "長門", "hosp": 4, "wards": 12, "beds": 350}, {"pref_code": "36", "pref": "徳島県", "area": "東部", "hosp": 61, "wards": 177, "beds": 4276}, {"pref_code": "36", "pref": "徳島県", "area": "南部", "hosp": 17, "wards": 45, "beds": 1370}, {"pref_code": "36", "pref": "徳島県", "area": "西部", "hosp": 14, "wards": 26, "beds": 645}, {"pref_code": "37", "pref": "香川県", "area": "東部", "hosp": 38, "wards": 158, "beds": 4850}, {"pref_code": "37", "pref": "香川県", "area": "西部", "hosp": 37, "wards": 128, "beds": 3744}, {"pref_code": "37", "pref": "香川県", "area": "小豆", "hosp": 2, "wards": 5, "beds": 185}, {"pref_code": "38", "pref": "愛媛県", "area": "松山", "hosp": 44, "wards": 178, "beds": 5633}, {"pref_code": "38", "pref": "愛媛県", "area": "今治", "hosp": 27, "wards": 52, "beds": 1269}, {"pref_code": "38", "pref": "愛媛県", "area": "新居浜・西条", "hosp": 18, "wards": 68, "beds": 2050}, {"pref_code": "38", "pref": "愛媛県", "area": "八幡浜・大洲", "hosp": 13, "wards": 36, "beds": 990}, {"pref_code": "38", "pref": "愛媛県", "area": "宇和島", "hosp": 11, "wards": 40, "beds": 1479}, {"pref_code": "38", "pref": "愛媛県", "area": "宇摩", "hosp": 8, "wards": 23, "beds": 528}, {"pref_code": "39", "pref": "高知県", "area": "中央", "hosp": 85, "wards": 269, "beds": 6425}, {"pref_code": "39", "pref": "高知県", "area": "幡多", "hosp": 17, "wards": 32, "beds": 773}, {"pref_code": "39", "pref": "高知県", "area": "高幡", "hosp": 7, "wards": 17, "beds": 402}, {"pref_code": "39", "pref": "高知県", "area": "安芸", "hosp": 5, "wards": 11, "beds": 299}, {"pref_code": "40", "pref": "福岡県", "area": "福岡・糸島", "hosp": 105, "wards": 446, "beds": 13395}, {"pref_code": "40", "pref": "福岡県", "area": "北九州", "hosp": 87, "wards": 381, "beds": 10832}, {"pref_code": "40", "pref": "福岡県", "area": "久留米", "hosp": 41, "wards": 172, "beds": 4733}, {"pref_code": "40", "pref": "福岡県", "area": "有明", "hosp": 26, "wards": 92, "beds": 2906}, {"pref_code": "40", "pref": "福岡県", "area": "粕屋", "hosp": 24, "wards": 76, "beds": 2138}, {"pref_code": "40", "pref": "福岡県", "area": "筑紫", "hosp": 24, "wards": 81, "beds": 2074}, {"pref_code": "40", "pref": "福岡県", "area": "飯塚", "hosp": 19, "wards": 71, "beds": 2393}, {"pref_code": "40", "pref": "福岡県", "area": "田川", "hosp": 13, "wards": 36, "beds": 970}, {"pref_code": "40", "pref": "福岡県", "area": "八女・筑後", "hosp": 13, "wards": 43, "beds": 1045}, {"pref_code": "40", "pref": "福岡県", "area": "京築", "hosp": 13, "wards": 38, "beds": 765}, {"pref_code": "40", "pref": "福岡県", "area": "宗像", "hosp": 11, "wards": 34, "beds": 805}, {"pref_code": "40", "pref": "福岡県", "area": "直方・鞍手", "hosp": 10, "wards": 25, "beds": 665}, {"pref_code": "40", "pref": "福岡県", "area": "朝倉", "hosp": 6, "wards": 23, "beds": 606}, {"pref_code": "41", "pref": "佐賀県", "area": "中部", "hosp": 30, "wards": 100, "beds": 2973}, {"pref_code": "41", "pref": "佐賀県", "area": "南部", "hosp": 19, "wards": 49, "beds": 1170}, {"pref_code": "41", "pref": "佐賀県", "area": "北部", "hosp": 14, "wards": 37, "beds": 816}, {"pref_code": "41", "pref": "佐賀県", "area": "東部", "hosp": 11, "wards": 33, "beds": 716}, {"pref_code": "41", "pref": "佐賀県", "area": "西部", "hosp": 9, "wards": 23, "beds": 484}, {"pref_code": "42", "pref": "長崎県", "area": "長崎", "hosp": 43, "wards": 175, "beds": 4742}, {"pref_code": "42", "pref": "長崎県", "area": "佐世保県北", "hosp": 26, "wards": 96, "beds": 2612}, {"pref_code": "42", "pref": "長崎県", "area": "県央", "hosp": 24, "wards": 89, "beds": 2612}, {"pref_code": "42", "pref": "長崎県", "area": "県南", "hosp": 15, "wards": 37, "beds": 825}, {"pref_code": "42", "pref": "長崎県", "area": "壱岐", "hosp": 5, "wards": 11, "beds": 246}, {"pref_code": "42", "pref": "長崎県", "area": "五島", "hosp": 4, "wards": 9, "beds": 380}, {"pref_code": "42", "pref": "長崎県", "area": "対馬", "hosp": 2, "wards": 6, "beds": 282}, {"pref_code": "42", "pref": "長崎県", "area": "上五島", "hosp": 1, "wards": 4, "beds": 132}, {"pref_code": "43", "pref": "熊本県", "area": "熊本・上益城", "hosp": 86, "wards": 324, "beds": 8910}, {"pref_code": "43", "pref": "熊本県", "area": "天草", "hosp": 15, "wards": 48, "beds": 966}, {"pref_code": "43", "pref": "熊本県", "area": "菊池", "hosp": 13, "wards": 56, "beds": 2095}, {"pref_code": "43", "pref": "熊本県", "area": "球磨", "hosp": 11, "wards": 27, "beds": 630}, {"pref_code": "43", "pref": "熊本県", "area": "宇城", "hosp": 9, "wards": 24, "beds": 714}, {"pref_code": "43", "pref": "熊本県", "area": "八代", "hosp": 9, "wards": 34, "beds": 1067}, {"pref_code": "43", "pref": "熊本県", "area": "芦北", "hosp": 8, "wards": 19, "beds": 739}, {"pref_code": "43", "pref": "熊本県", "area": "有明", "hosp": 8, "wards": 36, "beds": 771}, {"pref_code": "43", "pref": "熊本県", "area": "鹿本", "hosp": 5, "wards": 16, "beds": 375}, {"pref_code": "43", "pref": "熊本県", "area": "阿蘇", "hosp": 5, "wards": 17, "beds": 307}, {"pref_code": "44", "pref": "大分県", "area": "中部", "hosp": 50, "wards": 157, "beds": 5531}, {"pref_code": "44", "pref": "大分県", "area": "東部", "hosp": 28, "wards": 86, "beds": 2793}, {"pref_code": "44", "pref": "大分県", "area": "北部", "hosp": 21, "wards": 50, "beds": 1443}, {"pref_code": "44", "pref": "大分県", "area": "西部", "hosp": 16, "wards": 27, "beds": 706}, {"pref_code": "44", "pref": "大分県", "area": "南部", "hosp": 7, "wards": 23, "beds": 732}, {"pref_code": "44", "pref": "大分県", "area": "豊肥", "hosp": 5, "wards": 14, "beds": 460}, {"pref_code": "45", "pref": "宮崎県", "area": "宮崎東諸県", "hosp": 36, "wards": 124, "beds": 3673}, {"pref_code": "45", "pref": "宮崎県", "area": "都城北諸県", "hosp": 23, "wards": 53, "beds": 1808}, {"pref_code": "45", "pref": "宮崎県", "area": "延岡西臼杵", "hosp": 17, "wards": 45, "beds": 1125}, {"pref_code": "45", "pref": "宮崎県", "area": "西諸", "hosp": 13, "wards": 23, "beds": 556}, {"pref_code": "45", "pref": "宮崎県", "area": "西都児湯", "hosp": 10, "wards": 24, "beds": 747}, {"pref_code": "45", "pref": "宮崎県", "area": "日向入郷", "hosp": 10, "wards": 23, "beds": 465}, {"pref_code": "45", "pref": "宮崎県", "area": "日南串間", "hosp": 8, "wards": 20, "beds": 541}, {"pref_code": "46", "pref": "鹿児島県", "area": "鹿児島", "hosp": 87, "wards": 260, "beds": 7157}, {"pref_code": "46", "pref": "鹿児島県", "area": "姶良・伊佐", "hosp": 30, "wards": 78, "beds": 1954}, {"pref_code": "46", "pref": "鹿児島県", "area": "南薩", "hosp": 25, "wards": 56, "beds": 1185}, {"pref_code": "46", "pref": "鹿児島県", "area": "肝属", "hosp": 18, "wards": 50, "beds": 1839}, {"pref_code": "46", "pref": "鹿児島県", "area": "奄美", "hosp": 13, "wards": 43, "beds": 1075}, {"pref_code": "46", "pref": "鹿児島県", "area": "川薩", "hosp": 12, "wards": 34, "beds": 850}, {"pref_code": "46", "pref": "鹿児島県", "area": "曽於", "hosp": 8, "wards": 22, "beds": 440}, {"pref_code": "46", "pref": "鹿児島県", "area": "出水", "hosp": 5, "wards": 20, "beds": 492}, {"pref_code": "46", "pref": "鹿児島県", "area": "熊毛", "hosp": 3, "wards": 8, "beds": 401}, {"pref_code": "47", "pref": "沖縄県", "area": "南部", "hosp": 34, "wards": 175, "beds": 4758}, {"pref_code": "47", "pref": "沖縄県", "area": "中部", "hosp": 22, "wards": 101, "beds": 2699}, {"pref_code": "47", "pref": "沖縄県", "area": "北部", "hosp": 8, "wards": 35, "beds": 1026}, {"pref_code": "47", "pref": "沖縄県", "area": "宮古", "hosp": 4, "wards": 15, "beds": 487}, {"pref_code": "47", "pref": "沖縄県", "area": "八重山", "hosp": 3, "wards": 12, "beds": 329}]
+[
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "上川中部",
+    "hosp": 31,
+    "wards": 127,
+    "beds": 5640
+  },
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "上川北部",
+    "hosp": 7,
+    "wards": 20,
+    "beds": 853
+  },
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "中空知",
+    "hosp": 12,
+    "wards": 42,
+    "beds": 1729
+  },
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "北渡島檜山",
+    "hosp": 6,
+    "wards": 14,
+    "beds": 713
+  },
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "北空知",
+    "hosp": 3,
+    "wards": 12,
+    "beds": 551
+  },
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "北網",
+    "hosp": 20,
+    "wards": 57,
+    "beds": 2442
+  },
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "十勝",
+    "hosp": 30,
+    "wards": 91,
+    "beds": 4163
+  },
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "南檜山",
+    "hosp": 5,
+    "wards": 10,
+    "beds": 371
+  },
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "南渡島",
+    "hosp": 31,
+    "wards": 116,
+    "beds": 5176
+  },
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "南空知",
+    "hosp": 14,
+    "wards": 36,
+    "beds": 1826
+  },
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "宗谷",
+    "hosp": 8,
+    "wards": 17,
+    "beds": 686
+  },
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "富良野",
+    "hosp": 2,
+    "wards": 6,
+    "beds": 290
+  },
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "後志",
+    "hosp": 15,
+    "wards": 56,
+    "beds": 2569
+  },
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "日高",
+    "hosp": 6,
+    "wards": 13,
+    "beds": 542
+  },
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "札幌",
+    "hosp": 192,
+    "wards": 752,
+    "beds": 32262
+  },
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "東胆振",
+    "hosp": 12,
+    "wards": 43,
+    "beds": 1811
+  },
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "根室",
+    "hosp": 5,
+    "wards": 10,
+    "beds": 483
+  },
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "留萌",
+    "hosp": 4,
+    "wards": 11,
+    "beds": 669
+  },
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "西胆振",
+    "hosp": 17,
+    "wards": 74,
+    "beds": 3008
+  },
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "遠紋",
+    "hosp": 6,
+    "wards": 12,
+    "beds": 520
+  },
+  {
+    "pref_code": "01",
+    "pref": "北海道",
+    "area": "釧路",
+    "hosp": 19,
+    "wards": 75,
+    "beds": 3284
+  },
+  {
+    "pref_code": "02",
+    "pref": "青森県",
+    "area": "上十三地域",
+    "hosp": 8,
+    "wards": 23,
+    "beds": 1070
+  },
+  {
+    "pref_code": "02",
+    "pref": "青森県",
+    "area": "下北地域",
+    "hosp": 3,
+    "wards": 10,
+    "beds": 504
+  },
+  {
+    "pref_code": "02",
+    "pref": "青森県",
+    "area": "八戸地域",
+    "hosp": 21,
+    "wards": 69,
+    "beds": 2843
+  },
+  {
+    "pref_code": "02",
+    "pref": "青森県",
+    "area": "津軽地域",
+    "hosp": 15,
+    "wards": 74,
+    "beds": 3148
+  },
+  {
+    "pref_code": "02",
+    "pref": "青森県",
+    "area": "西北五地域",
+    "hosp": 7,
+    "wards": 20,
+    "beds": 812
+  },
+  {
+    "pref_code": "02",
+    "pref": "青森県",
+    "area": "青森地域",
+    "hosp": 17,
+    "wards": 72,
+    "beds": 3049
+  },
+  {
+    "pref_code": "03",
+    "pref": "岩手県",
+    "area": "両磐",
+    "hosp": 6,
+    "wards": 15,
+    "beds": 735
+  },
+  {
+    "pref_code": "03",
+    "pref": "岩手県",
+    "area": "久慈",
+    "hosp": 3,
+    "wards": 10,
+    "beds": 433
+  },
+  {
+    "pref_code": "03",
+    "pref": "岩手県",
+    "area": "二戸",
+    "hosp": 3,
+    "wards": 8,
+    "beds": 394
+  },
+  {
+    "pref_code": "03",
+    "pref": "岩手県",
+    "area": "宮古",
+    "hosp": 4,
+    "wards": 12,
+    "beds": 610
+  },
+  {
+    "pref_code": "03",
+    "pref": "岩手県",
+    "area": "岩手中部",
+    "hosp": 9,
+    "wards": 26,
+    "beds": 1481
+  },
+  {
+    "pref_code": "03",
+    "pref": "岩手県",
+    "area": "気仙",
+    "hosp": 3,
+    "wards": 9,
+    "beds": 490
+  },
+  {
+    "pref_code": "03",
+    "pref": "岩手県",
+    "area": "盛岡",
+    "hosp": 32,
+    "wards": 119,
+    "beds": 5415
+  },
+  {
+    "pref_code": "03",
+    "pref": "岩手県",
+    "area": "胆江",
+    "hosp": 8,
+    "wards": 26,
+    "beds": 1289
+  },
+  {
+    "pref_code": "03",
+    "pref": "岩手県",
+    "area": "釜石",
+    "hosp": 5,
+    "wards": 13,
+    "beds": 683
+  },
+  {
+    "pref_code": "04",
+    "pref": "宮城県",
+    "area": "仙南",
+    "hosp": 11,
+    "wards": 30,
+    "beds": 1173
+  },
+  {
+    "pref_code": "04",
+    "pref": "宮城県",
+    "area": "仙台",
+    "hosp": 61,
+    "wards": 299,
+    "beds": 12219
+  },
+  {
+    "pref_code": "04",
+    "pref": "宮城県",
+    "area": "大崎・栗原",
+    "hosp": 21,
+    "wards": 54,
+    "beds": 2264
+  },
+  {
+    "pref_code": "04",
+    "pref": "宮城県",
+    "area": "石巻・登米・気仙沼",
+    "hosp": 14,
+    "wards": 60,
+    "beds": 2485
+  },
+  {
+    "pref_code": "05",
+    "pref": "秋田県",
+    "area": "県北",
+    "hosp": 13,
+    "wards": 47,
+    "beds": 2304
+  },
+  {
+    "pref_code": "05",
+    "pref": "秋田県",
+    "area": "県南",
+    "hosp": 12,
+    "wards": 49,
+    "beds": 2261
+  },
+  {
+    "pref_code": "05",
+    "pref": "秋田県",
+    "area": "県央",
+    "hosp": 23,
+    "wards": 124,
+    "beds": 5138
+  },
+  {
+    "pref_code": "06",
+    "pref": "山形県",
+    "area": "庄内",
+    "hosp": 11,
+    "wards": 55,
+    "beds": 2353
+  },
+  {
+    "pref_code": "06",
+    "pref": "山形県",
+    "area": "最上",
+    "hosp": 4,
+    "wards": 15,
+    "beds": 706
+  },
+  {
+    "pref_code": "06",
+    "pref": "山形県",
+    "area": "村山",
+    "hosp": 25,
+    "wards": 128,
+    "beds": 5342
+  },
+  {
+    "pref_code": "06",
+    "pref": "山形県",
+    "area": "置賜",
+    "hosp": 12,
+    "wards": 41,
+    "beds": 1799
+  },
+  {
+    "pref_code": "07",
+    "pref": "福島県",
+    "area": "いわき",
+    "hosp": 18,
+    "wards": 71,
+    "beds": 3383
+  },
+  {
+    "pref_code": "07",
+    "pref": "福島県",
+    "area": "会津・南会津",
+    "hosp": 16,
+    "wards": 62,
+    "beds": 2671
+  },
+  {
+    "pref_code": "07",
+    "pref": "福島県",
+    "area": "相双",
+    "hosp": 9,
+    "wards": 23,
+    "beds": 1072
+  },
+  {
+    "pref_code": "07",
+    "pref": "福島県",
+    "area": "県中",
+    "hosp": 28,
+    "wards": 122,
+    "beds": 5315
+  },
+  {
+    "pref_code": "07",
+    "pref": "福島県",
+    "area": "県北",
+    "hosp": 22,
+    "wards": 97,
+    "beds": 4313
+  },
+  {
+    "pref_code": "07",
+    "pref": "福島県",
+    "area": "県南",
+    "hosp": 5,
+    "wards": 22,
+    "beds": 1019
+  },
+  {
+    "pref_code": "08",
+    "pref": "茨城県",
+    "area": "つくば",
+    "hosp": 13,
+    "wards": 86,
+    "beds": 3216
+  },
+  {
+    "pref_code": "08",
+    "pref": "茨城県",
+    "area": "取手・竜ヶ崎",
+    "hosp": 19,
+    "wards": 87,
+    "beds": 3528
+  },
+  {
+    "pref_code": "08",
+    "pref": "茨城県",
+    "area": "古河・坂東",
+    "hosp": 10,
+    "wards": 38,
+    "beds": 1519
+  },
+  {
+    "pref_code": "08",
+    "pref": "茨城県",
+    "area": "土浦",
+    "hosp": 13,
+    "wards": 52,
+    "beds": 1961
+  },
+  {
+    "pref_code": "08",
+    "pref": "茨城県",
+    "area": "常陸太田・ひたちなか",
+    "hosp": 16,
+    "wards": 44,
+    "beds": 1942
+  },
+  {
+    "pref_code": "08",
+    "pref": "茨城県",
+    "area": "日立",
+    "hosp": 17,
+    "wards": 58,
+    "beds": 2304
+  },
+  {
+    "pref_code": "08",
+    "pref": "茨城県",
+    "area": "水戸",
+    "hosp": 36,
+    "wards": 126,
+    "beds": 4745
+  },
+  {
+    "pref_code": "08",
+    "pref": "茨城県",
+    "area": "筑西・下妻",
+    "hosp": 13,
+    "wards": 43,
+    "beds": 1865
+  },
+  {
+    "pref_code": "08",
+    "pref": "茨城県",
+    "area": "鹿行",
+    "hosp": 11,
+    "wards": 33,
+    "beds": 1520
+  },
+  {
+    "pref_code": "09",
+    "pref": "栃木県",
+    "area": "両毛",
+    "hosp": 12,
+    "wards": 54,
+    "beds": 2164
+  },
+  {
+    "pref_code": "09",
+    "pref": "栃木県",
+    "area": "宇都宮",
+    "hosp": 26,
+    "wards": 97,
+    "beds": 4238
+  },
+  {
+    "pref_code": "09",
+    "pref": "栃木県",
+    "area": "県北",
+    "hosp": 16,
+    "wards": 66,
+    "beds": 2631
+  },
+  {
+    "pref_code": "09",
+    "pref": "栃木県",
+    "area": "県南",
+    "hosp": 20,
+    "wards": 127,
+    "beds": 4608
+  },
+  {
+    "pref_code": "09",
+    "pref": "栃木県",
+    "area": "県東",
+    "hosp": 4,
+    "wards": 20,
+    "beds": 740
+  },
+  {
+    "pref_code": "09",
+    "pref": "栃木県",
+    "area": "県西",
+    "hosp": 7,
+    "wards": 26,
+    "beds": 1109
+  },
+  {
+    "pref_code": "10",
+    "pref": "群馬県",
+    "area": "伊勢崎",
+    "hosp": 9,
+    "wards": 42,
+    "beds": 1888
+  },
+  {
+    "pref_code": "10",
+    "pref": "群馬県",
+    "area": "前橋",
+    "hosp": 18,
+    "wards": 86,
+    "beds": 3416
+  },
+  {
+    "pref_code": "10",
+    "pref": "群馬県",
+    "area": "吾妻",
+    "hosp": 8,
+    "wards": 22,
+    "beds": 1162
+  },
+  {
+    "pref_code": "10",
+    "pref": "群馬県",
+    "area": "太田・館林",
+    "hosp": 16,
+    "wards": 70,
+    "beds": 2685
+  },
+  {
+    "pref_code": "10",
+    "pref": "群馬県",
+    "area": "富岡",
+    "hosp": 4,
+    "wards": 14,
+    "beds": 584
+  },
+  {
+    "pref_code": "10",
+    "pref": "群馬県",
+    "area": "桐生",
+    "hosp": 11,
+    "wards": 39,
+    "beds": 1775
+  },
+  {
+    "pref_code": "10",
+    "pref": "群馬県",
+    "area": "沼田",
+    "hosp": 7,
+    "wards": 22,
+    "beds": 893
+  },
+  {
+    "pref_code": "10",
+    "pref": "群馬県",
+    "area": "渋川",
+    "hosp": 7,
+    "wards": 29,
+    "beds": 1156
+  },
+  {
+    "pref_code": "10",
+    "pref": "群馬県",
+    "area": "藤岡",
+    "hosp": 5,
+    "wards": 22,
+    "beds": 862
+  },
+  {
+    "pref_code": "10",
+    "pref": "群馬県",
+    "area": "高崎・安中",
+    "hosp": 29,
+    "wards": 85,
+    "beds": 3633
+  },
+  {
+    "pref_code": "11",
+    "pref": "埼玉県",
+    "area": "さいたま",
+    "hosp": 33,
+    "wards": 179,
+    "beds": 6540
+  },
+  {
+    "pref_code": "11",
+    "pref": "埼玉県",
+    "area": "利根",
+    "hosp": 25,
+    "wards": 99,
+    "beds": 4327
+  },
+  {
+    "pref_code": "11",
+    "pref": "埼玉県",
+    "area": "北部",
+    "hosp": 30,
+    "wards": 85,
+    "beds": 3772
+  },
+  {
+    "pref_code": "11",
+    "pref": "埼玉県",
+    "area": "南西部",
+    "hosp": 27,
+    "wards": 120,
+    "beds": 4564
+  },
+  {
+    "pref_code": "11",
+    "pref": "埼玉県",
+    "area": "南部",
+    "hosp": 27,
+    "wards": 111,
+    "beds": 4427
+  },
+  {
+    "pref_code": "11",
+    "pref": "埼玉県",
+    "area": "川越比企",
+    "hosp": 39,
+    "wards": 163,
+    "beds": 6773
+  },
+  {
+    "pref_code": "11",
+    "pref": "埼玉県",
+    "area": "東部",
+    "hosp": 41,
+    "wards": 176,
+    "beds": 7329
+  },
+  {
+    "pref_code": "11",
+    "pref": "埼玉県",
+    "area": "県央",
+    "hosp": 14,
+    "wards": 81,
+    "beds": 3153
+  },
+  {
+    "pref_code": "11",
+    "pref": "埼玉県",
+    "area": "秩父",
+    "hosp": 7,
+    "wards": 15,
+    "beds": 732
+  },
+  {
+    "pref_code": "11",
+    "pref": "埼玉県",
+    "area": "西部",
+    "hosp": 42,
+    "wards": 163,
+    "beds": 6758
+  },
+  {
+    "pref_code": "12",
+    "pref": "千葉県",
+    "area": "千葉",
+    "hosp": 42,
+    "wards": 200,
+    "beds": 8027
+  },
+  {
+    "pref_code": "12",
+    "pref": "千葉県",
+    "area": "印旛",
+    "hosp": 27,
+    "wards": 151,
+    "beds": 6187
+  },
+  {
+    "pref_code": "12",
+    "pref": "千葉県",
+    "area": "君津",
+    "hosp": 18,
+    "wards": 54,
+    "beds": 2362
+  },
+  {
+    "pref_code": "12",
+    "pref": "千葉県",
+    "area": "安房",
+    "hosp": 14,
+    "wards": 51,
+    "beds": 1853
+  },
+  {
+    "pref_code": "12",
+    "pref": "千葉県",
+    "area": "山武長生夷隅",
+    "hosp": 22,
+    "wards": 73,
+    "beds": 3029
+  },
+  {
+    "pref_code": "12",
+    "pref": "千葉県",
+    "area": "市原",
+    "hosp": 11,
+    "wards": 48,
+    "beds": 2033
+  },
+  {
+    "pref_code": "12",
+    "pref": "千葉県",
+    "area": "東葛北部",
+    "hosp": 53,
+    "wards": 244,
+    "beds": 9990
+  },
+  {
+    "pref_code": "12",
+    "pref": "千葉県",
+    "area": "東葛南部",
+    "hosp": 51,
+    "wards": 265,
+    "beds": 10899
+  },
+  {
+    "pref_code": "12",
+    "pref": "千葉県",
+    "area": "香取海匝",
+    "hosp": 18,
+    "wards": 60,
+    "beds": 2591
+  },
+  {
+    "pref_code": "13",
+    "pref": "東京都",
+    "area": "北多摩北部",
+    "hosp": 35,
+    "wards": 150,
+    "beds": 6005
+  },
+  {
+    "pref_code": "13",
+    "pref": "東京都",
+    "area": "北多摩南部",
+    "hosp": 35,
+    "wards": 195,
+    "beds": 7043
+  },
+  {
+    "pref_code": "13",
+    "pref": "東京都",
+    "area": "北多摩西部",
+    "hosp": 25,
+    "wards": 109,
+    "beds": 4504
+  },
+  {
+    "pref_code": "13",
+    "pref": "東京都",
+    "area": "区中央部",
+    "hosp": 46,
+    "wards": 375,
+    "beds": 13093
+  },
+  {
+    "pref_code": "13",
+    "pref": "東京都",
+    "area": "区南部",
+    "hosp": 39,
+    "wards": 202,
+    "beds": 7761
+  },
+  {
+    "pref_code": "13",
+    "pref": "東京都",
+    "area": "区東北部",
+    "hosp": 84,
+    "wards": 239,
+    "beds": 10113
+  },
+  {
+    "pref_code": "13",
+    "pref": "東京都",
+    "area": "区東部",
+    "hosp": 55,
+    "wards": 219,
+    "beds": 8751
+  },
+  {
+    "pref_code": "13",
+    "pref": "東京都",
+    "area": "区西北部",
+    "hosp": 87,
+    "wards": 355,
+    "beds": 14055
+  },
+  {
+    "pref_code": "13",
+    "pref": "東京都",
+    "area": "区西南部",
+    "hosp": 51,
+    "wards": 243,
+    "beds": 9501
+  },
+  {
+    "pref_code": "13",
+    "pref": "東京都",
+    "area": "区西部",
+    "hosp": 40,
+    "wards": 269,
+    "beds": 9713
+  },
+  {
+    "pref_code": "13",
+    "pref": "東京都",
+    "area": "南多摩",
+    "hosp": 59,
+    "wards": 226,
+    "beds": 9889
+  },
+  {
+    "pref_code": "13",
+    "pref": "東京都",
+    "area": "島しょ",
+    "hosp": 1,
+    "wards": 1,
+    "beds": 52
+  },
+  {
+    "pref_code": "13",
+    "pref": "東京都",
+    "area": "西多摩",
+    "hosp": 21,
+    "wards": 80,
+    "beds": 3676
+  },
+  {
+    "pref_code": "14",
+    "pref": "神奈川県",
+    "area": "川崎北部",
+    "hosp": 15,
+    "wards": 104,
+    "beds": 4195
+  },
+  {
+    "pref_code": "14",
+    "pref": "神奈川県",
+    "area": "川崎南部",
+    "hosp": 17,
+    "wards": 113,
+    "beds": 4516
+  },
+  {
+    "pref_code": "14",
+    "pref": "神奈川県",
+    "area": "横浜",
+    "hosp": 113,
+    "wards": 584,
+    "beds": 22671
+  },
+  {
+    "pref_code": "14",
+    "pref": "神奈川県",
+    "area": "横須賀・三浦",
+    "hosp": 27,
+    "wards": 128,
+    "beds": 5151
+  },
+  {
+    "pref_code": "14",
+    "pref": "神奈川県",
+    "area": "湘南東部",
+    "hosp": 21,
+    "wards": 101,
+    "beds": 4320
+  },
+  {
+    "pref_code": "14",
+    "pref": "神奈川県",
+    "area": "湘南西部",
+    "hosp": 15,
+    "wards": 109,
+    "beds": 4568
+  },
+  {
+    "pref_code": "14",
+    "pref": "神奈川県",
+    "area": "相模原",
+    "hosp": 31,
+    "wards": 150,
+    "beds": 6021
+  },
+  {
+    "pref_code": "14",
+    "pref": "神奈川県",
+    "area": "県央",
+    "hosp": 27,
+    "wards": 128,
+    "beds": 5236
+  },
+  {
+    "pref_code": "14",
+    "pref": "神奈川県",
+    "area": "県西",
+    "hosp": 21,
+    "wards": 68,
+    "beds": 2906
+  },
+  {
+    "pref_code": "15",
+    "pref": "新潟県",
+    "area": "上越",
+    "hosp": 11,
+    "wards": 43,
+    "beds": 2085
+  },
+  {
+    "pref_code": "15",
+    "pref": "新潟県",
+    "area": "下越",
+    "hosp": 11,
+    "wards": 34,
+    "beds": 1665
+  },
+  {
+    "pref_code": "15",
+    "pref": "新潟県",
+    "area": "中越",
+    "hosp": 16,
+    "wards": 84,
+    "beds": 3882
+  },
+  {
+    "pref_code": "15",
+    "pref": "新潟県",
+    "area": "佐渡",
+    "hosp": 2,
+    "wards": 8,
+    "beds": 386
+  },
+  {
+    "pref_code": "15",
+    "pref": "新潟県",
+    "area": "新潟",
+    "hosp": 40,
+    "wards": 195,
+    "beds": 8474
+  },
+  {
+    "pref_code": "15",
+    "pref": "新潟県",
+    "area": "県央",
+    "hosp": 8,
+    "wards": 32,
+    "beds": 1358
+  },
+  {
+    "pref_code": "15",
+    "pref": "新潟県",
+    "area": "魚沼",
+    "hosp": 8,
+    "wards": 28,
+    "beds": 1232
+  },
+  {
+    "pref_code": "16",
+    "pref": "富山県",
+    "area": "富山",
+    "hosp": 40,
+    "wards": 135,
+    "beds": 5813
+  },
+  {
+    "pref_code": "16",
+    "pref": "富山県",
+    "area": "新川",
+    "hosp": 11,
+    "wards": 30,
+    "beds": 1370
+  },
+  {
+    "pref_code": "16",
+    "pref": "富山県",
+    "area": "砺波",
+    "hosp": 13,
+    "wards": 34,
+    "beds": 1472
+  },
+  {
+    "pref_code": "16",
+    "pref": "富山県",
+    "area": "高岡",
+    "hosp": 19,
+    "wards": 62,
+    "beds": 2774
+  },
+  {
+    "pref_code": "17",
+    "pref": "石川県",
+    "area": "南加賀",
+    "hosp": 14,
+    "wards": 44,
+    "beds": 1872
+  },
+  {
+    "pref_code": "17",
+    "pref": "石川県",
+    "area": "石川中央",
+    "hosp": 49,
+    "wards": 224,
+    "beds": 8941
+  },
+  {
+    "pref_code": "17",
+    "pref": "石川県",
+    "area": "能登中部",
+    "hosp": 7,
+    "wards": 30,
+    "beds": 1290
+  },
+  {
+    "pref_code": "17",
+    "pref": "石川県",
+    "area": "能登北部",
+    "hosp": 4,
+    "wards": 11,
+    "beds": 509
+  },
+  {
+    "pref_code": "18",
+    "pref": "福井県",
+    "area": "丹南",
+    "hosp": 14,
+    "wards": 34,
+    "beds": 1369
+  },
+  {
+    "pref_code": "18",
+    "pref": "福井県",
+    "area": "奥越",
+    "hosp": 5,
+    "wards": 8,
+    "beds": 375
+  },
+  {
+    "pref_code": "18",
+    "pref": "福井県",
+    "area": "嶺南",
+    "hosp": 7,
+    "wards": 32,
+    "beds": 1322
+  },
+  {
+    "pref_code": "18",
+    "pref": "福井県",
+    "area": "福井・坂井",
+    "hosp": 31,
+    "wards": 126,
+    "beds": 4959
+  },
+  {
+    "pref_code": "19",
+    "pref": "山梨県",
+    "area": "中北",
+    "hosp": 27,
+    "wards": 110,
+    "beds": 4772
+  },
+  {
+    "pref_code": "19",
+    "pref": "山梨県",
+    "area": "富士・東部",
+    "hosp": 6,
+    "wards": 24,
+    "beds": 1134
+  },
+  {
+    "pref_code": "19",
+    "pref": "山梨県",
+    "area": "峡南",
+    "hosp": 6,
+    "wards": 11,
+    "beds": 518
+  },
+  {
+    "pref_code": "19",
+    "pref": "山梨県",
+    "area": "峡東",
+    "hosp": 13,
+    "wards": 41,
+    "beds": 2016
+  },
+  {
+    "pref_code": "20",
+    "pref": "長野県",
+    "area": "上伊那",
+    "hosp": 6,
+    "wards": 28,
+    "beds": 1249
+  },
+  {
+    "pref_code": "20",
+    "pref": "長野県",
+    "area": "上小",
+    "hosp": 11,
+    "wards": 39,
+    "beds": 1756
+  },
+  {
+    "pref_code": "20",
+    "pref": "長野県",
+    "area": "佐久",
+    "hosp": 13,
+    "wards": 48,
+    "beds": 1901
+  },
+  {
+    "pref_code": "20",
+    "pref": "長野県",
+    "area": "北信",
+    "hosp": 3,
+    "wards": 17,
+    "beds": 683
+  },
+  {
+    "pref_code": "20",
+    "pref": "長野県",
+    "area": "大北",
+    "hosp": 2,
+    "wards": 8,
+    "beds": 399
+  },
+  {
+    "pref_code": "20",
+    "pref": "長野県",
+    "area": "木曽",
+    "hosp": 1,
+    "wards": 4,
+    "beds": 149
+  },
+  {
+    "pref_code": "20",
+    "pref": "長野県",
+    "area": "松本",
+    "hosp": 21,
+    "wards": 99,
+    "beds": 3768
+  },
+  {
+    "pref_code": "20",
+    "pref": "長野県",
+    "area": "諏訪",
+    "hosp": 10,
+    "wards": 48,
+    "beds": 1744
+  },
+  {
+    "pref_code": "20",
+    "pref": "長野県",
+    "area": "長野",
+    "hosp": 29,
+    "wards": 114,
+    "beds": 4721
+  },
+  {
+    "pref_code": "20",
+    "pref": "長野県",
+    "area": "飯伊",
+    "hosp": 9,
+    "wards": 35,
+    "beds": 1291
+  },
+  {
+    "pref_code": "21",
+    "pref": "岐阜県",
+    "area": "中濃",
+    "hosp": 17,
+    "wards": 59,
+    "beds": 2601
+  },
+  {
+    "pref_code": "21",
+    "pref": "岐阜県",
+    "area": "岐阜",
+    "hosp": 36,
+    "wards": 167,
+    "beds": 7013
+  },
+  {
+    "pref_code": "21",
+    "pref": "岐阜県",
+    "area": "東濃",
+    "hosp": 12,
+    "wards": 53,
+    "beds": 2241
+  },
+  {
+    "pref_code": "21",
+    "pref": "岐阜県",
+    "area": "西濃",
+    "hosp": 11,
+    "wards": 52,
+    "beds": 2364
+  },
+  {
+    "pref_code": "21",
+    "pref": "岐阜県",
+    "area": "飛騨",
+    "hosp": 6,
+    "wards": 26,
+    "beds": 1100
+  },
+  {
+    "pref_code": "22",
+    "pref": "静岡県",
+    "area": "中東遠",
+    "hosp": 14,
+    "wards": 60,
+    "beds": 2715
+  },
+  {
+    "pref_code": "22",
+    "pref": "静岡県",
+    "area": "富士",
+    "hosp": 12,
+    "wards": 55,
+    "beds": 2464
+  },
+  {
+    "pref_code": "22",
+    "pref": "静岡県",
+    "area": "志太榛原",
+    "hosp": 11,
+    "wards": 77,
+    "beds": 3242
+  },
+  {
+    "pref_code": "22",
+    "pref": "静岡県",
+    "area": "熱海伊東",
+    "hosp": 6,
+    "wards": 23,
+    "beds": 1064
+  },
+  {
+    "pref_code": "22",
+    "pref": "静岡県",
+    "area": "西部",
+    "hosp": 27,
+    "wards": 159,
+    "beds": 6857
+  },
+  {
+    "pref_code": "22",
+    "pref": "静岡県",
+    "area": "賀茂",
+    "hosp": 6,
+    "wards": 16,
+    "beds": 707
+  },
+  {
+    "pref_code": "22",
+    "pref": "静岡県",
+    "area": "静岡",
+    "hosp": 22,
+    "wards": 143,
+    "beds": 6120
+  },
+  {
+    "pref_code": "22",
+    "pref": "静岡県",
+    "area": "駿東田方",
+    "hosp": 41,
+    "wards": 136,
+    "beds": 6183
+  },
+  {
+    "pref_code": "23",
+    "pref": "愛知県",
+    "area": "名古屋・尾張中部",
+    "hosp": 108,
+    "wards": 464,
+    "beds": 19421
+  },
+  {
+    "pref_code": "23",
+    "pref": "愛知県",
+    "area": "尾張北部",
+    "hosp": 22,
+    "wards": 114,
+    "beds": 4776
+  },
+  {
+    "pref_code": "23",
+    "pref": "愛知県",
+    "area": "尾張東部",
+    "hosp": 14,
+    "wards": 120,
+    "beds": 4173
+  },
+  {
+    "pref_code": "23",
+    "pref": "愛知県",
+    "area": "尾張西部",
+    "hosp": 17,
+    "wards": 89,
+    "beds": 3548
+  },
+  {
+    "pref_code": "23",
+    "pref": "愛知県",
+    "area": "東三河北部",
+    "hosp": 3,
+    "wards": 6,
+    "beds": 299
+  },
+  {
+    "pref_code": "23",
+    "pref": "愛知県",
+    "area": "東三河南部",
+    "hosp": 32,
+    "wards": 130,
+    "beds": 5770
+  },
+  {
+    "pref_code": "23",
+    "pref": "愛知県",
+    "area": "海部",
+    "hosp": 9,
+    "wards": 38,
+    "beds": 1641
+  },
+  {
+    "pref_code": "23",
+    "pref": "愛知県",
+    "area": "知多半島",
+    "hosp": 16,
+    "wards": 76,
+    "beds": 3070
+  },
+  {
+    "pref_code": "23",
+    "pref": "愛知県",
+    "area": "西三河北部",
+    "hosp": 16,
+    "wards": 66,
+    "beds": 2823
+  },
+  {
+    "pref_code": "23",
+    "pref": "愛知県",
+    "area": "西三河南部東",
+    "hosp": 12,
+    "wards": 57,
+    "beds": 2356
+  },
+  {
+    "pref_code": "23",
+    "pref": "愛知県",
+    "area": "西三河南部西",
+    "hosp": 20,
+    "wards": 103,
+    "beds": 4386
+  },
+  {
+    "pref_code": "24",
+    "pref": "三重県",
+    "area": "中勢伊賀",
+    "hosp": 24,
+    "wards": 104,
+    "beds": 4206
+  },
+  {
+    "pref_code": "24",
+    "pref": "三重県",
+    "area": "北勢",
+    "hosp": 33,
+    "wards": 136,
+    "beds": 5960
+  },
+  {
+    "pref_code": "24",
+    "pref": "三重県",
+    "area": "南勢志摩",
+    "hosp": 19,
+    "wards": 95,
+    "beds": 3658
+  },
+  {
+    "pref_code": "24",
+    "pref": "三重県",
+    "area": "東紀州",
+    "hosp": 4,
+    "wards": 16,
+    "beds": 705
+  },
+  {
+    "pref_code": "25",
+    "pref": "滋賀県",
+    "area": "大津",
+    "hosp": 13,
+    "wards": 74,
+    "beds": 2957
+  },
+  {
+    "pref_code": "25",
+    "pref": "滋賀県",
+    "area": "東近江",
+    "hosp": 10,
+    "wards": 48,
+    "beds": 2084
+  },
+  {
+    "pref_code": "25",
+    "pref": "滋賀県",
+    "area": "湖北",
+    "hosp": 3,
+    "wards": 29,
+    "beds": 1127
+  },
+  {
+    "pref_code": "25",
+    "pref": "滋賀県",
+    "area": "湖南",
+    "hosp": 12,
+    "wards": 64,
+    "beds": 2821
+  },
+  {
+    "pref_code": "25",
+    "pref": "滋賀県",
+    "area": "湖東",
+    "hosp": 4,
+    "wards": 27,
+    "beds": 1107
+  },
+  {
+    "pref_code": "25",
+    "pref": "滋賀県",
+    "area": "湖西",
+    "hosp": 3,
+    "wards": 9,
+    "beds": 448
+  },
+  {
+    "pref_code": "25",
+    "pref": "滋賀県",
+    "area": "甲賀",
+    "hosp": 6,
+    "wards": 23,
+    "beds": 1081
+  },
+  {
+    "pref_code": "26",
+    "pref": "京都府",
+    "area": "中丹",
+    "hosp": 14,
+    "wards": 51,
+    "beds": 2149
+  },
+  {
+    "pref_code": "26",
+    "pref": "京都府",
+    "area": "丹後",
+    "hosp": 6,
+    "wards": 26,
+    "beds": 1157
+  },
+  {
+    "pref_code": "26",
+    "pref": "京都府",
+    "area": "京都・乙訓",
+    "hosp": 94,
+    "wards": 405,
+    "beds": 17127
+  },
+  {
+    "pref_code": "26",
+    "pref": "京都府",
+    "area": "南丹",
+    "hosp": 9,
+    "wards": 27,
+    "beds": 1293
+  },
+  {
+    "pref_code": "26",
+    "pref": "京都府",
+    "area": "山城北",
+    "hosp": 23,
+    "wards": 86,
+    "beds": 3835
+  },
+  {
+    "pref_code": "26",
+    "pref": "京都府",
+    "area": "山城南",
+    "hosp": 3,
+    "wards": 14,
+    "beds": 695
+  },
+  {
+    "pref_code": "27",
+    "pref": "大阪府",
+    "area": "三島",
+    "hosp": 31,
+    "wards": 155,
+    "beds": 6310
+  },
+  {
+    "pref_code": "27",
+    "pref": "大阪府",
+    "area": "中河内",
+    "hosp": 31,
+    "wards": 136,
+    "beds": 5615
+  },
+  {
+    "pref_code": "27",
+    "pref": "大阪府",
+    "area": "北河内",
+    "hosp": 55,
+    "wards": 235,
+    "beds": 10029
+  },
+  {
+    "pref_code": "27",
+    "pref": "大阪府",
+    "area": "南河内",
+    "hosp": 32,
+    "wards": 147,
+    "beds": 5953
+  },
+  {
+    "pref_code": "27",
+    "pref": "大阪府",
+    "area": "堺市",
+    "hosp": 36,
+    "wards": 204,
+    "beds": 8752
+  },
+  {
+    "pref_code": "27",
+    "pref": "大阪府",
+    "area": "大阪市",
+    "hosp": 168,
+    "wards": 767,
+    "beds": 31100
+  },
+  {
+    "pref_code": "27",
+    "pref": "大阪府",
+    "area": "泉州",
+    "hosp": 54,
+    "wards": 210,
+    "beds": 8177
+  },
+  {
+    "pref_code": "27",
+    "pref": "大阪府",
+    "area": "豊能",
+    "hosp": 41,
+    "wards": 227,
+    "beds": 8654
+  },
+  {
+    "pref_code": "28",
+    "pref": "兵庫県",
+    "area": "丹波",
+    "hosp": 6,
+    "wards": 24,
+    "beds": 1099
+  },
+  {
+    "pref_code": "28",
+    "pref": "兵庫県",
+    "area": "但馬",
+    "hosp": 8,
+    "wards": 31,
+    "beds": 1271
+  },
+  {
+    "pref_code": "28",
+    "pref": "兵庫県",
+    "area": "北播磨",
+    "hosp": 19,
+    "wards": 75,
+    "beds": 3404
+  },
+  {
+    "pref_code": "28",
+    "pref": "兵庫県",
+    "area": "播磨姫路",
+    "hosp": 51,
+    "wards": 181,
+    "beds": 7812
+  },
+  {
+    "pref_code": "28",
+    "pref": "兵庫県",
+    "area": "東播磨",
+    "hosp": 35,
+    "wards": 149,
+    "beds": 6066
+  },
+  {
+    "pref_code": "28",
+    "pref": "兵庫県",
+    "area": "淡路",
+    "hosp": 10,
+    "wards": 41,
+    "beds": 1629
+  },
+  {
+    "pref_code": "28",
+    "pref": "兵庫県",
+    "area": "神戸",
+    "hosp": 98,
+    "wards": 367,
+    "beds": 15631
+  },
+  {
+    "pref_code": "28",
+    "pref": "兵庫県",
+    "area": "阪神",
+    "hosp": 81,
+    "wards": 372,
+    "beds": 15673
+  },
+  {
+    "pref_code": "29",
+    "pref": "奈良県",
+    "area": "中和",
+    "hosp": 16,
+    "wards": 79,
+    "beds": 3422
+  },
+  {
+    "pref_code": "29",
+    "pref": "奈良県",
+    "area": "南和",
+    "hosp": 4,
+    "wards": 13,
+    "beds": 534
+  },
+  {
+    "pref_code": "29",
+    "pref": "奈良県",
+    "area": "奈良",
+    "hosp": 21,
+    "wards": 88,
+    "beds": 3572
+  },
+  {
+    "pref_code": "29",
+    "pref": "奈良県",
+    "area": "東和",
+    "hosp": 12,
+    "wards": 63,
+    "beds": 2425
+  },
+  {
+    "pref_code": "29",
+    "pref": "奈良県",
+    "area": "西和",
+    "hosp": 18,
+    "wards": 71,
+    "beds": 3082
+  },
+  {
+    "pref_code": "30",
+    "pref": "和歌山県",
+    "area": "和歌山",
+    "hosp": 40,
+    "wards": 123,
+    "beds": 5201
+  },
+  {
+    "pref_code": "30",
+    "pref": "和歌山県",
+    "area": "御坊",
+    "hosp": 4,
+    "wards": 18,
+    "beds": 790
+  },
+  {
+    "pref_code": "30",
+    "pref": "和歌山県",
+    "area": "新宮",
+    "hosp": 6,
+    "wards": 18,
+    "beds": 782
+  },
+  {
+    "pref_code": "30",
+    "pref": "和歌山県",
+    "area": "有田",
+    "hosp": 5,
+    "wards": 15,
+    "beds": 627
+  },
+  {
+    "pref_code": "30",
+    "pref": "和歌山県",
+    "area": "橋本",
+    "hosp": 4,
+    "wards": 17,
+    "beds": 783
+  },
+  {
+    "pref_code": "30",
+    "pref": "和歌山県",
+    "area": "田辺",
+    "hosp": 8,
+    "wards": 34,
+    "beds": 1214
+  },
+  {
+    "pref_code": "30",
+    "pref": "和歌山県",
+    "area": "那賀",
+    "hosp": 7,
+    "wards": 18,
+    "beds": 892
+  },
+  {
+    "pref_code": "31",
+    "pref": "鳥取県",
+    "area": "中部",
+    "hosp": 9,
+    "wards": 28,
+    "beds": 1208
+  },
+  {
+    "pref_code": "31",
+    "pref": "鳥取県",
+    "area": "東部",
+    "hosp": 12,
+    "wards": 59,
+    "beds": 2439
+  },
+  {
+    "pref_code": "31",
+    "pref": "鳥取県",
+    "area": "西部",
+    "hosp": 18,
+    "wards": 67,
+    "beds": 2729
+  },
+  {
+    "pref_code": "32",
+    "pref": "島根県",
+    "area": "出雲",
+    "hosp": 9,
+    "wards": 58,
+    "beds": 2179
+  },
+  {
+    "pref_code": "32",
+    "pref": "島根県",
+    "area": "大田",
+    "hosp": 3,
+    "wards": 9,
+    "beds": 404
+  },
+  {
+    "pref_code": "32",
+    "pref": "島根県",
+    "area": "松江",
+    "hosp": 10,
+    "wards": 56,
+    "beds": 2600
+  },
+  {
+    "pref_code": "32",
+    "pref": "島根県",
+    "area": "浜田",
+    "hosp": 5,
+    "wards": 18,
+    "beds": 895
+  },
+  {
+    "pref_code": "32",
+    "pref": "島根県",
+    "area": "益田",
+    "hosp": 4,
+    "wards": 14,
+    "beds": 628
+  },
+  {
+    "pref_code": "32",
+    "pref": "島根県",
+    "area": "隠岐",
+    "hosp": 2,
+    "wards": 4,
+    "beds": 185
+  },
+  {
+    "pref_code": "32",
+    "pref": "島根県",
+    "area": "雲南",
+    "hosp": 4,
+    "wards": 11,
+    "beds": 593
+  },
+  {
+    "pref_code": "33",
+    "pref": "岡山県",
+    "area": "津山・英田",
+    "hosp": 14,
+    "wards": 41,
+    "beds": 1691
+  },
+  {
+    "pref_code": "33",
+    "pref": "岡山県",
+    "area": "県南東部",
+    "hosp": 70,
+    "wards": 254,
+    "beds": 10413
+  },
+  {
+    "pref_code": "33",
+    "pref": "岡山県",
+    "area": "県南西部",
+    "hosp": 46,
+    "wards": 184,
+    "beds": 7757
+  },
+  {
+    "pref_code": "33",
+    "pref": "岡山県",
+    "area": "真庭",
+    "hosp": 5,
+    "wards": 9,
+    "beds": 465
+  },
+  {
+    "pref_code": "33",
+    "pref": "岡山県",
+    "area": "高梁・新見",
+    "hosp": 7,
+    "wards": 14,
+    "beds": 628
+  },
+  {
+    "pref_code": "34",
+    "pref": "広島県",
+    "area": "備北",
+    "hosp": 9,
+    "wards": 30,
+    "beds": 1427
+  },
+  {
+    "pref_code": "34",
+    "pref": "広島県",
+    "area": "呉",
+    "hosp": 22,
+    "wards": 68,
+    "beds": 2951
+  },
+  {
+    "pref_code": "34",
+    "pref": "広島県",
+    "area": "尾三",
+    "hosp": 18,
+    "wards": 74,
+    "beds": 3038
+  },
+  {
+    "pref_code": "34",
+    "pref": "広島県",
+    "area": "広島",
+    "hosp": 81,
+    "wards": 287,
+    "beds": 11642
+  },
+  {
+    "pref_code": "34",
+    "pref": "広島県",
+    "area": "広島中央",
+    "hosp": 16,
+    "wards": 50,
+    "beds": 2302
+  },
+  {
+    "pref_code": "34",
+    "pref": "広島県",
+    "area": "広島西",
+    "hosp": 12,
+    "wards": 44,
+    "beds": 1900
+  },
+  {
+    "pref_code": "34",
+    "pref": "広島県",
+    "area": "福山・府中",
+    "hosp": 39,
+    "wards": 112,
+    "beds": 4583
+  },
+  {
+    "pref_code": "35",
+    "pref": "山口県",
+    "area": "下関",
+    "hosp": 19,
+    "wards": 83,
+    "beds": 3820
+  },
+  {
+    "pref_code": "35",
+    "pref": "山口県",
+    "area": "周南",
+    "hosp": 20,
+    "wards": 68,
+    "beds": 3008
+  },
+  {
+    "pref_code": "35",
+    "pref": "山口県",
+    "area": "宇部・小野田",
+    "hosp": 21,
+    "wards": 91,
+    "beds": 4041
+  },
+  {
+    "pref_code": "35",
+    "pref": "山口県",
+    "area": "山口・防府",
+    "hosp": 20,
+    "wards": 74,
+    "beds": 3156
+  },
+  {
+    "pref_code": "35",
+    "pref": "山口県",
+    "area": "岩国",
+    "hosp": 15,
+    "wards": 37,
+    "beds": 1637
+  },
+  {
+    "pref_code": "35",
+    "pref": "山口県",
+    "area": "柳井",
+    "hosp": 6,
+    "wards": 23,
+    "beds": 1150
+  },
+  {
+    "pref_code": "35",
+    "pref": "山口県",
+    "area": "萩",
+    "hosp": 6,
+    "wards": 16,
+    "beds": 898
+  },
+  {
+    "pref_code": "35",
+    "pref": "山口県",
+    "area": "長門",
+    "hosp": 3,
+    "wards": 10,
+    "beds": 466
+  },
+  {
+    "pref_code": "36",
+    "pref": "徳島県",
+    "area": "南部",
+    "hosp": 17,
+    "wards": 41,
+    "beds": 1774
+  },
+  {
+    "pref_code": "36",
+    "pref": "徳島県",
+    "area": "東部",
+    "hosp": 58,
+    "wards": 167,
+    "beds": 6705
+  },
+  {
+    "pref_code": "36",
+    "pref": "徳島県",
+    "area": "西部",
+    "hosp": 13,
+    "wards": 23,
+    "beds": 985
+  },
+  {
+    "pref_code": "37",
+    "pref": "香川県",
+    "area": "小豆",
+    "hosp": 2,
+    "wards": 6,
+    "beds": 277
+  },
+  {
+    "pref_code": "37",
+    "pref": "香川県",
+    "area": "東部",
+    "hosp": 37,
+    "wards": 150,
+    "beds": 5562
+  },
+  {
+    "pref_code": "37",
+    "pref": "香川県",
+    "area": "西部",
+    "hosp": 36,
+    "wards": 125,
+    "beds": 4938
+  },
+  {
+    "pref_code": "38",
+    "pref": "愛媛県",
+    "area": "今治",
+    "hosp": 27,
+    "wards": 49,
+    "beds": 1809
+  },
+  {
+    "pref_code": "38",
+    "pref": "愛媛県",
+    "area": "八幡浜・大洲",
+    "hosp": 13,
+    "wards": 34,
+    "beds": 1530
+  },
+  {
+    "pref_code": "38",
+    "pref": "愛媛県",
+    "area": "宇和島",
+    "hosp": 11,
+    "wards": 38,
+    "beds": 1663
+  },
+  {
+    "pref_code": "38",
+    "pref": "愛媛県",
+    "area": "宇摩",
+    "hosp": 8,
+    "wards": 22,
+    "beds": 818
+  },
+  {
+    "pref_code": "38",
+    "pref": "愛媛県",
+    "area": "新居浜・西条",
+    "hosp": 18,
+    "wards": 69,
+    "beds": 2625
+  },
+  {
+    "pref_code": "38",
+    "pref": "愛媛県",
+    "area": "松山",
+    "hosp": 44,
+    "wards": 171,
+    "beds": 7256
+  },
+  {
+    "pref_code": "39",
+    "pref": "高知県",
+    "area": "中央",
+    "hosp": 81,
+    "wards": 237,
+    "beds": 10069
+  },
+  {
+    "pref_code": "39",
+    "pref": "高知県",
+    "area": "安芸",
+    "hosp": 5,
+    "wards": 11,
+    "beds": 494
+  },
+  {
+    "pref_code": "39",
+    "pref": "高知県",
+    "area": "幡多",
+    "hosp": 14,
+    "wards": 26,
+    "beds": 1126
+  },
+  {
+    "pref_code": "39",
+    "pref": "高知県",
+    "area": "高幡",
+    "hosp": 7,
+    "wards": 15,
+    "beds": 617
+  },
+  {
+    "pref_code": "40",
+    "pref": "福岡県",
+    "area": "久留米",
+    "hosp": 38,
+    "wards": 164,
+    "beds": 6627
+  },
+  {
+    "pref_code": "40",
+    "pref": "福岡県",
+    "area": "京築",
+    "hosp": 13,
+    "wards": 36,
+    "beds": 1538
+  },
+  {
+    "pref_code": "40",
+    "pref": "福岡県",
+    "area": "八女・筑後",
+    "hosp": 13,
+    "wards": 40,
+    "beds": 1825
+  },
+  {
+    "pref_code": "40",
+    "pref": "福岡県",
+    "area": "北九州",
+    "hosp": 82,
+    "wards": 361,
+    "beds": 15414
+  },
+  {
+    "pref_code": "40",
+    "pref": "福岡県",
+    "area": "宗像",
+    "hosp": 10,
+    "wards": 27,
+    "beds": 1283
+  },
+  {
+    "pref_code": "40",
+    "pref": "福岡県",
+    "area": "有明",
+    "hosp": 24,
+    "wards": 87,
+    "beds": 3962
+  },
+  {
+    "pref_code": "40",
+    "pref": "福岡県",
+    "area": "朝倉",
+    "hosp": 6,
+    "wards": 21,
+    "beds": 1054
+  },
+  {
+    "pref_code": "40",
+    "pref": "福岡県",
+    "area": "田川",
+    "hosp": 13,
+    "wards": 31,
+    "beds": 1301
+  },
+  {
+    "pref_code": "40",
+    "pref": "福岡県",
+    "area": "直方・鞍手",
+    "hosp": 10,
+    "wards": 24,
+    "beds": 1082
+  },
+  {
+    "pref_code": "40",
+    "pref": "福岡県",
+    "area": "福岡・糸島",
+    "hosp": 104,
+    "wards": 433,
+    "beds": 17496
+  },
+  {
+    "pref_code": "40",
+    "pref": "福岡県",
+    "area": "筑紫",
+    "hosp": 24,
+    "wards": 80,
+    "beds": 3203
+  },
+  {
+    "pref_code": "40",
+    "pref": "福岡県",
+    "area": "粕屋",
+    "hosp": 24,
+    "wards": 71,
+    "beds": 3054
+  },
+  {
+    "pref_code": "40",
+    "pref": "福岡県",
+    "area": "飯塚",
+    "hosp": 16,
+    "wards": 68,
+    "beds": 2544
+  },
+  {
+    "pref_code": "41",
+    "pref": "佐賀県",
+    "area": "中部",
+    "hosp": 32,
+    "wards": 100,
+    "beds": 4334
+  },
+  {
+    "pref_code": "41",
+    "pref": "佐賀県",
+    "area": "北部",
+    "hosp": 13,
+    "wards": 35,
+    "beds": 1436
+  },
+  {
+    "pref_code": "41",
+    "pref": "佐賀県",
+    "area": "南部",
+    "hosp": 19,
+    "wards": 48,
+    "beds": 1997
+  },
+  {
+    "pref_code": "41",
+    "pref": "佐賀県",
+    "area": "東部",
+    "hosp": 11,
+    "wards": 36,
+    "beds": 1611
+  },
+  {
+    "pref_code": "41",
+    "pref": "佐賀県",
+    "area": "西部",
+    "hosp": 7,
+    "wards": 18,
+    "beds": 778
+  },
+  {
+    "pref_code": "42",
+    "pref": "長崎県",
+    "area": "上五島",
+    "hosp": 1,
+    "wards": 4,
+    "beds": 182
+  },
+  {
+    "pref_code": "42",
+    "pref": "長崎県",
+    "area": "五島",
+    "hosp": 4,
+    "wards": 9,
+    "beds": 425
+  },
+  {
+    "pref_code": "42",
+    "pref": "長崎県",
+    "area": "佐世保県北",
+    "hosp": 26,
+    "wards": 93,
+    "beds": 3871
+  },
+  {
+    "pref_code": "42",
+    "pref": "長崎県",
+    "area": "壱岐",
+    "hosp": 4,
+    "wards": 9,
+    "beds": 343
+  },
+  {
+    "pref_code": "42",
+    "pref": "長崎県",
+    "area": "対馬",
+    "hosp": 2,
+    "wards": 6,
+    "beds": 282
+  },
+  {
+    "pref_code": "42",
+    "pref": "長崎県",
+    "area": "県南",
+    "hosp": 14,
+    "wards": 33,
+    "beds": 1487
+  },
+  {
+    "pref_code": "42",
+    "pref": "長崎県",
+    "area": "県央",
+    "hosp": 24,
+    "wards": 85,
+    "beds": 3497
+  },
+  {
+    "pref_code": "42",
+    "pref": "長崎県",
+    "area": "長崎",
+    "hosp": 40,
+    "wards": 167,
+    "beds": 6844
+  },
+  {
+    "pref_code": "43",
+    "pref": "熊本県",
+    "area": "八代",
+    "hosp": 8,
+    "wards": 33,
+    "beds": 1490
+  },
+  {
+    "pref_code": "43",
+    "pref": "熊本県",
+    "area": "天草",
+    "hosp": 15,
+    "wards": 44,
+    "beds": 1899
+  },
+  {
+    "pref_code": "43",
+    "pref": "熊本県",
+    "area": "宇城",
+    "hosp": 8,
+    "wards": 20,
+    "beds": 900
+  },
+  {
+    "pref_code": "43",
+    "pref": "熊本県",
+    "area": "有明",
+    "hosp": 7,
+    "wards": 31,
+    "beds": 1334
+  },
+  {
+    "pref_code": "43",
+    "pref": "熊本県",
+    "area": "熊本・上益城",
+    "hosp": 81,
+    "wards": 302,
+    "beds": 12055
+  },
+  {
+    "pref_code": "43",
+    "pref": "熊本県",
+    "area": "球磨",
+    "hosp": 9,
+    "wards": 26,
+    "beds": 1001
+  },
+  {
+    "pref_code": "43",
+    "pref": "熊本県",
+    "area": "芦北",
+    "hosp": 8,
+    "wards": 22,
+    "beds": 944
+  },
+  {
+    "pref_code": "43",
+    "pref": "熊本県",
+    "area": "菊池",
+    "hosp": 13,
+    "wards": 50,
+    "beds": 2177
+  },
+  {
+    "pref_code": "43",
+    "pref": "熊本県",
+    "area": "阿蘇",
+    "hosp": 5,
+    "wards": 16,
+    "beds": 818
+  },
+  {
+    "pref_code": "43",
+    "pref": "熊本県",
+    "area": "鹿本",
+    "hosp": 5,
+    "wards": 16,
+    "beds": 582
+  },
+  {
+    "pref_code": "44",
+    "pref": "大分県",
+    "area": "中部",
+    "hosp": 50,
+    "wards": 156,
+    "beds": 6266
+  },
+  {
+    "pref_code": "44",
+    "pref": "大分県",
+    "area": "北部",
+    "hosp": 18,
+    "wards": 49,
+    "beds": 1979
+  },
+  {
+    "pref_code": "44",
+    "pref": "大分県",
+    "area": "南部",
+    "hosp": 7,
+    "wards": 22,
+    "beds": 1042
+  },
+  {
+    "pref_code": "44",
+    "pref": "大分県",
+    "area": "東部",
+    "hosp": 28,
+    "wards": 81,
+    "beds": 3549
+  },
+  {
+    "pref_code": "44",
+    "pref": "大分県",
+    "area": "西部",
+    "hosp": 17,
+    "wards": 29,
+    "beds": 1060
+  },
+  {
+    "pref_code": "44",
+    "pref": "大分県",
+    "area": "豊肥",
+    "hosp": 5,
+    "wards": 13,
+    "beds": 803
+  },
+  {
+    "pref_code": "45",
+    "pref": "宮崎県",
+    "area": "宮崎東諸県",
+    "hosp": 33,
+    "wards": 118,
+    "beds": 4542
+  },
+  {
+    "pref_code": "45",
+    "pref": "宮崎県",
+    "area": "延岡西臼杵",
+    "hosp": 17,
+    "wards": 38,
+    "beds": 1618
+  },
+  {
+    "pref_code": "45",
+    "pref": "宮崎県",
+    "area": "日南串間",
+    "hosp": 8,
+    "wards": 24,
+    "beds": 972
+  },
+  {
+    "pref_code": "45",
+    "pref": "宮崎県",
+    "area": "日向入郷",
+    "hosp": 7,
+    "wards": 17,
+    "beds": 719
+  },
+  {
+    "pref_code": "45",
+    "pref": "宮崎県",
+    "area": "西諸",
+    "hosp": 10,
+    "wards": 14,
+    "beds": 679
+  },
+  {
+    "pref_code": "45",
+    "pref": "宮崎県",
+    "area": "西都児湯",
+    "hosp": 10,
+    "wards": 21,
+    "beds": 988
+  },
+  {
+    "pref_code": "45",
+    "pref": "宮崎県",
+    "area": "都城北諸県",
+    "hosp": 21,
+    "wards": 50,
+    "beds": 2111
+  },
+  {
+    "pref_code": "46",
+    "pref": "鹿児島県",
+    "area": "出水",
+    "hosp": 5,
+    "wards": 18,
+    "beds": 732
+  },
+  {
+    "pref_code": "46",
+    "pref": "鹿児島県",
+    "area": "南薩",
+    "hosp": 23,
+    "wards": 52,
+    "beds": 1962
+  },
+  {
+    "pref_code": "46",
+    "pref": "鹿児島県",
+    "area": "奄美",
+    "hosp": 12,
+    "wards": 37,
+    "beds": 1644
+  },
+  {
+    "pref_code": "46",
+    "pref": "鹿児島県",
+    "area": "姶良・伊佐",
+    "hosp": 29,
+    "wards": 74,
+    "beds": 3267
+  },
+  {
+    "pref_code": "46",
+    "pref": "鹿児島県",
+    "area": "川薩",
+    "hosp": 12,
+    "wards": 33,
+    "beds": 1373
+  },
+  {
+    "pref_code": "46",
+    "pref": "鹿児島県",
+    "area": "曽於",
+    "hosp": 6,
+    "wards": 14,
+    "beds": 550
+  },
+  {
+    "pref_code": "46",
+    "pref": "鹿児島県",
+    "area": "熊毛",
+    "hosp": 3,
+    "wards": 8,
+    "beds": 387
+  },
+  {
+    "pref_code": "46",
+    "pref": "鹿児島県",
+    "area": "肝属",
+    "hosp": 14,
+    "wards": 41,
+    "beds": 1651
+  },
+  {
+    "pref_code": "46",
+    "pref": "鹿児島県",
+    "area": "鹿児島",
+    "hosp": 86,
+    "wards": 249,
+    "beds": 9901
+  },
+  {
+    "pref_code": "47",
+    "pref": "沖縄県",
+    "area": "中部",
+    "hosp": 22,
+    "wards": 104,
+    "beds": 4144
+  },
+  {
+    "pref_code": "47",
+    "pref": "沖縄県",
+    "area": "八重山",
+    "hosp": 3,
+    "wards": 13,
+    "beds": 436
+  },
+  {
+    "pref_code": "47",
+    "pref": "沖縄県",
+    "area": "北部",
+    "hosp": 8,
+    "wards": 34,
+    "beds": 1483
+  },
+  {
+    "pref_code": "47",
+    "pref": "沖縄県",
+    "area": "南部",
+    "hosp": 34,
+    "wards": 180,
+    "beds": 6544
+  },
+  {
+    "pref_code": "47",
+    "pref": "沖縄県",
+    "area": "宮古",
+    "hosp": 4,
+    "wards": 17,
+    "beds": 565
+  }
+]
