@@ -263,10 +263,29 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
   {ndbQ && ndbQ.prefectures?.[ndbPref] && (()=>{
     const qd = ndbQ.prefectures[ndbPref];
     const qs = ndbQ.questions || {};
-    const RISK_ICONS = {smoking:'🚬', weight_gain:'⚖️', exercise:'🏃', walking:'🚶', late_dinner:'🌙', drinking_daily:'🍶', heavy_drinker:'🥃', sleep_ok:'😴'};
-    const RISK_COLORS = {smoking:'#dc2626', weight_gain:'#f59e0b', exercise:'#2563eb', walking:'#059669', late_dinner:'#8b5cf6', drinking_daily:'#b91c1c', heavy_drinker:'#7f1d1d', sleep_ok:'#6366f1'};
+    const RISK_ICONS = {
+      // 生活習慣 (lifestyle)
+      smoking:'🚬', weight_gain:'⚖️', exercise:'🏃', walking:'🚶',
+      late_dinner:'🌙', drinking_daily:'🍶', heavy_drinker:'🥃', sleep_ok:'😴',
+      // 服薬 (medication)
+      hypertension_med:'💊', diabetes_medication:'💊', lipid_medication:'💊',
+      // 既往歴 (history)
+      heart_disease:'🏥', stroke_history:'🏥', ckd_history:'🏥',
+    };
+    const RISK_COLORS = {
+      // 生活習慣
+      smoking:'#dc2626', weight_gain:'#f59e0b', exercise:'#2563eb', walking:'#059669',
+      late_dinner:'#8b5cf6', drinking_daily:'#b91c1c', heavy_drinker:'#7f1d1d', sleep_ok:'#6366f1',
+      // 服薬 (青系: 治療負荷)
+      hypertension_med:'#0891b2', diabetes_medication:'#0e7490', lipid_medication:'#155e75',
+      // 既往歴 (グレー系: 既往の事実)
+      heart_disease:'#64748b', stroke_history:'#475569', ckd_history:'#334155',
+    };
     // 高い値=低リスクの項目（運動/歩行/睡眠充足）— delta色判定を反転
     const INVERSE_KEYS = new Set(['exercise', 'walking', 'sleep_ok']);
+    // 服薬・既往歴は色判定対象外（リスク方向性が中立）
+    const NEUTRAL_KEYS = new Set(['hypertension_med', 'diabetes_medication', 'lipid_medication',
+                                  'heart_disease', 'stroke_history', 'ckd_history']);
     // Compute national averages
     const allPrefs = Object.values(ndbQ.prefectures);
     const natAvg = {};
@@ -280,7 +299,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
       <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
         <span style={{fontSize:18}}>⚠️</span>
         <div>
-          <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>生活習慣リスク <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#e0e7ff',color:'#3730a3',fontWeight:500}}>生活習慣</span></div>
+          <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>生活習慣・服薬・既往歴 <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#e0e7ff',color:'#3730a3',fontWeight:500}}>質問票14項目</span></div>
           <div style={{fontSize:11,color:'#94a3b8'}}>特定健診 質問票（40〜74歳）— 全国平均との差をΔ表示</div>
         </div>
       </div>
@@ -289,7 +308,9 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           const q = qs[key] || {};
           const delta = rate - (natAvg[key]||0);
           // inverse: 値が低い方が高リスク（運動/歩行/睡眠充足）
-          const isHigherRisk = INVERSE_KEYS.has(key) ? delta < 0 : delta > 0;
+          // neutral: 服薬・既往は方向性中立（医療負荷の事実）→ 色判定なし
+          const isNeutral = NEUTRAL_KEYS.has(key);
+          const isHigherRisk = isNeutral ? null : (INVERSE_KEYS.has(key) ? delta < 0 : delta > 0);
           return <div key={key} style={{display:'flex',alignItems:'center',gap:10}}>
             <span style={{fontSize:16,width:24}}>{RISK_ICONS[key]||'📋'}</span>
             <span style={{width:mob?70:90,fontSize:12,fontWeight:600,color:'#475569',flexShrink:0}}>{q.risk_label||key}</span>
@@ -297,11 +318,11 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
               <div style={{height:'100%',borderRadius:4,background:RISK_COLORS[key]||'#94a3b8',width:`${Math.min(rate,100)}%`,opacity:0.75}}/>
               <span style={{position:'absolute',right:6,top:3,fontSize:10,color:'#475569',fontWeight:600}}>{rate}%</span>
             </div>
-            <span style={{fontSize:10,fontWeight:600,color:isHigherRisk?'#dc2626':'#059669',width:60,textAlign:'right',flexShrink:0}}>{delta>0?'↑':'↓'}{Math.abs(delta).toFixed(1)}pt</span>
+            <span style={{fontSize:10,fontWeight:600,color:isNeutral?'#64748b':(isHigherRisk?'#dc2626':'#059669'),width:60,textAlign:'right',flexShrink:0}}>{delta>0?'↑':'↓'}{Math.abs(delta).toFixed(1)}pt</span>
           </div>;
         })}
       </div>
-      <div style={{fontSize:10,color:'#94a3b8',marginTop:10}}>※Δは全国平均との差。色は<b style={{color:'#dc2626'}}>赤=高リスク方向</b>/<b style={{color:'#059669'}}>緑=低リスク方向</b>。運動・歩行・睡眠充足は値が高いほど低リスク（色判定を反転）。40-74歳特定健診受診者が対象。</div>
+      <div style={{fontSize:10,color:'#94a3b8',marginTop:10}}>※Δは全国平均との差。色は<b style={{color:'#dc2626'}}>赤=高リスク方向</b>/<b style={{color:'#059669'}}>緑=低リスク方向</b>/<b style={{color:'#64748b'}}>灰=方向中立(服薬💊・既往🏥)</b>。運動・歩行・睡眠充足は値が高いほど低リスク（色判定を反転）。服薬・既往歴は治療負荷・既往の事実であり高低判定の対象外。40-74歳特定健診受診者が対象。</div>
     </div>);
   })()}
 

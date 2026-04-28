@@ -4,49 +4,87 @@
     "smoking": {
       "label": "喫煙",
       "question": "たばこを習慣的に吸っている",
-      "risk_label": "喫煙率"
+      "risk_label": "喫煙率",
+      "category": "lifestyle"
     },
     "weight_gain": {
       "label": "体重増加",
       "question": "20歳から10kg以上増加",
-      "risk_label": "体重10kg+増加率"
+      "risk_label": "体重10kg+増加率",
+      "category": "lifestyle"
     },
     "exercise": {
       "label": "運動習慣",
       "question": "30分以上の運動を週2日以上",
-      "risk_label": "運動不足率"
+      "risk_label": "運動不足率",
+      "category": "lifestyle"
     },
     "walking": {
       "label": "歩行習慣",
       "question": "1日1時間以上歩行",
-      "risk_label": "歩行不足率"
+      "risk_label": "歩行不足率",
+      "category": "lifestyle"
     },
     "late_dinner": {
       "label": "就寝前夕食",
       "question": "就寝前2時間以内に夕食を週3回以上",
-      "risk_label": "遅い夕食率"
+      "risk_label": "遅い夕食率",
+      "category": "lifestyle"
     },
     "drinking_daily": {
       "label": "毎日飲酒",
       "question": "お酒を毎日飲む（特定健診Q18）",
-      "risk_label": "毎日飲酒率"
+      "risk_label": "毎日飲酒率",
+      "category": "lifestyle"
     },
     "heavy_drinker": {
       "label": "高量飲酒",
       "question": "飲酒日1日2合以上（特定健診Q19・飲酒者中）",
-      "risk_label": "2合以上飲酒率"
+      "risk_label": "2合以上飲酒率",
+      "category": "lifestyle"
     },
     "sleep_ok": {
       "label": "睡眠充足",
       "question": "睡眠で休養が十分とれている（特定健診Q20）",
-      "risk_label": "睡眠充足率"
+      "risk_label": "睡眠充足率",
+      "category": "lifestyle"
     },
-    "hypertension_med": "現在、血圧を下げる薬を使用しているか (Q1, %)",
-    "heart_disease": "医師から心臓病(狭心症・心筋梗塞等)にかかっているといわれた、または治療を受けたことがあるか (Q5, %)",
-    "ckd_history": "医師から慢性腎臓病や腎不全にかかっているといわれた、または治療(人工透析)を受けたことがあるか (Q6, %)",
-    "diabetes_medication": "現在、血糖を下げる薬又はインスリン注射を使用しているか (Q2, %)",
-    "lipid_medication": "現在、コレステロールや中性脂肪を下げる薬を使用しているか (Q3, %)",
-    "stroke_history": "医師から、脳卒中(脳出血、脳梗塞等)にかかっているといわれた、または治療を受けたことがあるか (Q4, %)"
+    "hypertension_med": {
+      "label": "高血圧薬服用",
+      "question": "現在、血圧を下げる薬を使用している（特定健診Q1）",
+      "risk_label": "高血圧薬服用率",
+      "category": "medication"
+    },
+    "heart_disease": {
+      "label": "心臓病既往",
+      "question": "医師から、心臓病(狭心症・心筋梗塞等)にかかっているといわれた、または治療を受けたことがある（特定健診Q5）",
+      "risk_label": "心臓病既往率",
+      "category": "history"
+    },
+    "ckd_history": {
+      "label": "CKD既往",
+      "question": "医師から、慢性腎臓病や腎不全にかかっているといわれた、または治療(人工透析)を受けたことがある（特定健診Q6）",
+      "risk_label": "CKD既往率",
+      "category": "history"
+    },
+    "diabetes_medication": {
+      "label": "糖尿病薬服用",
+      "question": "現在、血糖を下げる薬又はインスリン注射を使用している（特定健診Q2）",
+      "risk_label": "糖尿病薬服用率",
+      "category": "medication"
+    },
+    "lipid_medication": {
+      "label": "脂質薬服用",
+      "question": "現在、コレステロールや中性脂肪を下げる薬を使用している（特定健診Q3）",
+      "risk_label": "脂質薬服用率",
+      "category": "medication"
+    },
+    "stroke_history": {
+      "label": "脳卒中既往",
+      "question": "医師から、脳卒中(脳出血・脳梗塞等)にかかっているといわれた、または治療を受けたことがある（特定健診Q4）",
+      "risk_label": "脳卒中既往率",
+      "category": "history"
+    }
   },
   "prefectures": {
     "北海道": {
