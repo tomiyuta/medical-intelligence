@@ -148,10 +148,10 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
           </thead>
           <tbody>
             {Object.values(DOMAIN_MAPPING).map(domain => {
-              const risk = getCell(domain, 'risk');
-              const demand = getCell(domain, 'demand');
+              const risk = domain.risk ? getCell(domain, 'risk') : null;
+              const demand = domain.demand ? getCell(domain, 'demand') : null;
               const supply = domain.supply ? getCell(domain, 'supply') : null;
-              const outcome = getCell(domain, 'outcome');
+              const outcome = domain.outcome ? getCell(domain, 'outcome') : null;
 
               const renderCell = (cell, fallbackText) => {
                 if (!cell) return <span style={{fontSize:11,color:'#cbd5e1'}}>{fallbackText || '—'}</span>;
@@ -190,11 +190,26 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
                     </div>
                   </td>
                   <td style={{padding:'12px 8px',verticalAlign:'top'}}>{renderCell(risk)}</td>
-                  <td style={{padding:'12px 8px',verticalAlign:'top'}}>{renderCell(demand)}</td>
+                  <td style={{padding:'12px 8px',verticalAlign:'top'}}>
+                    {demand
+                      ? renderCell(demand)
+                      : (
+                        <div style={{fontSize:11,color:'#92400e',fontWeight:500,padding:'4px 8px',background:'#fef3c7',borderRadius:4,display:'inline-block'}}>
+                          ⚠ 独立データなし
+                          <div style={{fontSize:9,color:'#78350f',marginTop:3,lineHeight:1.5,fontWeight:400,maxWidth:180}}>{domain.demandNote || ''}</div>
+                        </div>
+                      )
+                    }
+                  </td>
                   <td style={{padding:'12px 8px',verticalAlign:'top'}}>
                     {(() => {
                       const util = domain.utilization ? getCell(domain, 'utilization') : null;
-                      if (!util) return <span style={{fontSize:10,color:'#cbd5e1',fontStyle:'italic'}}>未整備</span>;
+                      if (!util) return (
+                        <div style={{fontSize:11,color:'#92400e',fontWeight:500,padding:'4px 8px',background:'#fef3c7',borderRadius:4,display:'inline-block'}}>
+                          ⚠ proxy未整備
+                          <div style={{fontSize:9,color:'#78350f',marginTop:3,lineHeight:1.5,fontWeight:400,maxWidth:180}}>{domain.utilizationNote || ''}</div>
+                        </div>
+                      );
                       return renderCell(util);
                     })()}
                   </td>
@@ -219,7 +234,8 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
 
       {/* 注記 */}
       <div style={{fontSize:10,color:'#94a3b8',marginTop:14,lineHeight:1.7,padding:'10px 14px',background:'#f8fafc',borderRadius:6}}>
-        <b style={{color:'#475569'}}>📌 v0 の制約と注意点</b><br/>
+        <b style={{color:'#475569'}}>📌 v0/v1 の制約と注意点</b><br/>
+        ・3領域 (循環器/糖尿病代謝/がん) は <b>v0 FROZEN</b> (現行解釈仕様の固定。医学的構成の確定ではない)。脳血管はv1拡張領域。<br/>
         ・本サマリーは <b>スコア化を行わず</b>、データ並べ表示のみ。Gap指標化はPhase 2で検討。<br/>
         ・「医療利用」列は<b>NDB処方薬の薬効分類ベース proxy</b>(人口10万対補正)。<u>疾患患者数ではない</u>。比較基準は47都道府県平均(処方薬集計に全国値なし)。<br/>
         ・処方数量は薬効分類別数量の合算であり、薬剤単位・剤形・用量差を含みます。<u>治療人数や患者数ではありません</u>。<br/>
