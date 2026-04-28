@@ -326,31 +326,106 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     </div>);
   })()}
 
-  {/* ═══ Layer 2: RISK (健診リスク) ═══ */}
-  {hcPref.length > 0 && <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16}}>
+  {/* ═══ Layer 2: RISK (健診リスク) — 2セクション化 (Phase 2D-Layer2) ═══ */}
+  {(hcPref.length > 0 || ndbCheckupRiskRates) && <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16}}>
     <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
       <span style={{fontSize:18}}>🔬</span>
       <div>
-        <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>健診リスク <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#dbeafe',color:'#1e40af',fontWeight:500}}>検査値</span></div>
-        <div style={{fontSize:11,color:'#94a3b8'}}>特定健診 検査値平均（40〜74歳受診者）</div>
+        <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>健診リスク <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#dbeafe',color:'#1e40af',fontWeight:500}}>検査値+該当者率</span></div>
+        <div style={{fontSize:11,color:'#94a3b8'}}>特定健診（40〜74歳受診者） — A.検査値平均 + B.リスク該当者率</div>
       </div>
     </div>
-    <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'repeat(3,1fr)',gap:12}}>
-      {hcPref.map((h,i)=>{
-        const meta = RISK_META[h.metric] || {};
-        return <div key={i} style={{background:'#f8fafc',borderRadius:10,padding:'14px 16px'}}>
-          <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:8}}>
-            <span style={{fontSize:13,fontWeight:600}}>{meta.icon||''} {h.metric}</span>
-            <span style={{fontSize:10,color:'#94a3b8',background:'#fff',padding:'2px 6px',borderRadius:4}}>{meta.unit||''}</span>
-          </div>
-          <div style={{display:'flex',gap:20}}>
-            <div><div style={{fontSize:10,color:'#3b82f6'}}>男性</div><div style={{fontSize:22,fontWeight:700,color:'#2563EB'}}>{h.male}</div></div>
-            <div><div style={{fontSize:10,color:'#dc2626'}}>女性</div><div style={{fontSize:22,fontWeight:700,color:'#dc2626'}}>{h.female}</div></div>
-          </div>
-          <div style={{fontSize:10,color:'#94a3b8',marginTop:6}}>{meta.note||''}</div>
-        </div>;
-      })}
-    </div>
+
+    {/* ── サブセクション A: 検査値平均 ── */}
+    {hcPref.length > 0 && <div style={{marginBottom:18}}>
+      <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:8}}>
+        <span style={{fontSize:11,fontWeight:700,color:'#475569',padding:'2px 8px',background:'#f1f5f9',borderRadius:4}}>A. 検査値平均</span>
+        <span style={{fontSize:10,color:'#94a3b8'}}>男女別の平均値（参考値）</span>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'repeat(3,1fr)',gap:12}}>
+        {hcPref.map((h,i)=>{
+          const meta = RISK_META[h.metric] || {};
+          return <div key={i} style={{background:'#f8fafc',borderRadius:10,padding:'14px 16px'}}>
+            <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:8}}>
+              <span style={{fontSize:13,fontWeight:600}}>{meta.icon||''} {h.metric}</span>
+              <span style={{fontSize:10,color:'#94a3b8',background:'#fff',padding:'2px 6px',borderRadius:4}}>{meta.unit||''}</span>
+            </div>
+            <div style={{display:'flex',gap:20}}>
+              <div><div style={{fontSize:10,color:'#3b82f6'}}>男性</div><div style={{fontSize:22,fontWeight:700,color:'#2563EB'}}>{h.male}</div></div>
+              <div><div style={{fontSize:10,color:'#dc2626'}}>女性</div><div style={{fontSize:22,fontWeight:700,color:'#dc2626'}}>{h.female}</div></div>
+            </div>
+            <div style={{fontSize:10,color:'#94a3b8',marginTop:6}}>{meta.note||''}</div>
+          </div>;
+        })}
+      </div>
+      <div style={{fontSize:10,color:'#94a3b8',marginTop:8,fontStyle:'italic'}}>※男女別平均値をもとにした参考値。疾病診断率ではありません。</div>
+    </div>}
+
+    {/* ── サブセクション B: リスク該当者率 (Phase 1 + Phase 2C-1) ── */}
+    {ndbCheckupRiskRates?.risk_rates && (() => {
+      const RISK_CARDS = [
+        { key: 'bmi_ge_25',              icon: '⚖️', label: 'BMI ≥25',          fullLabel: 'BMI ≥25 (肥満)',          color: '#f59e0b' },
+        { key: 'hba1c_ge_6_5',           icon: '🍰', label: 'HbA1c ≥6.5',       fullLabel: 'HbA1c ≥6.5% (糖尿病型)',  color: '#dc2626' },
+        { key: 'sbp_ge_140',             icon: '❤️', label: 'SBP ≥140',         fullLabel: '収縮期血圧 ≥140 mmHg',     color: '#ef4444' },
+        { key: 'ldl_ge_140',             icon: '🩸', label: 'LDL ≥140',         fullLabel: 'LDL ≥140 mg/dL',           color: '#ec4899' },
+        { key: 'urine_protein_ge_1plus', icon: '🫘', label: '尿蛋白 1+以上',   fullLabel: '尿蛋白 1+以上',            color: '#8b5cf6' },
+      ];
+      return <div>
+        <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:8}}>
+          <span style={{fontSize:11,fontWeight:700,color:'#475569',padding:'2px 8px',background:'#fef3c7',borderRadius:4}}>B. リスク該当者率</span>
+          <span style={{fontSize:10,color:'#94a3b8'}}>NDB特定健診の階級分布から算出 — 粗率＋年齢標準化率</span>
+        </div>
+        <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'repeat(5,1fr)',gap:10}}>
+          {RISK_CARDS.map(rc => {
+            const rates = ndbCheckupRiskRates.risk_rates[rc.key];
+            if (!rates) return null;
+            const prefEntry = rates.by_pref?.[ndbPref];
+            if (!prefEntry) return null;
+            const prefVal = prefEntry.rate;
+            const allVals = Object.values(rates.by_pref).map(v => v.rate).filter(v => typeof v === 'number');
+            const natAvg = allVals.length > 0 ? allVals.reduce((s,v)=>s+v,0)/allVals.length : null;
+            const deltaPct = natAvg ? (prefVal/natAvg - 1) * 100 : null;
+            // 自然言語化
+            let cmpLabel = '', cmpColor = '#64748b';
+            if (deltaPct != null) {
+              const abs = Math.abs(deltaPct);
+              if (abs < 5) { cmpLabel = '47県平均と同程度'; cmpColor = '#64748b'; }
+              else if (deltaPct > 0) {
+                cmpLabel = abs >= 15 ? '47県平均より顕著に高い' : '47県平均より高い';
+                cmpColor = abs >= 15 ? '#dc2626' : '#f59e0b';
+              } else {
+                cmpLabel = abs >= 15 ? '47県平均より顕著に低い' : '47県平均より低い';
+                cmpColor = '#059669';
+              }
+            }
+            // 年齢標準化率
+            const stdInfo = ndbCheckupRiskRatesStd?.risk_rates?.[rc.key]?.by_pref?.[ndbPref];
+            return <div key={rc.key} style={{background:'#f8fafc',borderRadius:10,padding:'12px 14px',borderLeft:`3px solid ${rc.color}`}}>
+              <div style={{display:'flex',alignItems:'center',gap:4,marginBottom:6}}>
+                <span style={{fontSize:14}}>{rc.icon}</span>
+                <span style={{fontSize:11,fontWeight:600,color:'#1e293b'}}>{rc.label}</span>
+              </div>
+              <div style={{fontSize:24,fontWeight:700,color:'#1e293b',lineHeight:1.1}}>{prefVal.toFixed(1)}<span style={{fontSize:13,fontWeight:500,color:'#64748b'}}>%</span></div>
+              {stdInfo && stdInfo.age_standardized_rate != null && (
+                <div title="NDB内標準人口で直接標準化（47県合算 sex × age_group）" style={{fontSize:9,color:'#7c3aed',marginTop:3,fontWeight:500}}>
+                  年齢標準化 {stdInfo.age_standardized_rate.toFixed(1)}% ({stdInfo.delta_pp >= 0 ? '+' : ''}{stdInfo.delta_pp.toFixed(1)}pp)
+                </div>
+              )}
+              {cmpLabel && (
+                <div style={{fontSize:10,color:cmpColor,fontWeight:600,marginTop:4}}>
+                  {cmpLabel} ({deltaPct > 0 ? '+' : ''}{deltaPct.toFixed(1)}%)
+                </div>
+              )}
+              <div style={{fontSize:9,color:'#94a3b8',marginTop:3,lineHeight:1.3}}>{rc.fullLabel}</div>
+            </div>;
+          })}
+        </div>
+        <div style={{fontSize:10,color:'#94a3b8',marginTop:8,fontStyle:'italic',lineHeight:1.6}}>
+          ※NDB特定健診の階級分布から算出した該当者率です。40–74歳の健診受診者ベースであり、地域住民全体の有病率ではありません。<br/>
+          ※<span style={{color:'#7c3aed',fontWeight:500}}>年齢標準化率</span>: NDB特定健診データ内の性・年齢階級構成を標準人口とした直接標準化率（地域住民全体の年齢調整率ではありません）。
+        </div>
+      </div>;
+    })()}
   </div>}
 
   {/* ═══ Layer 2.5: DEMAND-SIDE (受療率 — 患者調査) ═══ */}
