@@ -1,0 +1,697 @@
+{
+  "summary": {
+    "total_facilities": 90215,
+    "tier_present": 77572,
+    "tier_absent_unrated": 12643,
+    "unrated_pct": 14.01,
+    "rated_pct": 85.99,
+    "score_present": 77572,
+    "has_caps_only": 12012,
+    "tier_distribution": {
+      "A": 249,
+      "unrated": 12643,
+      "B": 2201,
+      "C": 70806,
+      "D": 4296,
+      "S": 20
+    }
+  },
+  "by_prefecture": {
+    "三重県": {
+      "total": 1223,
+      "tier_present": 293,
+      "tier_absent": 930,
+      "score_present": 293,
+      "unrated_pct": 76.0,
+      "tier_dist": {
+        "A": 1,
+        "unrated": 930,
+        "B": 11,
+        "C": 281
+      }
+    },
+    "京都府": {
+      "total": 2187,
+      "tier_present": 2136,
+      "tier_absent": 51,
+      "score_present": 2136,
+      "unrated_pct": 2.3,
+      "tier_dist": {
+        "A": 1,
+        "B": 34,
+        "D": 1799,
+        "C": 302,
+        "unrated": 51
+      }
+    },
+    "佐賀県": {
+      "total": 557,
+      "tier_present": 549,
+      "tier_absent": 8,
+      "score_present": 549,
+      "unrated_pct": 1.4,
+      "tier_dist": {
+        "B": 16,
+        "C": 532,
+        "unrated": 8,
+        "D": 1
+      }
+    },
+    "兵庫県": {
+      "total": 4590,
+      "tier_present": 4497,
+      "tier_absent": 93,
+      "score_present": 4497,
+      "unrated_pct": 2.0,
+      "tier_dist": {
+        "A": 11,
+        "B": 102,
+        "C": 4384,
+        "unrated": 93
+      }
+    },
+    "北海道": {
+      "total": 2992,
+      "tier_present": 2930,
+      "tier_absent": 62,
+      "score_present": 2930,
+      "unrated_pct": 2.1,
+      "tier_dist": {
+        "A": 15,
+        "B": 214,
+        "C": 2701,
+        "unrated": 62
+      }
+    },
+    "千葉県": {
+      "total": 2962,
+      "tier_present": 2898,
+      "tier_absent": 64,
+      "score_present": 2898,
+      "unrated_pct": 2.2,
+      "tier_dist": {
+        "B": 89,
+        "A": 11,
+        "S": 1,
+        "C": 2797,
+        "unrated": 64
+      }
+    },
+    "和歌山県": {
+      "total": 808,
+      "tier_present": 795,
+      "tier_absent": 13,
+      "score_present": 795,
+      "unrated_pct": 1.6,
+      "tier_dist": {
+        "A": 2,
+        "B": 17,
+        "C": 776,
+        "unrated": 13
+      }
+    },
+    "埼玉県": {
+      "total": 3843,
+      "tier_present": 3785,
+      "tier_absent": 58,
+      "score_present": 3785,
+      "unrated_pct": 1.5,
+      "tier_dist": {
+        "S": 1,
+        "A": 21,
+        "C": 3608,
+        "B": 155,
+        "unrated": 58
+      }
+    },
+    "大分県": {
+      "total": 671,
+      "tier_present": 658,
+      "tier_absent": 13,
+      "score_present": 658,
+      "unrated_pct": 1.9,
+      "tier_dist": {
+        "B": 19,
+        "C": 639,
+        "unrated": 13
+      }
+    },
+    "大阪府": {
+      "total": 7798,
+      "tier_present": 7594,
+      "tier_absent": 204,
+      "score_present": 7594,
+      "unrated_pct": 2.6,
+      "tier_dist": {
+        "A": 25,
+        "S": 2,
+        "unrated": 204,
+        "C": 7344,
+        "B": 223
+      }
+    },
+    "奈良県": {
+      "total": 1032,
+      "tier_present": 1018,
+      "tier_absent": 14,
+      "score_present": 1018,
+      "unrated_pct": 1.4,
+      "tier_dist": {
+        "A": 2,
+        "B": 31,
+        "C": 985,
+        "unrated": 14
+      }
+    },
+    "宮城県": {
+      "total": 1335,
+      "tier_present": 1309,
+      "tier_absent": 26,
+      "score_present": 1309,
+      "unrated_pct": 1.9,
+      "tier_dist": {
+        "A": 2,
+        "B": 29,
+        "C": 1278,
+        "unrated": 26
+      }
+    },
+    "宮崎県": {
+      "total": 515,
+      "tier_present": 505,
+      "tier_absent": 10,
+      "score_present": 505,
+      "unrated_pct": 1.9,
+      "tier_dist": {
+        "B": 22,
+        "C": 483,
+        "unrated": 10
+      }
+    },
+    "富山県": {
+      "total": 659,
+      "tier_present": 104,
+      "tier_absent": 555,
+      "score_present": 104,
+      "unrated_pct": 84.2,
+      "tier_dist": {
+        "A": 1,
+        "C": 98,
+        "unrated": 555,
+        "B": 5
+      }
+    },
+    "山口県": {
+      "total": 2091,
+      "tier_present": 722,
+      "tier_absent": 1369,
+      "score_present": 722,
+      "unrated_pct": 65.5,
+      "tier_dist": {
+        "A": 1,
+        "B": 28,
+        "C": 693,
+        "unrated": 1369
+      }
+    },
+    "山形県": {
+      "total": 583,
+      "tier_present": 575,
+      "tier_absent": 8,
+      "score_present": 575,
+      "unrated_pct": 1.4,
+      "tier_dist": {
+        "A": 3,
+        "B": 13,
+        "C": 559,
+        "unrated": 8
+      }
+    },
+    "山梨県": {
+      "total": 518,
+      "tier_present": 515,
+      "tier_absent": 3,
+      "score_present": 515,
+      "unrated_pct": 0.6,
+      "tier_dist": {
+        "A": 1,
+        "B": 14,
+        "C": 500,
+        "unrated": 3
+      }
+    },
+    "岐阜県": {
+      "total": 1317,
+      "tier_present": 677,
+      "tier_absent": 640,
+      "score_present": 677,
+      "unrated_pct": 48.6,
+      "tier_dist": {
+        "A": 4,
+        "unrated": 640,
+        "B": 16,
+        "C": 657
+      }
+    },
+    "岡山県": {
+      "total": 2198,
+      "tier_present": 990,
+      "tier_absent": 1208,
+      "score_present": 990,
+      "unrated_pct": 55.0,
+      "tier_dist": {
+        "A": 2,
+        "S": 1,
+        "B": 7,
+        "D": 798,
+        "C": 182,
+        "unrated": 1208
+      }
+    },
+    "岩手県": {
+      "total": 574,
+      "tier_present": 567,
+      "tier_absent": 7,
+      "score_present": 567,
+      "unrated_pct": 1.2,
+      "tier_dist": {
+        "A": 4,
+        "B": 27,
+        "C": 536,
+        "unrated": 7
+      }
+    },
+    "島根県": {
+      "total": 848,
+      "tier_present": 266,
+      "tier_absent": 582,
+      "score_present": 266,
+      "unrated_pct": 68.6,
+      "tier_dist": {
+        "B": 8,
+        "C": 258,
+        "unrated": 582
+      }
+    },
+    "広島県": {
+      "total": 5070,
+      "tier_present": 2120,
+      "tier_absent": 2950,
+      "score_present": 2120,
+      "unrated_pct": 58.2,
+      "tier_dist": {
+        "A": 4,
+        "B": 49,
+        "C": 2067,
+        "unrated": 2950
+      }
+    },
+    "徳島県": {
+      "total": 570,
+      "tier_present": 561,
+      "tier_absent": 9,
+      "score_present": 561,
+      "unrated_pct": 1.6,
+      "tier_dist": {
+        "A": 1,
+        "B": 9,
+        "C": 206,
+        "D": 345,
+        "unrated": 9
+      }
+    },
+    "愛媛県": {
+      "total": 979,
+      "tier_present": 967,
+      "tier_absent": 12,
+      "score_present": 967,
+      "unrated_pct": 1.2,
+      "tier_dist": {
+        "B": 28,
+        "C": 938,
+        "A": 1,
+        "unrated": 12
+      }
+    },
+    "愛知県": {
+      "total": 4947,
+      "tier_present": 3723,
+      "tier_absent": 1224,
+      "score_present": 3723,
+      "unrated_pct": 24.7,
+      "tier_dist": {
+        "S": 1,
+        "A": 23,
+        "unrated": 1224,
+        "B": 80,
+        "C": 3619
+      }
+    },
+    "新潟県": {
+      "total": 1194,
+      "tier_present": 1181,
+      "tier_absent": 13,
+      "score_present": 1181,
+      "unrated_pct": 1.1,
+      "tier_dist": {
+        "A": 5,
+        "C": 1071,
+        "B": 44,
+        "D": 61,
+        "unrated": 13
+      }
+    },
+    "東京都": {
+      "total": 11927,
+      "tier_present": 11604,
+      "tier_absent": 323,
+      "score_present": 11604,
+      "unrated_pct": 2.7,
+      "tier_dist": {
+        "S": 9,
+        "C": 11279,
+        "A": 31,
+        "B": 285,
+        "unrated": 323
+      }
+    },
+    "栃木県": {
+      "total": 1127,
+      "tier_present": 1114,
+      "tier_absent": 13,
+      "score_present": 1114,
+      "unrated_pct": 1.2,
+      "tier_dist": {
+        "A": 2,
+        "S": 1,
+        "B": 18,
+        "D": 274,
+        "C": 819,
+        "unrated": 13
+      }
+    },
+    "沖縄県": {
+      "total": 587,
+      "tier_present": 34,
+      "tier_absent": 553,
+      "score_present": 34,
+      "unrated_pct": 94.2,
+      "tier_dist": {
+        "unrated": 553,
+        "C": 34
+      }
+    },
+    "滋賀県": {
+      "total": 851,
+      "tier_present": 827,
+      "tier_absent": 24,
+      "score_present": 827,
+      "unrated_pct": 2.8,
+      "tier_dist": {
+        "B": 15,
+        "C": 173,
+        "D": 639,
+        "unrated": 24
+      }
+    },
+    "熊本県": {
+      "total": 1148,
+      "tier_present": 1129,
+      "tier_absent": 19,
+      "score_present": 1129,
+      "unrated_pct": 1.7,
+      "tier_dist": {
+        "A": 2,
+        "B": 22,
+        "C": 1105,
+        "unrated": 19
+      }
+    },
+    "石川県": {
+      "total": 739,
+      "tier_present": 222,
+      "tier_absent": 517,
+      "score_present": 222,
+      "unrated_pct": 70.0,
+      "tier_dist": {
+        "A": 2,
+        "unrated": 517,
+        "B": 3,
+        "D": 95,
+        "C": 122
+      }
+    },
+    "神奈川県": {
+      "total": 5102,
+      "tier_present": 5014,
+      "tier_absent": 88,
+      "score_present": 5014,
+      "unrated_pct": 1.7,
+      "tier_dist": {
+        "S": 3,
+        "A": 26,
+        "C": 4865,
+        "B": 120,
+        "unrated": 88
+      }
+    },
+    "福井県": {
+      "total": 489,
+      "tier_present": 480,
+      "tier_absent": 9,
+      "score_present": 480,
+      "unrated_pct": 1.8,
+      "tier_dist": {
+        "C": 468,
+        "A": 3,
+        "B": 9,
+        "unrated": 9
+      }
+    },
+    "福岡県": {
+      "total": 3868,
+      "tier_present": 3781,
+      "tier_absent": 87,
+      "score_present": 3781,
+      "unrated_pct": 2.2,
+      "tier_dist": {
+        "S": 1,
+        "A": 10,
+        "B": 83,
+        "C": 3687,
+        "unrated": 87
+      }
+    },
+    "福島県": {
+      "total": 938,
+      "tier_present": 929,
+      "tier_absent": 9,
+      "score_present": 929,
+      "unrated_pct": 1.0,
+      "tier_dist": {
+        "A": 3,
+        "B": 35,
+        "D": 34,
+        "C": 857,
+        "unrated": 9
+      }
+    },
+    "秋田県": {
+      "total": 457,
+      "tier_present": 452,
+      "tier_absent": 5,
+      "score_present": 452,
+      "unrated_pct": 1.1,
+      "tier_dist": {
+        "A": 1,
+        "C": 428,
+        "B": 23,
+        "unrated": 5
+      }
+    },
+    "群馬県": {
+      "total": 1277,
+      "tier_present": 1270,
+      "tier_absent": 7,
+      "score_present": 1270,
+      "unrated_pct": 0.5,
+      "tier_dist": {
+        "A": 2,
+        "B": 50,
+        "C": 1205,
+        "D": 13,
+        "unrated": 7
+      }
+    },
+    "茨城県": {
+      "total": 1375,
+      "tier_present": 1359,
+      "tier_absent": 16,
+      "score_present": 1359,
+      "unrated_pct": 1.2,
+      "tier_dist": {
+        "C": 1320,
+        "A": 3,
+        "B": 36,
+        "unrated": 16
+      }
+    },
+    "長崎県": {
+      "total": 1114,
+      "tier_present": 1106,
+      "tier_absent": 8,
+      "score_present": 1106,
+      "unrated_pct": 0.7,
+      "tier_dist": {
+        "A": 2,
+        "B": 25,
+        "C": 1079,
+        "unrated": 8
+      }
+    },
+    "長野県": {
+      "total": 1273,
+      "tier_present": 1257,
+      "tier_absent": 16,
+      "score_present": 1257,
+      "unrated_pct": 1.3,
+      "tier_dist": {
+        "A": 3,
+        "C": 1199,
+        "B": 55,
+        "unrated": 16
+      }
+    },
+    "青森県": {
+      "total": 605,
+      "tier_present": 598,
+      "tier_absent": 7,
+      "score_present": 598,
+      "unrated_pct": 1.2,
+      "tier_dist": {
+        "A": 2,
+        "B": 20,
+        "C": 572,
+        "unrated": 7,
+        "D": 4
+      }
+    },
+    "静岡県": {
+      "total": 2279,
+      "tier_present": 1986,
+      "tier_absent": 293,
+      "score_present": 1986,
+      "unrated_pct": 12.9,
+      "tier_dist": {
+        "A": 13,
+        "unrated": 293,
+        "B": 39,
+        "C": 1934
+      }
+    },
+    "香川県": {
+      "total": 716,
+      "tier_present": 714,
+      "tier_absent": 2,
+      "score_present": 714,
+      "unrated_pct": 0.3,
+      "tier_dist": {
+        "B": 20,
+        "C": 694,
+        "unrated": 2
+      }
+    },
+    "高知県": {
+      "total": 474,
+      "tier_present": 470,
+      "tier_absent": 4,
+      "score_present": 470,
+      "unrated_pct": 0.8,
+      "tier_dist": {
+        "B": 15,
+        "C": 455,
+        "unrated": 4
+      }
+    },
+    "鳥取県": {
+      "total": 807,
+      "tier_present": 302,
+      "tier_absent": 505,
+      "score_present": 302,
+      "unrated_pct": 62.6,
+      "tier_dist": {
+        "A": 1,
+        "B": 7,
+        "C": 61,
+        "D": 233,
+        "unrated": 505
+      }
+    },
+    "鹿児島県": {
+      "total": 1001,
+      "tier_present": 989,
+      "tier_absent": 12,
+      "score_present": 989,
+      "unrated_pct": 1.2,
+      "tier_dist": {
+        "A": 2,
+        "B": 31,
+        "C": 956,
+        "unrated": 12
+      }
+    }
+  },
+  "by_capability": {
+    "imaging": {
+      "total": 13470,
+      "unrated": 851,
+      "unrated_pct": 6.3
+    },
+    "surgery": {
+      "total": 12204,
+      "unrated": 1696,
+      "unrated_pct": 13.9
+    },
+    "acute": {
+      "total": 4613,
+      "unrated": 230,
+      "unrated_pct": 5.0
+    },
+    "rehab": {
+      "total": 14590,
+      "unrated": 1606,
+      "unrated_pct": 11.0
+    },
+    "homecare": {
+      "total": 68625,
+      "unrated": 10638,
+      "unrated_pct": 15.5
+    },
+    "oncology": {
+      "total": 31532,
+      "unrated": 2033,
+      "unrated_pct": 6.4
+    },
+    "psychiatry": {
+      "total": 20227,
+      "unrated": 1286,
+      "unrated_pct": 6.4
+    },
+    "pediatric": {
+      "total": 6253,
+      "unrated": 1390,
+      "unrated_pct": 22.2
+    },
+    "infection": {
+      "total": 34399,
+      "unrated": 4315,
+      "unrated_pct": 12.5
+    },
+    "dx_it": {
+      "total": 62641,
+      "unrated": 8719,
+      "unrated_pct": 13.9
+    }
+  },
+  "methodology": "未評価=Tier欄(t)が空または存在しない施設。kijun_shards(47都道府県)を走査し集計。"
+}

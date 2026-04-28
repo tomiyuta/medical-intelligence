@@ -151,11 +151,16 @@ export default function FacilityExplorerView({
         { key:'S', label:'S', color:TC2.S },
         { key:'A', label:'A', color:TC2.A },
         { key:'B', label:'B', color:TC2.B },
+        { key:'C', label:'C', color:TC2.C },
+        { key:'D', label:'D', color:TC2.D },
         { key:'unrated', label:'未評価', color:'#94a3b8' },
       ].map(t => (
         <button key={t.key} onClick={() => { setTierFilter(tierFilter === t.key ? '' : t.key); setKijunPage(0); }} style={{padding:'3px 10px',borderRadius:12,border:tierFilter===t.key?`2px solid ${t.color}`:'1px solid #e2e8f0',background:tierFilter===t.key?t.color+'18':'#fff',color:tierFilter===t.key?t.color:'#94a3b8',fontSize:11,fontWeight:tierFilter===t.key?600:400,cursor:'pointer'}}>{t.label}</button>
       ))}
-      <span style={{fontSize:10,color:'#cbd5e1',marginLeft:8}}>※Tier=内製の規模・実績参考分類 / 未評価=スコア未付与施設(機能が低いことを意味しません)</span>
+      <span style={{fontSize:10,color:'#94a3b8',marginLeft:8,maxWidth:'100%',display:'block',marginTop:2}}>
+        ※実データ分布(audit結果): S=0.02% / A=0.28% / B=2.44% / <b>C=78.49%</b> / D=4.76% / <b>未評価=14.01%</b>。
+        Tier C/D は score 30 未満の施設群(中小診療所等)を含み、S-Bと同列の「機能評価」ではありません。
+      </span>
     </div>
 
     {/* selectors + search */}
