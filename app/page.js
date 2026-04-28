@@ -25,36 +25,7 @@ const Nav = ({icon,label,active,onClick}) => (
 
 export default function Home() {
   const mob = useIsMobile();
-  // URL hash 初期化 (例: #ndb&pref=沖縄県)。本番 UX (ブックマーク可) + QA 用
-  // useState の lazy init を使い、初回レンダリングから正しい view/pref で表示
-  const parseHashView = () => {
-    if (typeof window === 'undefined') return null;
-    const h = (window.location.hash || '').replace(/^#/, '');
-    if (!h) return null;
-    const v = h.split('&')[0];
-    const validViews = new Set(['map','muni','area','ndb','bedfunc','explorer']);
-    return validViews.has(v) ? v : null;
-  };
-  const parseHashPref = () => {
-    if (typeof window === 'undefined') return null;
-    const h = (window.location.hash || '').replace(/^#/, '');
-    for (const p of h.split('&').slice(1)) {
-      const [k, val] = p.split('=');
-      if (k === 'pref' && val) return decodeURIComponent(val);
-    }
-    return null;
-  };
-  const [view, setView] = useState(() => parseHashView() || 'map');
-  // hashchange listener (ユーザーが URL を直接編集した場合の対応)
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const onHashChange = () => {
-      const v = parseHashView(); if (v) setView(v);
-      const p = parseHashPref(); if (p) setGlobalPref(p);
-    };
-    window.addEventListener('hashchange', onHashChange);
-    return () => window.removeEventListener('hashchange', onHashChange);
-  }, []);
+  const [view, setView] = useState('map');
   const [metric, setMetric] = useState('facilities');
   const [prefs, setPrefs] = useState([]);
   const [munis, setMunis] = useState([]);
