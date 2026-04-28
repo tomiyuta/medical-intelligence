@@ -389,12 +389,12 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
             let cmpLabel = '', cmpColor = '#64748b';
             if (deltaPct != null) {
               const abs = Math.abs(deltaPct);
-              if (abs < 5) { cmpLabel = '47県平均と同程度'; cmpColor = '#64748b'; }
+              if (abs < 5) { cmpLabel = '47都道府県平均と同程度'; cmpColor = '#64748b'; }
               else if (deltaPct > 0) {
-                cmpLabel = abs >= 15 ? '47県平均より顕著に高い' : '47県平均より高い';
+                cmpLabel = abs >= 15 ? '47都道府県平均より顕著に高い' : '47都道府県平均より高い';
                 cmpColor = abs >= 15 ? '#dc2626' : '#f59e0b';
               } else {
-                cmpLabel = abs >= 15 ? '47県平均より顕著に低い' : '47県平均より低い';
+                cmpLabel = abs >= 15 ? '47都道府県平均より顕著に低い' : '47都道府県平均より低い';
                 cmpColor = '#059669';
               }
             }
