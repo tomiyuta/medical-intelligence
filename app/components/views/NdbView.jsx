@@ -25,6 +25,37 @@ const DRUG_DOMAIN = {
 };
 const DOMAIN_COLORS = {'循環器':'#dc2626','糖尿病・代謝':'#f59e0b','呼吸器':'#06b6d4','精神・神経':'#8b5cf6','整形・疼痛':'#059669','消化器':'#64748b','がん':'#be123c','免疫・内分泌':'#0891b2','アレルギー':'#f472b6','感染症':'#fb923c','内分泌':'#14b8a6','代謝':'#a3a3a3','腎疾患':'#6366f1'};
 
+// Gap Finder テンプレート定義
+// xType: 'q'(質問票) | 'aging'(65歳以上割合) | 'egfr'(健診eGFR平均)
+// yType: 'cause'(死因 人口10万対) | 'diag'(医療利用 人口10万対)
+// xInverse: true=低い値が高リスク (色判定・象限ラベルを反転)
+const GAP_TEMPLATES = [
+  {id:'smoke_cancer', label:'喫煙×がん死亡', xLabel:'喫煙率 (%)', yLabel:'がん死亡率',
+    xType:'q', xKey:'smoking', yType:'cause', yKey:'がん', xInverse:false,
+    note:'喫煙は最大の予防可能ながんリスク。地域差から需給ギャップを抽出。'},
+  {id:'aging_homecare', label:'高齢化×在宅医療', xLabel:'65歳以上 (%)', yLabel:'在宅医療/10万人',
+    xType:'aging', yType:'diag', yKey:'C_在宅医療', xInverse:false,
+    note:'高齢化進行に対し在宅医療供給が追いつくか。左上(高齢×低算定)が供給不足候補。'},
+  {id:'exercise_heart', label:'運動不足×心疾患死亡', xLabel:'運動習慣あり (%)', yLabel:'心疾患死亡率',
+    xType:'q', xKey:'exercise', yType:'cause', yKey:'心疾患', xInverse:true,
+    note:'X軸は運動習慣保有率（高=低リスク）。色は反転処理済み。'},
+  {id:'weight_diabetes', label:'体重増加×糖尿病死亡', xLabel:'体重増加歴 (%)', yLabel:'糖尿病死亡率',
+    xType:'q', xKey:'weight_gain', yType:'cause', yKey:'糖尿病', xInverse:false,
+    note:'20歳比10kg以上の増加は2型糖尿病の独立リスク因子。'},
+  {id:'walking_senility', label:'歩行不足×老衰', xLabel:'1日60分歩行 (%)', yLabel:'老衰死亡率',
+    xType:'q', xKey:'walking', yType:'cause', yKey:'老衰', xInverse:true,
+    note:'X軸は歩行習慣保有率（高=低リスク）。地域の身体活動量と老衰の関連を可視化。'},
+  {id:'late_dinner_htn', label:'夕食遅×高血圧死亡', xLabel:'就寝前夕食 (%)', yLabel:'高血圧性疾患死亡率',
+    xType:'q', xKey:'late_dinner', yType:'cause', yKey:'高血圧性疾患', xInverse:false,
+    note:'夜間摂食と血圧の関連は近年注目。代理指標として扱う。'},
+  {id:'aging_outpatient', label:'高齢化×外来受診', xLabel:'65歳以上 (%)', yLabel:'外来受診/10万人',
+    xType:'aging', yType:'diag', yKey:'A_初再診料', xInverse:false,
+    note:'高齢化と外来受診頻度の関係。受診抑制は左上または右下に現れる。'},
+  {id:'egfr_kidney', label:'腎機能×腎不全死亡', xLabel:'eGFR平均 (mL/min)', yLabel:'腎不全死亡率',
+    xType:'egfr', yType:'cause', yKey:'腎不全', xInverse:true,
+    note:'X軸は健診eGFR平均（低値=腎機能低下=リスク）。男女平均値を使用。'},
+];
+
 export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ }) {
   const diagByPref = ndbDiag.filter(d=>d.prefecture===ndbPref);
   const hcPref = ndbHc.filter(d=>d.pref===ndbPref);
@@ -49,6 +80,36 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
   });
   const sortedDomains = Object.entries(rxDomains).filter(([k])=>k!=='その他').sort((a,b)=>b[1]-a[1]);
   const maxDomainQty = sortedDomains[0]?.[1] || 1;
+
+  // ── Gap Finder: state & 全都道府県メトリック計算 ──
+  const [gapTemplate, setGapTemplate] = useState('smoke_cancer');
+  const prefMaps = (()=>{
+    const popByPref = {}, p65ByPref = {};
+    if (areaDemoData) {
+      areaDemoData.forEach(a => {
+        popByPref[a.pref] = popByPref[a.pref] || 0;
+        p65ByPref[a.pref] = p65ByPref[a.pref] || 0;
+        (a.munis||[]).forEach(m => { popByPref[a.pref] += m.pop||0; p65ByPref[a.pref] += m.p65||0; });
+      });
+    }
+    const aging = {};
+    Object.keys(popByPref).forEach(p => { aging[p] = popByPref[p]>0 ? p65ByPref[p]/popByPref[p]*100 : 0; });
+    const diag = {};
+    if (ndbDiag) {
+      ndbDiag.forEach(d => {
+        const pop = popByPref[d.prefecture] || 0;
+        if (pop > 0) {
+          if (!diag[d.prefecture]) diag[d.prefecture] = {};
+          diag[d.prefecture][d.category] = d.total_claims/pop*100000;
+        }
+      });
+    }
+    const egfr = {};
+    if (ndbHc) {
+      ndbHc.filter(h=>h.metric==='eGFR').forEach(h => { egfr[h.pref] = (h.male+h.female)/2; });
+    }
+    return { aging, diag, egfr };
+  })();
 
   return <>
 
@@ -228,19 +289,34 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     </div>
   </div>}
 
-  {/* ═══ GAP FINDER: リスク×結果の不一致検出 ═══ */}
+  {/* ═══ GAP FINDER: リスク×結果の不一致検出（テンプレ切替）═══ */}
   {ndbQ && vitalStats?.prefectures && (()=>{
+    const tpl = GAP_TEMPLATES.find(t=>t.id===gapTemplate) || GAP_TEMPLATES[0];
     const allQ = ndbQ.prefectures || {};
     const allV = vitalStats.prefectures || [];
-    // Build scatter data: smoking(x) vs cancer death(y)
+    // 軸アクセサ
+    const getX = (pref) => {
+      if (tpl.xType==='q') return allQ[pref]?.[tpl.xKey];
+      if (tpl.xType==='aging') return prefMaps.aging[pref];
+      if (tpl.xType==='egfr') return prefMaps.egfr[pref];
+      return null;
+    };
+    const getY = (vp) => {
+      if (tpl.yType==='cause') return vp.causes?.find(c=>c.cause.includes(tpl.yKey))?.rate;
+      if (tpl.yType==='diag') return prefMaps.diag[vp.pref]?.[tpl.yKey];
+      return null;
+    };
     const dots = allV.map(vp => {
-      const q = allQ[vp.pref];
-      if (!q) return null;
-      const smoking = q.smoking || 0;
-      const cancer = vp.causes?.find(c=>c.cause.includes('がん'))?.rate || 0;
-      return { pref: vp.pref, x: smoking, y: cancer };
+      const x = getX(vp.pref);
+      const y = getY(vp);
+      if (x==null || y==null || isNaN(x) || isNaN(y)) return null;
+      return { pref: vp.pref, x, y };
     }).filter(Boolean);
-    if (dots.length < 10) return null;
+    if (dots.length < 10) return (
+      <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16}}>
+        <div style={{fontSize:13,color:'#94a3b8'}}>Gap Finder: テンプレ「{tpl.label}」のデータが不足しています</div>
+      </div>
+    );
 
     const xMin = Math.min(...dots.map(d=>d.x));
     const xMax = Math.max(...dots.map(d=>d.x));
@@ -248,52 +324,82 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     const yMax = Math.max(...dots.map(d=>d.y));
     const xAvg = dots.reduce((s,d)=>s+d.x,0)/dots.length;
     const yAvg = dots.reduce((s,d)=>s+d.y,0)/dots.length;
+    // ピアソン相関係数
+    const xSd = Math.sqrt(dots.reduce((s,d)=>s+(d.x-xAvg)**2,0)/dots.length);
+    const ySd = Math.sqrt(dots.reduce((s,d)=>s+(d.y-yAvg)**2,0)/dots.length);
+    const corr = (xSd>0 && ySd>0) ? dots.reduce((s,d)=>s+(d.x-xAvg)*(d.y-yAvg),0)/(dots.length*xSd*ySd) : 0;
+
     const W = mob ? 320 : 460;
     const H = 280;
     const pad = {t:20,r:20,b:35,l:50};
     const cw = W-pad.l-pad.r;
     const ch = H-pad.t-pad.b;
-    const sx = v => pad.l + (v-xMin)/(xMax-xMin)*cw;
-    const sy = v => pad.t + (1-(v-yMin)/(yMax-yMin))*ch;
+    const sx = v => pad.l + (xMax===xMin ? 0.5 : (v-xMin)/(xMax-xMin))*cw;
+    const sy = v => pad.t + (1-(yMax===yMin ? 0.5 : (v-yMin)/(yMax-yMin)))*ch;
     const sel = dots.find(d=>d.pref===ndbPref);
+
+    // xInverse対応: 高リスク象限を反転
+    const xRiskHi = (d) => tpl.xInverse ? d.x < xAvg : d.x > xAvg;
+    const yRiskHi = (d) => d.y > yAvg;
+    // 象限矩形（リスク=赤=高Y、安全=緑=低Y）
+    const riskRectX = tpl.xInverse ? pad.l : sx(xAvg);
+    const riskRectW = tpl.xInverse ? sx(xAvg)-pad.l : cw-(sx(xAvg)-pad.l);
+    const safeRectX = tpl.xInverse ? sx(xAvg) : pad.l;
+    const safeRectW = tpl.xInverse ? cw-(sx(xAvg)-pad.l) : sx(xAvg)-pad.l;
 
     return (
     <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16}}>
-      <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
+      <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
         <span style={{fontSize:18}}>🔍</span>
         <div>
           <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>Gap Finder — リスク×結果の不一致検出</div>
-          <div style={{fontSize:11,color:'#94a3b8'}}>喫煙率（横軸）× がん死亡率（縦軸）の相関。右下=高リスク低死亡、左上=低リスク高死亡</div>
+          <div style={{fontSize:11,color:'#94a3b8'}}>{tpl.xLabel}（横軸）× {tpl.yLabel}（縦軸） — 47都道府県の地域差・相関係数 r={corr.toFixed(2)}</div>
         </div>
       </div>
+      {/* テンプレ切替 */}
+      <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:12}}>
+        {GAP_TEMPLATES.map(t => (
+          <button key={t.id} onClick={()=>setGapTemplate(t.id)}
+            style={{padding:'5px 10px',borderRadius:6,border:'1px solid '+(gapTemplate===t.id?'#2563EB':'#e2e8f0'),
+                    background:gapTemplate===t.id?'#2563EB':'#fff', color:gapTemplate===t.id?'#fff':'#475569',
+                    fontSize:11,fontWeight:600,cursor:'pointer',whiteSpace:'nowrap'}}>{t.label}</button>
+        ))}
+      </div>
       <svg viewBox={`0 0 ${W} ${H}`} style={{width:'100%',maxWidth:W}}>
-        {/* Quadrant backgrounds */}
-        <rect x={sx(xAvg)} y={pad.t} width={cw-(sx(xAvg)-pad.l)} height={sy(yAvg)-pad.t} fill="#fef2f2" opacity={0.3} rx={4}/>
-        <rect x={pad.l} y={sy(yAvg)} width={sx(xAvg)-pad.l} height={ch-(sy(yAvg)-pad.t)} fill="#f0fdf4" opacity={0.3} rx={4}/>
-        {/* Average lines */}
+        {/* 象限背景: 赤=高リスク高死亡, 緑=低リスク低死亡 */}
+        <rect x={riskRectX} y={pad.t} width={riskRectW} height={sy(yAvg)-pad.t} fill="#fef2f2" opacity={0.3} rx={4}/>
+        <rect x={safeRectX} y={sy(yAvg)} width={safeRectW} height={ch-(sy(yAvg)-pad.t)} fill="#f0fdf4" opacity={0.3} rx={4}/>
+        {/* 平均線 */}
         <line x1={sx(xAvg)} y1={pad.t} x2={sx(xAvg)} y2={H-pad.b} stroke="#94a3b8" strokeWidth={0.5} strokeDasharray="4,3"/>
         <line x1={pad.l} y1={sy(yAvg)} x2={W-pad.r} y2={sy(yAvg)} stroke="#94a3b8" strokeWidth={0.5} strokeDasharray="4,3"/>
-        {/* Dots */}
+        {/* ドット */}
         {dots.map(d => {
           const isSel = d.pref === ndbPref;
+          const xR = xRiskHi(d), yR = yRiskHi(d);
+          const fill = (xR && yR) ? '#dc2626' : (!xR && !yR) ? '#059669' : '#94a3b8';
           return <circle key={d.pref} cx={sx(d.x)} cy={sy(d.y)} r={isSel?7:4}
-            fill={d.x>xAvg&&d.y>yAvg?'#dc2626':d.x<xAvg&&d.y<yAvg?'#059669':'#94a3b8'}
-            opacity={isSel?1:0.6} stroke={isSel?'#1e293b':'none'} strokeWidth={isSel?2:0}/>;
+            fill={fill} opacity={isSel?1:0.6} stroke={isSel?'#1e293b':'none'} strokeWidth={isSel?2:0}/>;
         })}
-        {/* Selected label */}
+        {/* 選択県ラベル */}
         {sel && <text x={sx(sel.x)+10} y={sy(sel.y)-4} fontSize={11} fontWeight={700} fill="#1e293b">{ndbPref}</text>}
-        {/* Axis labels */}
-        <text x={W/2} y={H-4} textAnchor="middle" fontSize={10} fill="#64748b">喫煙率 (%)</text>
-        <text x={12} y={H/2} textAnchor="middle" fontSize={10} fill="#64748b" transform={`rotate(-90,12,${H/2})`}>がん死亡率</text>
-        {/* Quadrant labels */}
-        <text x={W-pad.r-4} y={pad.t+12} textAnchor="end" fontSize={8} fill="#dc2626">高リスク×高死亡</text>
-        <text x={pad.l+4} y={H-pad.b-4} fontSize={8} fill="#059669">低リスク×低死亡</text>
+        {/* 軸ラベル */}
+        <text x={W/2} y={H-4} textAnchor="middle" fontSize={10} fill="#64748b">{tpl.xLabel}</text>
+        <text x={12} y={H/2} textAnchor="middle" fontSize={10} fill="#64748b" transform={`rotate(-90,12,${H/2})`}>{tpl.yLabel}</text>
+        {/* 象限ラベル（xInverseで位置反転） */}
+        <text x={tpl.xInverse?pad.l+4:W-pad.r-4} y={pad.t+12}
+              textAnchor={tpl.xInverse?'start':'end'} fontSize={8} fill="#dc2626">高リスク×高死亡</text>
+        <text x={tpl.xInverse?W-pad.r-4:pad.l+4} y={H-pad.b-4}
+              textAnchor={tpl.xInverse?'end':'start'} fontSize={8} fill="#059669">低リスク×低死亡</text>
       </svg>
       <div style={{display:'flex',gap:12,fontSize:11,color:'#64748b',marginTop:8,flexWrap:'wrap'}}>
         <span><span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#dc2626',marginRight:3}}/>高リスク高死亡</span>
         <span><span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#059669',marginRight:3}}/>低リスク低死亡</span>
-        <span><span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#94a3b8',marginRight:3}}/>中間</span>
+        <span><span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#94a3b8',marginRight:3}}/>不一致(GAP)</span>
         <span style={{color:'#94a3b8'}}>点線=全国平均</span>
+      </div>
+      <div style={{fontSize:10,color:'#94a3b8',marginTop:8,lineHeight:1.6}}>
+        ※{tpl.note}<br/>
+        ※相関係数は47都道府県間の地域差を示す指標であり、個人レベルの因果関係を意味するものではありません。
       </div>
     </div>);
   })()}
