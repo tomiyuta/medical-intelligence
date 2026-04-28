@@ -82,7 +82,7 @@ function classifyRegion(prefShares, natShares, beds_per_75plus, nat_beds_per_75p
   return { type:'標準型', color:'#64748b', desc:'機能配分は全国平均に近い。', icon:'➖' };
 }
 
-export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegPref, agePyramid }) {
+export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegPref, agePyramid, ndbDiag }) {
   const isNational = !regPref || regPref === '全国';
   const bf = bedFunc?.prefectures?.[regPref];
   const bfNat = bedFunc?.national;

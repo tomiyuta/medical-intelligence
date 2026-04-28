@@ -168,7 +168,7 @@ export default function Home() {
         {view==='area' && <AreaView mob={mob} areaData={areaData} areaPref={globalPref} setAreaPref={setGlobalPref} areaPrefList={areaPrefList} vitalStats={vitalStats} />}
 
         {/* ═══ SCORING VIEW ═══ */}
-        {view==='bedfunc' && <RegionalBedFunctionView mob={mob} bedFunc={bedFunc} regPref={globalPref} setRegPref={setGlobalPref} agePyramid={agePyramid} />}
+        {view==='bedfunc' && <RegionalBedFunctionView mob={mob} bedFunc={bedFunc} regPref={globalPref} setRegPref={setGlobalPref} agePyramid={agePyramid} ndbDiag={ndbDiag} />}
 
         {/* ═══ NDB VIEW ═══ */}
         {view==='ndb' && <NdbView mob={mob} ndbDiag={ndbDiag} ndbRx={ndbRx} ndbHc={ndbHc} ndbPref={globalPref} setNdbPref={setGlobalPref} setNdbRx={setNdbRx} vitalStats={vitalStats} areaDemoData={areaDemoData} ndbQ={ndbQ} agePyramid={agePyramid} futureDemo={futureDemo} patientSurvey={patientSurvey} bedFunc={bedFunc} />}
