@@ -71,6 +71,13 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     const qs = ndbQ.questions || {};
     const RISK_ICONS = {smoking:'🚬', weight_gain:'⚖️', exercise:'🏃', walking:'🚶', late_dinner:'🌙'};
     const RISK_COLORS = {smoking:'#dc2626', weight_gain:'#f59e0b', exercise:'#2563eb', walking:'#059669', late_dinner:'#8b5cf6'};
+    // Compute national averages
+    const allPrefs = Object.values(ndbQ.prefectures);
+    const natAvg = {};
+    for (const key of Object.keys(qd)) {
+      const vals = allPrefs.map(p=>p[key]).filter(v=>v!=null);
+      natAvg[key] = vals.length > 0 ? vals.reduce((s,v)=>s+v,0)/vals.length : 0;
+    }
     const items = Object.entries(qd).sort((a,b)=>b[1]-a[1]);
     return (
     <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16}}>
@@ -78,12 +85,13 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
         <span style={{fontSize:18}}>⚠️</span>
         <div>
           <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>生活習慣リスク</div>
-          <div style={{fontSize:11,color:'#94a3b8'}}>特定健診 質問票（40〜74歳受診者）— 該当率が高いほど将来疾患リスクが高い</div>
+          <div style={{fontSize:11,color:'#94a3b8'}}>特定健診 質問票（40〜74歳）— 全国平均との差をΔ表示</div>
         </div>
       </div>
       <div style={{display:'flex',flexDirection:'column',gap:8}}>
         {items.map(([key, rate]) => {
           const q = qs[key] || {};
+          const delta = rate - (natAvg[key]||0);
           return <div key={key} style={{display:'flex',alignItems:'center',gap:10}}>
             <span style={{fontSize:16,width:24}}>{RISK_ICONS[key]||'📋'}</span>
             <span style={{width:mob?70:90,fontSize:12,fontWeight:600,color:'#475569',flexShrink:0}}>{q.risk_label||key}</span>
@@ -91,10 +99,11 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
               <div style={{height:'100%',borderRadius:4,background:RISK_COLORS[key]||'#94a3b8',width:`${Math.min(rate,100)}%`,opacity:0.75}}/>
               <span style={{position:'absolute',right:6,top:3,fontSize:10,color:'#475569',fontWeight:600}}>{rate}%</span>
             </div>
+            <span style={{fontSize:10,fontWeight:600,color:delta>0?'#dc2626':'#059669',width:60,textAlign:'right',flexShrink:0}}>{delta>0?'↑':'↓'}{Math.abs(delta).toFixed(1)}pt</span>
           </div>;
         })}
       </div>
-      <div style={{fontSize:10,color:'#94a3b8',marginTop:10}}>※40-74歳の特定健診受診者が対象。全人口の傾向とは異なる場合があります。</div>
+      <div style={{fontSize:10,color:'#94a3b8',marginTop:10}}>※Δは全国平均との差。正の値=全国より高リスク。40-74歳特定健診受診者が対象。</div>
     </div>);
   })()}
 
@@ -219,7 +228,75 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     </div>
   </div>}
 
-  {/* ═══ Source ═══ */}
+  {/* ═══ GAP FINDER: リスク×結果の不一致検出 ═══ */}
+  {ndbQ && vitalStats?.prefectures && (()=>{
+    const allQ = ndbQ.prefectures || {};
+    const allV = vitalStats.prefectures || [];
+    // Build scatter data: smoking(x) vs cancer death(y)
+    const dots = allV.map(vp => {
+      const q = allQ[vp.pref];
+      if (!q) return null;
+      const smoking = q.smoking || 0;
+      const cancer = vp.causes?.find(c=>c.cause.includes('がん'))?.rate || 0;
+      return { pref: vp.pref, x: smoking, y: cancer };
+    }).filter(Boolean);
+    if (dots.length < 10) return null;
+
+    const xMin = Math.min(...dots.map(d=>d.x));
+    const xMax = Math.max(...dots.map(d=>d.x));
+    const yMin = Math.min(...dots.map(d=>d.y));
+    const yMax = Math.max(...dots.map(d=>d.y));
+    const xAvg = dots.reduce((s,d)=>s+d.x,0)/dots.length;
+    const yAvg = dots.reduce((s,d)=>s+d.y,0)/dots.length;
+    const W = mob ? 320 : 460;
+    const H = 280;
+    const pad = {t:20,r:20,b:35,l:50};
+    const cw = W-pad.l-pad.r;
+    const ch = H-pad.t-pad.b;
+    const sx = v => pad.l + (v-xMin)/(xMax-xMin)*cw;
+    const sy = v => pad.t + (1-(v-yMin)/(yMax-yMin))*ch;
+    const sel = dots.find(d=>d.pref===ndbPref);
+
+    return (
+    <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16}}>
+      <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
+        <span style={{fontSize:18}}>🔍</span>
+        <div>
+          <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>Gap Finder — リスク×結果の不一致検出</div>
+          <div style={{fontSize:11,color:'#94a3b8'}}>喫煙率（横軸）× がん死亡率（縦軸）の相関。右下=高リスク低死亡、左上=低リスク高死亡</div>
+        </div>
+      </div>
+      <svg viewBox={`0 0 ${W} ${H}`} style={{width:'100%',maxWidth:W}}>
+        {/* Quadrant backgrounds */}
+        <rect x={sx(xAvg)} y={pad.t} width={cw-(sx(xAvg)-pad.l)} height={sy(yAvg)-pad.t} fill="#fef2f2" opacity={0.3} rx={4}/>
+        <rect x={pad.l} y={sy(yAvg)} width={sx(xAvg)-pad.l} height={ch-(sy(yAvg)-pad.t)} fill="#f0fdf4" opacity={0.3} rx={4}/>
+        {/* Average lines */}
+        <line x1={sx(xAvg)} y1={pad.t} x2={sx(xAvg)} y2={H-pad.b} stroke="#94a3b8" strokeWidth={0.5} strokeDasharray="4,3"/>
+        <line x1={pad.l} y1={sy(yAvg)} x2={W-pad.r} y2={sy(yAvg)} stroke="#94a3b8" strokeWidth={0.5} strokeDasharray="4,3"/>
+        {/* Dots */}
+        {dots.map(d => {
+          const isSel = d.pref === ndbPref;
+          return <circle key={d.pref} cx={sx(d.x)} cy={sy(d.y)} r={isSel?7:4}
+            fill={d.x>xAvg&&d.y>yAvg?'#dc2626':d.x<xAvg&&d.y<yAvg?'#059669':'#94a3b8'}
+            opacity={isSel?1:0.6} stroke={isSel?'#1e293b':'none'} strokeWidth={isSel?2:0}/>;
+        })}
+        {/* Selected label */}
+        {sel && <text x={sx(sel.x)+10} y={sy(sel.y)-4} fontSize={11} fontWeight={700} fill="#1e293b">{ndbPref}</text>}
+        {/* Axis labels */}
+        <text x={W/2} y={H-4} textAnchor="middle" fontSize={10} fill="#64748b">喫煙率 (%)</text>
+        <text x={12} y={H/2} textAnchor="middle" fontSize={10} fill="#64748b" transform={`rotate(-90,12,${H/2})`}>がん死亡率</text>
+        {/* Quadrant labels */}
+        <text x={W-pad.r-4} y={pad.t+12} textAnchor="end" fontSize={8} fill="#dc2626">高リスク×高死亡</text>
+        <text x={pad.l+4} y={H-pad.b-4} fontSize={8} fill="#059669">低リスク×低死亡</text>
+      </svg>
+      <div style={{display:'flex',gap:12,fontSize:11,color:'#64748b',marginTop:8,flexWrap:'wrap'}}>
+        <span><span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#dc2626',marginRight:3}}/>高リスク高死亡</span>
+        <span><span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#059669',marginRight:3}}/>低リスク低死亡</span>
+        <span><span style={{display:'inline-block',width:8,height:8,borderRadius:'50%',background:'#94a3b8',marginRight:3}}/>中間</span>
+        <span style={{color:'#94a3b8'}}>点線=全国平均</span>
+      </div>
+    </div>);
+  })()}
   <div style={{padding:'10px 0',fontSize:11,color:'#94a3b8',marginTop:8,lineHeight:1.8}}>
     出典: 厚生労働省 第10回NDBオープンデータ（令和5年度レセプト・令和4年度特定健診）<br/>
     厚労省 人口動態統計 2024年確定数 / 住民基本台帳 2025年1月1日<br/>
