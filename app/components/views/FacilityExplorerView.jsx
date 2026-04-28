@@ -37,7 +37,14 @@ export default function FacilityExplorerView({
   const kijunFiltered = (kijunData || []).filter(f => {
     if (kijunSearch && !f.name.includes(kijunSearch) && !(f.addr || '').includes(kijunSearch)) return false;
     if (capFilter && (!f.caps || !f.caps[capFilter])) return false;
-    if (tierFilter && f.tier !== tierFilter) return false;
+    if (tierFilter) {
+      if (tierFilter === 'unrated') {
+        // 未評価 = priority_score / tier が付与されていない施設
+        if (f.tier && f.tier !== '') return false;
+      } else {
+        if (f.tier !== tierFilter) return false;
+      }
+    }
     return true;
   });
   const kijunSorted = [...kijunFiltered].sort((a, b) => {
@@ -139,10 +146,16 @@ export default function FacilityExplorerView({
     </div>
     <div style={{display:'flex',gap:4,marginBottom:10,flexWrap:'wrap',alignItems:'center'}}>
       <span style={{fontSize:11,color:'#94a3b8',marginRight:4}}>Tier補助:</span>
-      {['', 'S', 'A', 'B', 'C', 'D'].map(t => (
-        <button key={t} onClick={() => { setTierFilter(tierFilter === t ? '' : t); setKijunPage(0); }} style={{padding:'3px 10px',borderRadius:12,border:tierFilter===t?`2px solid ${TC2[t]||'#64748b'}`:'1px solid #e2e8f0',background:tierFilter===t?(TC2[t]||'#64748b')+'18':'#fff',color:tierFilter===t?(TC2[t]||'#64748b'):'#94a3b8',fontSize:11,fontWeight:tierFilter===t?600:400,cursor:'pointer'}}>{t || '全て'}</button>
+      {[
+        { key:'', label:'全て', color:'#64748b' },
+        { key:'S', label:'S', color:TC2.S },
+        { key:'A', label:'A', color:TC2.A },
+        { key:'B', label:'B', color:TC2.B },
+        { key:'unrated', label:'未評価', color:'#94a3b8' },
+      ].map(t => (
+        <button key={t.key} onClick={() => { setTierFilter(tierFilter === t.key ? '' : t.key); setKijunPage(0); }} style={{padding:'3px 10px',borderRadius:12,border:tierFilter===t.key?`2px solid ${t.color}`:'1px solid #e2e8f0',background:tierFilter===t.key?t.color+'18':'#fff',color:tierFilter===t.key?t.color:'#94a3b8',fontSize:11,fontWeight:tierFilter===t.key?600:400,cursor:'pointer'}}>{t.label}</button>
       ))}
-      <span style={{fontSize:10,color:'#cbd5e1',marginLeft:8}}>※Tier=内製の規模・実績参考分類</span>
+      <span style={{fontSize:10,color:'#cbd5e1',marginLeft:8}}>※Tier=内製の規模・実績参考分類 / 未評価=スコア未付与施設(機能が低いことを意味しません)</span>
     </div>
 
     {/* selectors + search */}
@@ -190,7 +203,7 @@ export default function FacilityExplorerView({
                   {!mob && <td style={{padding:'8px 10px',color:'#64748b',fontSize:12,maxWidth:200,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{f.addr || '—'}</td>}
                   {!mob && <td style={{padding:'8px 10px',textAlign:'right',fontSize:12,color:'#64748b'}}>{bedsD}</td>}
                   <td style={{padding:'8px 10px',textAlign:'right',fontWeight:600,color:'#2563EB'}}>{f.std_count}</td>
-                  {!mob && <td style={{padding:'8px 10px',textAlign:'right'}}>{f.tier ? <span style={{padding:'2px 8px',borderRadius:10,fontSize:11,fontWeight:700,background:(TC2[f.tier]||'#ccc')+'18',color:TC2[f.tier]||'#999'}}>{f.tier}</span> : '—'}</td>}
+                  {!mob && <td style={{padding:'8px 10px',textAlign:'right'}}>{f.tier ? <span style={{padding:'2px 8px',borderRadius:10,fontSize:11,fontWeight:700,background:(TC2[f.tier]||'#ccc')+'18',color:TC2[f.tier]||'#999'}}>{f.tier}</span> : <span style={{padding:'2px 8px',borderRadius:10,fontSize:10,fontWeight:500,background:'#f1f5f9',color:'#94a3b8'}}>未評価</span>}</td>}
                 </tr>,
                 isExp && <tr key={idx + 'd'}><td colSpan={mob ? 2 : 5} style={{padding:0,background:'#f8faff',borderBottom:'1px solid #e8ecf0'}}>
                   <div style={{padding:'12px 16px',display:'grid',gridTemplateColumns:mob?'1fr':'2fr 1fr',gap:12}}>
