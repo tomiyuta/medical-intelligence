@@ -1,7 +1,7 @@
 'use client';
 import { fmt, sortPrefs } from '../shared';
 
-export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, demoArea, setDemoArea, demoPrefList, japanMap, hovPref, setHovPref, tooltipPos, setTooltipPos, futureDemo, futureYear, setFutureYear }) {
+export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, demoArea, setDemoArea, demoPrefList, japanMap, hovPref, setHovPref, tooltipPos, setTooltipPos, futureDemo, futureYear, setFutureYear, agePyramid }) {
   const areas = areaDemoData.filter(a=>a.pref===demoPref);
   const areaNames = areas.map(a=>a.area);
   const selArea = areas.find(a=>a.area===demoArea) || areas[0];
@@ -166,6 +166,47 @@ export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, dem
               {[['#3b82f6','0-14歳'],['#22c55e','15-64歳'],['#ef4444','65歳以上']].map(([c,l])=><span key={l}><span style={{display:'inline-block',width:7,height:7,borderRadius:'50%',background:c,marginRight:3}}/>{l}</span>)}
             </div>
           </div>}
+          {/* Age Pyramid */}
+          {agePyramid && agePyramid.national && (()=>{
+            const prefData = agePyramid.prefectures?.[demoPref];
+            const pd = prefData || agePyramid.national;
+            const label = prefData ? demoPref : '全国';
+            const ags = agePyramid.age_groups || [];
+            const male = pd.male || [];
+            const female = pd.female || [];
+            // Fetch prefecture data if available (passed inline from national for now)
+            const maxPop = Math.max(...male, ...female);
+            const barH = mob ? 10 : 13;
+            const gap = 1;
+            const w = mob ? 320 : 500;
+            const labelW = 40;
+            const chartW = (w - labelW) / 2;
+            const h = ags.length * (barH + gap) + 20;
+            return (
+            <div style={{background:'#fff',borderRadius:10,padding:'14px 16px',border:'1px solid #f0f0f0',marginBottom:16}}>
+              <div style={{fontSize:13,fontWeight:600,marginBottom:8}}>年齢ピラミッド — {label}</div>
+              <svg viewBox={`0 0 ${w} ${h}`} style={{width:'100%',maxWidth:w}}>
+                {ags.map((ag, i) => {
+                  const y = i * (barH + gap);
+                  const mW = maxPop > 0 ? (male[i] / maxPop) * chartW : 0;
+                  const fW = maxPop > 0 ? (female[i] / maxPop) * chartW : 0;
+                  const is65 = i >= 13; // 65-69 is index 13
+                  return <g key={i}>
+                    {/* Male bar (right-to-left from center) */}
+                    <rect x={chartW - mW} y={y} width={mW} height={barH} fill={is65 ? '#ef4444' : '#3b82f6'} opacity={0.8} rx={2}/>
+                    {/* Female bar (left-to-right from center) */}
+                    <rect x={chartW + labelW} y={y} width={fW} height={barH} fill={is65 ? '#f87171' : '#ec4899'} opacity={0.8} rx={2}/>
+                    {/* Age label */}
+                    <text x={chartW + labelW / 2} y={y + barH - 2} textAnchor="middle" fontSize={mob ? 7 : 8} fill="#94a3b8">{ag}</text>
+                  </g>;
+                })}
+                {/* Axis labels */}
+                <text x={chartW / 2} y={h - 2} textAnchor="middle" fontSize={9} fill="#3b82f6" fontWeight={600}>男性</text>
+                <text x={chartW + labelW + chartW / 2} y={h - 2} textAnchor="middle" fontSize={9} fill="#ec4899" fontWeight={600}>女性</text>
+              </svg>
+              <div style={{fontSize:10,color:'#94a3b8',marginTop:4}}>※赤色=65歳以上 / 住民基本台帳 2025年1月1日</div>
+            </div>);
+          })()}
           <div style={{background:'#fff',borderRadius:12,border:'1px solid #f0f0f0',overflow:'hidden',overflowX:'auto'}}>
             <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
               <thead><tr style={{background:'#fafbfc'}}>

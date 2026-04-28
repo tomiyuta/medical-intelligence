@@ -64,6 +64,7 @@ export default function Home() {
   const [futureDemo, setFutureDemo] = useState(null);
   const [futureYear, setFutureYear] = useState('2025');
   const [vitalStats, setVitalStats] = useState(null);
+  const [agePyramid, setAgePyramid] = useState(null);
 
   useEffect(() => {
     Promise.all([
@@ -88,6 +89,7 @@ export default function Home() {
     fetch('/api/ndb/health-checkup').then(r=>r.json()).then(d=>setNdbHc(d));
     fetch('/api/future-demographics').then(r=>r.json()).then(d=>setFutureDemo(d));
     fetch('/api/vital-statistics').then(r=>r.json()).then(d=>setVitalStats(d));
+    fetch('/api/age-pyramid').then(r=>r.json()).then(d=>setAgePyramid(d));
     fetch('/api/facility-standards?summary=true').then(r=>r.json()).then(d=>setKijunSummary(d));
     fetch('/api/facility-standards?prefecture='+encodeURIComponent('東京都')).then(r=>r.json()).then(d=>setKijunData(d.data||[]));
   }, []);
@@ -137,11 +139,14 @@ export default function Home() {
           <div style={{fontSize:18,fontWeight:700,letterSpacing:'-0.03em'}}>MedIntel</div>
           <div style={{fontSize:11,color:'#94a3b8',marginTop:2}}>日本の医療と高齢社会</div>
         </div>
+        <div style={{padding:'6px 14px 4px',fontSize:10,fontWeight:600,color:'#cbd5e1',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:4}}>社会構造</div>
         <Nav icon="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z" label="高齢社会 概況" active={view==='map'} onClick={()=>setView('map')}/>
         <Nav icon="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z" label="人口動態・将来推計" active={view==='muni'} onClick={()=>setView('muni')}/>
-        <Nav icon="M22 12h-4l-3 9L9 3l-3 9H2" label="医療圏分析" active={view==='area'} onClick={()=>setView('area')}/>
-        <Nav icon="M18 20V10M12 20V4M6 20v-6" label="病院機能" active={view==='score'} onClick={()=>setView('score')}/>
+        <div style={{padding:'6px 14px 4px',fontSize:10,fontWeight:600,color:'#cbd5e1',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:8,borderTop:'1px solid #f0f0f0',paddingTop:12}}>疾患・診療</div>
+        <Nav icon="M22 12h-4l-3 9L9 3l-3 9H2" label="医療圏・疾病構造" active={view==='area'} onClick={()=>setView('area')}/>
         <Nav icon="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" label="NDB 診療動向" active={view==='ndb'} onClick={()=>setView('ndb')}/>
+        <div style={{padding:'6px 14px 4px',fontSize:10,fontWeight:600,color:'#cbd5e1',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:8,borderTop:'1px solid #f0f0f0',paddingTop:12}}>医療インフラ</div>
+        <Nav icon="M18 20V10M12 20V4M6 20v-6" label="病院機能" active={view==='score'} onClick={()=>setView('score')}/>
         <Nav icon="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" label="施設基準" active={view==='kijun'} onClick={()=>setView('kijun')}/>
         <Nav icon="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" label="施設マップ" active={view==='geomap'} onClick={()=>setView('geomap')}/>
         <div style={{flex:1}}/>
@@ -156,7 +161,7 @@ export default function Home() {
         {view==='map' && <MapView mob={mob} prefs={prefs} metric={metric} setMetric={setMetric} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} setSelectedPref={setSelectedPref} setView={setView} vitalStats={vitalStats} />}
 
         {/* ═══ MUNI VIEW ═══ */}
-        {view==='muni' && <MuniView mob={mob} areaDemoData={areaDemoData} demoPref={demoPref} setDemoPref={setDemoPref} demoArea={demoArea} setDemoArea={setDemoArea} demoPrefList={demoPrefList} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} futureDemo={futureDemo} futureYear={futureYear} setFutureYear={setFutureYear} />}
+        {view==='muni' && <MuniView mob={mob} areaDemoData={areaDemoData} demoPref={demoPref} setDemoPref={setDemoPref} demoArea={demoArea} setDemoArea={setDemoArea} demoPrefList={demoPrefList} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} futureDemo={futureDemo} futureYear={futureYear} setFutureYear={setFutureYear} agePyramid={agePyramid} />}
 
         {/* ═══ AREA VIEW ═══ */}
         {view==='area' && <AreaView mob={mob} areaData={areaData} areaPref={areaPref} setAreaPref={setAreaPref} areaPrefList={areaPrefList} vitalStats={vitalStats} />}
