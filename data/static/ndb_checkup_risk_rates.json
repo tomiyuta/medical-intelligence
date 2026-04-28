@@ -1,0 +1,1242 @@
+{
+  "source": "NDB第10回オープンデータ 特定健診 リスク該当者率 (派生)",
+  "method": "男女・全年齢合計から各リスク閾値超過の階級人数 / 該当県の全階級人数",
+  "risk_rates": {
+    "bmi_ge_25": {
+      "metric": "BMI",
+      "risk_label": "BMI ≥25 (肥満)",
+      "risk_bins": [
+        "25.0以上30.0未満",
+        "30.0以上35.0未満",
+        "35.0以上40.0未満",
+        "40.0以上"
+      ],
+      "unit": "kg/m²",
+      "by_pref": {
+        "北海道": {
+          "rate": 33.9,
+          "denominator": 975364,
+          "numerator": 330224
+        },
+        "青森県": {
+          "rate": 34.0,
+          "denominator": 293124,
+          "numerator": 99710
+        },
+        "岩手県": {
+          "rate": 33.4,
+          "denominator": 309125,
+          "numerator": 103286
+        },
+        "宮城県": {
+          "rate": 32.7,
+          "denominator": 586957,
+          "numerator": 191873
+        },
+        "秋田県": {
+          "rate": 32.9,
+          "denominator": 232108,
+          "numerator": 76256
+        },
+        "山形県": {
+          "rate": 31.3,
+          "denominator": 306481,
+          "numerator": 95919
+        },
+        "福島県": {
+          "rate": 33.4,
+          "denominator": 455742,
+          "numerator": 152259
+        },
+        "茨城県": {
+          "rate": 32.3,
+          "denominator": 670277,
+          "numerator": 216324
+        },
+        "栃木県": {
+          "rate": 32.2,
+          "denominator": 472610,
+          "numerator": 152018
+        },
+        "群馬県": {
+          "rate": 30.4,
+          "denominator": 463156,
+          "numerator": 140708
+        },
+        "埼玉県": {
+          "rate": 30.5,
+          "denominator": 1720946,
+          "numerator": 525603
+        },
+        "千葉県": {
+          "rate": 31.0,
+          "denominator": 1446187,
+          "numerator": 448020
+        },
+        "東京都": {
+          "rate": 27.9,
+          "denominator": 3481133,
+          "numerator": 972760
+        },
+        "神奈川県": {
+          "rate": 28.9,
+          "denominator": 2140458,
+          "numerator": 619210
+        },
+        "新潟県": {
+          "rate": 27.3,
+          "denominator": 587341,
+          "numerator": 160285
+        },
+        "富山県": {
+          "rate": 28.2,
+          "denominator": 276377,
+          "numerator": 77889
+        },
+        "石川県": {
+          "rate": 28.2,
+          "denominator": 285300,
+          "numerator": 80422
+        },
+        "福井県": {
+          "rate": 28.4,
+          "denominator": 182312,
+          "numerator": 51705
+        },
+        "山梨県": {
+          "rate": 28.0,
+          "denominator": 212264,
+          "numerator": 59504
+        },
+        "長野県": {
+          "rate": 27.1,
+          "denominator": 527676,
+          "numerator": 143020
+        },
+        "岐阜県": {
+          "rate": 27.7,
+          "denominator": 478097,
+          "numerator": 132404
+        },
+        "静岡県": {
+          "rate": 28.2,
+          "denominator": 900228,
+          "numerator": 254119
+        },
+        "愛知県": {
+          "rate": 29.0,
+          "denominator": 1760865,
+          "numerator": 511251
+        },
+        "三重県": {
+          "rate": 29.2,
+          "denominator": 446632,
+          "numerator": 130343
+        },
+        "滋賀県": {
+          "rate": 27.6,
+          "denominator": 341198,
+          "numerator": 94123
+        },
+        "京都府": {
+          "rate": 26.1,
+          "denominator": 549091,
+          "numerator": 143127
+        },
+        "大阪府": {
+          "rate": 28.8,
+          "denominator": 1784945,
+          "numerator": 514777
+        },
+        "兵庫県": {
+          "rate": 27.5,
+          "denominator": 1204846,
+          "numerator": 331927
+        },
+        "奈良県": {
+          "rate": 27.9,
+          "denominator": 283440,
+          "numerator": 79195
+        },
+        "和歌山県": {
+          "rate": 28.9,
+          "denominator": 196053,
+          "numerator": 56675
+        },
+        "鳥取県": {
+          "rate": 27.1,
+          "denominator": 120113,
+          "numerator": 32564
+        },
+        "島根県": {
+          "rate": 27.1,
+          "denominator": 168136,
+          "numerator": 45606
+        },
+        "岡山県": {
+          "rate": 29.4,
+          "denominator": 418968,
+          "numerator": 123080
+        },
+        "広島県": {
+          "rate": 29.0,
+          "denominator": 607671,
+          "numerator": 176044
+        },
+        "山口県": {
+          "rate": 27.9,
+          "denominator": 287702,
+          "numerator": 80346
+        },
+        "徳島県": {
+          "rate": 31.4,
+          "denominator": 163392,
+          "numerator": 51351
+        },
+        "香川県": {
+          "rate": 30.5,
+          "denominator": 224135,
+          "numerator": 68344
+        },
+        "愛媛県": {
+          "rate": 31.2,
+          "denominator": 301192,
+          "numerator": 93868
+        },
+        "高知県": {
+          "rate": 31.1,
+          "denominator": 157446,
+          "numerator": 48963
+        },
+        "福岡県": {
+          "rate": 29.0,
+          "denominator": 1088467,
+          "numerator": 315809
+        },
+        "佐賀県": {
+          "rate": 29.6,
+          "denominator": 181663,
+          "numerator": 53777
+        },
+        "長崎県": {
+          "rate": 30.9,
+          "denominator": 288027,
+          "numerator": 89029
+        },
+        "熊本県": {
+          "rate": 31.4,
+          "denominator": 390723,
+          "numerator": 122554
+        },
+        "大分県": {
+          "rate": 31.6,
+          "denominator": 260754,
+          "numerator": 82354
+        },
+        "宮崎県": {
+          "rate": 31.6,
+          "denominator": 239303,
+          "numerator": 75505
+        },
+        "鹿児島県": {
+          "rate": 32.5,
+          "denominator": 350876,
+          "numerator": 114094
+        },
+        "沖縄県": {
+          "rate": 39.8,
+          "denominator": 299470,
+          "numerator": 119327
+        }
+      }
+    },
+    "hba1c_ge_6_5": {
+      "metric": "HbA1c",
+      "risk_label": "HbA1c ≥6.5% (糖尿病型)",
+      "risk_bins": [
+        "6.5以上8.0未満",
+        "8.0以上8.4未満",
+        "8.4以上"
+      ],
+      "unit": "%",
+      "by_pref": {
+        "北海道": {
+          "rate": 7.6,
+          "denominator": 744276,
+          "numerator": 56848
+        },
+        "青森県": {
+          "rate": 8.6,
+          "denominator": 171535,
+          "numerator": 14691
+        },
+        "岩手県": {
+          "rate": 7.5,
+          "denominator": 216951,
+          "numerator": 16170
+        },
+        "宮城県": {
+          "rate": 9.1,
+          "denominator": 416299,
+          "numerator": 37909
+        },
+        "秋田県": {
+          "rate": 7.5,
+          "denominator": 152374,
+          "numerator": 11468
+        },
+        "山形県": {
+          "rate": 8.2,
+          "denominator": 182628,
+          "numerator": 14929
+        },
+        "福島県": {
+          "rate": 8.5,
+          "denominator": 305356,
+          "numerator": 26039
+        },
+        "茨城県": {
+          "rate": 8.7,
+          "denominator": 567271,
+          "numerator": 49633
+        },
+        "栃木県": {
+          "rate": 8.1,
+          "denominator": 364673,
+          "numerator": 29492
+        },
+        "群馬県": {
+          "rate": 8.3,
+          "denominator": 369662,
+          "numerator": 30517
+        },
+        "埼玉県": {
+          "rate": 7.5,
+          "denominator": 1422807,
+          "numerator": 106537
+        },
+        "千葉県": {
+          "rate": 7.4,
+          "denominator": 1233541,
+          "numerator": 91415
+        },
+        "東京都": {
+          "rate": 6.0,
+          "denominator": 2995605,
+          "numerator": 178774
+        },
+        "神奈川県": {
+          "rate": 6.1,
+          "denominator": 1800766,
+          "numerator": 110467
+        },
+        "新潟県": {
+          "rate": 7.4,
+          "denominator": 395720,
+          "numerator": 29132
+        },
+        "富山県": {
+          "rate": 8.0,
+          "denominator": 231134,
+          "numerator": 18515
+        },
+        "石川県": {
+          "rate": 8.3,
+          "denominator": 254746,
+          "numerator": 21230
+        },
+        "福井県": {
+          "rate": 7.4,
+          "denominator": 152485,
+          "numerator": 11315
+        },
+        "山梨県": {
+          "rate": 7.9,
+          "denominator": 178510,
+          "numerator": 14145
+        },
+        "長野県": {
+          "rate": 6.6,
+          "denominator": 439512,
+          "numerator": 29113
+        },
+        "岐阜県": {
+          "rate": 7.2,
+          "denominator": 423418,
+          "numerator": 30599
+        },
+        "静岡県": {
+          "rate": 7.8,
+          "denominator": 665082,
+          "numerator": 51603
+        },
+        "愛知県": {
+          "rate": 7.5,
+          "denominator": 1435464,
+          "numerator": 107803
+        },
+        "三重県": {
+          "rate": 8.0,
+          "denominator": 338663,
+          "numerator": 27018
+        },
+        "滋賀県": {
+          "rate": 6.7,
+          "denominator": 272509,
+          "numerator": 18141
+        },
+        "京都府": {
+          "rate": 6.5,
+          "denominator": 430570,
+          "numerator": 27844
+        },
+        "大阪府": {
+          "rate": 6.8,
+          "denominator": 1486600,
+          "numerator": 100681
+        },
+        "兵庫県": {
+          "rate": 6.7,
+          "denominator": 1014444,
+          "numerator": 68408
+        },
+        "奈良県": {
+          "rate": 6.9,
+          "denominator": 226822,
+          "numerator": 15621
+        },
+        "和歌山県": {
+          "rate": 8.6,
+          "denominator": 126543,
+          "numerator": 10863
+        },
+        "鳥取県": {
+          "rate": 6.8,
+          "denominator": 71424,
+          "numerator": 4832
+        },
+        "島根県": {
+          "rate": 7.8,
+          "denominator": 131889,
+          "numerator": 10271
+        },
+        "岡山県": {
+          "rate": 7.7,
+          "denominator": 288105,
+          "numerator": 22227
+        },
+        "広島県": {
+          "rate": 7.1,
+          "denominator": 442716,
+          "numerator": 31626
+        },
+        "山口県": {
+          "rate": 7.5,
+          "denominator": 175753,
+          "numerator": 13262
+        },
+        "徳島県": {
+          "rate": 7.5,
+          "denominator": 112832,
+          "numerator": 8507
+        },
+        "香川県": {
+          "rate": 7.3,
+          "denominator": 178455,
+          "numerator": 13065
+        },
+        "愛媛県": {
+          "rate": 7.2,
+          "denominator": 247389,
+          "numerator": 17717
+        },
+        "高知県": {
+          "rate": 8.2,
+          "denominator": 96013,
+          "numerator": 7833
+        },
+        "福岡県": {
+          "rate": 7.7,
+          "denominator": 821984,
+          "numerator": 63525
+        },
+        "佐賀県": {
+          "rate": 9.7,
+          "denominator": 113759,
+          "numerator": 10991
+        },
+        "長崎県": {
+          "rate": 7.6,
+          "denominator": 193469,
+          "numerator": 14682
+        },
+        "熊本県": {
+          "rate": 9.0,
+          "denominator": 237926,
+          "numerator": 21445
+        },
+        "大分県": {
+          "rate": 8.1,
+          "denominator": 173824,
+          "numerator": 14009
+        },
+        "宮崎県": {
+          "rate": 8.0,
+          "denominator": 150165,
+          "numerator": 12068
+        },
+        "鹿児島県": {
+          "rate": 9.0,
+          "denominator": 263128,
+          "numerator": 23666
+        },
+        "沖縄県": {
+          "rate": 8.7,
+          "denominator": 205108,
+          "numerator": 17893
+        }
+      }
+    },
+    "sbp_ge_140": {
+      "metric": "収縮期血圧",
+      "risk_label": "収縮期血圧 ≥140 mmHg (高血圧)",
+      "risk_bins": [
+        "140以上160未満",
+        "160以上180未満",
+        "180以上"
+      ],
+      "unit": "mmHg",
+      "by_pref": {
+        "北海道": {
+          "rate": 20.6,
+          "denominator": 975254,
+          "numerator": 200738
+        },
+        "青森県": {
+          "rate": 19.9,
+          "denominator": 293120,
+          "numerator": 58251
+        },
+        "岩手県": {
+          "rate": 22.4,
+          "denominator": 309111,
+          "numerator": 69283
+        },
+        "宮城県": {
+          "rate": 20.3,
+          "denominator": 586956,
+          "numerator": 119416
+        },
+        "秋田県": {
+          "rate": 22.6,
+          "denominator": 232106,
+          "numerator": 52443
+        },
+        "山形県": {
+          "rate": 24.0,
+          "denominator": 306475,
+          "numerator": 73665
+        },
+        "福島県": {
+          "rate": 20.4,
+          "denominator": 455746,
+          "numerator": 92902
+        },
+        "茨城県": {
+          "rate": 19.2,
+          "denominator": 670262,
+          "numerator": 128563
+        },
+        "栃木県": {
+          "rate": 20.1,
+          "denominator": 472610,
+          "numerator": 94796
+        },
+        "群馬県": {
+          "rate": 21.2,
+          "denominator": 463148,
+          "numerator": 98034
+        },
+        "埼玉県": {
+          "rate": 18.6,
+          "denominator": 1720926,
+          "numerator": 320379
+        },
+        "千葉県": {
+          "rate": 17.9,
+          "denominator": 1446190,
+          "numerator": 258340
+        },
+        "東京都": {
+          "rate": 14.5,
+          "denominator": 3481192,
+          "numerator": 503935
+        },
+        "神奈川県": {
+          "rate": 15.2,
+          "denominator": 2140435,
+          "numerator": 325448
+        },
+        "新潟県": {
+          "rate": 16.5,
+          "denominator": 587348,
+          "numerator": 97013
+        },
+        "富山県": {
+          "rate": 19.4,
+          "denominator": 276391,
+          "numerator": 53580
+        },
+        "石川県": {
+          "rate": 19.3,
+          "denominator": 285298,
+          "numerator": 54965
+        },
+        "福井県": {
+          "rate": 20.9,
+          "denominator": 182317,
+          "numerator": 38076
+        },
+        "山梨県": {
+          "rate": 23.3,
+          "denominator": 212259,
+          "numerator": 49398
+        },
+        "長野県": {
+          "rate": 18.1,
+          "denominator": 527656,
+          "numerator": 95536
+        },
+        "岐阜県": {
+          "rate": 18.9,
+          "denominator": 478089,
+          "numerator": 90272
+        },
+        "静岡県": {
+          "rate": 18.6,
+          "denominator": 900229,
+          "numerator": 167175
+        },
+        "愛知県": {
+          "rate": 18.4,
+          "denominator": 1760829,
+          "numerator": 324330
+        },
+        "三重県": {
+          "rate": 19.4,
+          "denominator": 446649,
+          "numerator": 86719
+        },
+        "滋賀県": {
+          "rate": 19.0,
+          "denominator": 341195,
+          "numerator": 64746
+        },
+        "京都府": {
+          "rate": 17.7,
+          "denominator": 549080,
+          "numerator": 97292
+        },
+        "大阪府": {
+          "rate": 17.4,
+          "denominator": 1784970,
+          "numerator": 310948
+        },
+        "兵庫県": {
+          "rate": 17.5,
+          "denominator": 1204843,
+          "numerator": 210389
+        },
+        "奈良県": {
+          "rate": 17.8,
+          "denominator": 283428,
+          "numerator": 50421
+        },
+        "和歌山県": {
+          "rate": 21.5,
+          "denominator": 196042,
+          "numerator": 42141
+        },
+        "鳥取県": {
+          "rate": 23.0,
+          "denominator": 120108,
+          "numerator": 27577
+        },
+        "島根県": {
+          "rate": 21.2,
+          "denominator": 168129,
+          "numerator": 35655
+        },
+        "岡山県": {
+          "rate": 20.2,
+          "denominator": 418953,
+          "numerator": 84708
+        },
+        "広島県": {
+          "rate": 18.2,
+          "denominator": 607667,
+          "numerator": 110531
+        },
+        "山口県": {
+          "rate": 20.5,
+          "denominator": 287679,
+          "numerator": 58992
+        },
+        "徳島県": {
+          "rate": 18.5,
+          "denominator": 163389,
+          "numerator": 30247
+        },
+        "香川県": {
+          "rate": 19.3,
+          "denominator": 224134,
+          "numerator": 43166
+        },
+        "愛媛県": {
+          "rate": 21.6,
+          "denominator": 301182,
+          "numerator": 65179
+        },
+        "高知県": {
+          "rate": 21.7,
+          "denominator": 157442,
+          "numerator": 34136
+        },
+        "福岡県": {
+          "rate": 17.8,
+          "denominator": 1088456,
+          "numerator": 193684
+        },
+        "佐賀県": {
+          "rate": 16.9,
+          "denominator": 181659,
+          "numerator": 30620
+        },
+        "長崎県": {
+          "rate": 20.7,
+          "denominator": 287976,
+          "numerator": 59522
+        },
+        "熊本県": {
+          "rate": 18.8,
+          "denominator": 390718,
+          "numerator": 73608
+        },
+        "大分県": {
+          "rate": 18.7,
+          "denominator": 260728,
+          "numerator": 48809
+        },
+        "宮崎県": {
+          "rate": 19.3,
+          "denominator": 239308,
+          "numerator": 46289
+        },
+        "鹿児島県": {
+          "rate": 19.3,
+          "denominator": 350859,
+          "numerator": 67783
+        },
+        "沖縄県": {
+          "rate": 20.7,
+          "denominator": 299470,
+          "numerator": 62052
+        }
+      }
+    },
+    "ldl_ge_140": {
+      "metric": "LDL",
+      "risk_label": "LDL ≥140 mg/dL (脂質異常症)",
+      "risk_bins": [
+        "140以上160未満",
+        "160以上180未満",
+        "180以上"
+      ],
+      "unit": "mg/dL",
+      "by_pref": {
+        "北海道": {
+          "rate": 27.9,
+          "denominator": 968751,
+          "numerator": 270201
+        },
+        "青森県": {
+          "rate": 28.8,
+          "denominator": 292824,
+          "numerator": 84434
+        },
+        "岩手県": {
+          "rate": 25.4,
+          "denominator": 308822,
+          "numerator": 78332
+        },
+        "宮城県": {
+          "rate": 27.1,
+          "denominator": 585992,
+          "numerator": 158941
+        },
+        "秋田県": {
+          "rate": 25.5,
+          "denominator": 231375,
+          "numerator": 59020
+        },
+        "山形県": {
+          "rate": 25.7,
+          "denominator": 305628,
+          "numerator": 78451
+        },
+        "福島県": {
+          "rate": 26.0,
+          "denominator": 454330,
+          "numerator": 117931
+        },
+        "茨城県": {
+          "rate": 28.8,
+          "denominator": 669036,
+          "numerator": 192448
+        },
+        "栃木県": {
+          "rate": 26.7,
+          "denominator": 471923,
+          "numerator": 126176
+        },
+        "群馬県": {
+          "rate": 28.4,
+          "denominator": 462076,
+          "numerator": 131432
+        },
+        "埼玉県": {
+          "rate": 29.0,
+          "denominator": 1716375,
+          "numerator": 498006
+        },
+        "千葉県": {
+          "rate": 29.1,
+          "denominator": 1439130,
+          "numerator": 418812
+        },
+        "東京都": {
+          "rate": 28.2,
+          "denominator": 3452443,
+          "numerator": 973158
+        },
+        "神奈川県": {
+          "rate": 28.9,
+          "denominator": 2135366,
+          "numerator": 617274
+        },
+        "新潟県": {
+          "rate": 27.0,
+          "denominator": 586606,
+          "numerator": 158304
+        },
+        "富山県": {
+          "rate": 28.4,
+          "denominator": 276169,
+          "numerator": 78438
+        },
+        "石川県": {
+          "rate": 25.7,
+          "denominator": 285009,
+          "numerator": 73299
+        },
+        "福井県": {
+          "rate": 27.0,
+          "denominator": 182193,
+          "numerator": 49213
+        },
+        "山梨県": {
+          "rate": 28.2,
+          "denominator": 211647,
+          "numerator": 59610
+        },
+        "長野県": {
+          "rate": 27.2,
+          "denominator": 527085,
+          "numerator": 143172
+        },
+        "岐阜県": {
+          "rate": 28.3,
+          "denominator": 476742,
+          "numerator": 134850
+        },
+        "静岡県": {
+          "rate": 28.4,
+          "denominator": 889701,
+          "numerator": 252637
+        },
+        "愛知県": {
+          "rate": 29.1,
+          "denominator": 1756522,
+          "numerator": 511028
+        },
+        "三重県": {
+          "rate": 27.7,
+          "denominator": 446180,
+          "numerator": 123530
+        },
+        "滋賀県": {
+          "rate": 27.1,
+          "denominator": 340915,
+          "numerator": 92368
+        },
+        "京都府": {
+          "rate": 27.0,
+          "denominator": 548305,
+          "numerator": 148064
+        },
+        "大阪府": {
+          "rate": 28.8,
+          "denominator": 1778954,
+          "numerator": 511726
+        },
+        "兵庫県": {
+          "rate": 29.0,
+          "denominator": 1203309,
+          "numerator": 348514
+        },
+        "奈良県": {
+          "rate": 29.1,
+          "denominator": 282832,
+          "numerator": 82371
+        },
+        "和歌山県": {
+          "rate": 30.2,
+          "denominator": 195896,
+          "numerator": 59130
+        },
+        "鳥取県": {
+          "rate": 28.4,
+          "denominator": 116937,
+          "numerator": 33266
+        },
+        "島根県": {
+          "rate": 27.2,
+          "denominator": 168032,
+          "numerator": 45729
+        },
+        "岡山県": {
+          "rate": 28.6,
+          "denominator": 418593,
+          "numerator": 119520
+        },
+        "広島県": {
+          "rate": 30.1,
+          "denominator": 605447,
+          "numerator": 182426
+        },
+        "山口県": {
+          "rate": 30.4,
+          "denominator": 287536,
+          "numerator": 87379
+        },
+        "徳島県": {
+          "rate": 28.9,
+          "denominator": 163125,
+          "numerator": 47198
+        },
+        "香川県": {
+          "rate": 27.8,
+          "denominator": 223670,
+          "numerator": 62225
+        },
+        "愛媛県": {
+          "rate": 29.2,
+          "denominator": 300839,
+          "numerator": 87938
+        },
+        "高知県": {
+          "rate": 25.8,
+          "denominator": 157267,
+          "numerator": 40557
+        },
+        "福岡県": {
+          "rate": 29.1,
+          "denominator": 1086219,
+          "numerator": 316379
+        },
+        "佐賀県": {
+          "rate": 26.8,
+          "denominator": 181517,
+          "numerator": 48566
+        },
+        "長崎県": {
+          "rate": 26.9,
+          "denominator": 287890,
+          "numerator": 77583
+        },
+        "熊本県": {
+          "rate": 26.3,
+          "denominator": 388942,
+          "numerator": 102343
+        },
+        "大分県": {
+          "rate": 28.2,
+          "denominator": 260529,
+          "numerator": 73459
+        },
+        "宮崎県": {
+          "rate": 27.2,
+          "denominator": 239247,
+          "numerator": 65183
+        },
+        "鹿児島県": {
+          "rate": 28.1,
+          "denominator": 350547,
+          "numerator": 98486
+        },
+        "沖縄県": {
+          "rate": 28.0,
+          "denominator": 295385,
+          "numerator": 82747
+        }
+      }
+    },
+    "urine_protein_ge_1plus": {
+      "metric": "尿蛋白",
+      "risk_label": "尿蛋白 1+以上 (CKDリスク)",
+      "risk_bins": [
+        "＋",
+        "＋＋",
+        "＋＋＋"
+      ],
+      "unit": "定性",
+      "by_pref": {
+        "北海道": {
+          "rate": 3.4,
+          "denominator": 969791,
+          "numerator": 33296
+        },
+        "青森県": {
+          "rate": 4.0,
+          "denominator": 291194,
+          "numerator": 11683
+        },
+        "岩手県": {
+          "rate": 2.9,
+          "denominator": 308095,
+          "numerator": 9037
+        },
+        "宮城県": {
+          "rate": 2.8,
+          "denominator": 585232,
+          "numerator": 16097
+        },
+        "秋田県": {
+          "rate": 3.5,
+          "denominator": 230594,
+          "numerator": 8121
+        },
+        "山形県": {
+          "rate": 2.0,
+          "denominator": 306177,
+          "numerator": 6215
+        },
+        "福島県": {
+          "rate": 3.0,
+          "denominator": 453719,
+          "numerator": 13477
+        },
+        "茨城県": {
+          "rate": 2.5,
+          "denominator": 667556,
+          "numerator": 16916
+        },
+        "栃木県": {
+          "rate": 2.8,
+          "denominator": 470150,
+          "numerator": 13125
+        },
+        "群馬県": {
+          "rate": 3.2,
+          "denominator": 461166,
+          "numerator": 14876
+        },
+        "埼玉県": {
+          "rate": 3.1,
+          "denominator": 1711642,
+          "numerator": 52258
+        },
+        "千葉県": {
+          "rate": 3.1,
+          "denominator": 1434275,
+          "numerator": 44179
+        },
+        "東京都": {
+          "rate": 3.1,
+          "denominator": 3448812,
+          "numerator": 106650
+        },
+        "神奈川県": {
+          "rate": 2.8,
+          "denominator": 2131899,
+          "numerator": 60066
+        },
+        "新潟県": {
+          "rate": 3.7,
+          "denominator": 581977,
+          "numerator": 21264
+        },
+        "富山県": {
+          "rate": 3.7,
+          "denominator": 274827,
+          "numerator": 10161
+        },
+        "石川県": {
+          "rate": 3.8,
+          "denominator": 284190,
+          "numerator": 10923
+        },
+        "福井県": {
+          "rate": 3.2,
+          "denominator": 181718,
+          "numerator": 5776
+        },
+        "山梨県": {
+          "rate": 2.7,
+          "denominator": 209363,
+          "numerator": 5724
+        },
+        "長野県": {
+          "rate": 2.7,
+          "denominator": 523891,
+          "numerator": 13940
+        },
+        "岐阜県": {
+          "rate": 3.9,
+          "denominator": 476402,
+          "numerator": 18437
+        },
+        "静岡県": {
+          "rate": 2.5,
+          "denominator": 888337,
+          "numerator": 22573
+        },
+        "愛知県": {
+          "rate": 3.8,
+          "denominator": 1753438,
+          "numerator": 66636
+        },
+        "三重県": {
+          "rate": 3.4,
+          "denominator": 444928,
+          "numerator": 14992
+        },
+        "滋賀県": {
+          "rate": 3.0,
+          "denominator": 339535,
+          "numerator": 10314
+        },
+        "京都府": {
+          "rate": 3.5,
+          "denominator": 547272,
+          "numerator": 19041
+        },
+        "大阪府": {
+          "rate": 3.7,
+          "denominator": 1777819,
+          "numerator": 65856
+        },
+        "兵庫県": {
+          "rate": 3.5,
+          "denominator": 1200702,
+          "numerator": 41845
+        },
+        "奈良県": {
+          "rate": 3.4,
+          "denominator": 282468,
+          "numerator": 9514
+        },
+        "和歌山県": {
+          "rate": 4.1,
+          "denominator": 195182,
+          "numerator": 7975
+        },
+        "鳥取県": {
+          "rate": 3.1,
+          "denominator": 116836,
+          "numerator": 3643
+        },
+        "島根県": {
+          "rate": 4.2,
+          "denominator": 167551,
+          "numerator": 7088
+        },
+        "岡山県": {
+          "rate": 2.8,
+          "denominator": 417758,
+          "numerator": 11876
+        },
+        "広島県": {
+          "rate": 3.2,
+          "denominator": 606484,
+          "numerator": 19183
+        },
+        "山口県": {
+          "rate": 3.7,
+          "denominator": 287179,
+          "numerator": 10502
+        },
+        "徳島県": {
+          "rate": 5.1,
+          "denominator": 162710,
+          "numerator": 8265
+        },
+        "香川県": {
+          "rate": 3.5,
+          "denominator": 223399,
+          "numerator": 7806
+        },
+        "愛媛県": {
+          "rate": 3.8,
+          "denominator": 300755,
+          "numerator": 11344
+        },
+        "高知県": {
+          "rate": 3.9,
+          "denominator": 157231,
+          "numerator": 6055
+        },
+        "福岡県": {
+          "rate": 3.4,
+          "denominator": 1086213,
+          "numerator": 36680
+        },
+        "佐賀県": {
+          "rate": 3.7,
+          "denominator": 181139,
+          "numerator": 6745
+        },
+        "長崎県": {
+          "rate": 4.3,
+          "denominator": 286970,
+          "numerator": 12301
+        },
+        "熊本県": {
+          "rate": 3.0,
+          "denominator": 389553,
+          "numerator": 11762
+        },
+        "大分県": {
+          "rate": 3.5,
+          "denominator": 260173,
+          "numerator": 9191
+        },
+        "宮崎県": {
+          "rate": 3.8,
+          "denominator": 238702,
+          "numerator": 8978
+        },
+        "鹿児島県": {
+          "rate": 4.3,
+          "denominator": 349741,
+          "numerator": 15003
+        },
+        "沖縄県": {
+          "rate": 3.8,
+          "denominator": 297005,
+          "numerator": 11347
+        }
+      }
+    }
+  }
+}

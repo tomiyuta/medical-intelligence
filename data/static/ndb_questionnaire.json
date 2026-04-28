@@ -43,7 +43,10 @@
     },
     "hypertension_med": "現在、血圧を下げる薬を使用しているか (Q1, %)",
     "heart_disease": "医師から心臓病(狭心症・心筋梗塞等)にかかっているといわれた、または治療を受けたことがあるか (Q5, %)",
-    "ckd_history": "医師から慢性腎臓病や腎不全にかかっているといわれた、または治療(人工透析)を受けたことがあるか (Q6, %)"
+    "ckd_history": "医師から慢性腎臓病や腎不全にかかっているといわれた、または治療(人工透析)を受けたことがあるか (Q6, %)",
+    "diabetes_medication": "現在、血糖を下げる薬又はインスリン注射を使用しているか (Q2, %)",
+    "lipid_medication": "現在、コレステロールや中性脂肪を下げる薬を使用しているか (Q3, %)",
+    "stroke_history": "医師から、脳卒中(脳出血、脳梗塞等)にかかっているといわれた、または治療を受けたことがあるか (Q4, %)"
   },
   "prefectures": {
     "北海道": {
@@ -57,7 +60,10 @@
       "sleep_ok": 67.7,
       "hypertension_med": 22.7,
       "heart_disease": 3.8,
-      "ckd_history": 0.6
+      "ckd_history": 0.6,
+      "diabetes_medication": 6.8,
+      "lipid_medication": 16.9,
+      "stroke_history": 1.9
     },
     "青森県": {
       "smoking": 26.8,
@@ -70,7 +76,10 @@
       "sleep_ok": 68.0,
       "hypertension_med": 28.9,
       "heart_disease": 3.7,
-      "ckd_history": 0.7
+      "ckd_history": 0.7,
+      "diabetes_medication": 8.0,
+      "lipid_medication": 18.6,
+      "stroke_history": 1.7
     },
     "岩手県": {
       "smoking": 24.6,
@@ -83,7 +92,10 @@
       "sleep_ok": 66.2,
       "hypertension_med": 26.3,
       "heart_disease": 5.6,
-      "ckd_history": 0.5
+      "ckd_history": 0.5,
+      "diabetes_medication": 7.3,
+      "lipid_medication": 14.8,
+      "stroke_history": 2.1
     },
     "宮城県": {
       "smoking": 24.6,
@@ -96,7 +108,10 @@
       "sleep_ok": 65.8,
       "hypertension_med": 26.3,
       "heart_disease": 4.1,
-      "ckd_history": 0.6
+      "ckd_history": 0.6,
+      "diabetes_medication": 7.1,
+      "lipid_medication": 18.6,
+      "stroke_history": 1.8
     },
     "秋田県": {
       "smoking": 24.4,
@@ -109,7 +124,10 @@
       "sleep_ok": 71.2,
       "hypertension_med": 28.7,
       "heart_disease": 4.2,
-      "ckd_history": 0.4
+      "ckd_history": 0.4,
+      "diabetes_medication": 7.0,
+      "lipid_medication": 20.5,
+      "stroke_history": 2.1
     },
     "山形県": {
       "smoking": 22.7,
@@ -122,7 +140,10 @@
       "sleep_ok": 67.2,
       "hypertension_med": 28.2,
       "heart_disease": 3.0,
-      "ckd_history": 0.6
+      "ckd_history": 0.6,
+      "diabetes_medication": 6.9,
+      "lipid_medication": 18.6,
+      "stroke_history": 1.1
     },
     "福島県": {
       "smoking": 25.0,
@@ -135,7 +156,10 @@
       "sleep_ok": 67.6,
       "hypertension_med": 28.0,
       "heart_disease": 3.9,
-      "ckd_history": 0.6
+      "ckd_history": 0.6,
+      "diabetes_medication": 7.6,
+      "lipid_medication": 19.6,
+      "stroke_history": 1.9
     },
     "茨城県": {
       "smoking": 23.3,
@@ -148,7 +172,10 @@
       "sleep_ok": 66.3,
       "hypertension_med": 23.0,
       "heart_disease": 3.3,
-      "ckd_history": 0.5
+      "ckd_history": 0.5,
+      "diabetes_medication": 6.4,
+      "lipid_medication": 15.9,
+      "stroke_history": 1.6
     },
     "栃木県": {
       "smoking": 23.8,
@@ -161,7 +188,10 @@
       "sleep_ok": 67.8,
       "hypertension_med": 23.7,
       "heart_disease": 3.5,
-      "ckd_history": 0.6
+      "ckd_history": 0.6,
+      "diabetes_medication": 6.6,
+      "lipid_medication": 17.3,
+      "stroke_history": 1.7
     },
     "群馬県": {
       "smoking": 22.7,
@@ -174,7 +204,10 @@
       "sleep_ok": 67.8,
       "hypertension_med": 23.7,
       "heart_disease": 3.4,
-      "ckd_history": 0.7
+      "ckd_history": 0.7,
+      "diabetes_medication": 6.4,
+      "lipid_medication": 15.9,
+      "stroke_history": 1.7
     },
     "埼玉県": {
       "smoking": 22.1,
@@ -187,7 +220,10 @@
       "sleep_ok": 65.4,
       "hypertension_med": 21.6,
       "heart_disease": 3.0,
-      "ckd_history": 0.5
+      "ckd_history": 0.5,
+      "diabetes_medication": 5.8,
+      "lipid_medication": 15.4,
+      "stroke_history": 1.7
     },
     "千葉県": {
       "smoking": 21.6,
@@ -200,7 +236,10 @@
       "sleep_ok": 65.7,
       "hypertension_med": 21.4,
       "heart_disease": 3.3,
-      "ckd_history": 0.6
+      "ckd_history": 0.6,
+      "diabetes_medication": 6.0,
+      "lipid_medication": 15.8,
+      "stroke_history": 1.7
     },
     "東京都": {
       "smoking": 19.9,
@@ -213,7 +252,10 @@
       "sleep_ok": 65.8,
       "hypertension_med": 18.9,
       "heart_disease": 3.0,
-      "ckd_history": 0.6
+      "ckd_history": 0.6,
+      "diabetes_medication": 5.1,
+      "lipid_medication": 14.5,
+      "stroke_history": 1.6
     },
     "神奈川県": {
       "smoking": 20.8,
@@ -226,7 +268,10 @@
       "sleep_ok": 65.6,
       "hypertension_med": 19.1,
       "heart_disease": 3.0,
-      "ckd_history": 0.6
+      "ckd_history": 0.6,
+      "diabetes_medication": 5.2,
+      "lipid_medication": 14.8,
+      "stroke_history": 1.5
     },
     "新潟県": {
       "smoking": 22.9,
@@ -239,7 +284,10 @@
       "sleep_ok": 67.9,
       "hypertension_med": 23.2,
       "heart_disease": 3.3,
-      "ckd_history": 0.8
+      "ckd_history": 0.8,
+      "diabetes_medication": 6.0,
+      "lipid_medication": 17.0,
+      "stroke_history": 2.0
     },
     "富山県": {
       "smoking": 22.0,
@@ -252,7 +300,10 @@
       "sleep_ok": 58.5,
       "hypertension_med": 22.9,
       "heart_disease": 3.4,
-      "ckd_history": 0.7
+      "ckd_history": 0.7,
+      "diabetes_medication": 5.9,
+      "lipid_medication": 15.5,
+      "stroke_history": 1.9
     },
     "石川県": {
       "smoking": 21.6,
@@ -265,7 +316,10 @@
       "sleep_ok": 66.1,
       "hypertension_med": 22.5,
       "heart_disease": 3.0,
-      "ckd_history": 0.8
+      "ckd_history": 0.8,
+      "diabetes_medication": 6.5,
+      "lipid_medication": 16.8,
+      "stroke_history": 1.8
     },
     "福井県": {
       "smoking": 21.5,
@@ -278,7 +332,10 @@
       "sleep_ok": 64.2,
       "hypertension_med": 21.7,
       "heart_disease": 3.1,
-      "ckd_history": 1.0
+      "ckd_history": 1.0,
+      "diabetes_medication": 6.4,
+      "lipid_medication": 15.8,
+      "stroke_history": 1.6
     },
     "山梨県": {
       "smoking": 23.0,
@@ -291,7 +348,10 @@
       "sleep_ok": 60.5,
       "hypertension_med": 24.1,
       "heart_disease": 3.9,
-      "ckd_history": 0.6
+      "ckd_history": 0.6,
+      "diabetes_medication": 6.5,
+      "lipid_medication": 16.2,
+      "stroke_history": 1.6
     },
     "長野県": {
       "smoking": 21.0,
@@ -304,7 +364,10 @@
       "sleep_ok": 66.9,
       "hypertension_med": 22.6,
       "heart_disease": 3.4,
-      "ckd_history": 0.6
+      "ckd_history": 0.6,
+      "diabetes_medication": 6.0,
+      "lipid_medication": 17.2,
+      "stroke_history": 1.8
     },
     "岐阜県": {
       "smoking": 20.7,
@@ -317,7 +380,10 @@
       "sleep_ok": 63.3,
       "hypertension_med": 22.1,
       "heart_disease": 3.5,
-      "ckd_history": 0.5
+      "ckd_history": 0.5,
+      "diabetes_medication": 6.2,
+      "lipid_medication": 15.3,
+      "stroke_history": 1.5
     },
     "静岡県": {
       "smoking": 21.7,
@@ -330,7 +396,10 @@
       "sleep_ok": 64.5,
       "hypertension_med": 21.7,
       "heart_disease": 3.4,
-      "ckd_history": 0.6
+      "ckd_history": 0.6,
+      "diabetes_medication": 6.0,
+      "lipid_medication": 16.9,
+      "stroke_history": 1.6
     },
     "愛知県": {
       "smoking": 20.8,
@@ -343,7 +412,10 @@
       "sleep_ok": 66.2,
       "hypertension_med": 20.7,
       "heart_disease": 3.0,
-      "ckd_history": 0.5
+      "ckd_history": 0.5,
+      "diabetes_medication": 6.2,
+      "lipid_medication": 15.7,
+      "stroke_history": 1.6
     },
     "三重県": {
       "smoking": 21.2,
@@ -356,7 +428,10 @@
       "sleep_ok": 66.2,
       "hypertension_med": 23.2,
       "heart_disease": 3.3,
-      "ckd_history": 0.6
+      "ckd_history": 0.6,
+      "diabetes_medication": 6.5,
+      "lipid_medication": 17.5,
+      "stroke_history": 1.9
     },
     "滋賀県": {
       "smoking": 20.0,
@@ -369,7 +444,10 @@
       "sleep_ok": 63.0,
       "hypertension_med": 21.4,
       "heart_disease": 3.1,
-      "ckd_history": 0.5
+      "ckd_history": 0.5,
+      "diabetes_medication": 5.5,
+      "lipid_medication": 16.4,
+      "stroke_history": 1.4
     },
     "京都府": {
       "smoking": 19.9,
@@ -382,7 +460,10 @@
       "sleep_ok": 64.9,
       "hypertension_med": 19.7,
       "heart_disease": 3.5,
-      "ckd_history": 0.4
+      "ckd_history": 0.4,
+      "diabetes_medication": 5.1,
+      "lipid_medication": 15.4,
+      "stroke_history": 1.5
     },
     "大阪府": {
       "smoking": 22.0,
@@ -395,7 +476,10 @@
       "sleep_ok": 61.0,
       "hypertension_med": 20.2,
       "heart_disease": 3.2,
-      "ckd_history": 0.7
+      "ckd_history": 0.7,
+      "diabetes_medication": 5.6,
+      "lipid_medication": 14.7,
+      "stroke_history": 1.7
     },
     "兵庫県": {
       "smoking": 19.4,
@@ -408,7 +492,10 @@
       "sleep_ok": 63.5,
       "hypertension_med": 20.3,
       "heart_disease": 3.4,
-      "ckd_history": 0.6
+      "ckd_history": 0.6,
+      "diabetes_medication": 5.6,
+      "lipid_medication": 15.3,
+      "stroke_history": 1.7
     },
     "奈良県": {
       "smoking": 18.7,
@@ -421,7 +508,10 @@
       "sleep_ok": 62.1,
       "hypertension_med": 21.7,
       "heart_disease": 3.4,
-      "ckd_history": 0.8
+      "ckd_history": 0.8,
+      "diabetes_medication": 5.9,
+      "lipid_medication": 16.5,
+      "stroke_history": 1.7
     },
     "和歌山県": {
       "smoking": 21.7,
@@ -434,7 +524,10 @@
       "sleep_ok": 68.2,
       "hypertension_med": 25.5,
       "heart_disease": 3.8,
-      "ckd_history": 0.7
+      "ckd_history": 0.7,
+      "diabetes_medication": 6.3,
+      "lipid_medication": 17.3,
+      "stroke_history": 1.9
     },
     "鳥取県": {
       "smoking": 20.7,
@@ -447,7 +540,10 @@
       "sleep_ok": 63.8,
       "hypertension_med": 21.5,
       "heart_disease": 3.4,
-      "ckd_history": 0.6
+      "ckd_history": 0.6,
+      "diabetes_medication": 5.9,
+      "lipid_medication": 15.6,
+      "stroke_history": 1.9
     },
     "島根県": {
       "smoking": 20.1,
@@ -460,7 +556,10 @@
       "sleep_ok": 69.1,
       "hypertension_med": 25.0,
       "heart_disease": 4.1,
-      "ckd_history": 0.5
+      "ckd_history": 0.5,
+      "diabetes_medication": 6.2,
+      "lipid_medication": 18.7,
+      "stroke_history": 2.0
     },
     "岡山県": {
       "smoking": 21.2,
@@ -473,7 +572,10 @@
       "sleep_ok": 65.5,
       "hypertension_med": 21.1,
       "heart_disease": 2.9,
-      "ckd_history": 0.6
+      "ckd_history": 0.6,
+      "diabetes_medication": 6.3,
+      "lipid_medication": 15.9,
+      "stroke_history": 1.8
     },
     "広島県": {
       "smoking": 21.1,
@@ -486,7 +588,10 @@
       "sleep_ok": 61.0,
       "hypertension_med": 20.0,
       "heart_disease": 2.8,
-      "ckd_history": 0.5
+      "ckd_history": 0.5,
+      "diabetes_medication": 5.8,
+      "lipid_medication": 14.9,
+      "stroke_history": 1.6
     },
     "山口県": {
       "smoking": 21.3,
@@ -499,7 +604,10 @@
       "sleep_ok": 66.5,
       "hypertension_med": 23.2,
       "heart_disease": 3.9,
-      "ckd_history": 0.7
+      "ckd_history": 0.7,
+      "diabetes_medication": 6.0,
+      "lipid_medication": 16.5,
+      "stroke_history": 2.4
     },
     "徳島県": {
       "smoking": 19.1,
@@ -512,7 +620,10 @@
       "sleep_ok": 64.3,
       "hypertension_med": 24.3,
       "heart_disease": 3.7,
-      "ckd_history": 0.8
+      "ckd_history": 0.8,
+      "diabetes_medication": 6.3,
+      "lipid_medication": 15.5,
+      "stroke_history": 1.9
     },
     "香川県": {
       "smoking": 19.8,
@@ -525,7 +636,10 @@
       "sleep_ok": 66.0,
       "hypertension_med": 23.1,
       "heart_disease": 3.6,
-      "ckd_history": 0.9
+      "ckd_history": 0.9,
+      "diabetes_medication": 6.7,
+      "lipid_medication": 16.3,
+      "stroke_history": 2.1
     },
     "愛媛県": {
       "smoking": 20.5,
@@ -538,7 +652,10 @@
       "sleep_ok": 63.1,
       "hypertension_med": 22.1,
       "heart_disease": 4.7,
-      "ckd_history": 0.8
+      "ckd_history": 0.8,
+      "diabetes_medication": 6.0,
+      "lipid_medication": 16.5,
+      "stroke_history": 1.8
     },
     "高知県": {
       "smoking": 22.7,
@@ -551,7 +668,10 @@
       "sleep_ok": 66.1,
       "hypertension_med": 24.0,
       "heart_disease": 3.0,
-      "ckd_history": 0.6
+      "ckd_history": 0.6,
+      "diabetes_medication": 6.6,
+      "lipid_medication": 13.7,
+      "stroke_history": 1.9
     },
     "福岡県": {
       "smoking": 24.0,
@@ -564,7 +684,10 @@
       "sleep_ok": 66.8,
       "hypertension_med": 21.9,
       "heart_disease": 3.8,
-      "ckd_history": 0.7
+      "ckd_history": 0.7,
+      "diabetes_medication": 6.3,
+      "lipid_medication": 15.3,
+      "stroke_history": 2.0
     },
     "佐賀県": {
       "smoking": 24.2,
@@ -577,7 +700,10 @@
       "sleep_ok": 66.6,
       "hypertension_med": 24.4,
       "heart_disease": 2.3,
-      "ckd_history": 0.6
+      "ckd_history": 0.6,
+      "diabetes_medication": 7.4,
+      "lipid_medication": 17.5,
+      "stroke_history": 1.4
     },
     "長崎県": {
       "smoking": 22.2,
@@ -590,7 +716,10 @@
       "sleep_ok": 69.9,
       "hypertension_med": 28.1,
       "heart_disease": 4.3,
-      "ckd_history": 0.6
+      "ckd_history": 0.6,
+      "diabetes_medication": 6.8,
+      "lipid_medication": 17.5,
+      "stroke_history": 2.1
     },
     "熊本県": {
       "smoking": 23.0,
@@ -603,7 +732,10 @@
       "sleep_ok": 67.0,
       "hypertension_med": 25.7,
       "heart_disease": 3.7,
-      "ckd_history": 0.5
+      "ckd_history": 0.5,
+      "diabetes_medication": 7.2,
+      "lipid_medication": 17.0,
+      "stroke_history": 1.8
     },
     "大分県": {
       "smoking": 22.5,
@@ -616,7 +748,10 @@
       "sleep_ok": 70.1,
       "hypertension_med": 24.4,
       "heart_disease": 4.1,
-      "ckd_history": 0.9
+      "ckd_history": 0.9,
+      "diabetes_medication": 7.3,
+      "lipid_medication": 17.6,
+      "stroke_history": 1.8
     },
     "宮崎県": {
       "smoking": 23.7,
@@ -629,7 +764,10 @@
       "sleep_ok": 68.8,
       "hypertension_med": 27.4,
       "heart_disease": 4.0,
-      "ckd_history": 0.7
+      "ckd_history": 0.7,
+      "diabetes_medication": 7.1,
+      "lipid_medication": 15.5,
+      "stroke_history": 2.2
     },
     "鹿児島県": {
       "smoking": 21.1,
@@ -642,7 +780,10 @@
       "sleep_ok": 70.3,
       "hypertension_med": 29.5,
       "heart_disease": 4.3,
-      "ckd_history": 1.1
+      "ckd_history": 1.1,
+      "diabetes_medication": 8.0,
+      "lipid_medication": 17.7,
+      "stroke_history": 2.9
     },
     "沖縄県": {
       "smoking": 19.6,
@@ -655,7 +796,10 @@
       "sleep_ok": 63.3,
       "hypertension_med": 27.1,
       "heart_disease": 4.9,
-      "ckd_history": 0.6
+      "ckd_history": 0.6,
+      "diabetes_medication": 6.9,
+      "lipid_medication": 16.0,
+      "stroke_history": 2.2
     },
     "都道府県判別不可": {
       "smoking": 21.9,
@@ -666,7 +810,10 @@
       "drinking_daily": 23.5,
       "heavy_drinker": 17.6,
       "sleep_ok": 65.9,
-      "ckd_history": 0.5
+      "ckd_history": 0.5,
+      "diabetes_medication": 4.9,
+      "lipid_medication": 12.3,
+      "stroke_history": 1.1
     }
   }
 }
