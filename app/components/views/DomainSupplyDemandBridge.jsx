@@ -184,10 +184,16 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
               return (
                 <tr key={domain.id} style={{borderBottom:'1px solid #f1f5f9',background:domain.bg}}>
                   <td style={{padding:'12px',borderRight:'1px solid #f1f5f9',verticalAlign:'top'}}>
-                    <div style={{display:'flex',alignItems:'center',gap:6}}>
+                    <div style={{display:'flex',alignItems:'center',gap:6,flexWrap:'wrap'}}>
                       <span style={{fontSize:18}}>{domain.icon}</span>
                       <span style={{fontSize:13,fontWeight:700,color:domain.color}}>{domain.label}</span>
+                      {domain.isExperimental && (
+                        <span style={{fontSize:9,padding:'1px 5px',borderRadius:3,background:'#fef3c7',color:'#92400e',fontWeight:600}}>🧪 v1 exp</span>
+                      )}
                     </div>
+                    {domain.isExperimental && domain.experimentalNote && (
+                      <div style={{fontSize:9,color:'#78350f',marginTop:4,lineHeight:1.4,fontStyle:'italic'}}>{domain.experimentalNote}</div>
+                    )}
                   </td>
                   <td style={{padding:'12px 8px',verticalAlign:'top'}}>{renderCell(risk)}</td>
                   <td style={{padding:'12px 8px',verticalAlign:'top'}}>
@@ -224,7 +230,29 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
                       )
                     }
                   </td>
-                  <td style={{padding:'12px 8px',verticalAlign:'top'}}>{renderCell(outcome)}</td>
+                  <td style={{padding:'12px 8px',verticalAlign:'top'}}>
+                    {renderCell(outcome)}
+                    {domain.outcome?.additionalCauses?.map((ac, ai) => {
+                      const acPref = vsPref?.causes?.find(c => c.cause === ac.vitalCause)?.rate;
+                      const acNat = vsNat?.causes?.find(c => c.cause === ac.vitalCause)?.rate;
+                      const acDelta = describeDelta(acPref, acNat, 'higher_worse');
+                      if (acPref == null) return null;
+                      return (
+                        <div key={ai} style={{marginTop:10,paddingTop:8,borderTop:'1px dashed #e2e8f0'}}>
+                          <div style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>
+                            {fmtVal(acPref, '')}
+                            <span style={{fontSize:10,color:'#94a3b8',marginLeft:2}}>{ac.unit}</span>
+                          </div>
+                          {acDelta && (
+                            <div style={{fontSize:10,color:acDelta.color,fontWeight:600,marginTop:2}}>
+                              {acDelta.label} ({acDelta.deltaPct > 0 ? '+' : ''}{acDelta.deltaPct.toFixed(1)}%)
+                            </div>
+                          )}
+                          <div style={{fontSize:9,color:'#cbd5e1',marginTop:3,lineHeight:1.4}}>{ac.label}</div>
+                        </div>
+                      );
+                    })}
+                  </td>
                 </tr>
               );
             })}
@@ -235,7 +263,7 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
       {/* 注記 */}
       <div style={{fontSize:10,color:'#94a3b8',marginTop:14,lineHeight:1.7,padding:'10px 14px',background:'#f8fafc',borderRadius:6}}>
         <b style={{color:'#475569'}}>📌 v0/v1 の制約と注意点</b><br/>
-        ・3領域 (循環器/糖尿病代謝/がん) は <b>v0 FROZEN</b> (現行解釈仕様の固定。医学的構成の確定ではない)。脳血管はv1拡張領域。<br/>
+        ・3領域 (循環器/糖尿病代謝/がん) は <b>v0 FROZEN</b> (現行解釈仕様の固定。医学的構成の確定ではない)。脳血管・呼吸器は <b>v1 experimental</b> (5列中の一部空白あり)。<br/>
         ・本サマリーは <b>スコア化を行わず</b>、データ並べ表示のみ。Gap指標化はPhase 2で検討。<br/>
         ・「医療利用」列は<b>NDB処方薬の薬効分類ベース proxy</b>(人口10万対補正)。<u>疾患患者数ではない</u>。比較基準は47都道府県平均(処方薬集計に全国値なし)。<br/>
         ・処方数量は薬効分類別数量の合算であり、薬剤単位・剤形・用量差を含みます。<u>治療人数や患者数ではありません</u>。<br/>
