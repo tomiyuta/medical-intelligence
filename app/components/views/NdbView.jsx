@@ -25,7 +25,7 @@ const DRUG_DOMAIN = {
 };
 const DOMAIN_COLORS = {'循環器':'#dc2626','糖尿病・代謝':'#f59e0b','呼吸器':'#06b6d4','精神・神経':'#8b5cf6','整形・疼痛':'#059669','消化器':'#64748b','がん':'#be123c','免疫・内分泌':'#0891b2','アレルギー':'#f472b6','感染症':'#fb923c','内分泌':'#14b8a6','代謝':'#a3a3a3','腎疾患':'#6366f1'};
 
-export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData }) {
+export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ }) {
   const diagByPref = ndbDiag.filter(d=>d.prefecture===ndbPref);
   const hcPref = ndbHc.filter(d=>d.pref===ndbPref);
   const vp = vitalStats?.prefectures?.find(p=>p.pref===ndbPref);
@@ -64,6 +64,39 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     </select>
     {prefPop > 0 && <span style={{fontSize:12,color:'#94a3b8'}}>人口 {fmt(prefPop)}人</span>}
   </div>
+
+  {/* ═══ Layer 1: ROOT CAUSE (生活習慣リスク) ═══ */}
+  {ndbQ && ndbQ.prefectures?.[ndbPref] && (()=>{
+    const qd = ndbQ.prefectures[ndbPref];
+    const qs = ndbQ.questions || {};
+    const RISK_ICONS = {smoking:'🚬', weight_gain:'⚖️', exercise:'🏃', walking:'🚶', late_dinner:'🌙'};
+    const RISK_COLORS = {smoking:'#dc2626', weight_gain:'#f59e0b', exercise:'#2563eb', walking:'#059669', late_dinner:'#8b5cf6'};
+    const items = Object.entries(qd).sort((a,b)=>b[1]-a[1]);
+    return (
+    <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16}}>
+      <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
+        <span style={{fontSize:18}}>⚠️</span>
+        <div>
+          <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>生活習慣リスク</div>
+          <div style={{fontSize:11,color:'#94a3b8'}}>特定健診 質問票（40〜74歳受診者）— 該当率が高いほど将来疾患リスクが高い</div>
+        </div>
+      </div>
+      <div style={{display:'flex',flexDirection:'column',gap:8}}>
+        {items.map(([key, rate]) => {
+          const q = qs[key] || {};
+          return <div key={key} style={{display:'flex',alignItems:'center',gap:10}}>
+            <span style={{fontSize:16,width:24}}>{RISK_ICONS[key]||'📋'}</span>
+            <span style={{width:mob?70:90,fontSize:12,fontWeight:600,color:'#475569',flexShrink:0}}>{q.risk_label||key}</span>
+            <div style={{flex:1,height:22,background:'#f1f5f9',borderRadius:4,overflow:'hidden',position:'relative'}}>
+              <div style={{height:'100%',borderRadius:4,background:RISK_COLORS[key]||'#94a3b8',width:`${Math.min(rate,100)}%`,opacity:0.75}}/>
+              <span style={{position:'absolute',right:6,top:3,fontSize:10,color:'#475569',fontWeight:600}}>{rate}%</span>
+            </div>
+          </div>;
+        })}
+      </div>
+      <div style={{fontSize:10,color:'#94a3b8',marginTop:10}}>※40-74歳の特定健診受診者が対象。全人口の傾向とは異なる場合があります。</div>
+    </div>);
+  })()}
 
   {/* ═══ Layer 2: RISK (健診リスク) ═══ */}
   {hcPref.length > 0 && <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16}}>

@@ -65,6 +65,7 @@ export default function Home() {
   const [futureYear, setFutureYear] = useState('2025');
   const [vitalStats, setVitalStats] = useState(null);
   const [agePyramid, setAgePyramid] = useState(null);
+  const [ndbQ, setNdbQ] = useState(null);
 
   useEffect(() => {
     Promise.all([
@@ -91,6 +92,7 @@ export default function Home() {
     fetch('/api/future-demographics').then(r=>r.json()).then(d=>setFutureDemo(d));
     fetch('/api/vital-statistics').then(r=>r.json()).then(d=>setVitalStats(d));
     fetch('/api/age-pyramid').then(r=>r.json()).then(d=>setAgePyramid(d));
+    fetch('/api/ndb/questionnaire').then(r=>r.json()).then(d=>setNdbQ(d));
     fetch('/api/facility-standards?summary=true').then(r=>r.json()).then(d=>setKijunSummary(d));
     fetch('/api/facility-standards?prefecture='+encodeURIComponent('東京都')).then(r=>r.json()).then(d=>setKijunData(d.data||[]));
   }, []);
@@ -171,7 +173,7 @@ export default function Home() {
         {view==='score' && <ScoringView mob={mob} tiers={tiers} topFac={topFac} facSearch={facSearch} setFacSearch={setFacSearch} searchResults={searchResults} doSearch={doSearch} />}
 
         {/* ═══ NDB VIEW ═══ */}
-        {view==='ndb' && <NdbView mob={mob} ndbDiag={ndbDiag} ndbRx={ndbRx} ndbHc={ndbHc} ndbPref={ndbPref} setNdbPref={setNdbPref} setNdbRx={setNdbRx} vitalStats={vitalStats} areaDemoData={areaDemoData} />}
+        {view==='ndb' && <NdbView mob={mob} ndbDiag={ndbDiag} ndbRx={ndbRx} ndbHc={ndbHc} ndbPref={ndbPref} setNdbPref={setNdbPref} setNdbRx={setNdbRx} vitalStats={vitalStats} areaDemoData={areaDemoData} ndbQ={ndbQ} />}
 
         {/* ═══ FACILITY STANDARDS VIEW ═══ */}
         {view==='kijun' && <KijunView mob={mob} kijunData={kijunData} setKijunData={setKijunData} kijunSummary={kijunSummary} kijunPref={kijunPref} setKijunPref={setKijunPref} kijunPage={kijunPage} setKijunPage={setKijunPage} kijunSearch={kijunSearch} setKijunSearch={setKijunSearch} kijunSort={kijunSort} setKijunSort={setKijunSort} kijunExpanded={kijunExpanded} setKijunExpanded={setKijunExpanded} />}
