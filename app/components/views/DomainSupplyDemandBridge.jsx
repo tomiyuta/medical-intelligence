@@ -3,7 +3,7 @@ import { DOMAIN_MAPPING, describeDelta, DATA_BADGE } from '../../../lib/domainMa
 
 const ACTIVE_FUNCS = ['高度急性期', '急性期', '回復期', '慢性期'];
 
-export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ, vitalStats, bedFunc, mob }) {
+export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ, vitalStats, bedFunc, ndbRx, agePyramid, mob }) {
   if (!ndbPref) return null;
 
   // 各データソースから pref/national を抽出
@@ -30,6 +30,37 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
   const bfNat = bedFunc?.national;
   const bfPref = bedFunc?.prefectures?.[ndbPref];
 
+  // 都道府県人口の集計 (agePyramid 21年齢帯から男+女合計)
+  const computePop = (prefName) => {
+    if (!agePyramid?.prefectures) return null;
+    const ap = agePyramid.prefectures[prefName];
+    if (!ap?.male || !ap?.female) return null;
+    let sum = 0;
+    for (let i = 0; i < ap.male.length; i++) sum += (ap.male[i] || 0) + (ap.female[i] || 0);
+    return sum;
+  };
+
+  // 処方proxy: 都道府県別 対象code合計qty / 人口 × 100000
+  const computeRxProxy = (prefName, codes) => {
+    if (!ndbRx || !prefName || !codes?.length) return null;
+    const sum = ndbRx
+      .filter(d => d.pref === prefName && codes.includes(d.code))
+      .reduce((s, d) => s + (d.qty || 0), 0);
+    const pop = computePop(prefName);
+    if (!pop || sum === 0) return null;
+    return sum / pop * 100000;
+  };
+
+  // 47都道府県の単純平均 proxy (人口加重なし)
+  const compute47Avg = (codes) => {
+    if (!ndbRx || !agePyramid?.prefectures) return null;
+    const proxies = Object.keys(agePyramid.prefectures)
+      .map(p => computeRxProxy(p, codes))
+      .filter(v => v != null);
+    if (proxies.length === 0) return null;
+    return proxies.reduce((s, v) => s + v, 0) / proxies.length;
+  };
+
   // bedFunc から機能区分シェアを計算
   const computeBfShare = (bf, keys) => {
     if (!bf) return null;
@@ -53,6 +84,10 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
       const psKey = cfg.patientSurveyKey;
       prefVal = psPref?.categories?.[psKey]?.outpatient;
       natVal = psNat?.categories?.[psKey]?.outpatient;
+    } else if (type === 'utilization') {
+      prefVal = computeRxProxy(ndbPref, cfg.codes);
+      natVal = compute47Avg(cfg.codes);
+      refLabel = '47都道府県平均'; // 処方薬データに'全国'集計値がないため47県平均を使用
     } else if (type === 'supply') {
       prefVal = computeBfShare(bfPref, cfg.bedFuncKeys);
       natVal = computeBfShare(bfNat, cfg.bedFuncKeys);
@@ -61,15 +96,18 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
       natVal = vsNat?.causes?.find(c => c.cause === cfg.vitalCause)?.rate;
     }
 
-    if (prefVal == null) return { label, unit, note, missing: true };
+    if (prefVal == null) return { label, unit, note, missing: true, basis: cfg.basis };
     const delta = describeDelta(prefVal, natVal, cfg.direction || 'higher_worse', undefined, undefined, refLabel);
-    return { label, unit, note, prefVal, natVal, delta, proxyLabel: cfg.proxyLabel };
+    return { label, unit, note, prefVal, natVal, delta, proxyLabel: cfg.proxyLabel, basis: cfg.basis };
   };
 
   const fmtVal = (v, unit) => {
     if (v == null) return '—';
-    const numStr = typeof v === 'number' ? (v % 1 === 0 ? v.toString() : v.toFixed(1)) : String(v);
-    return numStr + (unit || '');
+    if (typeof v !== 'number') return String(v);
+    // 1000以上はカンマ区切り整数 (処方薬proxyなど大きな値)
+    if (v >= 1000) return Math.round(v).toLocaleString('ja-JP');
+    if (v % 1 === 0) return v.toString();
+    return v.toFixed(1);
   };
 
   return (
@@ -131,6 +169,9 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
                     {cell.proxyLabel && (
                       <div style={{fontSize:9,fontWeight:600,color:'#92400e',marginTop:2,padding:'1px 4px',background:'#fef3c7',borderRadius:3,display:'inline-block'}}>{cell.proxyLabel}</div>
                     )}
+                    {cell.basis && (
+                      <div style={{fontSize:9,fontWeight:500,color:'#155e75',marginTop:2,padding:'1px 4px',background:'#cffafe',borderRadius:3,display:'inline-block'}}>{cell.basis}</div>
+                    )}
                     <div style={{fontSize:9,color:'#cbd5e1',marginTop:3,lineHeight:1.4}}>{cell.label}</div>
                     {cell.note && (
                       <div style={{fontSize:9,color:'#94a3b8',marginTop:2,lineHeight:1.4,fontStyle:'italic'}}>※{cell.note}</div>
@@ -150,8 +191,11 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
                   <td style={{padding:'12px 8px',verticalAlign:'top'}}>{renderCell(risk)}</td>
                   <td style={{padding:'12px 8px',verticalAlign:'top'}}>{renderCell(demand)}</td>
                   <td style={{padding:'12px 8px',verticalAlign:'top'}}>
-                    <span style={{fontSize:10,color:'#94a3b8',fontStyle:'italic'}}>Phase 2 で詳細化</span>
-                    <div style={{fontSize:9,color:'#cbd5e1',marginTop:3,lineHeight:1.4}}>NDB処方薬の薬効分類対応辞書整備後</div>
+                    {(() => {
+                      const util = domain.utilization ? getCell(domain, 'utilization') : null;
+                      if (!util) return <span style={{fontSize:10,color:'#cbd5e1',fontStyle:'italic'}}>未整備</span>;
+                      return renderCell(util);
+                    })()}
                   </td>
                   <td style={{padding:'12px 8px',verticalAlign:'top'}}>
                     {supply
@@ -176,7 +220,7 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
       <div style={{fontSize:10,color:'#94a3b8',marginTop:14,lineHeight:1.7,padding:'10px 14px',background:'#f8fafc',borderRadius:6}}>
         <b style={{color:'#475569'}}>📌 v0 の制約と注意点</b><br/>
         ・本サマリーは <b>スコア化を行わず</b>、データ並べ表示のみ。Gap指標化はPhase 2で検討。<br/>
-        ・「医療利用」列は Phase 2 で薬効分類辞書整備後に詳細化(現状はNDB処方薬の集約ロジック未整備)。<br/>
+        ・「医療利用」列は<b>NDB処方薬の薬効分類ベース proxy</b>(人口10万対補正)。<u>疾患患者数ではない</u>。比較基準は47都道府県平均(処方薬集計に全国値なし)。<br/>
         ・「供給proxy」は<b>各疾患専用の供給体制ではない</b>(例: 急性期床は循環器も整形外科も含む)。proxyラベルを参照のこと。<br/>
         ・受療率は<b>標本推計</b>(令和5年患者調査・3年に1回)。「罹患率」とは異なる指標。<br/>
         ・<b>「リスク」列の比較は47都道府県の単純平均</b>(NDB質問票に全国エントリがないため代理使用)。人口加重ではない。<br/>

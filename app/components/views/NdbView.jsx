@@ -626,6 +626,8 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     ndbQ={ndbQ}
     vitalStats={vitalStats}
     bedFunc={bedFunc}
+    ndbRx={ndbRx}
+    agePyramid={agePyramid}
   />
 
   <div style={{padding:'10px 0',fontSize:11,color:'#94a3b8',marginTop:8,lineHeight:1.8}}>
