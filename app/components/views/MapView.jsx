@@ -5,7 +5,7 @@ import { fmt, METRICS, mKey } from '../shared';
 const VITAL_MAP = { cancer: 'がん(悪性新生物)', heart: '心疾患', stroke: '脳血管疾患' };
 const isVital = m => m in VITAL_MAP;
 
-export default function MapView({ mob, prefs, metric, setMetric, japanMap, hovPref, setHovPref, tooltipPos, setTooltipPos, setSelectedPref, setView, vitalStats }) {
+export default function MapView({ mob, prefs, metric, setMetric, japanMap, hovPref, setHovPref, tooltipPos, setTooltipPos, setGlobalPref, setView, vitalStats }) {
   // Build unified data: prefs for facility metrics, vitalStats for death cause metrics
   const displayData = useMemo(() => {
     if (!isVital(metric) || !vitalStats?.prefectures) {
@@ -53,7 +53,7 @@ export default function MapView({ mob, prefs, metric, setMetric, japanMap, hovPr
               style={{cursor:'pointer',transition:'fill 0.15s'}}
               onMouseEnter={e=>{setHovPref(pf.ja);const r=e.currentTarget.getBoundingClientRect();const svgR=e.currentTarget.closest('svg').getBoundingClientRect();setTooltipPos({x:r.x-svgR.x+r.width/2,y:r.y-svgR.y});}}
               onMouseLeave={()=>setHovPref(null)}
-              onClick={()=>{setSelectedPref(pf.ja);setView('muni');}}
+              onClick={()=>{setGlobalPref(pf.ja);setView('muni');}}
             />;
           })}
         </svg>
@@ -69,7 +69,7 @@ export default function MapView({ mob, prefs, metric, setMetric, japanMap, hovPr
     <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden',maxHeight:mob?300:'calc(100vh - 160px)',overflowY:'auto',boxShadow:'0 1px 3px rgba(0,0,0,0.04)'}}>
       <div style={{padding:'10px 12px',borderBottom:'1px solid #f0f0f0',fontSize:12,fontWeight:600,position:'sticky',top:0,background:'#fff',zIndex:1}}>全{displayData.length}都道府県</div>
       {[...displayData].sort((a,b)=>b.val-a.val).map((p,i)=>(
-        <div key={p.name} onClick={()=>{setSelectedPref(p.name);setView('muni');}} style={{display:'flex',alignItems:'center',padding:'6px 12px',borderBottom:'1px solid #f8f9fa',cursor:'pointer',fontSize:12}} onMouseEnter={e=>e.currentTarget.style.background='#f0f7ff'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
+        <div key={p.name} onClick={()=>{setGlobalPref(p.name);setView('muni');}} style={{display:'flex',alignItems:'center',padding:'6px 12px',borderBottom:'1px solid #f8f9fa',cursor:'pointer',fontSize:12}} onMouseEnter={e=>e.currentTarget.style.background='#f0f7ff'} onMouseLeave={e=>e.currentTarget.style.background='transparent'}>
           <span style={{width:20,fontWeight:600,color:'#94a3b8',fontSize:10}}>{i+1}</span>
           <span style={{flex:1,fontWeight:500}}>{p.name}</span>
           <span style={{fontWeight:600,color:isVital(metric)?'#7c3aed':'#b91c1c',fontVariantNumeric:'tabular-nums',fontSize:12}}>{fmt(p.val)}</span>

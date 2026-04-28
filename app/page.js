@@ -32,31 +32,26 @@ export default function Home() {
   const [munis, setMunis] = useState([]);
   const [tiers, setTiers] = useState([]);
   const [topFac, setTopFac] = useState([]);
-  const [selectedPref, setSelectedPref] = useState(null);
+  const [globalPref, setGlobalPref] = useState('東京都');
   const [muniSearch, setMuniSearch] = useState('');
   const [muniSort, setMuniSort] = useState('pop');
   const [facSearch, setFacSearch] = useState('');
   const [searchResults, setSearchResults] = useState(null);
-  const [areaPref, setAreaPref] = useState('東京都');
   const [areaData, setAreaData] = useState([]);
   const [areaPrefList, setAreaPrefList] = useState([]);
   const [geoFacilities, setGeoFacilities] = useState([]);
   const [selectedFacility, setSelectedFacility] = useState(null);
-  const [mapPref, setMapPref] = useState('');
   const [japanMap, setJapanMap] = useState(null);
   const [hovPref, setHovPref] = useState(null);
   const [tooltipPos, setTooltipPos] = useState({x:0,y:0});
   const [areaDemoData, setAreaDemoData] = useState([]);
-  const [demoPref, setDemoPref] = useState('東京都');
   const [demoArea, setDemoArea] = useState('区中央部');
   const [demoPrefList, setDemoPrefList] = useState([]);
   const [ndbDiag, setNdbDiag] = useState([]);
   const [ndbRx, setNdbRx] = useState([]);
   const [ndbHc, setNdbHc] = useState([]);
-  const [ndbPref, setNdbPref] = useState('東京都');
   const [kijunData, setKijunData] = useState([]);
   const [kijunSummary, setKijunSummary] = useState(null);
-  const [kijunPref, setKijunPref] = useState('東京都');
   const [kijunPage, setKijunPage] = useState(0);
   const [kijunSearch, setKijunSearch] = useState('');
   const [kijunSort, setKijunSort] = useState('std_count');
@@ -78,7 +73,7 @@ export default function Home() {
     });
     fetch('/api/medical-areas').then(r=>r.json()).then(d => {
       setAreaPrefList(d.prefectures||[]);
-      setAreaData(d.data?.filter(a=>a.pref==='東京都')||[]);
+      setAreaData(d.data?.filter(a=>a.pref===globalPref)||[]);
     });
     fetch('/api/facilities-geo').then(r=>r.json()).then(d => setGeoFacilities(d.data||[]));
     fetch('/api/japan-map').then(r=>r.json()).then(d => setJapanMap(d));
@@ -88,29 +83,30 @@ export default function Home() {
     });
     fetch('/api/ndb/diagnostics').then(r=>r.json()).then(d=>setNdbDiag(d));
     fetch('/api/ndb/health-checkup').then(r=>r.json()).then(d=>setNdbHc(d));
-    fetch('/api/ndb/prescriptions?prefecture='+encodeURIComponent('東京都')).then(r=>r.json()).then(d=>setNdbRx(d));
     fetch('/api/future-demographics').then(r=>r.json()).then(d=>setFutureDemo(d));
     fetch('/api/vital-statistics').then(r=>r.json()).then(d=>setVitalStats(d));
     fetch('/api/age-pyramid').then(r=>r.json()).then(d=>setAgePyramid(d));
     fetch('/api/ndb/questionnaire').then(r=>r.json()).then(d=>setNdbQ(d));
     fetch('/api/facility-standards?summary=true').then(r=>r.json()).then(d=>setKijunSummary(d));
-    fetch('/api/facility-standards?prefecture='+encodeURIComponent('東京都')).then(r=>r.json()).then(d=>setKijunData(d.data||[]));
   }, []);
 
   useEffect(() => {
-    if (areaPref) {
-      fetch('/api/medical-areas?prefecture='+encodeURIComponent(areaPref))
-        .then(r=>r.json()).then(d => setAreaData(d.data||[]));
-    }
-  }, [areaPref]);
+    if (!globalPref) return;
+    fetch('/api/medical-areas?prefecture='+encodeURIComponent(globalPref))
+      .then(r=>r.json()).then(d => setAreaData(d.data||[]));
+    fetch('/api/ndb/prescriptions?prefecture='+encodeURIComponent(globalPref))
+      .then(r=>r.json()).then(d => setNdbRx(d));
+    fetch('/api/facility-standards?prefecture='+encodeURIComponent(globalPref))
+      .then(r=>r.json()).then(d => setKijunData(d.data||[]));
+  }, [globalPref]);
 
   const filteredMunis = useMemo(() => {
     let d = [...munis];
-    if (selectedPref) d = d.filter(m=>m.pref===selectedPref);
+    if (globalPref) d = d.filter(m=>m.pref===globalPref);
     if (muniSearch) d = d.filter(m=>m.name.includes(muniSearch)||m.pref.includes(muniSearch));
     d.sort((a,b)=>(b[muniSort]||0)-(a[muniSort]||0));
     return d;
-  }, [munis, selectedPref, muniSearch, muniSort]);
+  }, [munis, globalPref, muniSearch, muniSort]);
 
   const doSearch = () => {
     if (!facSearch) return;
@@ -161,25 +157,25 @@ export default function Home() {
       <main style={{flex:1,padding:mob?'16px 16px 80px':'28px 32px',maxWidth:1100,overflow:'auto'}}>
 
         {/* ═══ MAP VIEW ═══ */}
-        {view==='map' && <MapView mob={mob} prefs={prefs} metric={metric} setMetric={setMetric} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} setSelectedPref={setSelectedPref} setView={setView} vitalStats={vitalStats} />}
+        {view==='map' && <MapView mob={mob} prefs={prefs} metric={metric} setMetric={setMetric} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} setGlobalPref={setGlobalPref} setView={setView} vitalStats={vitalStats} />}
 
         {/* ═══ MUNI VIEW ═══ */}
-        {view==='muni' && <MuniView mob={mob} areaDemoData={areaDemoData} demoPref={demoPref} setDemoPref={setDemoPref} demoArea={demoArea} setDemoArea={setDemoArea} demoPrefList={demoPrefList} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} futureDemo={futureDemo} futureYear={futureYear} setFutureYear={setFutureYear} agePyramid={agePyramid} />}
+        {view==='muni' && <MuniView mob={mob} areaDemoData={areaDemoData} demoPref={globalPref} setDemoPref={setGlobalPref} demoArea={demoArea} setDemoArea={setDemoArea} demoPrefList={demoPrefList} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} futureDemo={futureDemo} futureYear={futureYear} setFutureYear={setFutureYear} agePyramid={agePyramid} />}
 
         {/* ═══ AREA VIEW ═══ */}
-        {view==='area' && <AreaView mob={mob} areaData={areaData} areaPref={areaPref} setAreaPref={setAreaPref} areaPrefList={areaPrefList} vitalStats={vitalStats} />}
+        {view==='area' && <AreaView mob={mob} areaData={areaData} areaPref={globalPref} setAreaPref={setGlobalPref} areaPrefList={areaPrefList} vitalStats={vitalStats} />}
 
         {/* ═══ SCORING VIEW ═══ */}
         {view==='score' && <ScoringView mob={mob} tiers={tiers} topFac={topFac} facSearch={facSearch} setFacSearch={setFacSearch} searchResults={searchResults} doSearch={doSearch} />}
 
         {/* ═══ NDB VIEW ═══ */}
-        {view==='ndb' && <NdbView mob={mob} ndbDiag={ndbDiag} ndbRx={ndbRx} ndbHc={ndbHc} ndbPref={ndbPref} setNdbPref={setNdbPref} setNdbRx={setNdbRx} vitalStats={vitalStats} areaDemoData={areaDemoData} ndbQ={ndbQ} />}
+        {view==='ndb' && <NdbView mob={mob} ndbDiag={ndbDiag} ndbRx={ndbRx} ndbHc={ndbHc} ndbPref={globalPref} setNdbPref={setGlobalPref} setNdbRx={setNdbRx} vitalStats={vitalStats} areaDemoData={areaDemoData} ndbQ={ndbQ} />}
 
         {/* ═══ FACILITY STANDARDS VIEW ═══ */}
-        {view==='kijun' && <KijunView mob={mob} kijunData={kijunData} setKijunData={setKijunData} kijunSummary={kijunSummary} kijunPref={kijunPref} setKijunPref={setKijunPref} kijunPage={kijunPage} setKijunPage={setKijunPage} kijunSearch={kijunSearch} setKijunSearch={setKijunSearch} kijunSort={kijunSort} setKijunSort={setKijunSort} kijunExpanded={kijunExpanded} setKijunExpanded={setKijunExpanded} />}
+        {view==='kijun' && <KijunView mob={mob} kijunData={kijunData} setKijunData={setKijunData} kijunSummary={kijunSummary} kijunPref={globalPref} setKijunPref={setGlobalPref} kijunPage={kijunPage} setKijunPage={setKijunPage} kijunSearch={kijunSearch} setKijunSearch={setKijunSearch} kijunSort={kijunSort} setKijunSort={setKijunSort} kijunExpanded={kijunExpanded} setKijunExpanded={setKijunExpanded} />}
 
         {/* ═══ GEO MAP VIEW ═══ */}
-        {view==='geomap' && <GeoMapView mob={mob} geoFacilities={geoFacilities} selectedFacility={selectedFacility} setSelectedFacility={setSelectedFacility} mapPref={mapPref} setMapPref={setMapPref} />}
+        {view==='geomap' && <GeoMapView mob={mob} geoFacilities={geoFacilities} selectedFacility={selectedFacility} setSelectedFacility={setSelectedFacility} mapPref={globalPref} setMapPref={setGlobalPref} />}
 
         <div style={{fontSize:11,color:'#cbd5e1',textAlign:'center',marginTop:32,lineHeight:1.6}}>
           MedIntel — 厚労省/総務省/社人研/全国8地方厚生局 オープンデータを加工して作成<br/>
