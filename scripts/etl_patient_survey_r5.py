@@ -27,7 +27,7 @@ ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / 'data' / 'raw' / 'source' / '10_患者調査_R5' / 'R5_T39_utf8.csv'
 OUT = ROOT / 'data' / 'static' / 'patient_survey_r5.json'
 
-# 47都道府県 + 全国
+# 48エントリ (47都道府県 + 「全国」集計値) — patient_survey_r5.json のキーセット
 PREFS = [
     '全国',
     '北海道', '青森県', '岩手県', '宮城県', '秋田県', '山形県', '福島県',

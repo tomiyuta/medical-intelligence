@@ -62,6 +62,7 @@ export default function Home() {
   const [agePyramid, setAgePyramid] = useState(null);
   const [ndbQ, setNdbQ] = useState(null);
   const [patientSurvey, setPatientSurvey] = useState(null);
+  const [bedFunc, setBedFunc] = useState(null);
 
   useEffect(() => {
     Promise.all([
@@ -89,6 +90,7 @@ export default function Home() {
     fetch('/api/age-pyramid').then(r=>r.json()).then(d=>setAgePyramid(d));
     fetch('/api/ndb/questionnaire').then(r=>r.json()).then(d=>setNdbQ(d));
     fetch('/api/patient-survey').then(r=>r.json()).then(d=>setPatientSurvey(d));
+    fetch('/api/bed-function').then(r=>r.json()).then(d=>setBedFunc(d));
     fetch('/api/facility-standards?summary=true').then(r=>r.json()).then(d=>setKijunSummary(d));
   }, []);
 
@@ -168,7 +170,7 @@ export default function Home() {
         {view==='area' && <AreaView mob={mob} areaData={areaData} areaPref={globalPref} setAreaPref={setGlobalPref} areaPrefList={areaPrefList} vitalStats={vitalStats} />}
 
         {/* ═══ SCORING VIEW ═══ */}
-        {view==='score' && <ScoringView mob={mob} tiers={tiers} topFac={topFac} facSearch={facSearch} setFacSearch={setFacSearch} searchResults={searchResults} doSearch={doSearch} />}
+        {view==='score' && <ScoringView mob={mob} tiers={tiers} topFac={topFac} facSearch={facSearch} setFacSearch={setFacSearch} searchResults={searchResults} doSearch={doSearch} bedFunc={bedFunc} scoringPref={globalPref} setScoringPref={setGlobalPref} />}
 
         {/* ═══ NDB VIEW ═══ */}
         {view==='ndb' && <NdbView mob={mob} ndbDiag={ndbDiag} ndbRx={ndbRx} ndbHc={ndbHc} ndbPref={globalPref} setNdbPref={setGlobalPref} setNdbRx={setNdbRx} vitalStats={vitalStats} areaDemoData={areaDemoData} ndbQ={ndbQ} agePyramid={agePyramid} futureDemo={futureDemo} patientSurvey={patientSurvey} />}

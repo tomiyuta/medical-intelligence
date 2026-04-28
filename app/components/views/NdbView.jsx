@@ -403,7 +403,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
       </div>
       <div style={{fontSize:10,color:'#94a3b8',marginTop:10,lineHeight:1.6}}>
         ※受療率は「人口10万対」で標準化済み。<b>NDB（供給）とは異なり、患者住所地ベースの標本推計</b>です。
-        標本誤差を含むため、地域差の細かな比較には注意。3年に1回の調査で、次回は令和8年。
+        標本誤差を含むため、地域差の細かな比較には注意。3年ごとの調査で、次回は令和8年調査が見込まれる（公表時期は調査実施後）。
       </div>
     </div>);
   })()}
