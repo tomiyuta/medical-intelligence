@@ -344,10 +344,13 @@ export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegP
           </ul>
         </div>
       )}
-      <div style={{fontSize:10,color:'#94a3b8',marginTop:8,padding:'6px 10px',background:'#fff7ed',borderRadius:4,lineHeight:1.5}}>
-        ⚠️ 本分類は NDB在宅医療 / 病床機能 / cap.homecare / cap.rehab から見た地域構造の<b>暫定分類</b>です。
-        実際の訪問診療件数、看取り件数、在宅酸素実施数を直接示すものではありません。
-        v1では 5指標化 + ±5% neutral zone + per75+補正で判定。
+      <div style={{fontSize:10,color:'#94a3b8',marginTop:8,padding:'8px 12px',background:'#fff7ed',borderRadius:4,lineHeight:1.6}}>
+        <b style={{color:'#92400e'}}>⚠️ v1 スコープと限界 (peer review #3 確定)</b><br/>
+        ・本分類は<b>75歳以上割合が47県平均以上の高齢化県を主対象</b>とした補助分類です。若年・大都市圏 (東京/大阪/愛知等) は「該当なし: gate_not_aging」となり、<u>本分類の対象外</u>です (在宅移行が不要という意味ではありません)。<br/>
+        ・「<b>支援型の可能性</b>」は、NDB在宅医療 / 病床機能 / cap.homecare / cap.rehab の proxy 上で供給が比較的厚い地域を指すもので、<u>医療の優劣・在宅看取り件数・患者満足度・医療費効率等を示すものではありません</u>。<br/>
+        ・cap.homecare / cap.rehab は<b>施設基準届出件数の集計値</b>であり、訪問診療実施件数・在宅酸素実施数・リハ実績そのものではありません。<br/>
+        ・cap.homecare と cap.rehab の Pearson r=+0.627 (重複情報の懸念)。v2でスコア化する際は重複処理が必要。<br/>
+        ・v1: 5指標化 + ±5% neutral zone + per75+補正。
       </div>
     </div>
   )}
