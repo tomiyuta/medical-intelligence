@@ -54,6 +54,15 @@ const GAP_TEMPLATES = [
   {id:'egfr_kidney', label:'腎機能×腎不全死亡', xLabel:'eGFR平均 (mL/min)', yLabel:'腎不全死亡率',
     xType:'egfr', yType:'cause', yKey:'腎不全', xInverse:true,
     note:'X軸は健診eGFR平均（低値=腎機能低下=リスク）。男女平均値を使用。'},
+  {id:'daily_drink_heart', label:'毎日飲酒×心疾患死亡', xLabel:'毎日飲酒率 (%)', yLabel:'心疾患死亡率',
+    xType:'q', xKey:'drinking_daily', yType:'cause', yKey:'心疾患', xInverse:false,
+    note:'毎日飲酒と循環器疾患の関連は用量依存とされる。地域差として可視化。'},
+  {id:'heavy_drink_liver', label:'高量飲酒×肝疾患死亡', xLabel:'2合以上飲酒率 (%)', yLabel:'肝疾患死亡率',
+    xType:'q', xKey:'heavy_drinker', yType:'cause', yKey:'肝疾患', xInverse:false,
+    note:'分母は飲酒者のみ。地域の飲酒文化と肝疾患死亡の関連を探索。'},
+  {id:'sleep_heart', label:'睡眠充足×心疾患死亡', xLabel:'睡眠充足率 (%)', yLabel:'心疾患死亡率',
+    xType:'q', xKey:'sleep_ok', yType:'cause', yKey:'心疾患', xInverse:true,
+    note:'X軸は睡眠で休養がとれている人の割合（高=低リスク）。睡眠不足と循環器の関連は確立。'},
 ];
 
 export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ }) {
@@ -130,8 +139,10 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
   {ndbQ && ndbQ.prefectures?.[ndbPref] && (()=>{
     const qd = ndbQ.prefectures[ndbPref];
     const qs = ndbQ.questions || {};
-    const RISK_ICONS = {smoking:'🚬', weight_gain:'⚖️', exercise:'🏃', walking:'🚶', late_dinner:'🌙'};
-    const RISK_COLORS = {smoking:'#dc2626', weight_gain:'#f59e0b', exercise:'#2563eb', walking:'#059669', late_dinner:'#8b5cf6'};
+    const RISK_ICONS = {smoking:'🚬', weight_gain:'⚖️', exercise:'🏃', walking:'🚶', late_dinner:'🌙', drinking_daily:'🍶', heavy_drinker:'🥃', sleep_ok:'😴'};
+    const RISK_COLORS = {smoking:'#dc2626', weight_gain:'#f59e0b', exercise:'#2563eb', walking:'#059669', late_dinner:'#8b5cf6', drinking_daily:'#b91c1c', heavy_drinker:'#7f1d1d', sleep_ok:'#6366f1'};
+    // 高い値=低リスクの項目（運動/歩行/睡眠充足）— delta色判定を反転
+    const INVERSE_KEYS = new Set(['exercise', 'walking', 'sleep_ok']);
     // Compute national averages
     const allPrefs = Object.values(ndbQ.prefectures);
     const natAvg = {};
@@ -153,6 +164,8 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
         {items.map(([key, rate]) => {
           const q = qs[key] || {};
           const delta = rate - (natAvg[key]||0);
+          // inverse: 値が低い方が高リスク（運動/歩行/睡眠充足）
+          const isHigherRisk = INVERSE_KEYS.has(key) ? delta < 0 : delta > 0;
           return <div key={key} style={{display:'flex',alignItems:'center',gap:10}}>
             <span style={{fontSize:16,width:24}}>{RISK_ICONS[key]||'📋'}</span>
             <span style={{width:mob?70:90,fontSize:12,fontWeight:600,color:'#475569',flexShrink:0}}>{q.risk_label||key}</span>
@@ -160,11 +173,11 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
               <div style={{height:'100%',borderRadius:4,background:RISK_COLORS[key]||'#94a3b8',width:`${Math.min(rate,100)}%`,opacity:0.75}}/>
               <span style={{position:'absolute',right:6,top:3,fontSize:10,color:'#475569',fontWeight:600}}>{rate}%</span>
             </div>
-            <span style={{fontSize:10,fontWeight:600,color:delta>0?'#dc2626':'#059669',width:60,textAlign:'right',flexShrink:0}}>{delta>0?'↑':'↓'}{Math.abs(delta).toFixed(1)}pt</span>
+            <span style={{fontSize:10,fontWeight:600,color:isHigherRisk?'#dc2626':'#059669',width:60,textAlign:'right',flexShrink:0}}>{delta>0?'↑':'↓'}{Math.abs(delta).toFixed(1)}pt</span>
           </div>;
         })}
       </div>
-      <div style={{fontSize:10,color:'#94a3b8',marginTop:10}}>※Δは全国平均との差。正の値=全国より高リスク。40-74歳特定健診受診者が対象。</div>
+      <div style={{fontSize:10,color:'#94a3b8',marginTop:10}}>※Δは全国平均との差。色は<b style={{color:'#dc2626'}}>赤=高リスク方向</b>/<b style={{color:'#059669'}}>緑=低リスク方向</b>。運動・歩行・睡眠充足は値が高いほど低リスク（色判定を反転）。40-74歳特定健診受診者が対象。</div>
     </div>);
   })()}
 

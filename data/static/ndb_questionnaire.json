@@ -1,1 +1,527 @@
-{"source":"NDB第10回 特定健診質問票（令和4年度, 40-74歳）","questions":{"smoking":{"label":"喫煙","question":"たばこを習慣的に吸っている","risk_label":"喫煙率"},"weight_gain":{"label":"体重増加","question":"20歳から10kg以上増加","risk_label":"体重10kg+増加率"},"exercise":{"label":"運動習慣","question":"30分以上の運動を週2日以上","risk_label":"運動不足率"},"walking":{"label":"歩行習慣","question":"1日1時間以上歩行","risk_label":"歩行不足率"},"late_dinner":{"label":"就寝前夕食","question":"就寝前2時間以内に夕食を週3回以上","risk_label":"遅い夕食率"}},"prefectures":{"北海道":{"smoking":28.0,"weight_gain":41.7,"exercise":75.4,"walking":58.9,"late_dinner":26.2},"青森県":{"smoking":26.8,"weight_gain":40.9,"exercise":75.1,"walking":59.8,"late_dinner":28.4},"岩手県":{"smoking":24.6,"weight_gain":39.7,"exercise":77.6,"walking":48.2,"late_dinner":29.6},"宮城県":{"smoking":24.6,"weight_gain":40.6,"exercise":73.5,"walking":55.7,"late_dinner":26.3},"秋田県":{"smoking":24.4,"weight_gain":38.1,"exercise":74.0,"walking":55.2,"late_dinner":23.8},"山形県":{"smoking":22.7,"weight_gain":37.0,"exercise":81.8,"walking":68.6,"late_dinner":21.5},"福島県":{"smoking":25.0,"weight_gain":40.9,"exercise":75.0,"walking":62.0,"late_dinner":25.1},"茨城県":{"smoking":23.3,"weight_gain":41.8,"exercise":72.3,"walking":57.8,"late_dinner":28.8},"栃木県":{"smoking":23.8,"weight_gain":41.1,"exercise":72.3,"walking":56.7,"late_dinner":27.0},"群馬県":{"smoking":22.7,"weight_gain":40.3,"exercise":70.7,"walking":57.9,"late_dinner":27.3},"埼玉県":{"smoking":22.1,"weight_gain":40.8,"exercise":70.7,"walking":54.6,"late_dinner":29.7},"千葉県":{"smoking":21.6,"weight_gain":41.0,"exercise":71.0,"walking":54.5,"late_dinner":30.1},"東京都":{"smoking":19.9,"weight_gain":38.7,"exercise":69.7,"walking":52.9,"late_dinner":29.0},"神奈川県":{"smoking":20.8,"weight_gain":40.1,"exercise":69.9,"walking":53.3,"late_dinner":29.7},"新潟県":{"smoking":22.9,"weight_gain":36.1,"exercise":76.1,"walking":58.1,"late_dinner":24.8},"富山県":{"smoking":22.0,"weight_gain":36.3,"exercise":77.7,"walking":65.0,"late_dinner":25.1},"石川県":{"smoking":21.6,"weight_gain":37.3,"exercise":74.8,"walking":58.2,"late_dinner":26.1},"福井県":{"smoking":21.5,"weight_gain":37.5,"exercise":78.0,"walking":65.0,"late_dinner":25.1},"山梨県":{"smoking":23.0,"weight_gain":36.5,"exercise":75.4,"walking":55.2,"late_dinner":23.7},"長野県":{"smoking":21.0,"weight_gain":36.2,"exercise":74.9,"walking":56.0,"late_dinner":25.8},"岐阜県":{"smoking":20.7,"weight_gain":37.9,"exercise":75.6,"walking":62.5,"late_dinner":22.7},"静岡県":{"smoking":21.7,"weight_gain":38.4,"exercise":72.2,"walking":58.3,"late_dinner":23.8},"愛知県":{"smoking":20.8,"weight_gain":39.9,"exercise":71.7,"walking":58.0,"late_dinner":25.5},"三重県":{"smoking":21.2,"weight_gain":39.1,"exercise":73.1,"walking":61.4,"late_dinner":23.8},"滋賀県":{"smoking":20.0,"weight_gain":39.6,"exercise":71.9,"walking":60.4,"late_dinner":27.2},"京都府":{"smoking":19.9,"weight_gain":37.6,"exercise":70.5,"walking":57.1,"late_dinner":27.5},"大阪府":{"smoking":22.0,"weight_gain":40.7,"exercise":72.3,"walking":56.1,"late_dinner":29.6},"兵庫県":{"smoking":19.4,"weight_gain":38.6,"exercise":70.6,"walking":55.8,"late_dinner":26.7},"奈良県":{"smoking":18.7,"weight_gain":38.6,"exercise":70.5,"walking":55.5,"late_dinner":25.6},"和歌山県":{"smoking":21.7,"weight_gain":39.1,"exercise":71.8,"walking":59.2,"late_dinner":23.5},"鳥取県":{"smoking":20.7,"weight_gain":37.0,"exercise":75.4,"walking":69.5,"late_dinner":24.5},"島根県":{"smoking":20.1,"weight_gain":35.0,"exercise":77.2,"walking":62.8,"late_dinner":24.0},"岡山県":{"smoking":21.2,"weight_gain":40.5,"exercise":72.7,"walking":62.6,"late_dinner":26.4},"広島県":{"smoking":21.1,"weight_gain":39.3,"exercise":75.0,"walking":60.9,"late_dinner":28.5},"山口県":{"smoking":21.3,"weight_gain":37.7,"exercise":72.9,"walking":58.2,"late_dinner":25.8},"徳島県":{"smoking":19.1,"weight_gain":39.2,"exercise":71.2,"walking":60.6,"late_dinner":24.6},"香川県":{"smoking":19.8,"weight_gain":39.4,"exercise":72.9,"walking":59.7,"late_dinner":25.0},"愛媛県":{"smoking":20.5,"weight_gain":40.9,"exercise":71.3,"walking":53.6,"late_dinner":25.7},"高知県":{"smoking":22.7,"weight_gain":41.1,"exercise":70.9,"walking":55.4,"late_dinner":25.8},"福岡県":{"smoking":24.0,"weight_gain":40.7,"exercise":71.5,"walking":55.7,"late_dinner":28.0},"佐賀県":{"smoking":24.2,"weight_gain":40.4,"exercise":72.3,"walking":57.6,"late_dinner":25.1},"長崎県":{"smoking":22.2,"weight_gain":40.1,"exercise":71.4,"walking":55.0,"late_dinner":22.7},"熊本県":{"smoking":23.0,"weight_gain":41.6,"exercise":72.9,"walking":59.2,"late_dinner":25.6},"大分県":{"smoking":22.5,"weight_gain":41.2,"exercise":71.0,"walking":52.2,"late_dinner":24.5},"宮崎県":{"smoking":23.7,"weight_gain":41.5,"exercise":70.0,"walking":56.4,"late_dinner":26.1},"鹿児島県":{"smoking":21.1,"weight_gain":41.3,"exercise":69.8,"walking":55.9,"late_dinner":27.3},"沖縄県":{"smoking":19.6,"weight_gain":48.7,"exercise":69.7,"walking":57.3,"late_dinner":29.6},"都道府県判別不可":{"smoking":21.9,"weight_gain":42.0,"exercise":71.7,"walking":60.4,"late_dinner":29.8}}}
+{
+  "source": "NDB第10回 特定健診質問票（令和4年度, 40-74歳）",
+  "questions": {
+    "smoking": {
+      "label": "喫煙",
+      "question": "たばこを習慣的に吸っている",
+      "risk_label": "喫煙率"
+    },
+    "weight_gain": {
+      "label": "体重増加",
+      "question": "20歳から10kg以上増加",
+      "risk_label": "体重10kg+増加率"
+    },
+    "exercise": {
+      "label": "運動習慣",
+      "question": "30分以上の運動を週2日以上",
+      "risk_label": "運動不足率"
+    },
+    "walking": {
+      "label": "歩行習慣",
+      "question": "1日1時間以上歩行",
+      "risk_label": "歩行不足率"
+    },
+    "late_dinner": {
+      "label": "就寝前夕食",
+      "question": "就寝前2時間以内に夕食を週3回以上",
+      "risk_label": "遅い夕食率"
+    },
+    "drinking_daily": {
+      "label": "毎日飲酒",
+      "question": "お酒を毎日飲む（特定健診Q18）",
+      "risk_label": "毎日飲酒率"
+    },
+    "heavy_drinker": {
+      "label": "高量飲酒",
+      "question": "飲酒日1日2合以上（特定健診Q19・飲酒者中）",
+      "risk_label": "2合以上飲酒率"
+    },
+    "sleep_ok": {
+      "label": "睡眠充足",
+      "question": "睡眠で休養が十分とれている（特定健診Q20）",
+      "risk_label": "睡眠充足率"
+    }
+  },
+  "prefectures": {
+    "北海道": {
+      "smoking": 28.0,
+      "weight_gain": 41.7,
+      "exercise": 75.4,
+      "walking": 58.9,
+      "late_dinner": 26.2,
+      "drinking_daily": 26.1,
+      "heavy_drinker": 18.7,
+      "sleep_ok": 67.7
+    },
+    "青森県": {
+      "smoking": 26.8,
+      "weight_gain": 40.9,
+      "exercise": 75.1,
+      "walking": 59.8,
+      "late_dinner": 28.4,
+      "drinking_daily": 29.1,
+      "heavy_drinker": 21.2,
+      "sleep_ok": 68.0
+    },
+    "岩手県": {
+      "smoking": 24.6,
+      "weight_gain": 39.7,
+      "exercise": 77.6,
+      "walking": 48.2,
+      "late_dinner": 29.6,
+      "drinking_daily": 30.3,
+      "heavy_drinker": 19.9,
+      "sleep_ok": 66.2
+    },
+    "宮城県": {
+      "smoking": 24.6,
+      "weight_gain": 40.6,
+      "exercise": 73.5,
+      "walking": 55.7,
+      "late_dinner": 26.3,
+      "drinking_daily": 27.9,
+      "heavy_drinker": 17.4,
+      "sleep_ok": 65.8
+    },
+    "秋田県": {
+      "smoking": 24.4,
+      "weight_gain": 38.1,
+      "exercise": 74.0,
+      "walking": 55.2,
+      "late_dinner": 23.8,
+      "drinking_daily": 32.3,
+      "heavy_drinker": 20.1,
+      "sleep_ok": 71.2
+    },
+    "山形県": {
+      "smoking": 22.7,
+      "weight_gain": 37.0,
+      "exercise": 81.8,
+      "walking": 68.6,
+      "late_dinner": 21.5,
+      "drinking_daily": 27.7,
+      "heavy_drinker": 13.4,
+      "sleep_ok": 67.2
+    },
+    "福島県": {
+      "smoking": 25.0,
+      "weight_gain": 40.9,
+      "exercise": 75.0,
+      "walking": 62.0,
+      "late_dinner": 25.1,
+      "drinking_daily": 27.7,
+      "heavy_drinker": 14.9,
+      "sleep_ok": 67.6
+    },
+    "茨城県": {
+      "smoking": 23.3,
+      "weight_gain": 41.8,
+      "exercise": 72.3,
+      "walking": 57.8,
+      "late_dinner": 28.8,
+      "drinking_daily": 25.3,
+      "heavy_drinker": 15.7,
+      "sleep_ok": 66.3
+    },
+    "栃木県": {
+      "smoking": 23.8,
+      "weight_gain": 41.1,
+      "exercise": 72.3,
+      "walking": 56.7,
+      "late_dinner": 27.0,
+      "drinking_daily": 24.1,
+      "heavy_drinker": 15.2,
+      "sleep_ok": 67.8
+    },
+    "群馬県": {
+      "smoking": 22.7,
+      "weight_gain": 40.3,
+      "exercise": 70.7,
+      "walking": 57.9,
+      "late_dinner": 27.3,
+      "drinking_daily": 25.1,
+      "heavy_drinker": 15.3,
+      "sleep_ok": 67.8
+    },
+    "埼玉県": {
+      "smoking": 22.1,
+      "weight_gain": 40.8,
+      "exercise": 70.7,
+      "walking": 54.6,
+      "late_dinner": 29.7,
+      "drinking_daily": 26.5,
+      "heavy_drinker": 14.8,
+      "sleep_ok": 65.4
+    },
+    "千葉県": {
+      "smoking": 21.6,
+      "weight_gain": 41.0,
+      "exercise": 71.0,
+      "walking": 54.5,
+      "late_dinner": 30.1,
+      "drinking_daily": 25.8,
+      "heavy_drinker": 15.5,
+      "sleep_ok": 65.7
+    },
+    "東京都": {
+      "smoking": 19.9,
+      "weight_gain": 38.7,
+      "exercise": 69.7,
+      "walking": 52.9,
+      "late_dinner": 29.0,
+      "drinking_daily": 26.9,
+      "heavy_drinker": 17.8,
+      "sleep_ok": 65.8
+    },
+    "神奈川県": {
+      "smoking": 20.8,
+      "weight_gain": 40.1,
+      "exercise": 69.9,
+      "walking": 53.3,
+      "late_dinner": 29.7,
+      "drinking_daily": 26.5,
+      "heavy_drinker": 16.1,
+      "sleep_ok": 65.6
+    },
+    "新潟県": {
+      "smoking": 22.9,
+      "weight_gain": 36.1,
+      "exercise": 76.1,
+      "walking": 58.1,
+      "late_dinner": 24.8,
+      "drinking_daily": 31.1,
+      "heavy_drinker": 15.5,
+      "sleep_ok": 67.9
+    },
+    "富山県": {
+      "smoking": 22.0,
+      "weight_gain": 36.3,
+      "exercise": 77.7,
+      "walking": 65.0,
+      "late_dinner": 25.1,
+      "drinking_daily": 28.2,
+      "heavy_drinker": 13.7,
+      "sleep_ok": 58.5
+    },
+    "石川県": {
+      "smoking": 21.6,
+      "weight_gain": 37.3,
+      "exercise": 74.8,
+      "walking": 58.2,
+      "late_dinner": 26.1,
+      "drinking_daily": 25.5,
+      "heavy_drinker": 14.4,
+      "sleep_ok": 66.1
+    },
+    "福井県": {
+      "smoking": 21.5,
+      "weight_gain": 37.5,
+      "exercise": 78.0,
+      "walking": 65.0,
+      "late_dinner": 25.1,
+      "drinking_daily": 25.3,
+      "heavy_drinker": 14.8,
+      "sleep_ok": 64.2
+    },
+    "山梨県": {
+      "smoking": 23.0,
+      "weight_gain": 36.5,
+      "exercise": 75.4,
+      "walking": 55.2,
+      "late_dinner": 23.7,
+      "drinking_daily": 23.8,
+      "heavy_drinker": 17.1,
+      "sleep_ok": 60.5
+    },
+    "長野県": {
+      "smoking": 21.0,
+      "weight_gain": 36.2,
+      "exercise": 74.9,
+      "walking": 56.0,
+      "late_dinner": 25.8,
+      "drinking_daily": 25.8,
+      "heavy_drinker": 14.7,
+      "sleep_ok": 66.9
+    },
+    "岐阜県": {
+      "smoking": 20.7,
+      "weight_gain": 37.9,
+      "exercise": 75.6,
+      "walking": 62.5,
+      "late_dinner": 22.7,
+      "drinking_daily": 24.7,
+      "heavy_drinker": 14.8,
+      "sleep_ok": 63.3
+    },
+    "静岡県": {
+      "smoking": 21.7,
+      "weight_gain": 38.4,
+      "exercise": 72.2,
+      "walking": 58.3,
+      "late_dinner": 23.8,
+      "drinking_daily": 22.2,
+      "heavy_drinker": 16.4,
+      "sleep_ok": 64.5
+    },
+    "愛知県": {
+      "smoking": 20.8,
+      "weight_gain": 39.9,
+      "exercise": 71.7,
+      "walking": 58.0,
+      "late_dinner": 25.5,
+      "drinking_daily": 23.5,
+      "heavy_drinker": 14.5,
+      "sleep_ok": 66.2
+    },
+    "三重県": {
+      "smoking": 21.2,
+      "weight_gain": 39.1,
+      "exercise": 73.1,
+      "walking": 61.4,
+      "late_dinner": 23.8,
+      "drinking_daily": 23.6,
+      "heavy_drinker": 11.8,
+      "sleep_ok": 66.2
+    },
+    "滋賀県": {
+      "smoking": 20.0,
+      "weight_gain": 39.6,
+      "exercise": 71.9,
+      "walking": 60.4,
+      "late_dinner": 27.2,
+      "drinking_daily": 24.9,
+      "heavy_drinker": 13.4,
+      "sleep_ok": 63.0
+    },
+    "京都府": {
+      "smoking": 19.9,
+      "weight_gain": 37.6,
+      "exercise": 70.5,
+      "walking": 57.1,
+      "late_dinner": 27.5,
+      "drinking_daily": 26.0,
+      "heavy_drinker": 13.8,
+      "sleep_ok": 64.9
+    },
+    "大阪府": {
+      "smoking": 22.0,
+      "weight_gain": 40.7,
+      "exercise": 72.3,
+      "walking": 56.1,
+      "late_dinner": 29.6,
+      "drinking_daily": 27.9,
+      "heavy_drinker": 17.7,
+      "sleep_ok": 61.0
+    },
+    "兵庫県": {
+      "smoking": 19.4,
+      "weight_gain": 38.6,
+      "exercise": 70.6,
+      "walking": 55.8,
+      "late_dinner": 26.7,
+      "drinking_daily": 26.5,
+      "heavy_drinker": 14.8,
+      "sleep_ok": 63.5
+    },
+    "奈良県": {
+      "smoking": 18.7,
+      "weight_gain": 38.6,
+      "exercise": 70.5,
+      "walking": 55.5,
+      "late_dinner": 25.6,
+      "drinking_daily": 24.9,
+      "heavy_drinker": 12.7,
+      "sleep_ok": 62.1
+    },
+    "和歌山県": {
+      "smoking": 21.7,
+      "weight_gain": 39.1,
+      "exercise": 71.8,
+      "walking": 59.2,
+      "late_dinner": 23.5,
+      "drinking_daily": 28.1,
+      "heavy_drinker": 14.5,
+      "sleep_ok": 68.2
+    },
+    "鳥取県": {
+      "smoking": 20.7,
+      "weight_gain": 37.0,
+      "exercise": 75.4,
+      "walking": 69.5,
+      "late_dinner": 24.5,
+      "drinking_daily": 27.1,
+      "heavy_drinker": 16.0,
+      "sleep_ok": 63.8
+    },
+    "島根県": {
+      "smoking": 20.1,
+      "weight_gain": 35.0,
+      "exercise": 77.2,
+      "walking": 62.8,
+      "late_dinner": 24.0,
+      "drinking_daily": 28.0,
+      "heavy_drinker": 13.4,
+      "sleep_ok": 69.1
+    },
+    "岡山県": {
+      "smoking": 21.2,
+      "weight_gain": 40.5,
+      "exercise": 72.7,
+      "walking": 62.6,
+      "late_dinner": 26.4,
+      "drinking_daily": 25.0,
+      "heavy_drinker": 14.3,
+      "sleep_ok": 65.5
+    },
+    "広島県": {
+      "smoking": 21.1,
+      "weight_gain": 39.3,
+      "exercise": 75.0,
+      "walking": 60.9,
+      "late_dinner": 28.5,
+      "drinking_daily": 29.3,
+      "heavy_drinker": 13.1,
+      "sleep_ok": 61.0
+    },
+    "山口県": {
+      "smoking": 21.3,
+      "weight_gain": 37.7,
+      "exercise": 72.9,
+      "walking": 58.2,
+      "late_dinner": 25.8,
+      "drinking_daily": 27.8,
+      "heavy_drinker": 13.7,
+      "sleep_ok": 66.5
+    },
+    "徳島県": {
+      "smoking": 19.1,
+      "weight_gain": 39.2,
+      "exercise": 71.2,
+      "walking": 60.6,
+      "late_dinner": 24.6,
+      "drinking_daily": 25.6,
+      "heavy_drinker": 15.4,
+      "sleep_ok": 64.3
+    },
+    "香川県": {
+      "smoking": 19.8,
+      "weight_gain": 39.4,
+      "exercise": 72.9,
+      "walking": 59.7,
+      "late_dinner": 25.0,
+      "drinking_daily": 24.1,
+      "heavy_drinker": 13.2,
+      "sleep_ok": 66.0
+    },
+    "愛媛県": {
+      "smoking": 20.5,
+      "weight_gain": 40.9,
+      "exercise": 71.3,
+      "walking": 53.6,
+      "late_dinner": 25.7,
+      "drinking_daily": 23.2,
+      "heavy_drinker": 15.9,
+      "sleep_ok": 63.1
+    },
+    "高知県": {
+      "smoking": 22.7,
+      "weight_gain": 41.1,
+      "exercise": 70.9,
+      "walking": 55.4,
+      "late_dinner": 25.8,
+      "drinking_daily": 30.2,
+      "heavy_drinker": 20.4,
+      "sleep_ok": 66.1
+    },
+    "福岡県": {
+      "smoking": 24.0,
+      "weight_gain": 40.7,
+      "exercise": 71.5,
+      "walking": 55.7,
+      "late_dinner": 28.0,
+      "drinking_daily": 27.5,
+      "heavy_drinker": 15.5,
+      "sleep_ok": 66.8
+    },
+    "佐賀県": {
+      "smoking": 24.2,
+      "weight_gain": 40.4,
+      "exercise": 72.3,
+      "walking": 57.6,
+      "late_dinner": 25.1,
+      "drinking_daily": 27.1,
+      "heavy_drinker": 14.6,
+      "sleep_ok": 66.6
+    },
+    "長崎県": {
+      "smoking": 22.2,
+      "weight_gain": 40.1,
+      "exercise": 71.4,
+      "walking": 55.0,
+      "late_dinner": 22.7,
+      "drinking_daily": 25.8,
+      "heavy_drinker": 12.1,
+      "sleep_ok": 69.9
+    },
+    "熊本県": {
+      "smoking": 23.0,
+      "weight_gain": 41.6,
+      "exercise": 72.9,
+      "walking": 59.2,
+      "late_dinner": 25.6,
+      "drinking_daily": 27.5,
+      "heavy_drinker": 12.1,
+      "sleep_ok": 67.0
+    },
+    "大分県": {
+      "smoking": 22.5,
+      "weight_gain": 41.2,
+      "exercise": 71.0,
+      "walking": 52.2,
+      "late_dinner": 24.5,
+      "drinking_daily": 26.7,
+      "heavy_drinker": 12.9,
+      "sleep_ok": 70.1
+    },
+    "宮崎県": {
+      "smoking": 23.7,
+      "weight_gain": 41.5,
+      "exercise": 70.0,
+      "walking": 56.4,
+      "late_dinner": 26.1,
+      "drinking_daily": 29.8,
+      "heavy_drinker": 14.4,
+      "sleep_ok": 68.8
+    },
+    "鹿児島県": {
+      "smoking": 21.1,
+      "weight_gain": 41.3,
+      "exercise": 69.8,
+      "walking": 55.9,
+      "late_dinner": 27.3,
+      "drinking_daily": 27.6,
+      "heavy_drinker": 11.0,
+      "sleep_ok": 70.3
+    },
+    "沖縄県": {
+      "smoking": 19.6,
+      "weight_gain": 48.7,
+      "exercise": 69.7,
+      "walking": 57.3,
+      "late_dinner": 29.6,
+      "drinking_daily": 21.1,
+      "heavy_drinker": 22.3,
+      "sleep_ok": 63.3
+    },
+    "都道府県判別不可": {
+      "smoking": 21.9,
+      "weight_gain": 42.0,
+      "exercise": 71.7,
+      "walking": 60.4,
+      "late_dinner": 29.8,
+      "drinking_daily": 23.5,
+      "heavy_drinker": 17.6,
+      "sleep_ok": 65.9
+    }
+  }
+}
