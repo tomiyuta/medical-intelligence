@@ -14,3 +14,4 @@ data/static/facilities_compact.json
 data/medical_intelligence.db
 data/processed/
 data/static/facilities_compact.json
+data/raw_age_adjusted_mortality/
