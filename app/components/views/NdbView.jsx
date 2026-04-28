@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { fmt, sortPrefs } from '../shared';
 
-const CAT_LABELS = {'A_初再診料':'外来受診','B_医学管理等':'医学管理','C_在宅医療':'在宅医療','D_検査':'検査','E_画像診断':'画像診断','K_手術':'手術'};
+const CAT_LABELS = {'A_初再診料':'外来受診','B_医学管理等':'慢性疾患管理','C_在宅医療':'在宅医療'};
 const RISK_META = {
   'ヘモグロビン': {unit:'g/dL', note:'低値=貧血リスク', icon:'🩸'},
   '血清クレアチニン': {unit:'mg/dL', note:'高値=腎機能低下', icon:'🫘'},
