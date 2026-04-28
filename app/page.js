@@ -51,6 +51,7 @@ export default function Home() {
   const [homecareCapability, setHomecareCapability] = useState(null);
   const [ndbRx, setNdbRx] = useState([]);
   const [ndbHc, setNdbHc] = useState([]);
+  const [ndbCheckupRiskRates, setNdbCheckupRiskRates] = useState(null);
   const [kijunData, setKijunData] = useState([]);
   const [kijunSummary, setKijunSummary] = useState(null);
   const [kijunPage, setKijunPage] = useState(0);
@@ -87,6 +88,7 @@ export default function Home() {
     fetch('/api/ndb/diagnostics').then(r=>r.json()).then(d=>setNdbDiag(d));
     fetch('/api/homecare-capability').then(r=>r.json()).then(d=>setHomecareCapability(d));
     fetch('/api/ndb/health-checkup').then(r=>r.json()).then(d=>setNdbHc(d));
+    fetch('/api/ndb/checkup-risk-rates').then(r=>r.json()).then(d=>setNdbCheckupRiskRates(d));
     fetch('/api/future-demographics').then(r=>r.json()).then(d=>setFutureDemo(d));
     fetch('/api/vital-statistics').then(r=>r.json()).then(d=>setVitalStats(d));
     fetch('/api/age-pyramid').then(r=>r.json()).then(d=>setAgePyramid(d));
@@ -174,7 +176,7 @@ export default function Home() {
         {view==='bedfunc' && <RegionalBedFunctionView mob={mob} bedFunc={bedFunc} regPref={globalPref} setRegPref={setGlobalPref} agePyramid={agePyramid} ndbDiag={ndbDiag} homecareCapability={homecareCapability} />}
 
         {/* ═══ NDB VIEW ═══ */}
-        {view==='ndb' && <NdbView mob={mob} ndbDiag={ndbDiag} ndbRx={ndbRx} ndbHc={ndbHc} ndbPref={globalPref} setNdbPref={setGlobalPref} setNdbRx={setNdbRx} vitalStats={vitalStats} areaDemoData={areaDemoData} ndbQ={ndbQ} agePyramid={agePyramid} futureDemo={futureDemo} patientSurvey={patientSurvey} bedFunc={bedFunc} />}
+        {view==='ndb' && <NdbView mob={mob} ndbDiag={ndbDiag} ndbRx={ndbRx} ndbHc={ndbHc} ndbPref={globalPref} setNdbPref={setGlobalPref} setNdbRx={setNdbRx} vitalStats={vitalStats} areaDemoData={areaDemoData} ndbQ={ndbQ} agePyramid={agePyramid} futureDemo={futureDemo} patientSurvey={patientSurvey} bedFunc={bedFunc} ndbCheckupRiskRates={ndbCheckupRiskRates} />}
 
         {/* ═══ FACILITY STANDARDS VIEW ═══ */}
         {view==='explorer' && <FacilityExplorerView mob={mob} kijunData={kijunData} setKijunData={setKijunData} kijunSummary={kijunSummary} kijunPref={globalPref} setKijunPref={setGlobalPref} kijunPage={kijunPage} setKijunPage={setKijunPage} kijunSearch={kijunSearch} setKijunSearch={setKijunSearch} kijunSort={kijunSort} setKijunSort={setKijunSort} kijunExpanded={kijunExpanded} setKijunExpanded={setKijunExpanded} topFac={topFac} facSearch={facSearch} setFacSearch={setFacSearch} searchResults={searchResults} doSearch={doSearch} geoFacilities={geoFacilities} />}

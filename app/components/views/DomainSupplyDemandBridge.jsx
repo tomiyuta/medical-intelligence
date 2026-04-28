@@ -3,7 +3,7 @@ import { DOMAIN_MAPPING, describeDelta, DATA_BADGE } from '../../../lib/domainMa
 
 const ACTIVE_FUNCS = ['高度急性期', '急性期', '回復期', '慢性期'];
 
-export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ, vitalStats, bedFunc, ndbRx, agePyramid, mob, ndbHc }) {
+export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ, vitalStats, bedFunc, ndbRx, agePyramid, mob, ndbHc, ndbCheckupRiskRates }) {
   if (!ndbPref) return null;
 
   // 各データソースから pref/national を抽出
@@ -69,29 +69,46 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
     return keys.reduce((s, k) => s + ((bf[k]?.beds || 0) / total * 100), 0);
   };
 
-  // 各セルの値を取得するヘルパー
+  // ─────────────────────────────────────────────────────────────────
+  // Bridge Risk Model v1: risks[] 配列の各要素を処理するヘルパー
+  // ─────────────────────────────────────────────────────────────────
+  const getRiskCell = (riskCfg) => {
+    if (!riskCfg) return null;
+    let prefVal = null, natVal = null;
+    let refLabel = '47都道府県平均';
+    if (riskCfg.source === 'ndbCheckupRiskRate') {
+      // NDB特定健診 リスク該当者率 (Phase 1 v1: bmi_ge_25, hba1c_ge_6_5, sbp_ge_140, ldl_ge_140, urine_protein_ge_1plus)
+      const rates = ndbCheckupRiskRates?.risk_rates?.[riskCfg.riskKey];
+      if (rates) {
+        prefVal = rates.by_pref?.[ndbPref]?.rate;
+        const all = Object.values(rates.by_pref || {}).map(v => v.rate).filter(v => typeof v === 'number');
+        if (all.length > 0) natVal = all.reduce((s,v) => s+v, 0) / all.length;
+      }
+    } else if (riskCfg.source === 'ndbHc') {
+      // NDB健診 平均値 (eGFR等)。男女平均を県値とする
+      const hcRecs = Array.isArray(ndbHc) ? ndbHc.filter(h => h.metric === riskCfg.ndbHcMetric) : [];
+      const prefRec = hcRecs.find(h => h.pref === ndbPref);
+      if (prefRec) prefVal = (prefRec.male + prefRec.female) / 2;
+      const valid = hcRecs.filter(h => h.pref !== '全国');
+      if (valid.length > 0) natVal = valid.reduce((s,h) => s + (h.male+h.female)/2, 0) / valid.length;
+    } else if (riskCfg.source === 'ndbQ') {
+      // NDB質問票
+      prefVal = ndbQPref?.[riskCfg.ndbQKey];
+      natVal = ndbQNat?.[riskCfg.ndbQKey];
+    }
+    if (prefVal == null) return { ...riskCfg, missing: true };
+    const delta = describeDelta(prefVal, natVal, riskCfg.direction || 'higher_worse', undefined, undefined, refLabel);
+    return { ...riskCfg, prefVal, natVal, delta };
+  };
+
+  // 各セルの値を取得するヘルパー (demand/utilization/supply/outcome)
   const getCell = (domain, type) => {
     const cfg = domain[type];
     if (!cfg) return null;
     let prefVal = null, natVal = null, label = cfg.label, unit = cfg.unit, note = cfg.note;
 
     let refLabel = '全国平均';
-    if (type === 'risk') {
-      if (cfg.ndbHcMetric) {
-        // NDB健診 (eGFR等)。男女平均を県値とする
-        const hcRecs = Array.isArray(ndbHc) ? ndbHc.filter(h => h.metric === cfg.ndbHcMetric) : [];
-        const prefRec = hcRecs.find(h => h.pref === ndbPref);
-        if (prefRec) prefVal = (prefRec.male + prefRec.female) / 2;
-        // 47県単純平均 (ndb_health_checkup には '全国' エントリがあるが、47県平均を統一して使用)
-        const valid = hcRecs.filter(h => h.pref !== '全国');
-        if (valid.length > 0) natVal = valid.reduce((s,h) => s + (h.male+h.female)/2, 0) / valid.length;
-        refLabel = '47都道府県平均';
-      } else {
-        prefVal = ndbQPref?.[cfg.ndbQKey];
-        natVal = ndbQNat?.[cfg.ndbQKey];
-        refLabel = '47都道府県平均'; // ndbQに'全国'エントリなし、47県単純平均を代理使用
-      }
-    } else if (type === 'demand') {
+    if (type === 'demand') {
       const psKey = cfg.patientSurveyKey;
       prefVal = psPref?.categories?.[psKey]?.outpatient;
       natVal = psNat?.categories?.[psKey]?.outpatient;
@@ -127,9 +144,9 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
         <span style={{fontSize:18}}>🔗</span>
         <div>
           <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>
-            疾患別 需要・供給・結果サマリー (v0)
-            <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#e0e7ff',color:'#3730a3',fontWeight:500}}>3領域・横並び</span>
-            <span style={{marginLeft:4,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#dcfce7',color:'#166534',fontWeight:500}}>🔒 v0 FROZEN</span>
+            疾患別 需要・供給・結果サマリー (v1)
+            <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#e0e7ff',color:'#3730a3',fontWeight:500}}>6領域・複数riskモデル</span>
+            <span style={{marginLeft:4,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#fef3c7',color:'#92400e',fontWeight:500}}>🆙 Risk Model v1</span>
           </div>
           <div style={{fontSize:11,color:'#94a3b8'}}>
             循環器・糖尿病代謝・がん の各領域で「リスク → 疾病負荷 → 医療利用 → 供給proxy → 結果」を{ndbPref}と全国で横並び比較
@@ -159,7 +176,8 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
           </thead>
           <tbody>
             {Object.values(DOMAIN_MAPPING).map(domain => {
-              const risk = domain.risk ? getCell(domain, 'risk') : null;
+              // Bridge Risk Model v1: risks[] 配列対応
+              const riskCells = (domain.risks || []).map(getRiskCell).filter(Boolean);
               const demand = domain.demand ? getCell(domain, 'demand') : null;
               const supply = domain.supply ? getCell(domain, 'supply') : null;
               const outcome = domain.outcome ? getCell(domain, 'outcome') : null;
@@ -206,7 +224,45 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
                       <div style={{fontSize:9,color:'#78350f',marginTop:4,lineHeight:1.4,fontStyle:'italic'}}>{domain.experimentalNote}</div>
                     )}
                   </td>
-                  <td style={{padding:'12px 8px',verticalAlign:'top'}}>{renderCell(risk)}</td>
+                  <td style={{padding:'12px 8px',verticalAlign:'top'}}>
+                    {riskCells.length === 0 ? (
+                      <span style={{fontSize:11,color:'#cbd5e1'}}>—</span>
+                    ) : (
+                      <div style={{display:'flex',flexDirection:'column',gap:8}}>
+                        {riskCells.map((rc, ri) => (
+                          <div key={ri} style={{paddingBottom: ri < riskCells.length-1 ? 6 : 0, borderBottom: ri < riskCells.length-1 ? '1px dashed #e2e8f0' : 'none'}}>
+                            {rc.missing ? (
+                              <div>
+                                <div style={{fontSize:11,color:'#cbd5e1'}}>データなし</div>
+                                <div style={{fontSize:9,color:'#cbd5e1',marginTop:2}}>{rc.label}</div>
+                              </div>
+                            ) : (
+                              <div>
+                                <div style={{display:'flex',alignItems:'baseline',gap:4,flexWrap:'wrap'}}>
+                                  <span style={{fontSize:13,fontWeight:600,color:'#1e293b'}}>
+                                    {fmtVal(rc.prefVal, rc.unit === '%' ? '%' : '')}
+                                    {rc.unit !== '%' && <span style={{fontSize:10,color:'#94a3b8',marginLeft:2}}>{rc.unit}</span>}
+                                  </span>
+                                  {rc.legacy && (
+                                    <span style={{fontSize:8,padding:'1px 4px',background:'#e5e7eb',color:'#6b7280',borderRadius:3,fontWeight:500}}>v0継承</span>
+                                  )}
+                                </div>
+                                {rc.delta && (
+                                  <div style={{fontSize:10,color:rc.delta.color,fontWeight:600,marginTop:1}}>
+                                    {rc.delta.label} ({rc.delta.deltaPct > 0 ? '+' : ''}{rc.delta.deltaPct.toFixed(1)}%)
+                                  </div>
+                                )}
+                                <div style={{fontSize:9,color:'#94a3b8',marginTop:2,lineHeight:1.4}}>{rc.label}</div>
+                                {rc.note && (
+                                  <div style={{fontSize:8,color:'#cbd5e1',marginTop:1,lineHeight:1.4,fontStyle:'italic'}}>※{rc.note}</div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </td>
                   <td style={{padding:'12px 8px',verticalAlign:'top'}}>
                     {demand
                       ? renderCell(demand)
@@ -273,8 +329,10 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
 
       {/* 注記 */}
       <div style={{fontSize:10,color:'#94a3b8',marginTop:14,lineHeight:1.7,padding:'10px 14px',background:'#f8fafc',borderRadius:6}}>
-        <b style={{color:'#475569'}}>📌 v0/v1 の制約と注意点</b><br/>
-        ・3領域 (循環器/糖尿病代謝/がん) は <b>v0 FROZEN</b> (現行解釈仕様の固定。医学的構成の確定ではない)。脳血管・呼吸器は <b>v1 experimental</b> (5列中の一部空白あり)。<br/>
+        <b style={{color:'#475569'}}>📌 Bridge Risk Model v1 の制約と注意点</b><br/>
+        ・<b>v1 (2026-04-28 採択):</b> リスク列は単一proxyから <code>risks[]</code> 配列(複数指標)へ移行。NDB健診リスク率 (BMI/HbA1c/SBP/LDL/尿蛋白) と質問票 (服薬・既往) を統合。<br/>
+        ・既存リスクは <span style={{padding:'1px 4px',background:'#e5e7eb',color:'#6b7280',borderRadius:3,fontSize:9}}>v0継承</span> ラベルで保持。新規追加リスクと並列表示。<br/>
+        ・脳血管/呼吸器/腎疾患は <b>v1 experimental</b> (5列中の一部空白あり)。<br/>
         ・本サマリーは <b>スコア化を行わず</b>、データ並べ表示のみ。Gap指標化はPhase 2で検討。<br/>
         ・「医療利用」列は<b>NDB処方薬の薬効分類ベース proxy</b>(人口10万対補正)。<u>疾患患者数ではない</u>。比較基準は47都道府県平均(処方薬集計に全国値なし)。<br/>
         ・処方数量は薬効分類別数量の合算であり、薬剤単位・剤形・用量差を含みます。<u>治療人数や患者数ではありません</u>。<br/>

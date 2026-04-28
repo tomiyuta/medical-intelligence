@@ -5,7 +5,7 @@
 - **本番URL**: <https://medical-intelligence-two.vercel.app>
 - **GitHub**: <https://github.com/tomiyuta/medical-intelligence> (public)
 - **ローカル**: `~/Projects/medical-intelligence/`
-- **HEAD**: bcff031 (Bridge 腎疾患 v1 — 6領域目, experimental)
+- **HEAD**: (next commit) — Bridge Risk Model v1 (FROZEN解除, risks[]配列化)
 - **フレームワーク**: Next.js 14 App Router + Vercel + SQLite (25テーブル/1,227,835行) + Static JSON (27ファイル/\~52MB)
 
 ---
@@ -1112,3 +1112,29 @@ cd ~/Projects/medical-intelligence && git log --oneline -3
 # Gap Finderセクション確認
 grep -n "GAP FINDER" app/components/views/NdbView.jsx
 ```
+
+
+## Bridge v0 FROZEN 解除 → v1 移行 (2026-04-28)
+
+### 判断
+Bridge v0 (commit 475a174) の FROZEN を解除し、Bridge Risk Model v1 へ移行。
+
+### 理由
+Phase 1 NDB ETL拡張により Bridge の risk列が単一proxyから複数risk指標へ変更。
+表示追加ではなく解釈仕様の中核変更のため、FROZEN維持ではなく解除として扱う。
+
+### 新方針
+- `risk` (単一) → `risks[]` (配列) へ
+- 既存riskは `legacy: true` で保持
+- 新規riskは source/note/direction を明示
+- v0の受療率・処方proxy・供給proxy・死亡率原則は完全継承
+
+### 対象6領域 (全領域に適用)
+循環器: SBP≥140 / LDL≥140 / 高血圧薬 / 脂質薬 / 喫煙(legacy)
+糖尿病: HbA1c≥6.5 / BMI≥25 / 糖尿病薬 / 体重増加(legacy)
+がん: 喫煙(legacy) / 多量飲酒
+脳血管: SBP≥140 / 脳卒中既往 / 喫煙(legacy)
+呼吸器: 喫煙(legacy)
+腎疾患: 尿蛋白1+ / eGFR(legacy) / CKD既往
+
+詳細: docs/BRIDGE_V1_INTERPRETATION.md
