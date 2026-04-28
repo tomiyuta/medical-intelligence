@@ -9,6 +9,49 @@ const FUNC_COLORS = {
 };
 const ACTIVE_FUNCS = ['高度急性期', '急性期', '回復期', '慢性期'];
 
+// ════════════════════════════════════════════════════════════════════════════
+// 在宅移行 補助分類 (v0, peer review 2026-04-28 採択)
+// ════════════════════════════════════════════════════════════════════════════
+// Gate: 75歳以上割合 ≥ 47県平均 → 高齢化県のみ判定対象
+// 3指標 (NDB在宅/75+10万対 / 回復期シェア / 慢性期シェア) を47県平均比で評価
+// high≥2 → 在宅移行支援型の可能性 / low≥2 → 在宅移行ギャップ型の可能性
+// 表現は必ず「可能性」とし、断定しない
+function classifyHomecareType(stats) {
+  if (!stats) return null;
+  const { share75plus, share75plus_natAvg, homecarePer75, homecarePer75_avg, recoveryShare, recoveryShare_natAvg, chronicShare, chronicShare_natAvg } = stats;
+  if (share75plus == null || share75plus_natAvg == null) return null;
+
+  const isAging = share75plus >= share75plus_natAvg;
+  if (!isAging) return { type:'該当なし', icon:'➖', color:'#94a3b8', desc:'75歳以上割合が全国平均未満のため、本分類は判定対象外', signals:[] };
+
+  const signals = [];
+  let highCount = 0, lowCount = 0;
+  if (homecarePer75 != null && homecarePer75_avg != null && homecarePer75_avg > 0) {
+    const isHigh = homecarePer75 > homecarePer75_avg;
+    signals.push({ name:'NDB在宅医療(75+10万対)', value:homecarePer75, ref:homecarePer75_avg, isHigh, delta:((homecarePer75/homecarePer75_avg-1)*100).toFixed(1) });
+    if (isHigh) highCount++; else lowCount++;
+  }
+  if (recoveryShare != null && recoveryShare_natAvg != null) {
+    const isHigh = recoveryShare > recoveryShare_natAvg;
+    signals.push({ name:'回復期病床シェア', value:recoveryShare, ref:recoveryShare_natAvg, isHigh, delta:(recoveryShare-recoveryShare_natAvg).toFixed(1) });
+    if (isHigh) highCount++; else lowCount++;
+  }
+  if (chronicShare != null && chronicShare_natAvg != null) {
+    const isHigh = chronicShare > chronicShare_natAvg;
+    signals.push({ name:'慢性期病床シェア', value:chronicShare, ref:chronicShare_natAvg, isHigh, delta:(chronicShare-chronicShare_natAvg).toFixed(1) });
+    if (isHigh) highCount++; else lowCount++;
+  }
+  if (signals.length === 0) return null;
+
+  if (highCount >= 2) {
+    return { type:'在宅移行支援型の可能性', color:'#059669', icon:'🏠', desc:`75歳以上割合が全国平均以上(${share75plus.toFixed(1)}%) かつ 在宅・回復期・慢性期の${highCount}/3指標が47県平均より高い。在宅・退院後受け皿が比較的厚い構造の可能性。`, signals };
+  }
+  if (lowCount >= 2) {
+    return { type:'在宅移行ギャップ型の可能性', color:'#dc2626', icon:'⚠️', desc:`75歳以上割合が全国平均以上(${share75plus.toFixed(1)}%) かつ 在宅・回復期・慢性期の${lowCount}/3指標が47県平均より低い。高齢化に対し在宅・退院後受け皿が薄い可能性 — 追加検証要。`, signals };
+  }
+  return { type:'該当なし', icon:'➖', color:'#94a3b8', desc:`高齢化はあるが指標が拮抗(high=${highCount}, low=${lowCount})`, signals };
+}
+
 // 地域類型 (5-pattern, 優先順位順に評価)
 function classifyRegion(prefShares, natShares, beds_per_75plus, nat_beds_per_75plus) {
   if (!prefShares) return null;
@@ -230,6 +273,35 @@ export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegP
         <div style={{fontSize:13,fontWeight:700,color:region.color}}>地域類型: {region.type}</div>
       </div>
       <div style={{fontSize:12,color:'#475569',lineHeight:1.6}}>{region.desc}</div>
+    </div>
+  )}
+
+  {/* 在宅移行 補助分類 (v0) */}
+  {!isNational && homecareType && (
+    <div style={{background:'#fff',borderRadius:14,border:`1px solid ${(homecareType.color || '#cbd5e1') + '40'}`,padding:'16px 20px',marginBottom:16}}>
+      <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6,flexWrap:'wrap'}}>
+        <span style={{fontSize:20}}>{homecareType.icon || '➖'}</span>
+        <div style={{fontSize:13,fontWeight:700,color:homecareType.color || '#64748b'}}>在宅移行 補助分類: {homecareType.type}</div>
+        <span style={{fontSize:9,padding:'1px 6px',borderRadius:3,background:'#fef3c7',color:'#92400e',fontWeight:600}}>v0</span>
+      </div>
+      <div style={{fontSize:12,color:'#475569',lineHeight:1.6,marginBottom:8}}>{homecareType.desc}</div>
+      {Array.isArray(homecareType.signals) && homecareType.signals.length > 0 && (
+        <div style={{marginTop:8,padding:'8px 12px',background:'#f8fafc',borderRadius:6,fontSize:11}}>
+          <div style={{fontWeight:600,color:'#64748b',marginBottom:4}}>判定根拠 (47県平均比):</div>
+          <ul style={{paddingLeft:18,margin:0,lineHeight:1.7,color:'#475569'}}>
+            {homecareType.signals.map((sig, i) => (
+              <li key={i}>
+                {sig.name}: <b style={{color:sig.isHigh?'#059669':'#dc2626'}}>{sig.isHigh?'平均より高い':'平均より低い'}</b> ({Number(sig.delta) > 0 ? '+' : ''}{sig.delta}{(sig.name||'').includes('シェア') ? 'pt' : '%'})
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+      <div style={{fontSize:10,color:'#94a3b8',marginTop:8,padding:'6px 10px',background:'#fff7ed',borderRadius:4,lineHeight:1.5}}>
+        ⚠️ 本分類はNDB在宅医療算定・病床機能からみた地域構造の<b>暫定分類</b>です。
+        実際の訪問診療件数、看取り件数、在宅酸素実施数、cap.homecare/cap.rehab施設密度を直接示すものではありません。
+        cap proxyはv1で追加予定。
+      </div>
     </div>
   )}
 
