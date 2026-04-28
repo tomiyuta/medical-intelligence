@@ -143,8 +143,9 @@
 
 ## 6. 参考: 関連ファイル
 
-- `data/static/top_facilities.json` `cap` フィールド (10カテゴリ × 2,802施設)
-- `data/static/kijun_shards/{pref}.json` `cap` フィールド (10カテゴリ × ~2,000施設/県)
+- `data/static/top_facilities.json` `cap` フィールド (10カテゴリ × 2,802施設, **Tier S/A/B のみ**)
+- `data/static/kijun_shards/{pref}.json` `cap` フィールド (10カテゴリ × ~2,000施設/県, **Tier S/A/B/C/D/未評価**)
+- データセット間の Tier coverage 差は `docs/priority_score_methodology.md §Tier coverage` 参照
 - `app/components/views/FacilityExplorerView.jsx` `CAT_LABELS` / `CAT_COLORS` 定数
 - `app/api/facility-standards/route.js` `CAT_LABELS` (同期定義)
 - `lib/domainMapping.js` Bridge供給proxyでの参照

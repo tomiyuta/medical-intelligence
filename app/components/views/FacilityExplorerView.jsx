@@ -157,9 +157,10 @@ export default function FacilityExplorerView({
       ].map(t => (
         <button key={t.key} onClick={() => { setTierFilter(tierFilter === t.key ? '' : t.key); setKijunPage(0); }} style={{padding:'3px 10px',borderRadius:12,border:tierFilter===t.key?`2px solid ${t.color}`:'1px solid #e2e8f0',background:tierFilter===t.key?t.color+'18':'#fff',color:tierFilter===t.key?t.color:'#94a3b8',fontSize:11,fontWeight:tierFilter===t.key?600:400,cursor:'pointer'}}>{t.label}</button>
       ))}
-      <span style={{fontSize:10,color:'#94a3b8',marginLeft:8,maxWidth:'100%',display:'block',marginTop:2}}>
-        ※実データ分布(audit結果): S=0.02% / A=0.28% / B=2.44% / <b>C=78.49%</b> / D=4.76% / <b>未評価=14.01%</b>。
-        Tier C/D は score 30 未満の施設群(中小診療所等)を含み、S-Bと同列の「機能評価」ではありません。
+      <span style={{fontSize:10,color:'#94a3b8',marginLeft:8,maxWidth:'100%',display:'block',marginTop:2,lineHeight:1.6}}>
+        ※Tier S-D は<b>施設基準シャード(kijun_shards, 全90,215施設)内の内製参考分類</b>です。
+        <b>未評価</b>はscore/tierが付与されていない施設(12,643件, 14.01%)であり、<u>医療機能が低いことを意味しません</u>。<br/>
+        実データ分布: S=0.02% / A=0.28% / B=2.44% / <b>C=78.49%</b> / D=4.76% / 未評価=14.01%。Tier C/D は score 30 未満の施設群(中小診療所等)を含み、S-Bと同列の「機能評価」ではありません。
       </span>
     </div>
 
@@ -287,6 +288,10 @@ export default function FacilityExplorerView({
         <button key={t} onClick={() => { setTierFilter(tierFilter === t ? '' : t); resetDpcPage(); }} style={{padding:'3px 10px',borderRadius:12,border:tierFilter===t?`2px solid ${TC2[t]||'#64748b'}`:'1px solid #e2e8f0',background:tierFilter===t?(TC2[t]||'#64748b')+'18':'#fff',color:tierFilter===t?(TC2[t]||'#64748b'):'#94a3b8',fontSize:11,fontWeight:tierFilter===t?600:400,cursor:'pointer'}}>{t || '全て'}</button>
       ))}
       <span style={{fontSize:10,color:'#cbd5e1',marginLeft:'auto'}}>※Tier/スコア=規模・実績参考指標</span>
+    </div>
+    <div style={{fontSize:10,color:'#94a3b8',marginBottom:10,lineHeight:1.6,padding:'6px 10px',background:'#f8fafc',borderRadius:6,borderLeft:'3px solid #cbd5e1'}}>
+      📌 DPC・高機能タブは<b>上位2,802施設のみ</b>(<code>top_facilities.json</code>, score &ge; 30)を対象とするため、<b>Tier S/A/B のみ表示</b>します。
+      Tier C/D の施設は届出ベースタブで確認してください(kijun_shards に78.49%含まれます)。
     </div>
     {/* 検索 + sort + CSV (Tab 2) */}
     <div style={{display:'flex',gap:8,marginBottom:10,flexWrap:'wrap',alignItems:'center'}}>

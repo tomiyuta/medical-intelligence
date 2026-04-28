@@ -40,6 +40,41 @@
 
 理由: annual_cases (r=0.877) + total_beds (r=0.804) で大半説明される実態を「規模・実績」と明示するため。
 
+### Tier coverage の重要差 (commit 25725ac audit より)
+
+**同じ Tier S/A/B でも、データセットによって対象範囲・カバレッジが異なる**点に注意:
+
+| データセット | 対象施設数 | Tier 範囲 | 詳細 |
+|---|---|---|---|
+| `top_facilities.json` | 2,802 | **S/A/B のみ** | priority_score &ge; 30 の上位施設。FacilityExplorer Tab 2 で使用 |
+| `kijun_shards/{pref}.json` | 90,215 | **S/A/B/C/D/未評価** | 厚生局届出名簿全施設。FacilityExplorer Tab 1 で使用 |
+
+#### kijun_shards Tier 分布 (audit結果, 全47県集計)
+
+| Tier | 件数 | 比率 |
+|---|---|---|
+| S | 20 | 0.02% |
+| A | 249 | 0.28% |
+| B | 2,201 | 2.44% |
+| **C** | **70,806** | **78.49%** |
+| D | 4,296 | 4.76% |
+| 未評価 | 12,643 | 14.01% |
+
+**意味の差**:
+- `top_facilities` の Tier S/A/B = 上位2,802の中での序列 (priority_score 30+)
+- `kijun_shards` の Tier S/A/B = 全90,215の中での序列 (S=20, A=249, B=2,201 と一致)
+- `kijun_shards` の Tier C/D = score 30 未満 (中小診療所・専門クリニックを多く含む) ※`top_facilities` では除外
+- `kijun_shards` の **未評価** = score/tier が付与されていない施設 (14.01%, 都道府県別では沖縄94%等の偏在あり)
+
+**UI設計原則 (commit 25725ac)**:
+- Tab 1 (届出ベース): 全Tier (S/A/B/C/D/未評価) を選択肢として表示 — 実データ反映
+- Tab 2 (DPC・高機能): S/A/B のみ — 範囲外データを表示しない
+- 各Tabに「データセットの対象範囲」の注記を明示
+
+**Phase 2 課題**:
+- 沖縄県94%未評価の原因調査 (データ集計時期 / scoring未適用 / 地域別取得状況)
+- Capability別未評価率 (pediatric 22.2% 最高) の解釈
+
 ---
 
 ## 1. データ構造

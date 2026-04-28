@@ -5,7 +5,7 @@
 - **本番URL**: <https://medical-intelligence-two.vercel.app>
 - **GitHub**: <https://github.com/tomiyuta/medical-intelligence> (public)
 - **ローカル**: `~/Projects/medical-intelligence/`
-- **HEAD**: (next commit) — 未評価施設実態確認 + Tier C/D 復活
+- **HEAD**: (next commit) — Tier coverage 注記強化 + methodology.md セクション追加
 - **フレームワーク**: Next.js 14 App Router + Vercel + SQLite (25テーブル/1,227,835行) + Static JSON (27ファイル/\~52MB)
 
 ---
@@ -825,6 +825,19 @@ Tier なし(未評価): 12,643 (14.01%)
 - 「未評価」の定義検証は重要 — 実データを見ずに UI を作ると歪曲リスク
 - top_facilities と kijun_shards はTier付与方針が異なるため、両者統合UIで扱う際は注意
 - 14% が未評価という事実 → 「kijun_shards の scoring カバレッジ」 が今後の指標
+
+**追加修正 (commit 後続)**: peer review feedbackで以下を追加:
+- Tab 1 注記文言を peer review版に強化:
+  「Tier S-D は施設基準シャード(kijun_shards, 全90,215施設)内の内製参考分類です。未評価はscore/tier未付与の施設(14.01%)であり、医療機能が低いことを意味しません」
+- Tab 2 に C/D 不在の理由注記追加 (📌 アイコン box):
+  「DPC・高機能タブは上位2,802施設のみ(top_facilities, score≥30)を対象とするため、Tier S/A/B のみ表示。C/D は届出ベースタブで確認可能」
+- `docs/priority_score_methodology.md` に **Tier coverage** セクション新設:
+  | データセット | 件数 | Tier範囲 |
+  |---|---|---|
+  | top_facilities | 2,802 | S/A/B のみ |
+  | kijun_shards | 90,215 | S/A/B/C/D/未評価 |
+  同じ Tier S/A/B でもデータセットで意味が違う点を明示
+- `docs/capability_mapping.md` に Tier coverage 参照リンク追加
 
 **Phase 2 残課題**:
 1. **沖縄県94%未評価の原因調査**: データ集計時期・地域別取得状況の差、それともscoring未適用?
