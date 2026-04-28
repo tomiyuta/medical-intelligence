@@ -2,7 +2,7 @@
 import { useMemo } from 'react';
 import { fmt, METRICS, mKey } from '../shared';
 
-const VITAL_MAP = { cancer: '悪性新生物', heart: '心疾患', stroke: '脳血管疾患' };
+const VITAL_MAP = { cancer: 'がん(悪性新生物)', heart: '心疾患', stroke: '脳血管疾患' };
 const isVital = m => m in VITAL_MAP;
 
 export default function MapView({ mob, prefs, metric, setMetric, japanMap, hovPref, setHovPref, tooltipPos, setTooltipPos, setSelectedPref, setView, vitalStats }) {
