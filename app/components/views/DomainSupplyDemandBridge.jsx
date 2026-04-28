@@ -44,9 +44,11 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
     if (!cfg) return null;
     let prefVal = null, natVal = null, label = cfg.label, unit = cfg.unit, note = cfg.note;
 
+    let refLabel = '全国平均';
     if (type === 'risk') {
       prefVal = ndbQPref?.[cfg.ndbQKey];
       natVal = ndbQNat?.[cfg.ndbQKey];
+      refLabel = '47都道府県平均'; // ndbQに'全国'エントリなし、47県単純平均を代理使用
     } else if (type === 'demand') {
       const psKey = cfg.patientSurveyKey;
       prefVal = psPref?.categories?.[psKey]?.outpatient;
@@ -60,8 +62,8 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
     }
 
     if (prefVal == null) return { label, unit, note, missing: true };
-    const delta = describeDelta(prefVal, natVal, cfg.direction || 'higher_worse');
-    return { label, unit, note, prefVal, natVal, delta };
+    const delta = describeDelta(prefVal, natVal, cfg.direction || 'higher_worse', undefined, undefined, refLabel);
+    return { label, unit, note, prefVal, natVal, delta, proxyLabel: cfg.proxyLabel };
   };
 
   const fmtVal = (v, unit) => {
@@ -126,7 +128,13 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
                         {cell.delta.label} ({cell.delta.deltaPct > 0 ? '+' : ''}{cell.delta.deltaPct.toFixed(1)}%)
                       </div>
                     )}
+                    {cell.proxyLabel && (
+                      <div style={{fontSize:9,fontWeight:600,color:'#92400e',marginTop:2,padding:'1px 4px',background:'#fef3c7',borderRadius:3,display:'inline-block'}}>{cell.proxyLabel}</div>
+                    )}
                     <div style={{fontSize:9,color:'#cbd5e1',marginTop:3,lineHeight:1.4}}>{cell.label}</div>
+                    {cell.note && (
+                      <div style={{fontSize:9,color:'#94a3b8',marginTop:2,lineHeight:1.4,fontStyle:'italic'}}>※{cell.note}</div>
+                    )}
                   </div>
                 );
               };
@@ -166,12 +174,14 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
 
       {/* 注記 */}
       <div style={{fontSize:10,color:'#94a3b8',marginTop:14,lineHeight:1.7,padding:'10px 14px',background:'#f8fafc',borderRadius:6}}>
-        <b style={{color:'#475569'}}>📌 v0 の制約</b><br/>
+        <b style={{color:'#475569'}}>📌 v0 の制約と注意点</b><br/>
         ・本サマリーは <b>スコア化を行わず</b>、データ並べ表示のみ。Gap指標化はPhase 2で検討。<br/>
         ・「医療利用」列は Phase 2 で薬効分類辞書整備後に詳細化(現状はNDB処方薬の集約ロジック未整備)。<br/>
-        ・「供給proxy」は急性期病床等の代理指標であり、各疾患専用の供給体制ではない(例: cap.surgery は循環器も整形外科も含む)。<br/>
+        ・「供給proxy」は<b>各疾患専用の供給体制ではない</b>(例: 急性期床は循環器も整形外科も含む)。proxyラベルを参照のこと。<br/>
         ・受療率は<b>標本推計</b>(令和5年患者調査・3年に1回)。「罹患率」とは異なる指標。<br/>
-        ・全国比は分母=全国値での自然言語ラベル化(±5%未満=同程度 / ±15%以上=顕著)。z-score化はPhase 2課題。
+        ・<b>「リスク」列の比較は47都道府県の単純平均</b>(NDB質問票に全国エントリがないため代理使用)。人口加重ではない。<br/>
+        ・<b>「結果」列は粗死亡率(年齢調整前)</b>。年齢構成の影響を強く受けるため、医療アウトカムの優劣として直接解釈しない。<br/>
+        ・差は分母=参照値での自然言語ラベル化(±5%未満=同程度 / ±15%以上=顕著)。z-score化はPhase 2課題。
       </div>
     </div>
   );
