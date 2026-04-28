@@ -1,4 +1,14 @@
-# 仕様書: 医療インフラ セクション (病院機能 / 施設基準 / 施設マップ)
+> ⚠️ **SUPERSEDED 2026-04-28**: 本仕様書はレビュー時点(3ビュー構成: 病院機能/施設基準/施設マップ)を記述しています。
+> peer reviewのフィードバックを受けて **2ビュー構成 (地域医療構想・病床機能 / 施設エクスプローラ)** に再構成済み (commit 後続)。
+> 新構成の仕様は別途 `SPEC_医療インフラ_v2.md` (作成予定) を参照。本ファイルは歴史的参照として保存。
+>
+> **新構成の概要**:
+> - ⑤ 地域医療構想・病床機能 (RegionalBedFunctionView): 旧ScoringView Layer A + KPI5指標 + 地域類型5分類
+> - ⑥ 施設エクスプローラ (FacilityExplorerView): 旧KijunView + ScoringView Layer C + GeoMap iframe を3タブ統合 (届出/DPC/スコア説明)
+
+---
+
+# 仕様書: 医療インフラ セクション (病院機能 / 施設基準 / 施設マップ) [SUPERSEDED]
 
 **作成日**: 2026-04-28
 **対象 commit**: `becd939` (HEAD)

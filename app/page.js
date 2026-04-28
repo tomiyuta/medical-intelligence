@@ -1,9 +1,8 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
-import KijunView from './components/views/KijunView';
 import NdbView from './components/views/NdbView';
-import ScoringView from './components/views/ScoringView';
-import GeoMapView from './components/views/GeoMapView';
+import RegionalBedFunctionView from './components/views/RegionalBedFunctionView';
+import FacilityExplorerView from './components/views/FacilityExplorerView';
 import AreaView from './components/views/AreaView';
 import MuniView from './components/views/MuniView';
 import MapView from './components/views/MapView';
@@ -69,7 +68,7 @@ export default function Home() {
       fetch('/api/prefectures-full').then(r=>r.json()),
       fetch('/api/municipalities').then(r=>r.json()),
       fetch('/api/tiers').then(r=>r.json()),
-      fetch('/api/facilities?tier=S&limit=25').then(r=>r.json()),
+      fetch('/api/facilities?limit=500').then(r=>r.json()),
     ]).then(([p,m,t,f]) => {
       setPrefs(p); setMunis(m.data||[]); setTiers(t); setTopFac(f.data||[]);
     });
@@ -129,7 +128,7 @@ export default function Home() {
       {/* Desktop Sidebar / Mobile Bottom Nav */}
       {mob ? (
         <nav style={{position:'fixed',bottom:0,left:0,right:0,background:'#fff',borderTop:'1px solid #e2e8f0',display:'flex',zIndex:50,padding:'6px 0 env(safe-area-inset-bottom)',boxShadow:'0 -2px 8px rgba(0,0,0,0.06)',overflowX:'auto'}}>
-          {[['map','概況','M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z'],['muni','人口','M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z'],['area','医療圏','M22 12h-4l-3 9L9 3l-3 9H2'],['ndb','診断書','M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'],['score','病院','M18 20V10M12 20V4M6 20v-6'],['kijun','基準','M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'],['geomap','地図','M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z']].map(([id,l,ic])=>(
+          {[['map','概況','M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z'],['muni','人口','M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z'],['area','医療圏','M22 12h-4l-3 9L9 3l-3 9H2'],['ndb','診断書','M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'],['bedfunc','病床','M18 20V10M12 20V4M6 20v-6'],['explorer','施設','M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z']].map(([id,l,ic])=>(
             <button key={id} onClick={()=>setView(id)} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:2,padding:'6px 0',border:'none',background:'transparent',cursor:'pointer',color:view===id?'#2563EB':'#94a3b8',fontSize:10,fontWeight:view===id?700:400}}>
               <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={view===id?'#2563EB':'#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={ic}/></svg>
               {l}
@@ -149,9 +148,8 @@ export default function Home() {
         <Nav icon="M22 12h-4l-3 9L9 3l-3 9H2" label="医療圏・疾病構造" active={view==='area'} onClick={()=>setView('area')}/>
         <Nav icon="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" label="医療プロファイル" active={view==='ndb'} onClick={()=>setView('ndb')}/>
         <div style={{padding:'6px 14px 4px',fontSize:10,fontWeight:600,color:'#cbd5e1',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:8,borderTop:'1px solid #f0f0f0',paddingTop:12}}>医療インフラ</div>
-        <Nav icon="M18 20V10M12 20V4M6 20v-6" label="病院機能" active={view==='score'} onClick={()=>setView('score')}/>
-        <Nav icon="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" label="施設基準" active={view==='kijun'} onClick={()=>setView('kijun')}/>
-        <Nav icon="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" label="施設マップ" active={view==='geomap'} onClick={()=>setView('geomap')}/>
+        <Nav icon="M18 20V10M12 20V4M6 20v-6" label="地域医療構想・病床機能" active={view==='bedfunc'} onClick={()=>setView('bedfunc')}/>
+        <Nav icon="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" label="施設エクスプローラ" active={view==='explorer'} onClick={()=>setView('explorer')}/>
         <div style={{flex:1}}/>
         <div style={{padding:'12px 14px',borderTop:'1px solid #f0f0f0',fontSize:11,color:'#cbd5e1'}}>
           出典: 厚労省/総務省/社人研<br/>97,024施設 × 976,149届出 × 住基2025
@@ -170,16 +168,16 @@ export default function Home() {
         {view==='area' && <AreaView mob={mob} areaData={areaData} areaPref={globalPref} setAreaPref={setGlobalPref} areaPrefList={areaPrefList} vitalStats={vitalStats} />}
 
         {/* ═══ SCORING VIEW ═══ */}
-        {view==='score' && <ScoringView mob={mob} tiers={tiers} topFac={topFac} facSearch={facSearch} setFacSearch={setFacSearch} searchResults={searchResults} doSearch={doSearch} bedFunc={bedFunc} scoringPref={globalPref} setScoringPref={setGlobalPref} />}
+        {view==='bedfunc' && <RegionalBedFunctionView mob={mob} bedFunc={bedFunc} regPref={globalPref} setRegPref={setGlobalPref} agePyramid={agePyramid} />}
 
         {/* ═══ NDB VIEW ═══ */}
         {view==='ndb' && <NdbView mob={mob} ndbDiag={ndbDiag} ndbRx={ndbRx} ndbHc={ndbHc} ndbPref={globalPref} setNdbPref={setGlobalPref} setNdbRx={setNdbRx} vitalStats={vitalStats} areaDemoData={areaDemoData} ndbQ={ndbQ} agePyramid={agePyramid} futureDemo={futureDemo} patientSurvey={patientSurvey} />}
 
         {/* ═══ FACILITY STANDARDS VIEW ═══ */}
-        {view==='kijun' && <KijunView mob={mob} kijunData={kijunData} setKijunData={setKijunData} kijunSummary={kijunSummary} kijunPref={globalPref} setKijunPref={setGlobalPref} kijunPage={kijunPage} setKijunPage={setKijunPage} kijunSearch={kijunSearch} setKijunSearch={setKijunSearch} kijunSort={kijunSort} setKijunSort={setKijunSort} kijunExpanded={kijunExpanded} setKijunExpanded={setKijunExpanded} />}
+        {view==='explorer' && <FacilityExplorerView mob={mob} kijunData={kijunData} setKijunData={setKijunData} kijunSummary={kijunSummary} kijunPref={globalPref} setKijunPref={setGlobalPref} kijunPage={kijunPage} setKijunPage={setKijunPage} kijunSearch={kijunSearch} setKijunSearch={setKijunSearch} kijunSort={kijunSort} setKijunSort={setKijunSort} kijunExpanded={kijunExpanded} setKijunExpanded={setKijunExpanded} topFac={topFac} facSearch={facSearch} setFacSearch={setFacSearch} searchResults={searchResults} doSearch={doSearch} geoFacilities={geoFacilities} />}
 
         {/* ═══ GEO MAP VIEW ═══ */}
-        {view==='geomap' && <GeoMapView mob={mob} geoFacilities={geoFacilities} selectedFacility={selectedFacility} setSelectedFacility={setSelectedFacility} mapPref={globalPref} setMapPref={setGlobalPref} />}
+
 
         <div style={{fontSize:11,color:'#cbd5e1',textAlign:'center',marginTop:32,lineHeight:1.6}}>
           MedIntel — 厚労省/総務省/社人研/全国8地方厚生局 オープンデータを加工して作成<br/>
