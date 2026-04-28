@@ -118,6 +118,7 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
           <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>
             疾患別 需要・供給・結果サマリー (v0)
             <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#e0e7ff',color:'#3730a3',fontWeight:500}}>3領域・横並び</span>
+            <span style={{marginLeft:4,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#dcfce7',color:'#166534',fontWeight:500}}>🔒 v0 FROZEN</span>
           </div>
           <div style={{fontSize:11,color:'#94a3b8'}}>
             循環器・糖尿病代謝・がん の各領域で「リスク → 疾病負荷 → 医療利用 → 供給proxy → 結果」を{ndbPref}と全国で横並び比較
@@ -221,6 +222,7 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
         <b style={{color:'#475569'}}>📌 v0 の制約と注意点</b><br/>
         ・本サマリーは <b>スコア化を行わず</b>、データ並べ表示のみ。Gap指標化はPhase 2で検討。<br/>
         ・「医療利用」列は<b>NDB処方薬の薬効分類ベース proxy</b>(人口10万対補正)。<u>疾患患者数ではない</u>。比較基準は47都道府県平均(処方薬集計に全国値なし)。<br/>
+        ・処方数量は薬効分類別数量の合算であり、薬剤単位・剤形・用量差を含みます。<u>治療人数や患者数ではありません</u>。<br/>
         ・「供給proxy」は<b>各疾患専用の供給体制ではない</b>(例: 急性期床は循環器も整形外科も含む)。proxyラベルを参照のこと。<br/>
         ・受療率は<b>標本推計</b>(令和5年患者調査・3年に1回)。「罹患率」とは異なる指標。<br/>
         ・<b>「リスク」列の比較は47都道府県の単純平均</b>(NDB質問票に全国エントリがないため代理使用)。人口加重ではない。<br/>
