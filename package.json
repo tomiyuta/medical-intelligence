@@ -6,8 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node tests/terminology_guard.test.js",
-    "test:terminology": "node tests/terminology_guard.test.js"
+    "test": "node tests/terminology_guard.test.js && node tests/regional_mismatch_snapshot_qa.test.js",
+    "test:terminology": "node tests/terminology_guard.test.js",
+    "test:regional-mismatch": "node tests/regional_mismatch_snapshot_qa.test.js"
   },
   "dependencies": {
     "@svg-maps/japan": "^2.0.0",
