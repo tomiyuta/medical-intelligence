@@ -1692,3 +1692,98 @@ reviewer Conditional Go 条件 #2 (Outcome 表示分離) 達成:
 [#3] Pattern → 観察ラベル化         ⏳ P1-2 以降
 [#4] 供給×Outcome 因果否定注記      ⏳ P1-2 以降
 [#5] Mismatch Explorer evidence    ⏳ P1-4 以降
+
+
+## Phase 4-1 full Go 達成 (2026-04-29) — UI guardrail + Mismatch Explorer 完成
+
+### reviewer Conditional Go 5条件 全達成
+
+| # | 条件 | 状態 | 達成 commit |
+|---|---|---|---|
+| 1 | P0 docs alignment | ✅ | 0f9cb5a / f85ae4c |
+| 2 | Outcome 表示分離 (3段) | ✅ | 838d06f (P1-1 merge) |
+| 3 | Pattern → 観察ラベル化 | ✅ | fca6602 (P1-2/3/4 merge) |
+| 4 | 供給×Outcome 因果否定注記 | ✅ | InterpretationGuard 全画面設置 |
+| 5 | Mismatch Explorer evidence | ✅ | RegionalMismatchExplorer MVP |
+
+### 完成 commit chain (feature/p1-2-interpretation-guard → main merge)
+
+| 順 | commit | 内容 |
+|---|---|---|
+| 1 | 774906c | feat(ui): add InterpretationGuard component (4 variant) |
+| 2 | 8a27643 | feat(bridge): add outcome interpretation guard |
+| 3 | e556305 | feat(gap-finder): add mismatch interpretation guard |
+| 4 | 9209777 | feat(death-view): add mortality interpretation guard |
+| 5 | 02548cb | feat(explorer): add Regional Mismatch Explorer MVP (P1-4) |
+| - | fca6602 | Merge: Phase 4-1 P1-2 + P1-3 + P1-4 |
+
+### 新規 component (2種)
+
+#### app/components/ui/InterpretationGuard.jsx (95行)
+4 variant プリセット:
+- outcome (Bridge OUTCOME 列用): 紫
+- mismatch (GAP_FINDER / Mismatch Explorer 用): 赤
+- mortality (death-view 用): シアン
+- facility (FacilityExplorer 用): 黄褐色
+
+設置先:
+- Bridge (DomainSupplyDemandBridge.jsx)
+- death-view (NdbView.jsx 死亡率セクション)
+- GAP_FINDER (NdbView.jsx 散布図セクション)
+- 地域類型 (RegionalBedFunctionView.jsx)
+
+#### app/components/ui/RegionalMismatchExplorer.jsx (256行)
+個別県の evidence panel 形式で 0〜3 個の archetype 候補を提示:
+
+判定対象 (MVP 4種):
+- Pattern 1: Risk-Care Gap (代表: 沖縄)
+- Pattern 3: Supply-Outcome Mismatch (代表: 山口)
+- Pattern 5: Aging-Outcome Burden (代表: 秋田)
+- Pattern 6: Urban Context (代表: 東京)
+
+将来追加 (P2):
+- Pattern 2: Supply-Outcome 並列悪化
+- Pattern 4: Alignment Context
+
+### 検証結果 (4代表県、Node sanity check)
+
+| 県 | 判定 | 主要根拠 |
+|---|---|---|
+| 沖縄県 | P1 Risk-Care Gap | BMI 39.8% (+32.3%), 内分泌外来 184 (-47.1%) |
+| 山口県 | P3 Supply-Outcome Mismatch | cap.homecare 680 (+104%), 肺炎/腎不全+ |
+| 秋田県 | P5 Aging-Outcome Burden | 75+ 22.0% (+4.1pt), hc -43.7%, 脳血管+35% |
+| 東京都 | P6 Urban Context | 75+ 13.1% (-4.8pt), HbA1c -7.3% |
+
+### UI 設計遵守 (peer review v1 案B採択)
+
+✅ 自然言語表示 ("乖離が見られます" 形式)
+✅ "Pattern N" ラベル直接表示は避ける
+✅ multi-label archetype 性を明記
+✅ Mismatch Signal vs Context Archetype の二層を視覚区別 (赤系 vs 青系)
+✅ InterpretationGuard を主要画面全てに常時配置
+✅ 判定該当ゼロの場合も明示 ("問題がない" という意味ではない注記)
+✅ 判定基準は経験則 (P2で感度分析)
+
+### Phase 4-1 全体到達点
+
+- 47都道府県カバレッジ完成
+- 6疾患領域 Bridge Risk Model v1
+- 14リスク指標 (NDB質問票 + 健診)
+- 5領域 supply proxy (capability_mapping v1)
+- 年齢調整死亡率 6死因×47県×男女 (Phase 3-1 + P1-1 完成)
+- 6不一致パターン (E-1/E-2/E-3 統合 + P1-4 UI 化)
+- 4代表仮説検証 (沖縄/東北/西日本/全体)
+- Phase 4 Review Package v3 + P0 alignment + version reference 整合
+- **InterpretationGuard 全画面配置 (P1-2/P1-3)**
+- **Regional Mismatch Explorer MVP (P1-4)**
+
+### 残タスク (将来候補)
+
+- P0-5: terminology guard CI test (再混入防止)
+- P2-1: 男女合算の人口加重平均 (現状は単純平均)
+- P2-2: 感度分析 (±5%/15% neutral zone を ±10%/20% で再評価)
+- P2-3: percentile / z-score 併記
+- P2-4: confidence 表示 (データ時点差 / proxy強度を A/B/C で評価)
+- P2-5: Pattern 2 + Pattern 4 を Mismatch Explorer に追加
+- P3-1: 二次医療圏化
+- P3-2: NDB追加取得 (396細分類)
