@@ -1,0 +1,94 @@
+{
+  "_generated": "2026-04-29T15:14:59.868Z",
+  "_phase": "Phase 4-3a",
+  "_description": "NDB 26 risk proxy audit: 既存 19 項目の活用余地評価",
+  "_conclusion": "既存 19 項目で沖縄 P1 / 東京 P6 の evidence 拡張可能。本フェーズは docs-only。",
+  "inventory": {
+    "checkup": {
+      "count": 5,
+      "keys": [
+        "bmi_ge_25",
+        "hba1c_ge_6_5",
+        "sbp_ge_140",
+        "ldl_ge_140",
+        "urine_protein_ge_1plus"
+      ]
+    },
+    "questionnaire": {
+      "count": 14,
+      "keys": [
+        "smoking",
+        "weight_gain",
+        "exercise",
+        "walking",
+        "late_dinner",
+        "drinking_daily",
+        "heavy_drinker",
+        "sleep_ok",
+        "hypertension_med",
+        "heart_disease",
+        "ckd_history",
+        "diabetes_medication",
+        "lipid_medication",
+        "stroke_history"
+      ]
+    },
+    "total_existing": 19
+  },
+  "focus_pref_strengthening": {
+    "沖縄県_P1": [
+      {
+        "key": "bmi_ge_25",
+        "source": "checkup",
+        "rank": 1
+      },
+      {
+        "key": "weight_gain",
+        "source": "q",
+        "rank": 1
+      },
+      {
+        "key": "heart_disease",
+        "source": "q",
+        "rank": 2
+      },
+      {
+        "key": "stroke_history",
+        "source": "q",
+        "rank": 4
+      },
+      {
+        "key": "heavy_drinker",
+        "source": "q",
+        "rank": 1
+      }
+    ],
+    "東京都_P6": [
+      {
+        "key": "sbp_ge_140",
+        "source": "checkup",
+        "rank": 47
+      },
+      {
+        "key": "hba1c_ge_6_5",
+        "source": "checkup",
+        "rank": 47
+      },
+      {
+        "key": "hypertension_med",
+        "source": "q",
+        "rank": 47
+      },
+      {
+        "key": "diabetes_medication",
+        "source": "q",
+        "rank": 46
+      },
+      {
+        "key": "lipid_medication",
+        "source": "q",
+        "rank": 46
+      }
+    ]
+  }
+}
