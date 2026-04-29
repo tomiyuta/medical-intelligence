@@ -1632,3 +1632,63 @@ reviewer peer review v2 採択許可範囲のみ実施:
 - HEAD: (本commit)
 - delta review 提出可能 (user 側で送信)
 - 実装着手は delta review OK 受領後
+
+
+## Phase 4-1 P1-1 完了 (2026-04-29) — Bridge Outcome 3段表示
+
+### 完成 commit chain (feature/p1-1-mortality-outcome-2020 → main merge)
+
+| 順 | commit | 内容 |
+|---|---|---|
+| 1 | 0710f34 | chore(data): add mortality outcome 2020 ETL |
+| 2 | 48652e7 | chore(data): generate mortality_outcome_2020.json |
+| 3 | 5e890a9 | feat(api): add mortality outcome 2020 endpoint |
+| 4 | 42546c2 | feat(bridge): split outcome display by year and adjustment |
+| 5 | eed488b | docs(qa): add Bridge outcome split QA checklist |
+| - | 838d06f | Merge: Phase 4-1 P1-1 (main merge) |
+
+### 達成内容
+
+reviewer Conditional Go 条件 #2 (Outcome 表示分離) 達成:
+- 2020 粗死亡率 (灰、男女併記、rank付)
+- 2020 年齢調整死亡率 (紫主指標、左ボーダー強調、男女個別)
+- 2024 粗死亡率 (点線分離、最新参考)
+
+必須注記 (常時表示):
+- 2020年齢調整値と2024粗死亡率を直接比較しない
+- 男女平均は単純平均（人口加重なし）
+- 死亡率は医療の優劣を示す指標ではない
+
+新規ファイル:
+- scripts/etl_mortality_outcome_2020.py (10KB)
+- data/static/mortality_outcome_2020.json (124KB、48 entries × 6死因 × 男女 × {crude, age_adjusted})
+- app/api/mortality-outcome-2020/route.js
+
+修正ファイル:
+- lib/domainMapping.js (6 domain に aamCause 追加)
+- app/page.js (fetch 追加 + props 渡し)
+- app/components/views/NdbView.jsx (props 転送)
+- app/components/views/DomainSupplyDemandBridge.jsx (3段表示実装)
+- docs/PHASE2_QA_CHECKLIST.md (§9-14 追加)
+
+### Done条件 検証 (fixture)
+[T1] 沖縄 糖尿病 crude male  = 16.3 ✅
+[T2] 沖縄 糖尿病 age_adj male = 20.8 ✅
+[T3] 全国 糖尿病 age_adj male = 13.9 ✅ (Phase 3-1 既存と一致)
+[T4] 山口 肺炎  age_adj male = 116.7 ✅
+[T5] 秋田 脳血管 age_adj male = 124.1 ✅
+[T6] 東京 糖尿病 crude male  = 10.8 ✅
+[T7] 47都道府県 + 全国 = 48 entries ✅
+[T8] 6死因 × 48地域 × 男女 × {crude, age_adjusted} ✅
+
+### ビルド/デプロイ
+- next build 成功 (警告ゼロ)
+- /api/mortality-outcome-2020 がルート登録
+- main push 完了 (838d06f)
+
+### 残条件 (Conditional Go 5条件)
+[#1] P0 docs alignment            ✅ 達成
+[#2] Outcome 表示分離              ✅ 達成 (本フェーズ)
+[#3] Pattern → 観察ラベル化         ⏳ P1-2 以降
+[#4] 供給×Outcome 因果否定注記      ⏳ P1-2 以降
+[#5] Mismatch Explorer evidence    ⏳ P1-4 以降
