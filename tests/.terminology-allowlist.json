@@ -67,6 +67,10 @@
       "reason": "P1-1 設計 docs に reviewer 採択経緯が記載される"
     },
     {
+      "path": "docs/P2_5_PATTERN_2_4_EVALUATION.md",
+      "reason": "P2-5 評価レポート: reviewer 採択 (P0 docs alignment) で禁止された語を self-reference として引用する必要がある"
+    },
+    {
       "path": "tests/.terminology-allowlist.json",
       "reason": "本ファイル自身 (forbidden term list を保持)"
     },

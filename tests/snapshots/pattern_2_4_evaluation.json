@@ -1,0 +1,139 @@
+{
+  "_generated": "2026-04-29T14:34:21.272Z",
+  "_description": "Phase 4-1 P2-5 Pattern 2/4 追加検討 評価結果",
+  "_conclusion": {
+    "pattern_2": {
+      "decision": "docs-only",
+      "overlap_rate_with_p5": "100.0",
+      "candidates": [
+        "青森県",
+        "岩手県",
+        "秋田県",
+        "山形県",
+        "新潟県"
+      ],
+      "candidates_only_in_p2": [],
+      "candidates_only_in_p5": [],
+      "overlap_with_p5": [
+        "青森県",
+        "岩手県",
+        "秋田県",
+        "山形県",
+        "新潟県"
+      ]
+    },
+    "pattern_4": {
+      "decision": "docs-only (no UI)",
+      "candidates": [
+        "岡山県",
+        "広島県"
+      ],
+      "misread_risk": "優良地域誤読リスクが強い"
+    }
+  },
+  "pattern_2": {
+    "logic": "P5 + 腎不全 OR cerebro",
+    "candidates": [
+      "青森県",
+      "岩手県",
+      "秋田県",
+      "山形県",
+      "新潟県"
+    ],
+    "detail_by_pref": {
+      "青森県": {
+        "p75_diff": 1.43,
+        "hc_pct": "-43.1",
+        "rh_pct": "-23.3",
+        "cerebro_pct": "24.1",
+        "renal_pct": "34.8"
+      },
+      "岩手県": {
+        "p75_diff": 1.7,
+        "hc_pct": "-47.6",
+        "rh_pct": "-16.4",
+        "cerebro_pct": "54.1",
+        "renal_pct": "8.6"
+      },
+      "秋田県": {
+        "p75_diff": 4.11,
+        "hc_pct": "-43.7",
+        "rh_pct": "-42.6",
+        "cerebro_pct": "34.7",
+        "renal_pct": "7.1"
+      },
+      "山形県": {
+        "p75_diff": 1.7,
+        "hc_pct": "-41.9",
+        "rh_pct": "-45.0",
+        "cerebro_pct": "23.8",
+        "renal_pct": "4.2"
+      },
+      "新潟県": {
+        "p75_diff": 1.25,
+        "hc_pct": "-36.8",
+        "rh_pct": "-37.7",
+        "cerebro_pct": "23.2",
+        "renal_pct": "-10.8"
+      }
+    },
+    "docs_representatives": [
+      "秋田県",
+      "青森県",
+      "岩手県",
+      "山形県"
+    ],
+    "docs_rep_hit": [
+      "秋田県",
+      "青森県",
+      "岩手県",
+      "山形県"
+    ]
+  },
+  "pattern_5_current": {
+    "candidates": [
+      "青森県",
+      "岩手県",
+      "秋田県",
+      "山形県",
+      "新潟県"
+    ]
+  },
+  "pattern_4": {
+    "logic": "75+ in [-1.0, +2.0]pt + (hc>+30% or rh>+30%) + 5死因 ±15% 以内",
+    "candidates": [
+      "岡山県",
+      "広島県"
+    ],
+    "detail_by_pref": {
+      "岡山県": {
+        "p75_diff": 0.33,
+        "hc_pct": "72.2",
+        "rh_pct": "55.6",
+        "cerebro_pct": "-5.5",
+        "pneumonia_pct": "9.1",
+        "heart_pct": "-2.1",
+        "renal_pct": "-7.8",
+        "dm_pct": "-1.0"
+      },
+      "広島県": {
+        "p75_diff": -0.21,
+        "hc_pct": "171.0",
+        "rh_pct": "45.9",
+        "cerebro_pct": "-10.1",
+        "pneumonia_pct": "-14.2",
+        "heart_pct": "4.3",
+        "renal_pct": "3.2",
+        "dm_pct": "-10.1"
+      }
+    },
+    "docs_representatives": [
+      "岡山県",
+      "熊本県",
+      "島根県"
+    ],
+    "docs_rep_hit": [
+      "岡山県"
+    ]
+  }
+}

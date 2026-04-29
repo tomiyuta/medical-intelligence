@@ -144,6 +144,8 @@ export default function RegionalMismatchExplorer({ pref, ndbCheckupRiskRates, pa
         <br />
         ・confidence は観察信号の強さを示す補助指標であり、医療の質・政策効果・地域の優劣を示すものではありません。
         <br />
+        ・<b style={{color:'#92400e'}}>A/B/C は「正解ラベル」ではなく観察信号の強さの目安です。</b> C は「ラベルが間違っている」ではなく「閾値・proxy・時点差を踏まえて参考扱いする」という意味です。
+        <br />
         ・z-score は47都道府県分布内での相対的位置を示す補助指標であり、統計的有意差を示すものではありません。
       </div>
     </div>
