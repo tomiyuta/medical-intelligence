@@ -1787,3 +1787,101 @@ reviewer Conditional Go 条件 #2 (Outcome 表示分離) 達成:
 - P2-5: Pattern 2 + Pattern 4 を Mismatch Explorer に追加
 - P3-1: 二次医療圏化
 - P3-2: NDB追加取得 (396細分類)
+
+
+## Phase 4-1 完全クローズ (2026-04-29) — P0-5 terminology guard CI
+
+### reviewer 最終判定: ACCEPTED
+
+外部レビュアー最終判定:
+> Phase 4-1: ACCEPTED
+> main HEAD: 8f43140 → 925821c (P0-5 反映後)
+> 状態: full Go 達成 + 再混入防止 CI 稼働
+> ここで Phase 4-1 は閉じてよい
+
+### 完了 commit chain (feature/p0-5-terminology-guard → main merge)
+
+| commit | 内容 |
+|---|---|
+| 4cd1cf4 | test: add terminology guard for review safety (P0-5) |
+| 925821c | Merge: Phase 4-1 P0-5 terminology guard CI (Phase 4-1 を閉じる) |
+
+### reviewer Done 条件 全達成
+
+[x] UI/docs に forbidden terms が再混入したら CI で落ちる
+[x] self-reference / 否定文は allowlist で許容 (negPattern)
+[x] 診断ツール/ランキングサイト/優良施設/劣後地域/劣後施設/県の優劣 を検出
+[x] PHASE4_REVIEW_PACKAGE.md の historical notes は例外化
+[x] npm test で実行可能
+
+### 新規ファイル (3ファイル)
+
+- tests/.terminology-allowlist.json (83行)
+  - forbidden_terms 6項目
+  - allowlist_files 6ファイル
+  - exclude_paths 設定
+
+- tests/terminology_guard.test.js (192行)
+  - Node.js 軽量 script (依存追加なし)
+  - 否定文 negPattern による self-reference 自動許容
+  - 失敗時の severity別 (P0/P1/P2) レポート
+  - 対処方法ガイダンス出力
+
+- package.json
+  - scripts.test 追加: "node tests/terminology_guard.test.js"
+  - scripts.test:terminology 追加 (alias)
+
+### 検証結果
+
+正常系: $ npm test → ✅ PASS (61 files, 0 detected, exit 0)
+異常系: 禁止語入りファイル追加 → ❌ FAIL (exit 1、severity別レポート)
+否定文: 'これは診断ツールではありません' → 検出されない (allowlist)
+削除後復帰: 元のファイル削除 → ✅ PASS (exit 0)
+
+### Phase 4-1 全到達点 (最終)
+
+#### Conditional Go 5条件 + P0-5
+[#1] P0 docs alignment            ✅ 達成 (0f9cb5a / f85ae4c)
+[#2] Outcome 表示分離              ✅ 達成 (P1-1, 838d06f)
+[#3] Pattern → 観察ラベル化         ✅ 達成 (P1-2/3/4)
+[#4] 供給×Outcome 因果否定注記      ✅ 達成 (InterpretationGuard 全画面)
+[#5] Mismatch Explorer evidence    ✅ 達成 (RegionalMismatchExplorer MVP)
+[P0-5] terminology guard CI       ✅ 達成 (本merge)
+
+#### 機能サマリ
+- 47都道府県完全カバレッジ
+- 6疾患領域 Bridge Risk Model v1
+- 14リスク指標 (NDB質問票 + 健診)
+- 5領域 supply proxy
+- 年齢調整死亡率 6死因×47県×男女
+- 6不一致パターン docs 統合 + 二層構造
+- Bridge Outcome 3段表示 (P1-1)
+- InterpretationGuard 全画面配置 (P1-2/P1-3)
+- Regional Mismatch Explorer MVP (P1-4)
+- terminology guard CI (P0-5)
+
+### reviewer 推奨次フェーズ (P2)
+
+| 優先 | タスク | 理由 |
+|---|---|---|
+| 1 | ✅ terminology guard CI | 本commitで完了 |
+| 2 | 47県全件 snapshot QA | Explorer の偽陽性・偽陰性確認 |
+| 3 | threshold sensitivity 分析 | Pattern 判定の恣意性可視化 |
+| 4 | percentile / z-score 併記 | 47県平均比依存を下げる |
+| 5 | confidence grade (A/B/C) | データ時点差・proxy強度を UI 反映 |
+| 6 | Pattern 2 / 4 追加検討 | MVP 後の拡張 |
+
+### 重要な注意 (reviewer 採択)
+
+Full Go の意味:
+- Phase 4-1 reviewer Conditional Go 5条件達成
+- 誤読防止付き仮説生成 UI 成立
+
+Full Go ではない:
+- 医療政策判断ツールとして Go (✗)
+- 商用リリースとして Go (✗)
+- 地域医療の優劣評価として Go (✗)
+- Pattern 判定モデル妥当性検証済み (✗)
+
+RegionalMismatchExplorer は rule-based MVP であり、
+閾値の感度分析、Pattern重複、偽陽性検証は P2 課題。
