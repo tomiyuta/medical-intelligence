@@ -1,0 +1,1573 @@
+{
+  "_generated_by": "scripts/audit_homecare_actual_by_pref.py",
+  "_phase": "Phase 4-3d",
+  "_description": "在宅医療 capability proxy vs 実績指標 audit (47県集計、reviewer 採択 P3 proxy caveat 検証用)",
+  "_caveat": "本データは観察ラベル化・proxy 検証用であり、医療の質・地域の優劣・政策効果を示すものではない。Phase 4-1 P2-4 confidence grade と同様の解釈ルールが適用される。",
+  "_methodology": {
+    "source": "data/static/area_emergency_homecare.json (339 二次医療圏)",
+    "aggregation": "都道府県名で SUM (圏域単位の値を県単位に合算)",
+    "normalization_per75": "集計値 / 75歳以上人口 × 100000 (capability proxy と同じ単位)",
+    "normalization_per100k": "集計値 / 全人口 × 100000 (補助)",
+    "rank_basis": "high = top 10, low = bottom 10 (rank >= 38), mid = それ以外",
+    "data_quality": {
+      "hospitals": "100%",
+      "homecare_facilities": "100%",
+      "homecare_patients": "100%",
+      "acute_support": "72.3%",
+      "emerg / emerg_claims": "7.1% (使用しない、scope 外)"
+    }
+  },
+  "by_prefecture": {
+    "北海道": {
+      "areas": 21,
+      "population": {
+        "75plus": 940913,
+        "total": 5043637
+      },
+      "actual_total": {
+        "hospitals": 481,
+        "homecare_facilities": 454,
+        "homecare_patients": 197820,
+        "acute_support": 34
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 51.12,
+        "homecare_facilities": 48.25,
+        "homecare_patients": 21024.26,
+        "acute_support": 3.61
+      },
+      "actual_per_100k": {
+        "hospitals": 9.54,
+        "homecare_patients": 3922.17
+      },
+      "capability": {
+        "homecare_per75": 253.0520887690998,
+        "rehab_per75": 75.99002245691153
+      },
+      "comparison": {
+        "capability_rank": 35,
+        "actual_rank": 7,
+        "rank_gap": -28,
+        "gap_type": "capability_mid_actual_high"
+      }
+    },
+    "青森県": {
+      "areas": 6,
+      "population": {
+        "75plus": 229502,
+        "total": 1185492
+      },
+      "actual_total": {
+        "hospitals": 75,
+        "homecare_facilities": 69,
+        "homecare_patients": 31189,
+        "acute_support": 1
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 32.68,
+        "homecare_facilities": 30.07,
+        "homecare_patients": 13589.86,
+        "acute_support": 0.44
+      },
+      "actual_per_100k": {
+        "hospitals": 6.33,
+        "homecare_patients": 2630.89
+      },
+      "capability": {
+        "homecare_per75": 189.10510583785762,
+        "rehab_per75": 57.515838641929044
+      },
+      "comparison": {
+        "capability_rank": 44,
+        "actual_rank": 34,
+        "rank_gap": -10,
+        "gap_type": "capability_low_actual_mid"
+      }
+    },
+    "岩手県": {
+      "areas": 9,
+      "population": {
+        "75plus": 226485,
+        "total": 1153668
+      },
+      "actual_total": {
+        "hospitals": 76,
+        "homecare_facilities": 71,
+        "homecare_patients": 32933,
+        "acute_support": 7
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 33.56,
+        "homecare_facilities": 31.35,
+        "homecare_patients": 14540.92,
+        "acute_support": 3.09
+      },
+      "actual_per_100k": {
+        "hospitals": 6.59,
+        "homecare_patients": 2854.63
+      },
+      "capability": {
+        "homecare_per75": 174.4044859482968,
+        "rehab_per75": 62.69730887255226
+      },
+      "comparison": {
+        "capability_rank": 47,
+        "actual_rank": 29,
+        "rank_gap": -18,
+        "gap_type": "capability_low_actual_mid"
+      }
+    },
+    "宮城県": {
+      "areas": 4,
+      "population": {
+        "75plus": 356367,
+        "total": 2224910
+      },
+      "actual_total": {
+        "hospitals": 112,
+        "homecare_facilities": 103,
+        "homecare_patients": 50651,
+        "acute_support": 12
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 31.43,
+        "homecare_facilities": 28.9,
+        "homecare_patients": 14213.16,
+        "acute_support": 3.37
+      },
+      "actual_per_100k": {
+        "hospitals": 5.03,
+        "homecare_patients": 2276.54
+      },
+      "capability": {
+        "homecare_per75": 253.1098558508504,
+        "rehab_per75": 54.43826167967292
+      },
+      "comparison": {
+        "capability_rank": 34,
+        "actual_rank": 30,
+        "rank_gap": -4,
+        "gap_type": "capability_mid_actual_mid"
+      }
+    },
+    "秋田県": {
+      "areas": 8,
+      "population": {
+        "75plus": 199934,
+        "total": 907258
+      },
+      "actual_total": {
+        "hospitals": 50,
+        "homecare_facilities": 47,
+        "homecare_patients": 19222,
+        "acute_support": 9
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 25.01,
+        "homecare_facilities": 23.51,
+        "homecare_patients": 9614.17,
+        "acute_support": 4.5
+      },
+      "actual_per_100k": {
+        "hospitals": 5.51,
+        "homecare_patients": 2118.69
+      },
+      "capability": {
+        "homecare_per75": 187.06173037102243,
+        "rehab_per75": 43.0141946842458
+      },
+      "comparison": {
+        "capability_rank": 45,
+        "actual_rank": 45,
+        "rank_gap": 0,
+        "gap_type": "capability_low_actual_low"
+      }
+    },
+    "山形県": {
+      "areas": 4,
+      "population": {
+        "75plus": 198675,
+        "total": 1011993
+      },
+      "actual_total": {
+        "hospitals": 54,
+        "homecare_facilities": 52,
+        "homecare_patients": 28198,
+        "acute_support": 8
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 27.18,
+        "homecare_facilities": 26.17,
+        "homecare_patients": 14193.03,
+        "acute_support": 4.03
+      },
+      "actual_per_100k": {
+        "hospitals": 5.34,
+        "homecare_patients": 2786.38
+      },
+      "capability": {
+        "homecare_per75": 193.280483201208,
+        "rehab_per75": 41.273436516924626
+      },
+      "comparison": {
+        "capability_rank": 43,
+        "actual_rank": 31,
+        "rank_gap": -12,
+        "gap_type": "capability_low_actual_mid"
+      }
+    },
+    "福島県": {
+      "areas": 6,
+      "population": {
+        "75plus": 316258,
+        "total": 1770941
+      },
+      "actual_total": {
+        "hospitals": 93,
+        "homecare_facilities": 85,
+        "homecare_patients": 38140,
+        "acute_support": 11
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 29.41,
+        "homecare_facilities": 26.88,
+        "homecare_patients": 12059.77,
+        "acute_support": 3.48
+      },
+      "actual_per_100k": {
+        "hospitals": 5.25,
+        "homecare_patients": 2153.66
+      },
+      "capability": {
+        "homecare_per75": 185.92415053532244,
+        "rehab_per75": 49.32681544814677
+      },
+      "comparison": {
+        "capability_rank": 46,
+        "actual_rank": 37,
+        "rank_gap": -9,
+        "gap_type": "capability_low_actual_mid"
+      }
+    },
+    "茨城県": {
+      "areas": 9,
+      "population": {
+        "75plus": 478757,
+        "total": 2848594
+      },
+      "actual_total": {
+        "hospitals": 153,
+        "homecare_facilities": 140,
+        "homecare_patients": 74169,
+        "acute_support": 11
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 31.96,
+        "homecare_facilities": 29.24,
+        "homecare_patients": 15491.99,
+        "acute_support": 2.3
+      },
+      "actual_per_100k": {
+        "hospitals": 5.37,
+        "homecare_patients": 2603.71
+      },
+      "capability": {
+        "homecare_per75": 216.8114513208162,
+        "rehab_per75": 63.706640320663716
+      },
+      "comparison": {
+        "capability_rank": 40,
+        "actual_rank": 24,
+        "rank_gap": -16,
+        "gap_type": "capability_low_actual_mid"
+      }
+    },
+    "栃木県": {
+      "areas": 6,
+      "population": {
+        "75plus": 310593,
+        "total": 1904172
+      },
+      "actual_total": {
+        "hospitals": 88,
+        "homecare_facilities": 86,
+        "homecare_patients": 33188,
+        "acute_support": 7
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 28.33,
+        "homecare_facilities": 27.69,
+        "homecare_patients": 10685.37,
+        "acute_support": 2.25
+      },
+      "actual_per_100k": {
+        "hospitals": 4.62,
+        "homecare_patients": 1742.91
+      },
+      "capability": {
+        "homecare_per75": 260.7914537674706,
+        "rehab_per75": 69.5443876713255
+      },
+      "comparison": {
+        "capability_rank": 33,
+        "actual_rank": 43,
+        "rank_gap": 10,
+        "gap_type": "capability_mid_actual_low"
+      }
+    },
+    "群馬県": {
+      "areas": 10,
+      "population": {
+        "75plus": 332971,
+        "total": 1907914
+      },
+      "actual_total": {
+        "hospitals": 116,
+        "homecare_facilities": 111,
+        "homecare_patients": 54184,
+        "acute_support": 15
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 34.84,
+        "homecare_facilities": 33.34,
+        "homecare_patients": 16272.89,
+        "acute_support": 4.5
+      },
+      "actual_per_100k": {
+        "hospitals": 6.08,
+        "homecare_patients": 2839.96
+      },
+      "capability": {
+        "homecare_per75": 274.7987061936325,
+        "rehab_per75": 67.87377879755294
+      },
+      "comparison": {
+        "capability_rank": 28,
+        "actual_rank": 22,
+        "rank_gap": -6,
+        "gap_type": "capability_mid_actual_mid"
+      }
+    },
+    "埼玉県": {
+      "areas": 10,
+      "population": {
+        "75plus": 1149487,
+        "total": 7374284
+      },
+      "actual_total": {
+        "hospitals": 290,
+        "homecare_facilities": 275,
+        "homecare_patients": 159435,
+        "acute_support": 46
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 25.23,
+        "homecare_facilities": 23.92,
+        "homecare_patients": 13870.1,
+        "acute_support": 4.0
+      },
+      "actual_per_100k": {
+        "hospitals": 3.93,
+        "homecare_patients": 2162.04
+      },
+      "capability": {
+        "homecare_per75": 217.57531838115614,
+        "rehab_per75": 54.89405273830848
+      },
+      "comparison": {
+        "capability_rank": 39,
+        "actual_rank": 33,
+        "rank_gap": -6,
+        "gap_type": "capability_low_actual_mid"
+      }
+    },
+    "千葉県": {
+      "areas": 9,
+      "population": {
+        "75plus": 1015260,
+        "total": 6311577
+      },
+      "actual_total": {
+        "hospitals": 247,
+        "homecare_facilities": 233,
+        "homecare_patients": 124593,
+        "acute_support": 31
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 24.33,
+        "homecare_facilities": 22.95,
+        "homecare_patients": 12272.03,
+        "acute_support": 3.05
+      },
+      "actual_per_100k": {
+        "hospitals": 3.91,
+        "homecare_patients": 1974.04
+      },
+      "capability": {
+        "homecare_per75": 196.30439493331758,
+        "rehab_per75": 49.44546224612415
+      },
+      "comparison": {
+        "capability_rank": 42,
+        "actual_rank": 35,
+        "rank_gap": -7,
+        "gap_type": "capability_low_actual_mid"
+      }
+    },
+    "東京都": {
+      "areas": 13,
+      "population": {
+        "75plus": 1838345,
+        "total": 14002401
+      },
+      "actual_total": {
+        "hospitals": 568,
+        "homecare_facilities": 542,
+        "homecare_patients": 314372,
+        "acute_support": 77
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 30.9,
+        "homecare_facilities": 29.48,
+        "homecare_patients": 17100.82,
+        "acute_support": 4.19
+      },
+      "actual_per_100k": {
+        "hospitals": 4.06,
+        "homecare_patients": 2245.13
+      },
+      "capability": {
+        "homecare_per75": 398.61941039358777,
+        "rehab_per75": 70.06301863904763
+      },
+      "comparison": {
+        "capability_rank": 7,
+        "actual_rank": 16,
+        "rank_gap": 9,
+        "gap_type": "capability_high_actual_mid"
+      }
+    },
+    "神奈川県": {
+      "areas": 9,
+      "population": {
+        "75plus": 1384856,
+        "total": 9202548
+      },
+      "actual_total": {
+        "hospitals": 286,
+        "homecare_facilities": 273,
+        "homecare_patients": 149756,
+        "acute_support": 52
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 20.65,
+        "homecare_facilities": 19.71,
+        "homecare_patients": 10813.83,
+        "acute_support": 3.75
+      },
+      "actual_per_100k": {
+        "hospitals": 3.11,
+        "homecare_patients": 1627.33
+      },
+      "capability": {
+        "homecare_per75": 239.95274598947472,
+        "rehab_per75": 48.236062088765905
+      },
+      "comparison": {
+        "capability_rank": 37,
+        "actual_rank": 42,
+        "rank_gap": 5,
+        "gap_type": "capability_mid_actual_low"
+      }
+    },
+    "新潟県": {
+      "areas": 7,
+      "population": {
+        "75plus": 404749,
+        "total": 2110595
+      },
+      "actual_total": {
+        "hospitals": 107,
+        "homecare_facilities": 97,
+        "homecare_patients": 47416,
+        "acute_support": 19
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 26.44,
+        "homecare_facilities": 23.97,
+        "homecare_patients": 11714.91,
+        "acute_support": 4.69
+      },
+      "actual_per_100k": {
+        "hospitals": 5.07,
+        "homecare_patients": 2246.57
+      },
+      "capability": {
+        "homecare_per75": 210.0066955075862,
+        "rehab_per75": 46.695606412863285
+      },
+      "comparison": {
+        "capability_rank": 41,
+        "actual_rank": 40,
+        "rank_gap": -1,
+        "gap_type": "capability_low_actual_low"
+      }
+    },
+    "富山県": {
+      "areas": 4,
+      "population": {
+        "75plus": 197436,
+        "total": 1008536
+      },
+      "actual_total": {
+        "hospitals": 87,
+        "homecare_facilities": 83,
+        "homecare_patients": 27738,
+        "acute_support": 13
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 44.06,
+        "homecare_facilities": 42.04,
+        "homecare_patients": 14049.11,
+        "acute_support": 6.58
+      },
+      "actual_per_100k": {
+        "hospitals": 8.63,
+        "homecare_patients": 2750.32
+      },
+      "capability": {
+        "homecare_per75": 274.0128446686521,
+        "rehab_per75": 67.36360136955773
+      },
+      "comparison": {
+        "capability_rank": 29,
+        "actual_rank": 32,
+        "rank_gap": 3,
+        "gap_type": "capability_mid_actual_mid"
+      }
+    },
+    "石川県": {
+      "areas": 4,
+      "population": {
+        "75plus": 196027,
+        "total": 1098119
+      },
+      "actual_total": {
+        "hospitals": 80,
+        "homecare_facilities": 80,
+        "homecare_patients": 32663,
+        "acute_support": 9
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 40.81,
+        "homecare_facilities": 40.81,
+        "homecare_patients": 16662.5,
+        "acute_support": 4.59
+      },
+      "actual_per_100k": {
+        "hospitals": 7.29,
+        "homecare_patients": 2974.45
+      },
+      "capability": {
+        "homecare_per75": 313.7322919801864,
+        "rehab_per75": 75.49980359848388
+      },
+      "comparison": {
+        "capability_rank": 23,
+        "actual_rank": 18,
+        "rank_gap": -5,
+        "gap_type": "capability_mid_actual_mid"
+      }
+    },
+    "福井県": {
+      "areas": 4,
+      "population": {
+        "75plus": 132845,
+        "total": 746676
+      },
+      "actual_total": {
+        "hospitals": 57,
+        "homecare_facilities": 55,
+        "homecare_patients": 21039,
+        "acute_support": 12
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 42.91,
+        "homecare_facilities": 41.4,
+        "homecare_patients": 15837.25,
+        "acute_support": 9.03
+      },
+      "actual_per_100k": {
+        "hospitals": 7.63,
+        "homecare_patients": 2817.69
+      },
+      "capability": {
+        "homecare_per75": 319.1689563024578,
+        "rehab_per75": 73.01742632391132
+      },
+      "comparison": {
+        "capability_rank": 20,
+        "actual_rank": 23,
+        "rank_gap": 3,
+        "gap_type": "capability_mid_actual_mid"
+      }
+    },
+    "山梨県": {
+      "areas": 4,
+      "population": {
+        "75plus": 144526,
+        "total": 800921
+      },
+      "actual_total": {
+        "hospitals": 52,
+        "homecare_facilities": 48,
+        "homecare_patients": 23848,
+        "acute_support": 4
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 35.98,
+        "homecare_facilities": 33.21,
+        "homecare_patients": 16500.84,
+        "acute_support": 2.77
+      },
+      "actual_per_100k": {
+        "hospitals": 6.49,
+        "homecare_patients": 2977.57
+      },
+      "capability": {
+        "homecare_per75": 263.62038664323376,
+        "rehab_per75": 81.64620898661833
+      },
+      "comparison": {
+        "capability_rank": 32,
+        "actual_rank": 20,
+        "rank_gap": -12,
+        "gap_type": "capability_mid_actual_mid"
+      }
+    },
+    "長野県": {
+      "areas": 10,
+      "population": {
+        "75plus": 387031,
+        "total": 2012058
+      },
+      "actual_total": {
+        "hospitals": 110,
+        "homecare_facilities": 103,
+        "homecare_patients": 46625,
+        "acute_support": 18
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 28.42,
+        "homecare_facilities": 26.61,
+        "homecare_patients": 12046.84,
+        "acute_support": 4.65
+      },
+      "actual_per_100k": {
+        "hospitals": 5.47,
+        "homecare_patients": 2317.28
+      },
+      "capability": {
+        "homecare_per75": 244.68324242760917,
+        "rehab_per75": 62.26891385961331
+      },
+      "comparison": {
+        "capability_rank": 36,
+        "actual_rank": 38,
+        "rank_gap": 2,
+        "gap_type": "capability_mid_actual_low"
+      }
+    },
+    "岐阜県": {
+      "areas": 5,
+      "population": {
+        "75plus": 351280,
+        "total": 1951199
+      },
+      "actual_total": {
+        "hospitals": 84,
+        "homecare_facilities": 80,
+        "homecare_patients": 32185,
+        "acute_support": 13
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 23.91,
+        "homecare_facilities": 22.77,
+        "homecare_patients": 9162.21,
+        "acute_support": 3.7
+      },
+      "actual_per_100k": {
+        "hospitals": 4.31,
+        "homecare_patients": 1649.5
+      },
+      "capability": {
+        "homecare_per75": 314.27920746982466,
+        "rehab_per75": 62.05875654748348
+      },
+      "comparison": {
+        "capability_rank": 22,
+        "actual_rank": 47,
+        "rank_gap": 25,
+        "gap_type": "capability_mid_actual_low"
+      }
+    },
+    "静岡県": {
+      "areas": 8,
+      "population": {
+        "75plus": 635058,
+        "total": 3575665
+      },
+      "actual_total": {
+        "hospitals": 142,
+        "homecare_facilities": 133,
+        "homecare_patients": 64604,
+        "acute_support": 24
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 22.36,
+        "homecare_facilities": 20.94,
+        "homecare_patients": 10172.93,
+        "acute_support": 3.78
+      },
+      "actual_per_100k": {
+        "hospitals": 3.97,
+        "homecare_patients": 1806.77
+      },
+      "capability": {
+        "homecare_per75": 270.36900566562423,
+        "rehab_per75": 57.475065269628914
+      },
+      "comparison": {
+        "capability_rank": 31,
+        "actual_rank": 44,
+        "rank_gap": 13,
+        "gap_type": "capability_mid_actual_low"
+      }
+    },
+    "愛知県": {
+      "areas": 11,
+      "population": {
+        "75plus": 1111331,
+        "total": 7483662
+      },
+      "actual_total": {
+        "hospitals": 286,
+        "homecare_facilities": 273,
+        "homecare_patients": 134683,
+        "acute_support": 47
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 25.73,
+        "homecare_facilities": 24.57,
+        "homecare_patients": 12119.07,
+        "acute_support": 4.23
+      },
+      "actual_per_100k": {
+        "hospitals": 3.82,
+        "homecare_patients": 1799.69
+      },
+      "capability": {
+        "homecare_per75": 368.83700715628373,
+        "rehab_per75": 68.746395088412
+      },
+      "comparison": {
+        "capability_rank": 13,
+        "actual_rank": 36,
+        "rank_gap": 23,
+        "gap_type": "capability_mid_actual_mid"
+      }
+    },
+    "三重県": {
+      "areas": 8,
+      "population": {
+        "75plus": 308141,
+        "total": 1741132
+      },
+      "actual_total": {
+        "hospitals": 81,
+        "homecare_facilities": 78,
+        "homecare_patients": 34624,
+        "acute_support": 10
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 26.29,
+        "homecare_facilities": 25.31,
+        "homecare_patients": 11236.41,
+        "acute_support": 3.25
+      },
+      "actual_per_100k": {
+        "hospitals": 4.65,
+        "homecare_patients": 1988.59
+      },
+      "capability": {
+        "homecare_per75": 316.41358988255377,
+        "rehab_per75": 63.93177149421856
+      },
+      "comparison": {
+        "capability_rank": 21,
+        "actual_rank": 41,
+        "rank_gap": 20,
+        "gap_type": "capability_mid_actual_low"
+      }
+    },
+    "滋賀県": {
+      "areas": 7,
+      "population": {
+        "75plus": 214916,
+        "total": 1405246
+      },
+      "actual_total": {
+        "hospitals": 50,
+        "homecare_facilities": 48,
+        "homecare_patients": 20264,
+        "acute_support": 10
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 23.26,
+        "homecare_facilities": 22.33,
+        "homecare_patients": 9428.8,
+        "acute_support": 4.65
+      },
+      "actual_per_100k": {
+        "hospitals": 3.56,
+        "homecare_patients": 1442.03
+      },
+      "capability": {
+        "homecare_per75": 319.19447598131364,
+        "rehab_per75": 54.43987418340189
+      },
+      "comparison": {
+        "capability_rank": 19,
+        "actual_rank": 46,
+        "rank_gap": 27,
+        "gap_type": "capability_mid_actual_low"
+      }
+    },
+    "京都府": {
+      "areas": 6,
+      "population": {
+        "75plus": 443109,
+        "total": 2471929
+      },
+      "actual_total": {
+        "hospitals": 153,
+        "homecare_facilities": 147,
+        "homecare_patients": 68094,
+        "acute_support": 26
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 34.53,
+        "homecare_facilities": 33.17,
+        "homecare_patients": 15367.32,
+        "acute_support": 5.87
+      },
+      "actual_per_100k": {
+        "hospitals": 6.19,
+        "homecare_patients": 2754.69
+      },
+      "capability": {
+        "homecare_per75": 396.0650765387297,
+        "rehab_per75": 61.15876680455599
+      },
+      "comparison": {
+        "capability_rank": 8,
+        "actual_rank": 26,
+        "rank_gap": 18,
+        "gap_type": "capability_high_actual_mid"
+      }
+    },
+    "大阪府": {
+      "areas": 8,
+      "population": {
+        "75plus": 1419143,
+        "total": 8771928
+      },
+      "actual_total": {
+        "hospitals": 467,
+        "homecare_facilities": 443,
+        "homecare_patients": 211361,
+        "acute_support": 85
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 32.91,
+        "homecare_facilities": 31.22,
+        "homecare_patients": 14893.57,
+        "acute_support": 5.99
+      },
+      "actual_per_100k": {
+        "hospitals": 5.32,
+        "homecare_patients": 2409.52
+      },
+      "capability": {
+        "homecare_per75": 442.23873140338924,
+        "rehab_per75": 74.97482635647006
+      },
+      "comparison": {
+        "capability_rank": 6,
+        "actual_rank": 28,
+        "rank_gap": 22,
+        "gap_type": "capability_high_actual_mid"
+      }
+    },
+    "兵庫県": {
+      "areas": 8,
+      "population": {
+        "75plus": 925804,
+        "total": 5393606
+      },
+      "actual_total": {
+        "hospitals": 315,
+        "homecare_facilities": 308,
+        "homecare_patients": 159234,
+        "acute_support": 61
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 34.02,
+        "homecare_facilities": 33.27,
+        "homecare_patients": 17199.54,
+        "acute_support": 6.59
+      },
+      "actual_per_100k": {
+        "hospitals": 5.84,
+        "homecare_patients": 2952.27
+      },
+      "capability": {
+        "homecare_per75": 391.22751683941743,
+        "rehab_per75": 74.8538567558576
+      },
+      "comparison": {
+        "capability_rank": 10,
+        "actual_rank": 15,
+        "rank_gap": 5,
+        "gap_type": "capability_high_actual_mid"
+      }
+    },
+    "奈良県": {
+      "areas": 5,
+      "population": {
+        "75plus": 250064,
+        "total": 1303611
+      },
+      "actual_total": {
+        "hospitals": 75,
+        "homecare_facilities": 70,
+        "homecare_patients": 29813,
+        "acute_support": 12
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 29.99,
+        "homecare_facilities": 27.99,
+        "homecare_patients": 11922.15,
+        "acute_support": 4.8
+      },
+      "actual_per_100k": {
+        "hospitals": 5.75,
+        "homecare_patients": 2286.96
+      },
+      "capability": {
+        "homecare_per75": 327.5161558640988,
+        "rehab_per75": 73.58116322221511
+      },
+      "comparison": {
+        "capability_rank": 17,
+        "actual_rank": 39,
+        "rank_gap": 22,
+        "gap_type": "capability_mid_actual_low"
+      }
+    },
+    "和歌山県": {
+      "areas": 7,
+      "population": {
+        "75plus": 179210,
+        "total": 901047
+      },
+      "actual_total": {
+        "hospitals": 75,
+        "homecare_facilities": 72,
+        "homecare_patients": 27617,
+        "acute_support": 10
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 41.85,
+        "homecare_facilities": 40.18,
+        "homecare_patients": 15410.41,
+        "acute_support": 5.58
+      },
+      "actual_per_100k": {
+        "hospitals": 8.32,
+        "homecare_patients": 3064.99
+      },
+      "capability": {
+        "homecare_per75": 356.0069192567379,
+        "rehab_per75": 77.5626360136153
+      },
+      "comparison": {
+        "capability_rank": 15,
+        "actual_rank": 25,
+        "rank_gap": 10,
+        "gap_type": "capability_mid_actual_mid"
+      }
+    },
+    "鳥取県": {
+      "areas": 3,
+      "population": {
+        "75plus": 100421,
+        "total": 533873
+      },
+      "actual_total": {
+        "hospitals": 39,
+        "homecare_facilities": 38,
+        "homecare_patients": 19454,
+        "acute_support": 9
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 38.84,
+        "homecare_facilities": 37.84,
+        "homecare_patients": 19372.44,
+        "acute_support": 8.96
+      },
+      "actual_per_100k": {
+        "hospitals": 7.31,
+        "homecare_patients": 3643.94
+      },
+      "capability": {
+        "homecare_per75": 689.0988936577011,
+        "rehab_per75": 74.68557373457743
+      },
+      "comparison": {
+        "capability_rank": 2,
+        "actual_rank": 12,
+        "rank_gap": 10,
+        "gap_type": "capability_high_actual_mid"
+      }
+    },
+    "島根県": {
+      "areas": 7,
+      "population": {
+        "75plus": 132073,
+        "total": 642460
+      },
+      "actual_total": {
+        "hospitals": 39,
+        "homecare_facilities": 38,
+        "homecare_patients": 19923,
+        "acute_support": 10
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 29.53,
+        "homecare_facilities": 28.77,
+        "homecare_patients": 15084.84,
+        "acute_support": 7.57
+      },
+      "actual_per_100k": {
+        "hospitals": 6.07,
+        "homecare_patients": 3101.05
+      },
+      "capability": {
+        "homecare_per75": 562.56767090927,
+        "rehab_per75": 83.2872729475366
+      },
+      "comparison": {
+        "capability_rank": 5,
+        "actual_rank": 27,
+        "rank_gap": 22,
+        "gap_type": "capability_high_actual_mid"
+      }
+    },
+    "岡山県": {
+      "areas": 5,
+      "population": {
+        "75plus": 335120,
+        "total": 1835406
+      },
+      "actual_total": {
+        "hospitals": 143,
+        "homecare_facilities": 135,
+        "homecare_patients": 67766,
+        "acute_support": 26
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 42.67,
+        "homecare_facilities": 40.28,
+        "homecare_patients": 20221.41,
+        "acute_support": 7.76
+      },
+      "actual_per_100k": {
+        "hospitals": 7.79,
+        "homecare_patients": 3692.15
+      },
+      "capability": {
+        "homecare_per75": 572.6306994509429,
+        "rehab_per75": 116.67462401527811
+      },
+      "comparison": {
+        "capability_rank": 4,
+        "actual_rank": 9,
+        "rank_gap": 5,
+        "gap_type": "capability_high_actual_high"
+      }
+    },
+    "広島県": {
+      "areas": 7,
+      "population": {
+        "75plus": 483600,
+        "total": 2728771
+      },
+      "actual_total": {
+        "hospitals": 207,
+        "homecare_facilities": 195,
+        "homecare_patients": 80238,
+        "acute_support": 36
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 42.8,
+        "homecare_facilities": 40.32,
+        "homecare_patients": 16591.81,
+        "acute_support": 7.44
+      },
+      "actual_per_100k": {
+        "hospitals": 7.59,
+        "homecare_patients": 2940.44
+      },
+      "capability": {
+        "homecare_per75": 901.36476426799,
+        "rehab_per75": 109.38792390405294
+      },
+      "comparison": {
+        "capability_rank": 1,
+        "actual_rank": 19,
+        "rank_gap": 18,
+        "gap_type": "capability_high_actual_mid"
+      }
+    },
+    "山口県": {
+      "areas": 8,
+      "population": {
+        "75plus": 269608,
+        "total": 1292923
+      },
+      "actual_total": {
+        "hospitals": 117,
+        "homecare_facilities": 114,
+        "homecare_patients": 44203,
+        "acute_support": 12
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 43.4,
+        "homecare_facilities": 42.28,
+        "homecare_patients": 16395.29,
+        "acute_support": 4.45
+      },
+      "actual_per_100k": {
+        "hospitals": 9.05,
+        "homecare_patients": 3418.84
+      },
+      "capability": {
+        "homecare_per75": 679.5050591970565,
+        "rehab_per75": 135.75264828936827
+      },
+      "comparison": {
+        "capability_rank": 3,
+        "actual_rank": 21,
+        "rank_gap": 18,
+        "gap_type": "capability_high_actual_mid"
+      }
+    },
+    "徳島県": {
+      "areas": 3,
+      "population": {
+        "75plus": 137913,
+        "total": 700229
+      },
+      "actual_total": {
+        "hospitals": 92,
+        "homecare_facilities": 89,
+        "homecare_patients": 27187,
+        "acute_support": 14
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 66.71,
+        "homecare_facilities": 64.53,
+        "homecare_patients": 19713.15,
+        "acute_support": 10.15
+      },
+      "actual_per_100k": {
+        "hospitals": 13.14,
+        "homecare_patients": 3882.59
+      },
+      "capability": {
+        "homecare_per75": 342.24474850086654,
+        "rehab_per75": 104.41365208501011
+      },
+      "comparison": {
+        "capability_rank": 16,
+        "actual_rank": 10,
+        "rank_gap": -6,
+        "gap_type": "capability_mid_actual_high"
+      }
+    },
+    "香川県": {
+      "areas": 3,
+      "population": {
+        "75plus": 176257,
+        "total": 939965
+      },
+      "actual_total": {
+        "hospitals": 77,
+        "homecare_facilities": 73,
+        "homecare_patients": 29933,
+        "acute_support": 9
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 43.69,
+        "homecare_facilities": 41.42,
+        "homecare_patients": 16982.59,
+        "acute_support": 5.11
+      },
+      "actual_per_100k": {
+        "hospitals": 8.19,
+        "homecare_patients": 3184.48
+      },
+      "capability": {
+        "homecare_per75": 363.67349949221875,
+        "rehab_per75": 113.47067066839898
+      },
+      "comparison": {
+        "capability_rank": 14,
+        "actual_rank": 17,
+        "rank_gap": 3,
+        "gap_type": "capability_mid_actual_mid"
+      }
+    },
+    "愛媛県": {
+      "areas": 6,
+      "population": {
+        "75plus": 253502,
+        "total": 1296268
+      },
+      "actual_total": {
+        "hospitals": 121,
+        "homecare_facilities": 117,
+        "homecare_patients": 48751,
+        "acute_support": 20
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 47.73,
+        "homecare_facilities": 46.15,
+        "homecare_patients": 19231.01,
+        "acute_support": 7.89
+      },
+      "actual_per_100k": {
+        "hospitals": 9.33,
+        "homecare_patients": 3760.87
+      },
+      "capability": {
+        "homecare_per75": 321.8909515506781,
+        "rehab_per75": 88.3622219943038
+      },
+      "comparison": {
+        "capability_rank": 18,
+        "actual_rank": 13,
+        "rank_gap": -5,
+        "gap_type": "capability_mid_actual_mid"
+      }
+    },
+    "高知県": {
+      "areas": 4,
+      "population": {
+        "75plus": 143075,
+        "total": 664386
+      },
+      "actual_total": {
+        "hospitals": 114,
+        "homecare_facilities": 111,
+        "homecare_patients": 29450,
+        "acute_support": 8
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 79.68,
+        "homecare_facilities": 77.58,
+        "homecare_patients": 20583.61,
+        "acute_support": 5.59
+      },
+      "actual_per_100k": {
+        "hospitals": 17.16,
+        "homecare_patients": 4432.66
+      },
+      "capability": {
+        "homecare_per75": 281.67045255984624,
+        "rehab_per75": 113.22732832430543
+      },
+      "comparison": {
+        "capability_rank": 27,
+        "actual_rank": 8,
+        "rank_gap": -19,
+        "gap_type": "capability_mid_actual_high"
+      }
+    },
+    "福岡県": {
+      "areas": 13,
+      "population": {
+        "75plus": 799298,
+        "total": 5086867
+      },
+      "actual_total": {
+        "hospitals": 392,
+        "homecare_facilities": 368,
+        "homecare_patients": 151102,
+        "acute_support": 52
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 49.04,
+        "homecare_facilities": 46.04,
+        "homecare_patients": 18904.34,
+        "acute_support": 6.51
+      },
+      "actual_per_100k": {
+        "hospitals": 7.71,
+        "homecare_patients": 2970.43
+      },
+      "capability": {
+        "homecare_per75": 394.596258216585,
+        "rehab_per75": 94.83321614716914
+      },
+      "comparison": {
+        "capability_rank": 9,
+        "actual_rank": 14,
+        "rank_gap": 5,
+        "gap_type": "capability_high_actual_mid"
+      }
+    },
+    "佐賀県": {
+      "areas": 5,
+      "population": {
+        "75plus": 136296,
+        "total": 794192
+      },
+      "actual_total": {
+        "hospitals": 83,
+        "homecare_facilities": 81,
+        "homecare_patients": 29573,
+        "acute_support": 11
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 60.9,
+        "homecare_facilities": 59.43,
+        "homecare_patients": 21697.63,
+        "acute_support": 8.07
+      },
+      "actual_per_100k": {
+        "hospitals": 10.45,
+        "homecare_patients": 3723.66
+      },
+      "capability": {
+        "homecare_per75": 371.2508070669719,
+        "rehab_per75": 111.52198156952515
+      },
+      "comparison": {
+        "capability_rank": 12,
+        "actual_rank": 6,
+        "rank_gap": -6,
+        "gap_type": "capability_mid_actual_high"
+      }
+    },
+    "長崎県": {
+      "areas": 8,
+      "population": {
+        "75plus": 242002,
+        "total": 1274353
+      },
+      "actual_total": {
+        "hospitals": 120,
+        "homecare_facilities": 118,
+        "homecare_patients": 54971,
+        "acute_support": 21
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 49.59,
+        "homecare_facilities": 48.76,
+        "homecare_patients": 22715.1,
+        "acute_support": 8.68
+      },
+      "actual_per_100k": {
+        "hospitals": 9.42,
+        "homecare_patients": 4313.64
+      },
+      "capability": {
+        "homecare_per75": 384.70756440029425,
+        "rehab_per75": 107.02390889331492
+      },
+      "comparison": {
+        "capability_rank": 11,
+        "actual_rank": 4,
+        "rank_gap": -7,
+        "gap_type": "capability_mid_actual_high"
+      }
+    },
+    "熊本県": {
+      "areas": 10,
+      "population": {
+        "75plus": 309503,
+        "total": 1716204
+      },
+      "actual_total": {
+        "hospitals": 169,
+        "homecare_facilities": 159,
+        "homecare_patients": 67982,
+        "acute_support": 19
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 54.6,
+        "homecare_facilities": 51.37,
+        "homecare_patients": 21964.89,
+        "acute_support": 6.14
+      },
+      "actual_per_100k": {
+        "hospitals": 9.85,
+        "homecare_patients": 3961.18
+      },
+      "capability": {
+        "homecare_per75": 312.4363899542169,
+        "rehab_per75": 85.29804234530845
+      },
+      "comparison": {
+        "capability_rank": 24,
+        "actual_rank": 5,
+        "rank_gap": -19,
+        "gap_type": "capability_mid_actual_high"
+      }
+    },
+    "大分県": {
+      "areas": 6,
+      "population": {
+        "75plus": 214584,
+        "total": 1102101
+      },
+      "actual_total": {
+        "hospitals": 127,
+        "homecare_facilities": 118,
+        "homecare_patients": 62345,
+        "acute_support": 20
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 59.18,
+        "homecare_facilities": 54.99,
+        "homecare_patients": 29053.89,
+        "acute_support": 9.32
+      },
+      "actual_per_100k": {
+        "hospitals": 11.52,
+        "homecare_patients": 5656.92
+      },
+      "capability": {
+        "homecare_per75": 273.55254818625804,
+        "rehab_per75": 71.7667673265481
+      },
+      "comparison": {
+        "capability_rank": 30,
+        "actual_rank": 1,
+        "rank_gap": -29,
+        "gap_type": "capability_mid_actual_high"
+      }
+    },
+    "宮崎県": {
+      "areas": 7,
+      "population": {
+        "75plus": 195083,
+        "total": 1048248
+      },
+      "actual_total": {
+        "hospitals": 117,
+        "homecare_facilities": 106,
+        "homecare_patients": 51349,
+        "acute_support": 5
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 59.97,
+        "homecare_facilities": 54.34,
+        "homecare_patients": 26321.62,
+        "acute_support": 2.56
+      },
+      "actual_per_100k": {
+        "hospitals": 11.16,
+        "homecare_patients": 4898.55
+      },
+      "capability": {
+        "homecare_per75": 220.93160347134298,
+        "rehab_per75": 68.17610965589006
+      },
+      "comparison": {
+        "capability_rank": 38,
+        "actual_rank": 2,
+        "rank_gap": -36,
+        "gap_type": "capability_low_actual_high"
+      }
+    },
+    "鹿児島県": {
+      "areas": 9,
+      "population": {
+        "75plus": 284283,
+        "total": 1558609
+      },
+      "actual_total": {
+        "hospitals": 201,
+        "homecare_facilities": 185,
+        "homecare_patients": 72003,
+        "acute_support": 9
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 70.7,
+        "homecare_facilities": 65.08,
+        "homecare_patients": 25327.93,
+        "acute_support": 3.17
+      },
+      "actual_per_100k": {
+        "hospitals": 12.9,
+        "homecare_patients": 4619.7
+      },
+      "capability": {
+        "homecare_per75": 304.62602406756645,
+        "rehab_per75": 94.97578117580017
+      },
+      "comparison": {
+        "capability_rank": 25,
+        "actual_rank": 3,
+        "rank_gap": -22,
+        "gap_type": "capability_mid_actual_high"
+      }
+    },
+    "沖縄県": {
+      "areas": 5,
+      "population": {
+        "75plus": 172275,
+        "total": 1483795
+      },
+      "actual_total": {
+        "hospitals": 71,
+        "homecare_facilities": 68,
+        "homecare_patients": 33810,
+        "acute_support": 12
+      },
+      "actual_per_75plus_100k": {
+        "hospitals": 41.21,
+        "homecare_facilities": 39.47,
+        "homecare_patients": 19625.6,
+        "acute_support": 6.97
+      },
+      "actual_per_100k": {
+        "hospitals": 4.79,
+        "homecare_patients": 2278.62
+      },
+      "capability": {
+        "homecare_per75": 285.0094325932376,
+        "rehab_per75": 68.49513858656218
+      },
+      "comparison": {
+        "capability_rank": 26,
+        "actual_rank": 11,
+        "rank_gap": -15,
+        "gap_type": "capability_mid_actual_mid"
+      }
+    }
+  }
+}
