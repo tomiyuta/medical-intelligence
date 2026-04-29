@@ -1501,3 +1501,30 @@ Q7. 想定ユーザー (行政/医療機関/企業/医師/市民)
 - Phase 2 release tag: medintel-phase2-release (d597192)
 - 本番URL: https://medical-intelligence-two.vercel.app/
 - GitHub: https://github.com/tomiyuta/medical-intelligence
+
+
+## Phase 4 Review Package v2 micro-fix (2026-04-29)
+
+### peer review v1 採択 修正6項目反映
+
+| # | 修正 | 反映箇所 |
+|---|---|---|
+| 1 | 沖縄テーブル 実値 vs 全国比 分離 | BMI 39.8% (1位) / HbA1c 8.7% (6位) / 内分泌外来 184/10万 / 糖尿病薬 6.9% (12位) |
+| 2 | '6不一致パターン' → '6つの地域医療プロファイル / mismatch archetypes' | docs全体 |
+| 3 | multi-label archetype 性を明記 | §4.1, §6.1, §8.3 |
+| 4 | 6軸モデル矢印削除、'独立軸' に | §3 因果連鎖風表現を解消 |
+| 5 | 年齢調整死亡率2020年の時点差を代表例ごとに再掲 | §5.1〜5.4 各セクション末 |
+| 6 | Q2: MECE性 → multi-label archetype 妥当性 | §7 Q2 |
+
+### 重大な誤り修正
+v1 では沖縄の代表例テーブルで実値と全国平均比%が混在していた:
+- 'BMI≥25 35.2%' → 実値は **39.8%** (35.2% は全国平均比)
+- 'HbA1c≥6.5 14.5%' → 実値は **8.7%** (14.5% は全国平均比)
+- '内分泌外来受療率 110/10万' → 実値は **184/10万** (110 は誤値)
+- '糖尿病薬服用率 5.8%' → 実値は **6.9%** (12位)
+
+これらはreviewerの再audit指摘で発見。v2で完全修正。
+
+### 文書ステータス
+- v1: f6f2801 (peer review 提出)
+- v2: 本commit (peer review v1 採択 micro-fix 反映、外部レビュー再提出可)
