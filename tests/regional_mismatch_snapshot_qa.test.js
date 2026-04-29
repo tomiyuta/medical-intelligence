@@ -194,6 +194,7 @@ function loadData() {
   const dataDir = path.join(ROOT, 'data', 'static');
   return {
     ndbCheckupRiskRates: JSON.parse(fs.readFileSync(path.join(dataDir, 'ndb_checkup_risk_rates.json'), 'utf-8')),
+    ndbQuestionnaire: JSON.parse(fs.readFileSync(path.join(dataDir, 'ndb_questionnaire.json'), 'utf-8')),
     patientSurvey: JSON.parse(fs.readFileSync(path.join(dataDir, 'patient_survey_r5.json'), 'utf-8')),
     mortalityOutcome2020: JSON.parse(fs.readFileSync(path.join(dataDir, 'mortality_outcome_2020.json'), 'utf-8')),
     homecareCapability: JSON.parse(fs.readFileSync(path.join(dataDir, 'homecare_capability_by_pref.json'), 'utf-8')),
@@ -368,7 +369,15 @@ async function main() {
     const stabMap = computeStabilityMap(pref, data);
     stabilityByPref[pref] = stabMap;
     const matches = detectArchetypesFull({ pref, ...data }, undefined, { stabilityMap: stabMap });
-    snapshot[pref] = matches.map(m => ({ id: m.id, layer: m.layer, title: m.title, confidence: m.confidence ? { grade: m.confidence.grade, score: m.confidence.score, factors: m.confidence.factors } : null }));
+    snapshot[pref] = matches.map(m => ({
+      id: m.id,
+      layer: m.layer,
+      title: m.title,
+      confidence: m.confidence ? { grade: m.confidence.grade, score: m.confidence.score, factors: m.confidence.factors } : null,
+      supportEvidence: m.supportEvidence ? m.supportEvidence.map(e => ({
+        key: e.key, source: e.source, rank: e.stats?.rank, zscore: e.stats?.zscore, supports_pattern: e.supports_pattern,
+      })) : [],
+    }));
 
     // 各県のラベル数 0〜3 検証 (Done条件 #2)
     if (matches.length > 3) {
@@ -447,6 +456,46 @@ async function main() {
       }
     }
   }
+
+  // ── Phase 4-3f: support evidence 機能の assertion ──
+  // [Done条件] 沖縄 P1 / 東京 P6 で support_bonus が +1 (説明力補強)
+  // [Done条件] 境界県 (stability=false) で support_bonus が +0 (過剰 A 昇格防止)
+  const supportBonusErrors = [];
+  // 沖縄 P1: support_bonus = 1 期待
+  const okP1 = snapshot['沖縄県']?.find(m => m.id === 'P1');
+  if (okP1?.confidence?.factors?.support_bonus !== 1) {
+    supportBonusErrors.push(`沖縄県 P1: support_bonus=${okP1?.confidence?.factors?.support_bonus} 期待 +1`);
+  }
+  if ((okP1?.supportEvidence?.length || 0) < 4) {
+    supportBonusErrors.push(`沖縄県 P1: supportEvidence.length=${okP1?.supportEvidence?.length} 期待 >=4`);
+  }
+  // 東京 P6: support_bonus = 1 期待
+  const tokP6 = snapshot['東京都']?.find(m => m.id === 'P6');
+  if (tokP6?.confidence?.factors?.support_bonus !== 1) {
+    supportBonusErrors.push(`東京都 P6: support_bonus=${tokP6?.confidence?.factors?.support_bonus} 期待 +1`);
+  }
+  if ((tokP6?.supportEvidence?.length || 0) < 4) {
+    supportBonusErrors.push(`東京都 P6: supportEvidence.length=${tokP6?.supportEvidence?.length} 期待 >=4`);
+  }
+  // 境界県: support_bonus = 0 期待 (stability=false のため、support evidence があっても加算されない)
+  for (const pref of ['大阪府', '青森県', '岩手県', '山形県', '新潟県']) {
+    const matches = snapshot[pref] || [];
+    for (const m of matches) {
+      if (m.confidence?.factors?.support_bonus > 0) {
+        supportBonusErrors.push(`${pref} ${m.id}: 境界例で support_bonus=${m.confidence.factors.support_bonus} (期待 0、過剰昇格防止失敗)`);
+      }
+    }
+  }
+  // grade 過剰昇格防止: 大阪 P6 と新潟 P5 は C 維持 (Phase 4-1 P2-4 から不変)
+  const osP6 = snapshot['大阪府']?.find(m => m.id === 'P6');
+  if (osP6 && osP6.confidence?.grade !== 'C') {
+    supportBonusErrors.push(`大阪府 P6: grade=${osP6.confidence?.grade} 期待 C (境界例の過剰昇格防止)`);
+  }
+  const niP5 = snapshot['新潟県']?.find(m => m.id === 'P5');
+  if (niP5 && niP5.confidence?.grade !== 'C') {
+    supportBonusErrors.push(`新潟県 P5: grade=${niP5.confidence?.grade} 期待 C (境界例の過剰昇格防止)`);
+  }
+  errors.push(...supportBonusErrors);
 
   // 0件県・3件県の手動確認リスト (Done条件 #5)
   const zeroCountPrefs = Object.entries(snapshot).filter(([, m]) => m.length === 0).map(([p]) => p);

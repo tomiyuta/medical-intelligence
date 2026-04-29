@@ -26,10 +26,10 @@ import { detectArchetypes } from '../../../lib/regionalMismatchLogic';
  * docs: REGIONAL_MISMATCH_PATTERNS.md, PHASE4_REVIEW_PACKAGE.md §7
  */
 
-export default function RegionalMismatchExplorer({ pref, ndbCheckupRiskRates, patientSurvey, mortalityOutcome2020, homecareCapability, agePyramid }) {
+export default function RegionalMismatchExplorer({ pref, ndbCheckupRiskRates, ndbQuestionnaire, patientSurvey, mortalityOutcome2020, homecareCapability, agePyramid }) {
   if (!pref) return null;
 
-  const ctx = { pref, ndbCheckupRiskRates, patientSurvey, mortalityOutcome2020, homecareCapability, agePyramid };
+  const ctx = { pref, ndbCheckupRiskRates, ndbQuestionnaire, patientSurvey, mortalityOutcome2020, homecareCapability, agePyramid };
   const matches = detectArchetypes(ctx);
 
   return (
@@ -110,6 +110,32 @@ export default function RegionalMismatchExplorer({ pref, ndbCheckupRiskRates, pa
                   </div>
                 ))}
               </div>
+
+              {m.supportEvidence && m.supportEvidence.length > 0 && (() => {
+                const supporting = m.supportEvidence.filter(e => e.supports_pattern).length;
+                const total = m.supportEvidence.length;
+                const tooltipText = m.supportEvidence
+                  .map(e => `${e.label}: rank ${e.stats?.rank}/${e.stats?.n} (z=${e.stats?.zscore})${e.supports_pattern ? ' ★支持' : ''}`)
+                  .join('\n');
+                return (
+                  <div
+                    title={`補助 evidence (NDB 質問票・検査値、Phase 4-3f):\n${tooltipText}\n\n注: 主 evidence は変更されません。support_bonus は confidence score に最大 +1 のみ加算され、stability=true の場合のみ有効。境界例の過剰昇格を防ぎます。詳細は docs/PHASE4_3F_RISK_SUPPORT_EVIDENCE.md`}
+                    style={{
+                      marginTop: 8,
+                      fontSize: 10,
+                      color: '#64748b',
+                      background: '#f1f5f9',
+                      padding: '5px 10px',
+                      borderRadius: 3,
+                      cursor: 'help',
+                      borderLeft: supporting >= 2 ? '2px solid #94a3b8' : '2px solid #e2e8f0',
+                    }}
+                  >
+                    💡 補助 evidence: <b style={{color: '#475569'}}>{supporting}/{total} 項目</b>が同方向に支持
+                    {m.confidence?.factors?.support_bonus > 0 && <span style={{marginLeft: 8, color: '#0891b2'}}>(confidence +{m.confidence.factors.support_bonus})</span>}
+                  </div>
+                );
+              })()}
             </div>
           ))}
         </div>

@@ -736,10 +736,11 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     mortalityOutcome2020={mortalityOutcome2020}
   />
 
-  {/* ═══ Layer 7: REGIONAL MISMATCH EXPLORER (Phase 4-1 P1-4 MVP) ═══ */}
+  {/* ═══ Layer 7: REGIONAL MISMATCH EXPLORER (Phase 4-1 P1-4 MVP + 4-3f support evidence) ═══ */}
   <RegionalMismatchExplorer
     pref={ndbPref}
     ndbCheckupRiskRates={ndbCheckupRiskRates}
+    ndbQuestionnaire={ndbQ}
     patientSurvey={patientSurvey}
     mortalityOutcome2020={mortalityOutcome2020}
     homecareCapability={homecareCapability}

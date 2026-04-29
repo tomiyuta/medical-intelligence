@@ -1,5 +1,5 @@
 {
-  "_generated": "2026-04-29T15:02:42.689Z",
+  "_generated": "2026-04-29T15:32:34.897Z",
   "_phase": "Phase 4-3e",
   "_description": "capability mapping audit: 集中度 (1施設あたり患者数) と 47県 ranking",
   "_conclusion": "capability proxy (施設数ベース) は規模・集中度を吸収できない。caveat 強化で運用、proxy 修正は行わない。",
