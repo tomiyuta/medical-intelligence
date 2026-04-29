@@ -1,0 +1,6455 @@
+{
+  "source": "令和5年度人口動態統計特殊報告 令和2年都道府県別年齢調整死亡率の概況",
+  "source_url": "https://www.mhlw.go.jp/toukei/saikin/hw/jinkou/other/20sibou/xls/13.xlsx",
+  "year": 2020,
+  "unit": "人口10万対",
+  "causes": [
+    "悪性新生物",
+    "糖尿病",
+    "心疾患",
+    "脳血管疾患",
+    "肺炎",
+    "腎不全"
+  ],
+  "national": {
+    "悪性新生物": {
+      "crude": {
+        "male": {
+          "rate": 368.3,
+          "rank": null
+        },
+        "female": {
+          "rate": 248.3,
+          "rank": null
+        }
+      },
+      "age_adjusted": {
+        "male": {
+          "rate": 394.7,
+          "rank": null
+        },
+        "female": {
+          "rate": 196.4,
+          "rank": null
+        }
+      }
+    },
+    "糖尿病": {
+      "crude": {
+        "male": {
+          "rate": 12.9,
+          "rank": null
+        },
+        "female": {
+          "rate": 9.7,
+          "rank": null
+        }
+      },
+      "age_adjusted": {
+        "male": {
+          "rate": 13.9,
+          "rank": null
+        },
+        "female": {
+          "rate": 6.9,
+          "rank": null
+        }
+      }
+    },
+    "心疾患": {
+      "crude": {
+        "male": {
+          "rate": 165.5,
+          "rank": null
+        },
+        "female": {
+          "rate": 167.7,
+          "rank": null
+        }
+      },
+      "age_adjusted": {
+        "male": {
+          "rate": 190.1,
+          "rank": null
+        },
+        "female": {
+          "rate": 109.2,
+          "rank": null
+        }
+      }
+    },
+    "脳血管疾患": {
+      "crude": {
+        "male": {
+          "rate": 84,
+          "rank": null
+        },
+        "female": {
+          "rate": 83,
+          "rank": null
+        }
+      },
+      "age_adjusted": {
+        "male": {
+          "rate": 93.8,
+          "rank": null
+        },
+        "female": {
+          "rate": 56.4,
+          "rank": null
+        }
+      }
+    },
+    "肺炎": {
+      "crude": {
+        "male": {
+          "rate": 74.8,
+          "rank": null
+        },
+        "female": {
+          "rate": 52.9,
+          "rank": null
+        }
+      },
+      "age_adjusted": {
+        "male": {
+          "rate": 90.1,
+          "rank": null
+        },
+        "female": {
+          "rate": 33.4,
+          "rank": null
+        }
+      }
+    },
+    "腎不全": {
+      "crude": {
+        "male": {
+          "rate": 23.3,
+          "rank": null
+        },
+        "female": {
+          "rate": 20.5,
+          "rank": null
+        }
+      },
+      "age_adjusted": {
+        "male": {
+          "rate": 27.3,
+          "rank": null
+        },
+        "female": {
+          "rate": 13.5,
+          "rank": null
+        }
+      }
+    }
+  },
+  "prefectures": {
+    "北海道": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 453.7,
+            "rank": 4
+          },
+          "female": {
+            "rate": 316.5,
+            "rank": 4
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 440.7,
+            "rank": 3
+          },
+          "female": {
+            "rate": 228,
+            "rank": 1
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 16.3,
+            "rank": 14
+          },
+          "female": {
+            "rate": 13,
+            "rank": 10
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 16,
+            "rank": 14
+          },
+          "female": {
+            "rate": 8.6,
+            "rank": 7
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 176,
+            "rank": 27
+          },
+          "female": {
+            "rate": 184.8,
+            "rank": 25
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 180,
+            "rank": 34
+          },
+          "female": {
+            "rate": 108.4,
+            "rank": 29
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 89.1,
+            "rank": 27
+          },
+          "female": {
+            "rate": 90.7,
+            "rank": 28
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 88.9,
+            "rank": 31
+          },
+          "female": {
+            "rate": 56.6,
+            "rank": 24
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 84.9,
+            "rank": 19
+          },
+          "female": {
+            "rate": 57.6,
+            "rank": 23
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 89,
+            "rank": 23
+          },
+          "female": {
+            "rate": 32.5,
+            "rank": 22
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 34.6,
+            "rank": 3
+          },
+          "female": {
+            "rate": 30,
+            "rank": 7
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 35.8,
+            "rank": 2
+          },
+          "female": {
+            "rate": 17.9,
+            "rank": 1
+          }
+        }
+      }
+    },
+    "青森県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 498.9,
+            "rank": 2
+          },
+          "female": {
+            "rate": 320.8,
+            "rank": 3
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 472.6,
+            "rank": 1
+          },
+          "female": {
+            "rate": 219.1,
+            "rank": 2
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 19.3,
+            "rank": 3
+          },
+          "female": {
+            "rate": 14.9,
+            "rank": 5
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 18.9,
+            "rank": 4
+          },
+          "female": {
+            "rate": 8.8,
+            "rank": 4
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 211.3,
+            "rank": 7
+          },
+          "female": {
+            "rate": 228.2,
+            "rank": 11
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 219,
+            "rank": 3
+          },
+          "female": {
+            "rate": 126.5,
+            "rank": 3
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 116.3,
+            "rank": 5
+          },
+          "female": {
+            "rate": 119.6,
+            "rank": 8
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 116.7,
+            "rank": 5
+          },
+          "female": {
+            "rate": 69.7,
+            "rank": 8
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 112.9,
+            "rank": 4
+          },
+          "female": {
+            "rate": 77.4,
+            "rank": 8
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 118.4,
+            "rank": 1
+          },
+          "female": {
+            "rate": 42.6,
+            "rank": 7
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 35.1,
+            "rank": 2
+          },
+          "female": {
+            "rate": 29.8,
+            "rank": 8
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 37.9,
+            "rank": 1
+          },
+          "female": {
+            "rate": 17.1,
+            "rank": 3
+          }
+        }
+      }
+    },
+    "岩手県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 441.5,
+            "rank": 6
+          },
+          "female": {
+            "rate": 324.1,
+            "rank": 2
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 411.6,
+            "rank": 9
+          },
+          "female": {
+            "rate": 214.4,
+            "rank": 3
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 15.5,
+            "rank": 16
+          },
+          "female": {
+            "rate": 14.9,
+            "rank": 4
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 14.6,
+            "rank": 22
+          },
+          "female": {
+            "rate": 8.7,
+            "rank": 6
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 216.1,
+            "rank": 5
+          },
+          "female": {
+            "rate": 237.1,
+            "rank": 4
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 213,
+            "rank": 6
+          },
+          "female": {
+            "rate": 121.6,
+            "rank": 6
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 153.2,
+            "rank": 1
+          },
+          "female": {
+            "rate": 158.4,
+            "rank": 2
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 147.2,
+            "rank": 1
+          },
+          "female": {
+            "rate": 84.3,
+            "rank": 1
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 83.9,
+            "rank": 20
+          },
+          "female": {
+            "rate": 61.2,
+            "rank": 19
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 85,
+            "rank": 28
+          },
+          "female": {
+            "rate": 29.6,
+            "rank": 31
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 31,
+            "rank": 9
+          },
+          "female": {
+            "rate": 26.3,
+            "rank": 17
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 30.2,
+            "rank": 9
+          },
+          "female": {
+            "rate": 14.1,
+            "rank": 21
+          }
+        }
+      }
+    },
+    "宮城県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 358,
+            "rank": 39
+          },
+          "female": {
+            "rate": 245.1,
+            "rank": 35
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 394.4,
+            "rank": 19
+          },
+          "female": {
+            "rate": 195.9,
+            "rank": 18
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 11.4,
+            "rank": 37
+          },
+          "female": {
+            "rate": 9.1,
+            "rank": 37
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 12.6,
+            "rank": 36
+          },
+          "female": {
+            "rate": 6.5,
+            "rank": 26
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 166.9,
+            "rank": 33
+          },
+          "female": {
+            "rate": 168.4,
+            "rank": 37
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 196.7,
+            "rank": 18
+          },
+          "female": {
+            "rate": 109.8,
+            "rank": 27
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 98,
+            "rank": 22
+          },
+          "female": {
+            "rate": 101.5,
+            "rank": 20
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 110.7,
+            "rank": 9
+          },
+          "female": {
+            "rate": 71,
+            "rank": 7
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 56.4,
+            "rank": 45
+          },
+          "female": {
+            "rate": 36.8,
+            "rank": 44
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 70.5,
+            "rank": 42
+          },
+          "female": {
+            "rate": 23.3,
+            "rank": 45
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 20.9,
+            "rank": 40
+          },
+          "female": {
+            "rate": 18.2,
+            "rank": 36
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 25.3,
+            "rank": 36
+          },
+          "female": {
+            "rate": 12.6,
+            "rank": 31
+          }
+        }
+      }
+    },
+    "秋田県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 530.1,
+            "rank": 1
+          },
+          "female": {
+            "rate": 346,
+            "rank": 1
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 445.9,
+            "rank": 2
+          },
+          "female": {
+            "rate": 203.5,
+            "rank": 7
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 21.9,
+            "rank": 2
+          },
+          "female": {
+            "rate": 14.9,
+            "rank": 6
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 19.5,
+            "rank": 3
+          },
+          "female": {
+            "rate": 8,
+            "rank": 15
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 202.6,
+            "rank": 11
+          },
+          "female": {
+            "rate": 228.7,
+            "rank": 9
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 182.2,
+            "rank": 31
+          },
+          "female": {
+            "rate": 99.3,
+            "rank": 37
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 143,
+            "rank": 2
+          },
+          "female": {
+            "rate": 162.9,
+            "rank": 1
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 124.1,
+            "rank": 2
+          },
+          "female": {
+            "rate": 78.2,
+            "rank": 2
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 117.1,
+            "rank": 3
+          },
+          "female": {
+            "rate": 72.7,
+            "rank": 12
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 105.4,
+            "rank": 10
+          },
+          "female": {
+            "rate": 31.9,
+            "rank": 23
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 33.9,
+            "rank": 4
+          },
+          "female": {
+            "rate": 29.5,
+            "rank": 10
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 29.9,
+            "rank": 11
+          },
+          "female": {
+            "rate": 13.8,
+            "rank": 23
+          }
+        }
+      }
+    },
+    "山形県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 435.5,
+            "rank": 9
+          },
+          "female": {
+            "rate": 302.2,
+            "rank": 7
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 395.7,
+            "rank": 18
+          },
+          "female": {
+            "rate": 195.6,
+            "rank": 19
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 10.5,
+            "rank": 43
+          },
+          "female": {
+            "rate": 11.3,
+            "rank": 18
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 9.7,
+            "rank": 46
+          },
+          "female": {
+            "rate": 6,
+            "rank": 36
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 215.8,
+            "rank": 6
+          },
+          "female": {
+            "rate": 232.3,
+            "rank": 5
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 203.4,
+            "rank": 11
+          },
+          "female": {
+            "rate": 111.5,
+            "rank": 25
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 124.2,
+            "rank": 3
+          },
+          "female": {
+            "rate": 146.5,
+            "rank": 3
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 114.6,
+            "rank": 8
+          },
+          "female": {
+            "rate": 71.4,
+            "rank": 6
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 90.3,
+            "rank": 13
+          },
+          "female": {
+            "rate": 60,
+            "rank": 20
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 86.3,
+            "rank": 25
+          },
+          "female": {
+            "rate": 27,
+            "rank": 37
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 31.7,
+            "rank": 7
+          },
+          "female": {
+            "rate": 26.5,
+            "rank": 16
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 29.3,
+            "rank": 16
+          },
+          "female": {
+            "rate": 13.2,
+            "rank": 25
+          }
+        }
+      }
+    },
+    "福島県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 408.1,
+            "rank": 18
+          },
+          "female": {
+            "rate": 281.7,
+            "rank": 13
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 404.2,
+            "rank": 12
+          },
+          "female": {
+            "rate": 199.2,
+            "rank": 9
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 18.2,
+            "rank": 6
+          },
+          "female": {
+            "rate": 15.8,
+            "rank": 1
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 17.9,
+            "rank": 5
+          },
+          "female": {
+            "rate": 10.1,
+            "rank": 1
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 203,
+            "rank": 10
+          },
+          "female": {
+            "rate": 218.8,
+            "rank": 14
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 212.9,
+            "rank": 8
+          },
+          "female": {
+            "rate": 118.9,
+            "rank": 10
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 106.5,
+            "rank": 10
+          },
+          "female": {
+            "rate": 131.1,
+            "rank": 5
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 109.6,
+            "rank": 10
+          },
+          "female": {
+            "rate": 75.2,
+            "rank": 3
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 83.1,
+            "rank": 22
+          },
+          "female": {
+            "rate": 66.6,
+            "rank": 16
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 90.4,
+            "rank": 20
+          },
+          "female": {
+            "rate": 35.5,
+            "rank": 18
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 26.2,
+            "rank": 21
+          },
+          "female": {
+            "rate": 24.1,
+            "rank": 21
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 27.5,
+            "rank": 22
+          },
+          "female": {
+            "rate": 13,
+            "rank": 28
+          }
+        }
+      }
+    },
+    "茨城県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 386.2,
+            "rank": 23
+          },
+          "female": {
+            "rate": 251.9,
+            "rank": 30
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 403.1,
+            "rank": 13
+          },
+          "female": {
+            "rate": 198.5,
+            "rank": 12
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 15.2,
+            "rank": 17
+          },
+          "female": {
+            "rate": 11,
+            "rank": 23
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 16.1,
+            "rank": 12
+          },
+          "female": {
+            "rate": 8,
+            "rank": 14
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 171.4,
+            "rank": 28
+          },
+          "female": {
+            "rate": 176.1,
+            "rank": 33
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 194.7,
+            "rank": 20
+          },
+          "female": {
+            "rate": 116,
+            "rank": 17
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 107.1,
+            "rank": 9
+          },
+          "female": {
+            "rate": 102.9,
+            "rank": 19
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 116.9,
+            "rank": 4
+          },
+          "female": {
+            "rate": 71.5,
+            "rank": 5
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 89.5,
+            "rank": 14
+          },
+          "female": {
+            "rate": 73,
+            "rank": 11
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 109,
+            "rank": 6
+          },
+          "female": {
+            "rate": 47.2,
+            "rank": 2
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 22.7,
+            "rank": 34
+          },
+          "female": {
+            "rate": 17,
+            "rank": 39
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 25.9,
+            "rank": 30
+          },
+          "female": {
+            "rate": 11.3,
+            "rank": 42
+          }
+        }
+      }
+    },
+    "栃木県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 362.2,
+            "rank": 38
+          },
+          "female": {
+            "rate": 250.3,
+            "rank": 32
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 391,
+            "rank": 22
+          },
+          "female": {
+            "rate": 199,
+            "rank": 10
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 14.8,
+            "rank": 22
+          },
+          "female": {
+            "rate": 12.7,
+            "rank": 12
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 16.6,
+            "rank": 10
+          },
+          "female": {
+            "rate": 8.7,
+            "rank": 5
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 181.7,
+            "rank": 20
+          },
+          "female": {
+            "rate": 175.3,
+            "rank": 35
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 213,
+            "rank": 7
+          },
+          "female": {
+            "rate": 118.2,
+            "rank": 12
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 104,
+            "rank": 15
+          },
+          "female": {
+            "rate": 107.6,
+            "rank": 16
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 119.7,
+            "rank": 3
+          },
+          "female": {
+            "rate": 74.5,
+            "rank": 4
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 74.1,
+            "rank": 33
+          },
+          "female": {
+            "rate": 54.6,
+            "rank": 26
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 93.1,
+            "rank": 19
+          },
+          "female": {
+            "rate": 34.9,
+            "rank": 20
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 22.6,
+            "rank": 35
+          },
+          "female": {
+            "rate": 16.7,
+            "rank": 42
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 27.2,
+            "rank": 24
+          },
+          "female": {
+            "rate": 11.5,
+            "rank": 40
+          }
+        }
+      }
+    },
+    "群馬県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 377.6,
+            "rank": 28
+          },
+          "female": {
+            "rate": 256.9,
+            "rank": 27
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 382.3,
+            "rank": 32
+          },
+          "female": {
+            "rate": 192.2,
+            "rank": 25
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 16.7,
+            "rank": 10
+          },
+          "female": {
+            "rate": 12,
+            "rank": 14
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 17.5,
+            "rank": 8
+          },
+          "female": {
+            "rate": 8.1,
+            "rank": 13
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 190.9,
+            "rank": 14
+          },
+          "female": {
+            "rate": 193.6,
+            "rank": 22
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 203.8,
+            "rank": 10
+          },
+          "female": {
+            "rate": 117.6,
+            "rank": 14
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 95.2,
+            "rank": 23
+          },
+          "female": {
+            "rate": 95.4,
+            "rank": 24
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 101.1,
+            "rank": 15
+          },
+          "female": {
+            "rate": 59.7,
+            "rank": 16
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 88.8,
+            "rank": 15
+          },
+          "female": {
+            "rate": 68.9,
+            "rank": 14
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 99.7,
+            "rank": 15
+          },
+          "female": {
+            "rate": 41,
+            "rank": 11
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 28,
+            "rank": 16
+          },
+          "female": {
+            "rate": 22.6,
+            "rank": 26
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 31,
+            "rank": 7
+          },
+          "female": {
+            "rate": 13.9,
+            "rank": 22
+          }
+        }
+      }
+    },
+    "埼玉県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 347.1,
+            "rank": 42
+          },
+          "female": {
+            "rate": 225.2,
+            "rank": 42
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 393.1,
+            "rank": 20
+          },
+          "female": {
+            "rate": 199.7,
+            "rank": 8
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 11.1,
+            "rank": 38
+          },
+          "female": {
+            "rate": 8.6,
+            "rank": 40
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 12.5,
+            "rank": 37
+          },
+          "female": {
+            "rate": 7.4,
+            "rank": 19
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 159.4,
+            "rank": 38
+          },
+          "female": {
+            "rate": 144,
+            "rank": 42
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 199.8,
+            "rank": 15
+          },
+          "female": {
+            "rate": 118.5,
+            "rank": 11
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 70.3,
+            "rank": 42
+          },
+          "female": {
+            "rate": 67.4,
+            "rank": 41
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 86.3,
+            "rank": 38
+          },
+          "female": {
+            "rate": 56.3,
+            "rank": 26
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 76.6,
+            "rank": 27
+          },
+          "female": {
+            "rate": 52.2,
+            "rank": 29
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 107.2,
+            "rank": 7
+          },
+          "female": {
+            "rate": 42.3,
+            "rank": 9
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 21.5,
+            "rank": 39
+          },
+          "female": {
+            "rate": 17.6,
+            "rank": 37
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 28.9,
+            "rank": 18
+          },
+          "female": {
+            "rate": 14.5,
+            "rank": 18
+          }
+        }
+      }
+    },
+    "千葉県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 351.6,
+            "rank": 40
+          },
+          "female": {
+            "rate": 227.8,
+            "rank": 41
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 389.6,
+            "rank": 25
+          },
+          "female": {
+            "rate": 194.5,
+            "rank": 20
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 15,
+            "rank": 21
+          },
+          "female": {
+            "rate": 9.5,
+            "rank": 34
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 16.5,
+            "rank": 11
+          },
+          "female": {
+            "rate": 7.7,
+            "rank": 16
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 165.4,
+            "rank": 35
+          },
+          "female": {
+            "rate": 150.4,
+            "rank": 41
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 200.2,
+            "rank": 14
+          },
+          "female": {
+            "rate": 116.3,
+            "rank": 16
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 78.7,
+            "rank": 37
+          },
+          "female": {
+            "rate": 70.2,
+            "rank": 39
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 91.2,
+            "rank": 27
+          },
+          "female": {
+            "rate": 55.5,
+            "rank": 28
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 78,
+            "rank": 26
+          },
+          "female": {
+            "rate": 51.3,
+            "rank": 30
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 102.2,
+            "rank": 12
+          },
+          "female": {
+            "rate": 38.7,
+            "rank": 13
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 20.1,
+            "rank": 43
+          },
+          "female": {
+            "rate": 14.8,
+            "rank": 45
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 25.1,
+            "rank": 38
+          },
+          "female": {
+            "rate": 11.4,
+            "rank": 41
+          }
+        }
+      }
+    },
+    "東京都": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 297.2,
+            "rank": 46
+          },
+          "female": {
+            "rate": 211.8,
+            "rank": 46
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 385.7,
+            "rank": 28
+          },
+          "female": {
+            "rate": 199,
+            "rank": 11
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 10.8,
+            "rank": 41
+          },
+          "female": {
+            "rate": 6.8,
+            "rank": 46
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 13.7,
+            "rank": 27
+          },
+          "female": {
+            "rate": 5.7,
+            "rank": 40
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 140.2,
+            "rank": 43
+          },
+          "female": {
+            "rate": 131.5,
+            "rank": 44
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 194.4,
+            "rank": 22
+          },
+          "female": {
+            "rate": 105.2,
+            "rank": 32
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 66.9,
+            "rank": 46
+          },
+          "female": {
+            "rate": 63.1,
+            "rank": 44
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 89.3,
+            "rank": 30
+          },
+          "female": {
+            "rate": 52.6,
+            "rank": 32
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 57.5,
+            "rank": 43
+          },
+          "female": {
+            "rate": 39.4,
+            "rank": 43
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 84.4,
+            "rank": 29
+          },
+          "female": {
+            "rate": 30.8,
+            "rank": 28
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 17,
+            "rank": 47
+          },
+          "female": {
+            "rate": 13.9,
+            "rank": 47
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 24.3,
+            "rank": 43
+          },
+          "female": {
+            "rate": 11.1,
+            "rank": 43
+          }
+        }
+      }
+    },
+    "神奈川県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 326,
+            "rank": 43
+          },
+          "female": {
+            "rate": 219.5,
+            "rank": 43
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 384.2,
+            "rank": 30
+          },
+          "female": {
+            "rate": 194.1,
+            "rank": 22
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 8.2,
+            "rank": 47
+          },
+          "female": {
+            "rate": 7.2,
+            "rank": 44
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 9.6,
+            "rank": 47
+          },
+          "female": {
+            "rate": 5.8,
+            "rank": 38
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 152.9,
+            "rank": 40
+          },
+          "female": {
+            "rate": 125.9,
+            "rank": 45
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 189.9,
+            "rank": 25
+          },
+          "female": {
+            "rate": 98.8,
+            "rank": 40
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 67.6,
+            "rank": 45
+          },
+          "female": {
+            "rate": 62.1,
+            "rank": 46
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 82.1,
+            "rank": 44
+          },
+          "female": {
+            "rate": 49.6,
+            "rank": 39
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 56.5,
+            "rank": 44
+          },
+          "female": {
+            "rate": 34.6,
+            "rank": 46
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 77.3,
+            "rank": 37
+          },
+          "female": {
+            "rate": 26.3,
+            "rank": 38
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 17.4,
+            "rank": 46
+          },
+          "female": {
+            "rate": 13.9,
+            "rank": 46
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 22.9,
+            "rank": 46
+          },
+          "female": {
+            "rate": 10.8,
+            "rank": 44
+          }
+        }
+      }
+    },
+    "新潟県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 437.4,
+            "rank": 8
+          },
+          "female": {
+            "rate": 279,
+            "rank": 14
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 414.5,
+            "rank": 8
+          },
+          "female": {
+            "rate": 188.3,
+            "rank": 30
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 13.5,
+            "rank": 27
+          },
+          "female": {
+            "rate": 11.8,
+            "rank": 15
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 12.7,
+            "rank": 34
+          },
+          "female": {
+            "rate": 6.9,
+            "rank": 22
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 169.6,
+            "rank": 30
+          },
+          "female": {
+            "rate": 194.2,
+            "rank": 21
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 170.1,
+            "rank": 42
+          },
+          "female": {
+            "rate": 99.2,
+            "rank": 38
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 118.7,
+            "rank": 4
+          },
+          "female": {
+            "rate": 129.2,
+            "rank": 6
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 116.3,
+            "rank": 6
+          },
+          "female": {
+            "rate": 68.8,
+            "rank": 9
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 69.1,
+            "rank": 35
+          },
+          "female": {
+            "rate": 50.5,
+            "rank": 32
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 71.1,
+            "rank": 41
+          },
+          "female": {
+            "rate": 23.9,
+            "rank": 43
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 24.2,
+            "rank": 28
+          },
+          "female": {
+            "rate": 23.2,
+            "rank": 24
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 24,
+            "rank": 44
+          },
+          "female": {
+            "rate": 12.4,
+            "rank": 36
+          }
+        }
+      }
+    },
+    "富山県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 409,
+            "rank": 17
+          },
+          "female": {
+            "rate": 293.2,
+            "rank": 8
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 393,
+            "rank": 21
+          },
+          "female": {
+            "rate": 198.2,
+            "rank": 13
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 14,
+            "rank": 24
+          },
+          "female": {
+            "rate": 10.3,
+            "rank": 30
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 13.7,
+            "rank": 28
+          },
+          "female": {
+            "rate": 6,
+            "rank": 35
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 146.7,
+            "rank": 41
+          },
+          "female": {
+            "rate": 179.3,
+            "rank": 29
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 151.7,
+            "rank": 45
+          },
+          "female": {
+            "rate": 91.1,
+            "rank": 44
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 100.8,
+            "rank": 19
+          },
+          "female": {
+            "rate": 112.8,
+            "rank": 11
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 101.8,
+            "rank": 14
+          },
+          "female": {
+            "rate": 64.6,
+            "rank": 11
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 86,
+            "rank": 18
+          },
+          "female": {
+            "rate": 58.7,
+            "rank": 22
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 90.3,
+            "rank": 21
+          },
+          "female": {
+            "rate": 29.2,
+            "rank": 33
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 21.9,
+            "rank": 36
+          },
+          "female": {
+            "rate": 22.9,
+            "rank": 25
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 23,
+            "rank": 45
+          },
+          "female": {
+            "rate": 12.1,
+            "rank": 39
+          }
+        }
+      }
+    },
+    "石川県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 387.7,
+            "rank": 22
+          },
+          "female": {
+            "rate": 264.9,
+            "rank": 22
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 410.9,
+            "rank": 10
+          },
+          "female": {
+            "rate": 196.2,
+            "rank": 15
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 12.7,
+            "rank": 35
+          },
+          "female": {
+            "rate": 9.7,
+            "rank": 33
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 13.5,
+            "rank": 29
+          },
+          "female": {
+            "rate": 6.3,
+            "rank": 29
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 158,
+            "rank": 39
+          },
+          "female": {
+            "rate": 180.3,
+            "rank": 28
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 183.2,
+            "rank": 28
+          },
+          "female": {
+            "rate": 104,
+            "rank": 33
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 87.1,
+            "rank": 30
+          },
+          "female": {
+            "rate": 94,
+            "rank": 26
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 97.3,
+            "rank": 22
+          },
+          "female": {
+            "rate": 57.1,
+            "rank": 22
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 74.8,
+            "rank": 31
+          },
+          "female": {
+            "rate": 49.7,
+            "rank": 34
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 88.4,
+            "rank": 24
+          },
+          "female": {
+            "rate": 29.4,
+            "rank": 32
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 21.8,
+            "rank": 37
+          },
+          "female": {
+            "rate": 16.9,
+            "rank": 41
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 24.6,
+            "rank": 40
+          },
+          "female": {
+            "rate": 10.2,
+            "rank": 45
+          }
+        }
+      }
+    },
+    "福井県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 378.4,
+            "rank": 27
+          },
+          "female": {
+            "rate": 245.9,
+            "rank": 33
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 380,
+            "rank": 35
+          },
+          "female": {
+            "rate": 170,
+            "rank": 47
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 13.6,
+            "rank": 25
+          },
+          "female": {
+            "rate": 12.2,
+            "rank": 13
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 13.5,
+            "rank": 30
+          },
+          "female": {
+            "rate": 7.2,
+            "rank": 20
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 192.5,
+            "rank": 13
+          },
+          "female": {
+            "rate": 224.6,
+            "rank": 12
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 202.7,
+            "rank": 12
+          },
+          "female": {
+            "rate": 121.4,
+            "rank": 7
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 92.3,
+            "rank": 24
+          },
+          "female": {
+            "rate": 104.2,
+            "rank": 17
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 95,
+            "rank": 24
+          },
+          "female": {
+            "rate": 58.5,
+            "rank": 18
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 92,
+            "rank": 11
+          },
+          "female": {
+            "rate": 67.6,
+            "rank": 15
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 99,
+            "rank": 16
+          },
+          "female": {
+            "rate": 35.2,
+            "rank": 19
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 25.6,
+            "rank": 24
+          },
+          "female": {
+            "rate": 27.3,
+            "rank": 14
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 26.6,
+            "rank": 28
+          },
+          "female": {
+            "rate": 15.5,
+            "rank": 11
+          }
+        }
+      }
+    },
+    "山梨県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 363.5,
+            "rank": 37
+          },
+          "female": {
+            "rate": 251.1,
+            "rank": 31
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 355.1,
+            "rank": 45
+          },
+          "female": {
+            "rate": 178,
+            "rank": 44
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 16.9,
+            "rank": 9
+          },
+          "female": {
+            "rate": 10.1,
+            "rank": 32
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 16.7,
+            "rank": 9
+          },
+          "female": {
+            "rate": 5.4,
+            "rank": 41
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 166.4,
+            "rank": 34
+          },
+          "female": {
+            "rate": 184.3,
+            "rank": 26
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 170.9,
+            "rank": 41
+          },
+          "female": {
+            "rate": 99,
+            "rank": 39
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 104.1,
+            "rank": 14
+          },
+          "female": {
+            "rate": 96,
+            "rank": 23
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 104.3,
+            "rank": 12
+          },
+          "female": {
+            "rate": 56.4,
+            "rank": 25
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 75.9,
+            "rank": 29
+          },
+          "female": {
+            "rate": 53.9,
+            "rank": 27
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 78.1,
+            "rank": 36
+          },
+          "female": {
+            "rate": 28.5,
+            "rank": 34
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 29.2,
+            "rank": 13
+          },
+          "female": {
+            "rate": 22.5,
+            "rank": 28
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 29.5,
+            "rank": 15
+          },
+          "female": {
+            "rate": 12.7,
+            "rank": 30
+          }
+        }
+      }
+    },
+    "長野県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 368.7,
+            "rank": 35
+          },
+          "female": {
+            "rate": 267.2,
+            "rank": 20
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 338.4,
+            "rank": 47
+          },
+          "female": {
+            "rate": 180.7,
+            "rank": 43
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 12.6,
+            "rank": 36
+          },
+          "female": {
+            "rate": 11.1,
+            "rank": 21
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 11.7,
+            "rank": 40
+          },
+          "female": {
+            "rate": 6.3,
+            "rank": 31
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 178.9,
+            "rank": 23
+          },
+          "female": {
+            "rate": 186.4,
+            "rank": 24
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 168.6,
+            "rank": 43
+          },
+          "female": {
+            "rate": 92.4,
+            "rank": 43
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 102.5,
+            "rank": 17
+          },
+          "female": {
+            "rate": 126.1,
+            "rank": 7
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 95.4,
+            "rank": 23
+          },
+          "female": {
+            "rate": 65.5,
+            "rank": 10
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 68.6,
+            "rank": 36
+          },
+          "female": {
+            "rate": 49.1,
+            "rank": 36
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 64.3,
+            "rank": 45
+          },
+          "female": {
+            "rate": 23.7,
+            "rank": 44
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 20.4,
+            "rank": 41
+          },
+          "female": {
+            "rate": 16.9,
+            "rank": 40
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 19,
+            "rank": 47
+          },
+          "female": {
+            "rate": 9.3,
+            "rank": 46
+          }
+        }
+      }
+    },
+    "岐阜県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 374,
+            "rank": 29
+          },
+          "female": {
+            "rate": 257.3,
+            "rank": 26
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 370.2,
+            "rank": 40
+          },
+          "female": {
+            "rate": 193.1,
+            "rank": 24
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 10.3,
+            "rank": 44
+          },
+          "female": {
+            "rate": 7.1,
+            "rank": 45
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 10.3,
+            "rank": 43
+          },
+          "female": {
+            "rate": 4.7,
+            "rank": 47
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 162,
+            "rank": 37
+          },
+          "female": {
+            "rate": 178.4,
+            "rank": 30
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 173.5,
+            "rank": 39
+          },
+          "female": {
+            "rate": 109.6,
+            "rank": 28
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 84.1,
+            "rank": 33
+          },
+          "female": {
+            "rate": 90.1,
+            "rank": 29
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 87,
+            "rank": 36
+          },
+          "female": {
+            "rate": 57.7,
+            "rank": 21
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 78.7,
+            "rank": 25
+          },
+          "female": {
+            "rate": 50.1,
+            "rank": 33
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 85.7,
+            "rank": 27
+          },
+          "female": {
+            "rate": 29.9,
+            "rank": 30
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 22.9,
+            "rank": 33
+          },
+          "female": {
+            "rate": 23.2,
+            "rank": 23
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 24.4,
+            "rank": 41
+          },
+          "female": {
+            "rate": 14.7,
+            "rank": 17
+          }
+        }
+      }
+    },
+    "静岡県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 368.7,
+            "rank": 34
+          },
+          "female": {
+            "rate": 252,
+            "rank": 29
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 371.7,
+            "rank": 39
+          },
+          "female": {
+            "rate": 190.8,
+            "rank": 27
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 15.1,
+            "rank": 19
+          },
+          "female": {
+            "rate": 11.1,
+            "rank": 20
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 15.8,
+            "rank": 16
+          },
+          "female": {
+            "rate": 7.5,
+            "rank": 18
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 168.6,
+            "rank": 31
+          },
+          "female": {
+            "rate": 163.4,
+            "rank": 38
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 182.5,
+            "rank": 30
+          },
+          "female": {
+            "rate": 101.5,
+            "rank": 35
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 109.7,
+            "rank": 7
+          },
+          "female": {
+            "rate": 98.3,
+            "rank": 22
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 114.7,
+            "rank": 7
+          },
+          "female": {
+            "rate": 64.2,
+            "rank": 12
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 67.5,
+            "rank": 38
+          },
+          "female": {
+            "rate": 45.3,
+            "rank": 40
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 76.6,
+            "rank": 38
+          },
+          "female": {
+            "rate": 27.6,
+            "rank": 35
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 26.9,
+            "rank": 20
+          },
+          "female": {
+            "rate": 19.4,
+            "rank": 33
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 29.7,
+            "rank": 14
+          },
+          "female": {
+            "rate": 12.2,
+            "rank": 37
+          }
+        }
+      }
+    },
+    "愛知県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 325.3,
+            "rank": 44
+          },
+          "female": {
+            "rate": 219.4,
+            "rank": 44
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 389.1,
+            "rank": 26
+          },
+          "female": {
+            "rate": 196.6,
+            "rank": 14
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 8.4,
+            "rank": 46
+          },
+          "female": {
+            "rate": 6,
+            "rank": 47
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 10.1,
+            "rank": 44
+          },
+          "female": {
+            "rate": 5,
+            "rank": 45
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 116.3,
+            "rank": 46
+          },
+          "female": {
+            "rate": 117.5,
+            "rank": 46
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 156.8,
+            "rank": 44
+          },
+          "female": {
+            "rate": 93,
+            "rank": 42
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 69,
+            "rank": 43
+          },
+          "female": {
+            "rate": 63.6,
+            "rank": 43
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 87.6,
+            "rank": 35
+          },
+          "female": {
+            "rate": 52,
+            "rank": 34
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 60.2,
+            "rank": 42
+          },
+          "female": {
+            "rate": 39.4,
+            "rank": 42
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 84.3,
+            "rank": 31
+          },
+          "female": {
+            "rate": 31,
+            "rank": 27
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 17.9,
+            "rank": 45
+          },
+          "female": {
+            "rate": 15.8,
+            "rank": 43
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 24.4,
+            "rank": 42
+          },
+          "female": {
+            "rate": 12.5,
+            "rank": 34
+          }
+        }
+      }
+    },
+    "三重県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 371.2,
+            "rank": 32
+          },
+          "female": {
+            "rate": 240.8,
+            "rank": 40
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 375.5,
+            "rank": 36
+          },
+          "female": {
+            "rate": 181,
+            "rank": 42
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 13.4,
+            "rank": 29
+          },
+          "female": {
+            "rate": 12.7,
+            "rank": 11
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 13.4,
+            "rank": 31
+          },
+          "female": {
+            "rate": 8.5,
+            "rank": 8
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 179.6,
+            "rank": 22
+          },
+          "female": {
+            "rate": 182,
+            "rank": 27
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 191.3,
+            "rank": 23
+          },
+          "female": {
+            "rate": 111.8,
+            "rank": 24
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 88.1,
+            "rank": 28
+          },
+          "female": {
+            "rate": 88,
+            "rank": 31
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 91.4,
+            "rank": 26
+          },
+          "female": {
+            "rate": 56.7,
+            "rank": 23
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 76.1,
+            "rank": 28
+          },
+          "female": {
+            "rate": 52.6,
+            "rank": 28
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 84.3,
+            "rank": 30
+          },
+          "female": {
+            "rate": 31.4,
+            "rank": 25
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 29.5,
+            "rank": 11
+          },
+          "female": {
+            "rate": 23.4,
+            "rank": 22
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 31.8,
+            "rank": 6
+          },
+          "female": {
+            "rate": 14.8,
+            "rank": 15
+          }
+        }
+      }
+    },
+    "滋賀県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 319.1,
+            "rank": 45
+          },
+          "female": {
+            "rate": 218.3,
+            "rank": 45
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 372,
+            "rank": 38
+          },
+          "female": {
+            "rate": 186.4,
+            "rank": 32
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 9.9,
+            "rank": 45
+          },
+          "female": {
+            "rate": 7.6,
+            "rank": 43
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 12.1,
+            "rank": 39
+          },
+          "female": {
+            "rate": 5.8,
+            "rank": 39
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 139.8,
+            "rank": 44
+          },
+          "female": {
+            "rate": 151.4,
+            "rank": 40
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 178.5,
+            "rank": 36
+          },
+          "female": {
+            "rate": 107.1,
+            "rank": 31
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 62.4,
+            "rank": 47
+          },
+          "female": {
+            "rate": 64.1,
+            "rank": 42
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 76.2,
+            "rank": 47
+          },
+          "female": {
+            "rate": 48,
+            "rank": 43
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 51.4,
+            "rank": 46
+          },
+          "female": {
+            "rate": 35.4,
+            "rank": 45
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 69.7,
+            "rank": 43
+          },
+          "female": {
+            "rate": 23.9,
+            "rank": 42
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 23.1,
+            "rank": 32
+          },
+          "female": {
+            "rate": 17.6,
+            "rank": 38
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 29.9,
+            "rank": 10
+          },
+          "female": {
+            "rate": 12.9,
+            "rank": 29
+          }
+        }
+      }
+    },
+    "京都府": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 373,
+            "rank": 30
+          },
+          "female": {
+            "rate": 245.6,
+            "rank": 34
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 389.6,
+            "rank": 24
+          },
+          "female": {
+            "rate": 190.6,
+            "rank": 29
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 11,
+            "rank": 40
+          },
+          "female": {
+            "rate": 7.7,
+            "rank": 42
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 11.5,
+            "rank": 42
+          },
+          "female": {
+            "rate": 5.3,
+            "rank": 44
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 177.2,
+            "rank": 25
+          },
+          "female": {
+            "rate": 177.1,
+            "rank": 32
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 198.4,
+            "rank": 16
+          },
+          "female": {
+            "rate": 114.8,
+            "rank": 19
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 76.8,
+            "rank": 39
+          },
+          "female": {
+            "rate": 70.2,
+            "rank": 38
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 83.3,
+            "rank": 43
+          },
+          "female": {
+            "rate": 47.2,
+            "rank": 45
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 62.4,
+            "rank": 40
+          },
+          "female": {
+            "rate": 41.9,
+            "rank": 41
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 73.1,
+            "rank": 40
+          },
+          "female": {
+            "rate": 26,
+            "rank": 40
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 21.5,
+            "rank": 38
+          },
+          "female": {
+            "rate": 21.3,
+            "rank": 31
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 24.9,
+            "rank": 39
+          },
+          "female": {
+            "rate": 13.6,
+            "rank": 24
+          }
+        }
+      }
+    },
+    "大阪府": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 383.5,
+            "rank": 26
+          },
+          "female": {
+            "rate": 244.3,
+            "rank": 36
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 423.3,
+            "rank": 5
+          },
+          "female": {
+            "rate": 206,
+            "rank": 6
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 13.1,
+            "rank": 32
+          },
+          "female": {
+            "rate": 7.9,
+            "rank": 41
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 14.4,
+            "rank": 23
+          },
+          "female": {
+            "rate": 6.3,
+            "rank": 32
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 181.9,
+            "rank": 19
+          },
+          "female": {
+            "rate": 162.2,
+            "rank": 39
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 217.6,
+            "rank": 4
+          },
+          "female": {
+            "rate": 122.7,
+            "rank": 5
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 67.9,
+            "rank": 44
+          },
+          "female": {
+            "rate": 59,
+            "rank": 47
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 78.6,
+            "rank": 45
+          },
+          "female": {
+            "rate": 45.5,
+            "rank": 47
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 88.4,
+            "rank": 16
+          },
+          "female": {
+            "rate": 59.6,
+            "rank": 21
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 113.4,
+            "rank": 4
+          },
+          "female": {
+            "rate": 43.7,
+            "rank": 6
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 24.6,
+            "rank": 27
+          },
+          "female": {
+            "rate": 22.6,
+            "rank": 27
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 30.6,
+            "rank": 8
+          },
+          "female": {
+            "rate": 17,
+            "rank": 4
+          }
+        }
+      }
+    },
+    "兵庫県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 386.1,
+            "rank": 24
+          },
+          "female": {
+            "rate": 241.9,
+            "rank": 39
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 402.2,
+            "rank": 15
+          },
+          "female": {
+            "rate": 190.7,
+            "rank": 28
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 14.2,
+            "rank": 23
+          },
+          "female": {
+            "rate": 9.2,
+            "rank": 36
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 15,
+            "rank": 20
+          },
+          "female": {
+            "rate": 6.5,
+            "rank": 27
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 167.2,
+            "rank": 32
+          },
+          "female": {
+            "rate": 170.5,
+            "rank": 36
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 188.4,
+            "rank": 26
+          },
+          "female": {
+            "rate": 112.1,
+            "rank": 23
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 81.8,
+            "rank": 34
+          },
+          "female": {
+            "rate": 73.9,
+            "rank": 36
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 88.7,
+            "rank": 32
+          },
+          "female": {
+            "rate": 51.4,
+            "rank": 36
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 70.7,
+            "rank": 34
+          },
+          "female": {
+            "rate": 46.4,
+            "rank": 39
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 83.8,
+            "rank": 32
+          },
+          "female": {
+            "rate": 30.1,
+            "rank": 29
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 25.2,
+            "rank": 25
+          },
+          "female": {
+            "rate": 21.4,
+            "rank": 30
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 28.7,
+            "rank": 20
+          },
+          "female": {
+            "rate": 14.3,
+            "rank": 20
+          }
+        }
+      }
+    },
+    "奈良県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 398.2,
+            "rank": 20
+          },
+          "female": {
+            "rate": 259.7,
+            "rank": 23
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 380.1,
+            "rank": 34
+          },
+          "female": {
+            "rate": 196.1,
+            "rank": 16
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 15.1,
+            "rank": 20
+          },
+          "female": {
+            "rate": 8.6,
+            "rank": 39
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 14.1,
+            "rank": 25
+          },
+          "female": {
+            "rate": 6.1,
+            "rank": 34
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 186.9,
+            "rank": 17
+          },
+          "female": {
+            "rate": 177.7,
+            "rank": 31
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 194.4,
+            "rank": 21
+          },
+          "female": {
+            "rate": 113.3,
+            "rank": 21
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 77,
+            "rank": 38
+          },
+          "female": {
+            "rate": 71,
+            "rank": 37
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 77,
+            "rank": 46
+          },
+          "female": {
+            "rate": 46.5,
+            "rank": 46
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 82.2,
+            "rank": 23
+          },
+          "female": {
+            "rate": 51.3,
+            "rank": 31
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 90,
+            "rank": 22
+          },
+          "female": {
+            "rate": 31.7,
+            "rank": 24
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 23.8,
+            "rank": 30
+          },
+          "female": {
+            "rate": 18.7,
+            "rank": 34
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 25.4,
+            "rank": 35
+          },
+          "female": {
+            "rate": 12.1,
+            "rank": 38
+          }
+        }
+      }
+    },
+    "和歌山県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 444.7,
+            "rank": 5
+          },
+          "female": {
+            "rate": 283.8,
+            "rank": 11
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 409.9,
+            "rank": 11
+          },
+          "female": {
+            "rate": 196.1,
+            "rank": 17
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 10.6,
+            "rank": 42
+          },
+          "female": {
+            "rate": 8.9,
+            "rank": 38
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 9.7,
+            "rank": 45
+          },
+          "female": {
+            "rate": 5,
+            "rank": 46
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 227.8,
+            "rank": 2
+          },
+          "female": {
+            "rate": 229.2,
+            "rank": 8
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 219.8,
+            "rank": 2
+          },
+          "female": {
+            "rate": 124.2,
+            "rank": 4
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 91.3,
+            "rank": 26
+          },
+          "female": {
+            "rate": 85.4,
+            "rank": 32
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 87.9,
+            "rank": 34
+          },
+          "female": {
+            "rate": 48.5,
+            "rank": 42
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 104.1,
+            "rank": 7
+          },
+          "female": {
+            "rate": 74.8,
+            "rank": 9
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 105.5,
+            "rank": 9
+          },
+          "female": {
+            "rate": 38.6,
+            "rank": 14
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 30.3,
+            "rank": 10
+          },
+          "female": {
+            "rate": 32.5,
+            "rank": 2
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 29.9,
+            "rank": 12
+          },
+          "female": {
+            "rate": 17.6,
+            "rank": 2
+          }
+        }
+      }
+    },
+    "鳥取県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 412.2,
+            "rank": 14
+          },
+          "female": {
+            "rate": 278.3,
+            "rank": 15
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 400.8,
+            "rank": 16
+          },
+          "female": {
+            "rate": 183.6,
+            "rank": 37
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 16.4,
+            "rank": 13
+          },
+          "female": {
+            "rate": 11.2,
+            "rank": 19
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 15.9,
+            "rank": 15
+          },
+          "female": {
+            "rate": 6.8,
+            "rank": 23
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 146.5,
+            "rank": 42
+          },
+          "female": {
+            "rate": 175.9,
+            "rank": 34
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 148.1,
+            "rank": 46
+          },
+          "female": {
+            "rate": 82.7,
+            "rank": 47
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 102.4,
+            "rank": 18
+          },
+          "female": {
+            "rate": 112.9,
+            "rank": 10
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 102.1,
+            "rank": 13
+          },
+          "female": {
+            "rate": 57.7,
+            "rank": 20
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 74.6,
+            "rank": 32
+          },
+          "female": {
+            "rate": 55.2,
+            "rank": 25
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 75.3,
+            "rank": 39
+          },
+          "female": {
+            "rate": 26.2,
+            "rank": 39
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 27.4,
+            "rank": 18
+          },
+          "female": {
+            "rate": 15.7,
+            "rank": 44
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 27.2,
+            "rank": 25
+          },
+          "female": {
+            "rate": 7.5,
+            "rank": 47
+          }
+        }
+      }
+    },
+    "島根県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 430.1,
+            "rank": 11
+          },
+          "female": {
+            "rate": 303.1,
+            "rank": 6
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 385.6,
+            "rank": 29
+          },
+          "female": {
+            "rate": 185.6,
+            "rank": 33
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 17.2,
+            "rank": 8
+          },
+          "female": {
+            "rate": 11.7,
+            "rank": 16
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 15.3,
+            "rank": 18
+          },
+          "female": {
+            "rate": 5.4,
+            "rank": 43
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 202.2,
+            "rank": 12
+          },
+          "female": {
+            "rate": 220.4,
+            "rank": 13
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 185.6,
+            "rank": 27
+          },
+          "female": {
+            "rate": 93.6,
+            "rank": 41
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 98.1,
+            "rank": 21
+          },
+          "female": {
+            "rate": 140.6,
+            "rank": 4
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 88,
+            "rank": 33
+          },
+          "female": {
+            "rate": 63.8,
+            "rank": 13
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 63.8,
+            "rank": 39
+          },
+          "female": {
+            "rate": 49.4,
+            "rank": 35
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 57.9,
+            "rank": 47
+          },
+          "female": {
+            "rate": 22.1,
+            "rank": 46
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 27.8,
+            "rank": 17
+          },
+          "female": {
+            "rate": 27.5,
+            "rank": 13
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 25.8,
+            "rank": 33
+          },
+          "female": {
+            "rate": 12.5,
+            "rank": 33
+          }
+        }
+      }
+    },
+    "岡山県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 371,
+            "rank": 33
+          },
+          "female": {
+            "rate": 243.4,
+            "rank": 37
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 372.2,
+            "rank": 37
+          },
+          "female": {
+            "rate": 177.3,
+            "rank": 45
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 13.4,
+            "rank": 28
+          },
+          "female": {
+            "rate": 10.3,
+            "rank": 31
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 13.9,
+            "rank": 26
+          },
+          "female": {
+            "rate": 6.7,
+            "rank": 24
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 171.2,
+            "rank": 29
+          },
+          "female": {
+            "rate": 199.5,
+            "rank": 19
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 180.7,
+            "rank": 32
+          },
+          "female": {
+            "rate": 112.2,
+            "rank": 22
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 87.9,
+            "rank": 29
+          },
+          "female": {
+            "rate": 84.3,
+            "rank": 34
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 91,
+            "rank": 28
+          },
+          "female": {
+            "rate": 50.9,
+            "rank": 38
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 93.3,
+            "rank": 10
+          },
+          "female": {
+            "rate": 61.8,
+            "rank": 18
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 101.4,
+            "rank": 14
+          },
+          "female": {
+            "rate": 33.4,
+            "rank": 21
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 23.4,
+            "rank": 31
+          },
+          "female": {
+            "rate": 22.2,
+            "rank": 29
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 25.1,
+            "rank": 37
+          },
+          "female": {
+            "rate": 12.5,
+            "rank": 35
+          }
+        }
+      }
+    },
+    "広島県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 351.1,
+            "rank": 41
+          },
+          "female": {
+            "rate": 242.9,
+            "rank": 38
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 369.5,
+            "rank": 41
+          },
+          "female": {
+            "rate": 183.4,
+            "rank": 39
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 11,
+            "rank": 39
+          },
+          "female": {
+            "rate": 10.5,
+            "rank": 28
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 11.6,
+            "rank": 41
+          },
+          "female": {
+            "rate": 7.1,
+            "rank": 21
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 176.1,
+            "rank": 26
+          },
+          "female": {
+            "rate": 190.2,
+            "rank": 23
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 196.8,
+            "rank": 17
+          },
+          "female": {
+            "rate": 115.3,
+            "rank": 18
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 78.9,
+            "rank": 36
+          },
+          "female": {
+            "rate": 76.9,
+            "rank": 35
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 86.2,
+            "rank": 39
+          },
+          "female": {
+            "rate": 48.8,
+            "rank": 40
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 67.7,
+            "rank": 37
+          },
+          "female": {
+            "rate": 47.2,
+            "rank": 37
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 78.7,
+            "rank": 35
+          },
+          "female": {
+            "rate": 27.3,
+            "rank": 36
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 23.9,
+            "rank": 29
+          },
+          "female": {
+            "rate": 24.4,
+            "rank": 19
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 27.3,
+            "rank": 23
+          },
+          "female": {
+            "rate": 14.8,
+            "rank": 16
+          }
+        }
+      }
+    },
+    "山口県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 438.5,
+            "rank": 7
+          },
+          "female": {
+            "rate": 282.3,
+            "rank": 12
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 398.9,
+            "rank": 17
+          },
+          "female": {
+            "rate": 185,
+            "rank": 34
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 16.5,
+            "rank": 11
+          },
+          "female": {
+            "rate": 15.1,
+            "rank": 3
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 15,
+            "rank": 19
+          },
+          "female": {
+            "rate": 8.4,
+            "rank": 11
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 224.3,
+            "rank": 3
+          },
+          "female": {
+            "rate": 247,
+            "rank": 2
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 215.7,
+            "rank": 5
+          },
+          "female": {
+            "rate": 126.7,
+            "rank": 2
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 105.5,
+            "rank": 11
+          },
+          "female": {
+            "rate": 108.9,
+            "rank": 14
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 99,
+            "rank": 21
+          },
+          "female": {
+            "rate": 56.2,
+            "rank": 27
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 118.7,
+            "rank": 1
+          },
+          "female": {
+            "rate": 94.3,
+            "rank": 2
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 116.7,
+            "rank": 2
+          },
+          "female": {
+            "rate": 44.9,
+            "rank": 4
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 33.2,
+            "rank": 5
+          },
+          "female": {
+            "rate": 30.9,
+            "rank": 4
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 32.4,
+            "rank": 4
+          },
+          "female": {
+            "rate": 15.5,
+            "rank": 10
+          }
+        }
+      }
+    },
+    "徳島県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 418.3,
+            "rank": 12
+          },
+          "female": {
+            "rate": 273.5,
+            "rank": 16
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 381.4,
+            "rank": 33
+          },
+          "female": {
+            "rate": 183.6,
+            "rank": 38
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 18.8,
+            "rank": 4
+          },
+          "female": {
+            "rate": 14.8,
+            "rank": 7
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 17.5,
+            "rank": 7
+          },
+          "female": {
+            "rate": 8.5,
+            "rank": 10
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 181.2,
+            "rank": 21
+          },
+          "female": {
+            "rate": 213.9,
+            "rank": 16
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 171.9,
+            "rank": 40
+          },
+          "female": {
+            "rate": 108.2,
+            "rank": 30
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 98.5,
+            "rank": 20
+          },
+          "female": {
+            "rate": 94.2,
+            "rank": 25
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 92.9,
+            "rank": 25
+          },
+          "female": {
+            "rate": 51.8,
+            "rank": 35
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 118.4,
+            "rank": 2
+          },
+          "female": {
+            "rate": 100.1,
+            "rank": 1
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 114.5,
+            "rank": 3
+          },
+          "female": {
+            "rate": 49,
+            "rank": 1
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 33.1,
+            "rank": 6
+          },
+          "female": {
+            "rate": 32.2,
+            "rank": 3
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 32.3,
+            "rank": 5
+          },
+          "female": {
+            "rate": 16.1,
+            "rank": 6
+          }
+        }
+      }
+    },
+    "香川県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 385.4,
+            "rank": 25
+          },
+          "female": {
+            "rate": 259.2,
+            "rank": 25
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 367.2,
+            "rank": 42
+          },
+          "female": {
+            "rate": 186.7,
+            "rank": 31
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 22.1,
+            "rank": 1
+          },
+          "female": {
+            "rate": 13.6,
+            "rank": 9
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 21.2,
+            "rank": 1
+          },
+          "female": {
+            "rate": 8.5,
+            "rank": 9
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 206,
+            "rank": 8
+          },
+          "female": {
+            "rate": 215.3,
+            "rank": 15
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 205.3,
+            "rank": 9
+          },
+          "female": {
+            "rate": 119.6,
+            "rank": 9
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 91.7,
+            "rank": 25
+          },
+          "female": {
+            "rate": 84.4,
+            "rank": 33
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 90.6,
+            "rank": 29
+          },
+          "female": {
+            "rate": 48.6,
+            "rank": 41
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 61.2,
+            "rank": 41
+          },
+          "female": {
+            "rate": 46.6,
+            "rank": 38
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 62.2,
+            "rank": 46
+          },
+          "female": {
+            "rate": 24.8,
+            "rank": 41
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 26.1,
+            "rank": 22
+          },
+          "female": {
+            "rate": 27.6,
+            "rank": 12
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 25.9,
+            "rank": 32
+          },
+          "female": {
+            "rate": 15.4,
+            "rank": 13
+          }
+        }
+      }
+    },
+    "愛媛県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 410.1,
+            "rank": 15
+          },
+          "female": {
+            "rate": 284.5,
+            "rank": 10
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 383.1,
+            "rank": 31
+          },
+          "female": {
+            "rate": 194.1,
+            "rank": 21
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 16.4,
+            "rank": 12
+          },
+          "female": {
+            "rate": 15.5,
+            "rank": 2
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 15.4,
+            "rank": 17
+          },
+          "female": {
+            "rate": 9,
+            "rank": 3
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 244.5,
+            "rank": 1
+          },
+          "female": {
+            "rate": 240.4,
+            "rank": 3
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 234.4,
+            "rank": 1
+          },
+          "female": {
+            "rate": 129.1,
+            "rank": 1
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 104,
+            "rank": 16
+          },
+          "female": {
+            "rate": 104.1,
+            "rank": 18
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 100.2,
+            "rank": 18
+          },
+          "female": {
+            "rate": 58.3,
+            "rank": 19
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 86.3,
+            "rank": 17
+          },
+          "female": {
+            "rate": 70.2,
+            "rank": 13
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 85.7,
+            "rank": 26
+          },
+          "female": {
+            "rate": 35.6,
+            "rank": 17
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 26,
+            "rank": 23
+          },
+          "female": {
+            "rate": 24.3,
+            "rank": 20
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 25.7,
+            "rank": 34
+          },
+          "female": {
+            "rate": 12.6,
+            "rank": 32
+          }
+        }
+      }
+    },
+    "高知県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 459.7,
+            "rank": 3
+          },
+          "female": {
+            "rate": 292.1,
+            "rank": 9
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 402.6,
+            "rank": 14
+          },
+          "female": {
+            "rate": 181.9,
+            "rank": 40
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 15.1,
+            "rank": 18
+          },
+          "female": {
+            "rate": 11.6,
+            "rank": 17
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 13.3,
+            "rank": 32
+          },
+          "female": {
+            "rate": 5.9,
+            "rank": 37
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 217.8,
+            "rank": 4
+          },
+          "female": {
+            "rate": 266.2,
+            "rank": 1
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 195.1,
+            "rank": 19
+          },
+          "female": {
+            "rate": 117.6,
+            "rank": 13
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 113.8,
+            "rank": 6
+          },
+          "female": {
+            "rate": 108.3,
+            "rank": 15
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 100.4,
+            "rank": 17
+          },
+          "female": {
+            "rate": 53.2,
+            "rank": 30
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 109.2,
+            "rank": 6
+          },
+          "female": {
+            "rate": 93.2,
+            "rank": 4
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 98.2,
+            "rank": 17
+          },
+          "female": {
+            "rate": 39.9,
+            "rank": 12
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 39.2,
+            "rank": 1
+          },
+          "female": {
+            "rate": 35,
+            "rank": 1
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 34.9,
+            "rank": 3
+          },
+          "female": {
+            "rate": 16.8,
+            "rank": 5
+          }
+        }
+      }
+    },
+    "福岡県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 372.1,
+            "rank": 31
+          },
+          "female": {
+            "rate": 254.6,
+            "rank": 28
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 423.8,
+            "rank": 4
+          },
+          "female": {
+            "rate": 206.3,
+            "rank": 5
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 13.1,
+            "rank": 31
+          },
+          "female": {
+            "rate": 10.6,
+            "rank": 26
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 15,
+            "rank": 21
+          },
+          "female": {
+            "rate": 7.6,
+            "rank": 17
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 113.8,
+            "rank": 47
+          },
+          "female": {
+            "rate": 140.2,
+            "rank": 43
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 143.7,
+            "rank": 47
+          },
+          "female": {
+            "rate": 89.7,
+            "rank": 45
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 71.8,
+            "rank": 41
+          },
+          "female": {
+            "rate": 69.8,
+            "rank": 40
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 86.7,
+            "rank": 37
+          },
+          "female": {
+            "rate": 47.7,
+            "rank": 44
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 75.2,
+            "rank": 30
+          },
+          "female": {
+            "rate": 56.1,
+            "rank": 24
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 97.9,
+            "rank": 18
+          },
+          "female": {
+            "rate": 35.8,
+            "rank": 16
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 20.3,
+            "rank": 42
+          },
+          "female": {
+            "rate": 20.3,
+            "rank": 32
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 25.9,
+            "rank": 31
+          },
+          "female": {
+            "rate": 13.1,
+            "rank": 27
+          }
+        }
+      }
+    },
+    "佐賀県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 406.1,
+            "rank": 19
+          },
+          "female": {
+            "rate": 269.1,
+            "rank": 18
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 418.2,
+            "rank": 6
+          },
+          "female": {
+            "rate": 194.1,
+            "rank": 23
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 13.1,
+            "rank": 30
+          },
+          "female": {
+            "rate": 10.6,
+            "rank": 25
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 14.2,
+            "rank": 24
+          },
+          "female": {
+            "rate": 6.5,
+            "rank": 25
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 163,
+            "rank": 36
+          },
+          "female": {
+            "rate": 204.6,
+            "rank": 18
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 176.2,
+            "rank": 37
+          },
+          "female": {
+            "rate": 109.9,
+            "rank": 26
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 80.2,
+            "rank": 35
+          },
+          "female": {
+            "rate": 90,
+            "rank": 30
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 85.1,
+            "rank": 42
+          },
+          "female": {
+            "rate": 52.7,
+            "rank": 31
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 92,
+            "rank": 12
+          },
+          "female": {
+            "rate": 85.1,
+            "rank": 6
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 102.9,
+            "rank": 11
+          },
+          "female": {
+            "rate": 44.1,
+            "rank": 5
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 24.6,
+            "rank": 26
+          },
+          "female": {
+            "rate": 24.6,
+            "rank": 18
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 26.3,
+            "rank": 29
+          },
+          "female": {
+            "rate": 13.2,
+            "rank": 26
+          }
+        }
+      }
+    },
+    "長崎県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 435.4,
+            "rank": 10
+          },
+          "female": {
+            "rate": 309.5,
+            "rank": 5
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 416.7,
+            "rank": 7
+          },
+          "female": {
+            "rate": 214.1,
+            "rank": 4
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 13.6,
+            "rank": 26
+          },
+          "female": {
+            "rate": 9.3,
+            "rank": 35
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 13,
+            "rank": 33
+          },
+          "female": {
+            "rate": 5.4,
+            "rank": 42
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 188.6,
+            "rank": 15
+          },
+          "female": {
+            "rate": 228.6,
+            "rank": 10
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 190.5,
+            "rank": 24
+          },
+          "female": {
+            "rate": 114.1,
+            "rank": 20
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 86.9,
+            "rank": 31
+          },
+          "female": {
+            "rate": 99.6,
+            "rank": 21
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 85.4,
+            "rank": 40
+          },
+          "female": {
+            "rate": 54.4,
+            "rank": 29
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 102.2,
+            "rank": 8
+          },
+          "female": {
+            "rate": 84.1,
+            "rank": 7
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 106,
+            "rank": 8
+          },
+          "female": {
+            "rate": 41.2,
+            "rank": 10
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 28.4,
+            "rank": 14
+          },
+          "female": {
+            "rate": 29.2,
+            "rank": 11
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 29.1,
+            "rank": 17
+          },
+          "female": {
+            "rate": 15.5,
+            "rank": 9
+          }
+        }
+      }
+    },
+    "熊本県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 367.5,
+            "rank": 36
+          },
+          "female": {
+            "rate": 259.4,
+            "rank": 24
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 357.1,
+            "rank": 44
+          },
+          "female": {
+            "rate": 181.3,
+            "rank": 41
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 13,
+            "rank": 34
+          },
+          "female": {
+            "rate": 10.6,
+            "rank": 27
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 12.7,
+            "rank": 35
+          },
+          "female": {
+            "rate": 6.4,
+            "rank": 28
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 178.2,
+            "rank": 24
+          },
+          "female": {
+            "rate": 197.3,
+            "rank": 20
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 179.5,
+            "rank": 35
+          },
+          "female": {
+            "rate": 101.2,
+            "rank": 36
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 86.5,
+            "rank": 32
+          },
+          "female": {
+            "rate": 92.9,
+            "rank": 27
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 85.2,
+            "rank": 41
+          },
+          "female": {
+            "rate": 51.2,
+            "rank": 37
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 80,
+            "rank": 24
+          },
+          "female": {
+            "rate": 65,
+            "rank": 17
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 80.7,
+            "rank": 34
+          },
+          "female": {
+            "rate": 31,
+            "rank": 26
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 28.2,
+            "rank": 15
+          },
+          "female": {
+            "rate": 27.1,
+            "rank": 15
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 28.6,
+            "rank": 21
+          },
+          "female": {
+            "rate": 14.4,
+            "rank": 19
+          }
+        }
+      }
+    },
+    "大分県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 394.2,
+            "rank": 21
+          },
+          "female": {
+            "rate": 265.1,
+            "rank": 21
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 365.8,
+            "rank": 43
+          },
+          "female": {
+            "rate": 175.8,
+            "rank": 46
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 13.1,
+            "rank": 33
+          },
+          "female": {
+            "rate": 10.8,
+            "rank": 24
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 12.2,
+            "rank": 38
+          },
+          "female": {
+            "rate": 6.3,
+            "rank": 30
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 188.2,
+            "rank": 16
+          },
+          "female": {
+            "rate": 207.9,
+            "rank": 17
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 182.8,
+            "rank": 29
+          },
+          "female": {
+            "rate": 103.9,
+            "rank": 34
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 104.8,
+            "rank": 12
+          },
+          "female": {
+            "rate": 110.8,
+            "rank": 12
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 100.7,
+            "rank": 16
+          },
+          "female": {
+            "rate": 59.4,
+            "rank": 17
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 83.8,
+            "rank": 21
+          },
+          "female": {
+            "rate": 74.3,
+            "rank": 10
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 82.6,
+            "rank": 33
+          },
+          "female": {
+            "rate": 36.4,
+            "rank": 15
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 31.1,
+            "rank": 8
+          },
+          "female": {
+            "rate": 29.8,
+            "rank": 9
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 29.8,
+            "rank": 13
+          },
+          "female": {
+            "rate": 15.5,
+            "rank": 12
+          }
+        }
+      }
+    },
+    "宮崎県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 410.1,
+            "rank": 16
+          },
+          "female": {
+            "rate": 268.6,
+            "rank": 19
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 386.1,
+            "rank": 27
+          },
+          "female": {
+            "rate": 191.3,
+            "rank": 26
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 18.7,
+            "rank": 5
+          },
+          "female": {
+            "rate": 11.1,
+            "rank": 22
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 17.8,
+            "rank": 6
+          },
+          "female": {
+            "rate": 6.2,
+            "rank": 33
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 204.6,
+            "rank": 9
+          },
+          "female": {
+            "rate": 231.5,
+            "rank": 6
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 202.7,
+            "rank": 13
+          },
+          "female": {
+            "rate": 119.8,
+            "rank": 8
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 108.8,
+            "rank": 8
+          },
+          "female": {
+            "rate": 109.7,
+            "rank": 13
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 105.2,
+            "rank": 11
+          },
+          "female": {
+            "rate": 61.4,
+            "rank": 14
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 101.4,
+            "rank": 9
+          },
+          "female": {
+            "rate": 86.1,
+            "rank": 5
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 102.2,
+            "rank": 13
+          },
+          "female": {
+            "rate": 42.5,
+            "rank": 8
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 27.1,
+            "rank": 19
+          },
+          "female": {
+            "rate": 30.1,
+            "rank": 6
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 26.6,
+            "rank": 27
+          },
+          "female": {
+            "rate": 16,
+            "rank": 7
+          }
+        }
+      }
+    },
+    "鹿児島県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 416.2,
+            "rank": 13
+          },
+          "female": {
+            "rate": 271.4,
+            "rank": 17
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 390.3,
+            "rank": 23
+          },
+          "female": {
+            "rate": 184.8,
+            "rank": 36
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 17.2,
+            "rank": 7
+          },
+          "female": {
+            "rate": 13.9,
+            "rank": 8
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 16.1,
+            "rank": 13
+          },
+          "female": {
+            "rate": 8.2,
+            "rank": 12
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 185.5,
+            "rank": 18
+          },
+          "female": {
+            "rate": 229.9,
+            "rank": 7
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 180.2,
+            "rank": 33
+          },
+          "female": {
+            "rate": 116.4,
+            "rank": 15
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 104.5,
+            "rank": 13
+          },
+          "female": {
+            "rate": 113.8,
+            "rank": 9
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 100,
+            "rank": 19
+          },
+          "female": {
+            "rate": 61.1,
+            "rank": 15
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 112.2,
+            "rank": 5
+          },
+          "female": {
+            "rate": 94.2,
+            "rank": 3
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 111.1,
+            "rank": 5
+          },
+          "female": {
+            "rate": 45,
+            "rank": 3
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 29.4,
+            "rank": 12
+          },
+          "female": {
+            "rate": 30.3,
+            "rank": 5
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 28.7,
+            "rank": 19
+          },
+          "female": {
+            "rate": 15.2,
+            "rank": 14
+          }
+        }
+      }
+    },
+    "沖縄県": {
+      "悪性新生物": {
+        "crude": {
+          "male": {
+            "rate": 269,
+            "rank": 47
+          },
+          "female": {
+            "rate": 184.9,
+            "rank": 47
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 352.9,
+            "rank": 46
+          },
+          "female": {
+            "rate": 184.9,
+            "rank": 35
+          }
+        }
+      },
+      "糖尿病": {
+        "crude": {
+          "male": {
+            "rate": 16.3,
+            "rank": 15
+          },
+          "female": {
+            "rate": 10.5,
+            "rank": 29
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 20.8,
+            "rank": 2
+          },
+          "female": {
+            "rate": 9.7,
+            "rank": 2
+          }
+        }
+      },
+      "心疾患": {
+        "crude": {
+          "male": {
+            "rate": 126.7,
+            "rank": 45
+          },
+          "female": {
+            "rate": 104.3,
+            "rank": 47
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 175.1,
+            "rank": 38
+          },
+          "female": {
+            "rate": 87.1,
+            "rank": 46
+          }
+        }
+      },
+      "脳血管疾患": {
+        "crude": {
+          "male": {
+            "rate": 73,
+            "rank": 40
+          },
+          "female": {
+            "rate": 62.3,
+            "rank": 45
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 99.9,
+            "rank": 20
+          },
+          "female": {
+            "rate": 52.4,
+            "rank": 33
+          }
+        }
+      },
+      "肺炎": {
+        "crude": {
+          "male": {
+            "rate": 42.2,
+            "rank": 47
+          },
+          "female": {
+            "rate": 21.7,
+            "rank": 47
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 65.4,
+            "rank": 44
+          },
+          "female": {
+            "rate": 17.9,
+            "rank": 47
+          }
+        }
+      },
+      "腎不全": {
+        "crude": {
+          "male": {
+            "rate": 19.1,
+            "rank": 44
+          },
+          "female": {
+            "rate": 18.5,
+            "rank": 35
+          }
+        },
+        "age_adjusted": {
+          "male": {
+            "rate": 26.9,
+            "rank": 26
+          },
+          "female": {
+            "rate": 15.5,
+            "rank": 8
+          }
+        }
+      }
+    }
+  },
+  "notes": [
+    "crude と age_adjusted は同じ2020年ソース (xlsx 参考1/2) から取得 — 比較可能",
+    "2024年粗死亡率は別ファイル vital_stats_pref.json から参照",
+    "2020年齢調整死亡率と2024年粗死亡率は直接比較しない (年次・補正有無が異なる)",
+    "rank は1位最高(高値)、47位最低の順",
+    "基準人口: 平成27年(2015年)モデル人口 (年齢調整時)"
+  ]
+}

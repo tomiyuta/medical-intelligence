@@ -126,3 +126,105 @@
 すべてチェック後、Phase 2 を **release fixed** とみなす。
 
 次の Phase 候補は `PHASE2_RELEASE_NOTES.md §6` を参照。
+
+---
+
+# Phase 4-1 P1-1: Bridge Outcome 3段表示 QA
+
+**対象 commit**: `feature/p1-1-mortality-outcome-2020` branch  
+**設計 docs**: `docs/PHASE4_1_BRIDGE_OUTCOME_UI_DESIGN.md`
+
+## 9. データ整合性 (fixture 検証)
+
+### 9.1 mortality_outcome_2020.json の値検証
+
+- [ ] 沖縄県 糖尿病 crude.male.rate = **16.3** (rank 15)
+- [ ] 沖縄県 糖尿病 age_adjusted.male.rate = **20.8** (rank 2)
+- [ ] 沖縄県 糖尿病 age_adjusted.female.rate = **9.7** (rank 2)
+- [ ] 秋田県 脳血管疾患 age_adjusted.male.rate = **124.1** (rank 2)
+- [ ] 山口県 肺炎 age_adjusted.male.rate = **116.7** (rank 2)
+- [ ] 東京都 糖尿病 crude.male.rate = **10.8** (rank 41)
+- [ ] 全国 糖尿病 age_adjusted.male.rate = **13.9** (Phase 3-1 既存値と一致)
+- [ ] 47都道府県 + 全国 = 48 entries
+- [ ] 6死因 × 48地域 × 男女 × {crude, age_adjusted} 構造
+
+### 9.2 既存 age_adjusted_mortality_2020.json との回帰整合
+
+- [ ] 既存ファイルは削除されていない (Phase 3-1b 監査記録として残置)
+- [ ] 糖尿病 age_adjusted の値が新ファイルと一致
+
+## 10. API エンドポイント
+
+- [ ] `/api/mortality-outcome-2020` HTTP 200
+- [ ] レスポンスに national + 47都道府県含む
+- [ ] notes 欄に「2020年齢調整値と2024粗死亡率を直接比較しない」明記
+
+## 11. Bridge UI 表示 (NdbView 内)
+
+### 11.1 3段表示の構造
+
+- [ ] Outcome 列に **2020 粗死亡率** (灰、男女併記) が表示される
+- [ ] Outcome 列に **2020 年齢調整死亡率** (紫、左ボーダー強調) が表示される
+- [ ] Outcome 列に **2024 粗死亡率** (灰、点線で分離) が表示される
+- [ ] 主指標 (年齢調整) は他より大きいフォント
+- [ ] 各値に rank が併記される
+
+### 11.2 必須注記
+
+- [ ] 「2020年齢調整値と2024粗死亡率を直接比較しない」が常時表示
+- [ ] 「男女平均は単純平均（人口加重なし）」が常時表示
+- [ ] 「死亡率は医療の優劣を示す指標ではない」が常時表示
+
+### 11.3 既存挙動の維持 (regression)
+
+- [ ] 呼吸器の additionalCauses (誤嚥性肺炎) が「2024粗」として表示
+- [ ] risks[] の折りたたみが正常動作
+- [ ] capability_mapping の supply proxy 表示が正常
+- [ ] Bridge 全体の下部注記が3段表示対応に更新済
+
+## 12. Pattern 別 観察検証 (沖縄 / 秋田 / 山口 / 東京)
+
+### 12.1 沖縄 糖尿病 (Pattern 1: Risk-Care 乖離)
+
+- [ ] 2020 粗死亡率 男 16.3 (15位)
+- [ ] 2020 年齢調整死亡率 男 20.8 (2位) — 紫強調
+- [ ] 2024 粗死亡率 11.0 が表示
+- [ ] 粗→調整 で順位が大きく上昇する観察が可能
+
+### 12.2 秋田 脳血管疾患 (Pattern 2 + 5)
+
+- [ ] 2020 年齢調整死亡率 男 124.1 (2位) — 紫強調
+- [ ] vs 全国平均の delta が +30%以上で赤色
+
+### 12.3 山口 肺炎 (Pattern 3)
+
+- [ ] 2020 年齢調整死亡率 男 116.7 (2位) — 紫強調
+- [ ] 「供給+ × 結果悪」の観察が直接可能
+
+### 12.4 東京 糖尿病 (Pattern 6 Context)
+
+- [ ] 2020 粗死亡率 男 10.8 (41位)
+- [ ] 2020 年齢調整死亡率 男 13.7 (27位) — 中位に上昇
+- [ ] 若年構造の影響を定量確認可能
+
+## 13. mobile (375px) 表示
+
+- [ ] Outcome 列の3段表示が縦スクロールで全て表示
+- [ ] フォントサイズが mobile で読める (10-13px)
+- [ ] 注記が折り返し表示される
+
+## 14. ビルド/デプロイ確認
+
+- [ ] `next build` 成功 (警告ゼロ)
+- [ ] Vercel deploy 成功
+- [ ] /api/mortality-outcome-2020 が production で HTTP 200
+- [ ] 既存 API すべて HTTP 200 維持 (regression なし)
+
+---
+
+## P1-1 完了条件
+
+§9〜§14 すべてチェック後、P1-1 を **完了** とみなす。
+
+reviewer Conditional Go 5条件のうち #1 (P0) + #2 (Outcome 表示分離) を達成。
+残条件 (#3-#5: UI guardrail / observation labels / Mismatch Explorer) は P1-2 以降。
