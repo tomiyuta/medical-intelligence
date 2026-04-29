@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { DOMAIN_MAPPING, describeDelta, DATA_BADGE } from '../../../lib/domainMapping';
+import InterpretationGuard from '../ui/InterpretationGuard';
 
 const MAX_RISKS_COLLAPSED = 3;
 
@@ -185,10 +186,13 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
             <span style={{marginLeft:4,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#fef3c7',color:'#92400e',fontWeight:500}}>🆙 Risk Model v1</span>
           </div>
           <div style={{fontSize:11,color:'#94a3b8'}}>
-            循環器・糖尿病代謝・がん の各領域で「リスク → 疾病負荷 → 医療利用 → 供給proxy → 結果」を{ndbPref}と全国で横並び比較
+            循環器・糖尿病代謝・がん の各領域で「リスク・疾病負荷・医療利用・供給proxy・結果」を{ndbPref}と全国で横並び観察 (独立軸、因果連鎖は仮定しない)
           </div>
         </div>
       </div>
+
+      {/* P1-2: 解釈注意 (Bridge OUTCOME 周辺の誤読防止) */}
+      <InterpretationGuard variant="outcome" />
 
       {/* テーブル */}
       <div style={{overflowX:'auto'}}>

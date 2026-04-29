@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { fmt, sortPrefs } from '../shared';
 
 import DomainSupplyDemandBridge from './DomainSupplyDemandBridge';
+import InterpretationGuard from '../ui/InterpretationGuard';
+import RegionalMismatchExplorer from '../ui/RegionalMismatchExplorer';
 const CAT_LABELS = {'A_初再診料':'外来受診','B_医学管理等':'慢性疾患管理','C_在宅医療':'在宅医療'};
 const RISK_META = {
   'ヘモグロビン': {unit:'g/dL', note:'低値=貧血リスク', icon:'🩸'},
@@ -66,7 +68,7 @@ const GAP_TEMPLATES = [
     note:'X軸は睡眠で休養がとれている人の割合（高=低リスク）。睡眠不足と循環器の関連は確立。'},
 ];
 
-export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ, agePyramid, futureDemo, patientSurvey, bedFunc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd, mortalityOutcome2020 }) {
+export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ, agePyramid, futureDemo, patientSurvey, bedFunc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd, mortalityOutcome2020, homecareCapability }) {
   const diagByPref = ndbDiag.filter(d=>d.prefecture===ndbPref);
   const hcPref = ndbHc.filter(d=>d.pref===ndbPref);
   const vp = vitalStats?.prefectures?.find(p=>p.pref===ndbPref);
@@ -582,9 +584,11 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
       <span style={{fontSize:18}}>📊</span>
       <div>
         <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>死因構造 <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#fce7f3',color:'#9f1239',fontWeight:500}}>結果</span></div>
-        <div style={{fontSize:11,color:'#94a3b8'}}>厚労省人口動態統計 2024年確定数（死亡率 人口10万対）</div>
+        <div style={{fontSize:11,color:'#94a3b8'}}>厚労省人口動態統計 2024年確定数（粗死亡率 人口10万対、年齢調整前）</div>
       </div>
     </div>
+    {/* P1-2: 解釈注意 (死亡率指標の誤読防止) */}
+    <InterpretationGuard variant="mortality" compact={true} />
     <div style={{display:'flex',flexDirection:'column',gap:4}}>
       {causes.map((c,i)=>{
         const maxRate = causes[0]?.rate || 1;
@@ -662,10 +666,12 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
       <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:10}}>
         <span style={{fontSize:18}}>🔍</span>
         <div>
-          <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>Gap Finder — リスク×結果の不一致検出</div>
+          <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>Gap Finder — リスク×結果の不一致観察</div>
           <div style={{fontSize:11,color:'#94a3b8'}}>{tpl.xLabel}（横軸）× {tpl.yLabel}（縦軸） — 47都道府県の地域差・相関係数 r={corr.toFixed(2)}</div>
         </div>
       </div>
+      {/* P1-2: 解釈注意 (Gap Finder の不一致観察) */}
+      <InterpretationGuard variant="mismatch" compact={true} />
       {/* テンプレ切替 */}
       <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:12}}>
         {GAP_TEMPLATES.map(t => (
@@ -728,6 +734,16 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     ndbCheckupRiskRates={ndbCheckupRiskRates}
     ndbCheckupRiskRatesStd={ndbCheckupRiskRatesStd}
     mortalityOutcome2020={mortalityOutcome2020}
+  />
+
+  {/* ═══ Layer 7: REGIONAL MISMATCH EXPLORER (Phase 4-1 P1-4 MVP) ═══ */}
+  <RegionalMismatchExplorer
+    pref={ndbPref}
+    ndbCheckupRiskRates={ndbCheckupRiskRates}
+    patientSurvey={patientSurvey}
+    mortalityOutcome2020={mortalityOutcome2020}
+    homecareCapability={homecareCapability}
+    agePyramid={agePyramid}
   />
 
   <div style={{padding:'10px 0',fontSize:11,color:'#94a3b8',marginTop:8,lineHeight:1.8}}>

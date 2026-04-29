@@ -1,5 +1,6 @@
 'use client';
 import { fmt, sortPrefs } from '../shared';
+import InterpretationGuard from '../ui/InterpretationGuard';
 
 const FUNC_COLORS = {
   '高度急性期': '#dc2626',
@@ -307,9 +308,11 @@ export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegP
     <div style={{background:'#fff',borderRadius:14,border:`1px solid ${region.color}33`,borderLeft:`6px solid ${region.color}`,padding:'16px 20px',marginBottom:16}}>
       <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6}}>
         <span style={{fontSize:18}}>{region.icon}</span>
-        <div style={{fontSize:13,fontWeight:700,color:region.color}}>地域類型: {region.type}</div>
+        <div style={{fontSize:13,fontWeight:700,color:region.color}}>観察ラベル: {region.type}</div>
       </div>
       <div style={{fontSize:12,color:'#475569',lineHeight:1.6}}>{region.desc}</div>
+      {/* P1-2: 解釈注意 (地域類型の観察ラベル化) */}
+      <InterpretationGuard variant="mismatch" compact={true} />
     </div>
   )}
 
