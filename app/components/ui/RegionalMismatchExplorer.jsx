@@ -65,8 +65,26 @@ export default function RegionalMismatchExplorer({ pref, ndbCheckupRiskRates, pa
                 padding: '14px 16px',
               }}
             >
-              <div style={{ fontSize: 9, fontWeight: 700, color: m.layer === 'mismatch' ? '#dc2626' : '#0891b2', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4 }}>
-                {m.layer === 'mismatch' ? '◆ Mismatch Signal (不一致シグナル)' : '◇ Context Archetype (背景構造プロファイル)'}
+              <div style={{ fontSize: 9, fontWeight: 700, color: m.layer === 'mismatch' ? '#dc2626' : '#0891b2', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 4, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span>{m.layer === 'mismatch' ? '◆ Mismatch Signal (不一致シグナル)' : '◇ Context Archetype (背景構造プロファイル)'}</span>
+                {m.confidence && (
+                  <span
+                    title={`confidence: ${m.confidence.label}\nscore: ${m.confidence.score}\nevidence数: ${m.confidence.factors.evidence_count}\n強signal数: ${m.confidence.factors.strong_stats}\n極端signal数: ${m.confidence.factors.very_strong_stats}\nproxy caveat: ${m.confidence.factors.has_proxy_caveat}\n\n${m.confidence.caveat}`}
+                    style={{
+                      fontSize: 9,
+                      fontWeight: 600,
+                      color: '#64748b',
+                      background: '#f1f5f9',
+                      padding: '2px 6px',
+                      borderRadius: 3,
+                      letterSpacing: 0,
+                      textTransform: 'none',
+                      cursor: 'help',
+                    }}
+                  >
+                    {m.confidence.grade === 'A' ? '高' : m.confidence.grade === 'B' ? '中' : '参考'} confidence ({m.confidence.grade})
+                  </span>
+                )}
               </div>
               <div style={{ fontSize: 14, fontWeight: 700, color: '#1e293b', marginBottom: 6 }}>{m.title}</div>
               <div style={{ fontSize: 12, color: '#475569', marginBottom: 10, lineHeight: 1.7 }}>{m.description}</div>
@@ -114,6 +132,19 @@ export default function RegionalMismatchExplorer({ pref, ndbCheckupRiskRates, pa
         ・<b>z-score</b>: 標準偏差を単位とする位置 (正規分布前提)。±2 以上は「外れ値級」の目安。
         <br />
         ・3指標が一致して大きい場合は強い signal、不一致時は分布の偏りを示唆。
+        <br />
+        <br />
+        <b>🏷 confidence バッジについて</b> (Phase 4-1 P2-4):
+        <br />
+        ・<b>高 (A)</b>: 複数根拠が揃い分布上も極端、シナリオ間で安定。
+        <br />
+        ・<b>中 (B)</b>: 根拠あり、ただし境界条件 or proxy caveat。
+        <br />
+        ・<b>参考 (C)</b>: 閾値・proxy・時点差に注意が必要。
+        <br />
+        ・confidence は観察信号の強さを示す補助指標であり、医療の質・政策効果・地域の優劣を示すものではありません。
+        <br />
+        ・z-score は47都道府県分布内での相対的位置を示す補助指標であり、統計的有意差を示すものではありません。
       </div>
     </div>
   );
