@@ -1,0 +1,230 @@
+{
+  "_generated": "2026-04-29T12:58:20.331Z",
+  "_description": "Phase 4-1 P2-2 threshold sensitivity analysis result",
+  "scenarios": {
+    "relaxed": {
+      "label": "relaxed (緩い、シグナル多め)",
+      "thresholds": {
+        "P1": {
+          "bmi_excess": 5,
+          "endo_deficit": -10
+        },
+        "P3": {
+          "hc_excess": 30,
+          "outcome_excess": 10
+        },
+        "P5": {
+          "p75_excess_pt": 0.5,
+          "hc_deficit": -10,
+          "rh_deficit": -10,
+          "cerebro_excess": 10
+        },
+        "P6": {
+          "p75_deficit_pt": -0.5,
+          "hba1c_deficit": -2
+        }
+      },
+      "summary": {
+        "zero_count": 30,
+        "triple_count": 0,
+        "pattern_counts": {
+          "P1": 2,
+          "P3": 2,
+          "P5": 6,
+          "P6": 8
+        }
+      },
+      "by_pattern": {
+        "P1": [
+          "茨城県",
+          "沖縄県"
+        ],
+        "P3": [
+          "大阪府",
+          "山口県"
+        ],
+        "P5": [
+          "青森県",
+          "岩手県",
+          "秋田県",
+          "山形県",
+          "新潟県",
+          "富山県"
+        ],
+        "P6": [
+          "埼玉県",
+          "千葉県",
+          "東京都",
+          "神奈川県",
+          "愛知県",
+          "滋賀県",
+          "大阪府",
+          "兵庫県"
+        ]
+      }
+    },
+    "baseline": {
+      "label": "baseline (P2-1 採択値、現UI)",
+      "thresholds": {
+        "P1": {
+          "bmi_excess": 10,
+          "endo_deficit": -20
+        },
+        "P3": {
+          "hc_excess": 50,
+          "outcome_excess": 15
+        },
+        "P5": {
+          "p75_excess_pt": 1,
+          "hc_deficit": -15,
+          "rh_deficit": -15,
+          "cerebro_excess": 15
+        },
+        "P6": {
+          "p75_deficit_pt": -1,
+          "hba1c_deficit": -5
+        }
+      },
+      "summary": {
+        "zero_count": 36,
+        "triple_count": 0,
+        "pattern_counts": {
+          "P1": 1,
+          "P3": 1,
+          "P5": 5,
+          "P6": 4
+        }
+      },
+      "by_pattern": {
+        "P1": [
+          "沖縄県"
+        ],
+        "P3": [
+          "山口県"
+        ],
+        "P5": [
+          "青森県",
+          "岩手県",
+          "秋田県",
+          "山形県",
+          "新潟県"
+        ],
+        "P6": [
+          "東京都",
+          "神奈川県",
+          "滋賀県",
+          "大阪府"
+        ]
+      }
+    },
+    "strict": {
+      "label": "strict (厳しい、シグナル少なめ)",
+      "thresholds": {
+        "P1": {
+          "bmi_excess": 15,
+          "endo_deficit": -30
+        },
+        "P3": {
+          "hc_excess": 70,
+          "outcome_excess": 20
+        },
+        "P5": {
+          "p75_excess_pt": 2,
+          "hc_deficit": -20,
+          "rh_deficit": -20,
+          "cerebro_excess": 20
+        },
+        "P6": {
+          "p75_deficit_pt": -2,
+          "hba1c_deficit": -10
+        }
+      },
+      "summary": {
+        "zero_count": 41,
+        "triple_count": 0,
+        "pattern_counts": {
+          "P1": 1,
+          "P3": 1,
+          "P5": 1,
+          "P6": 3
+        }
+      },
+      "by_pattern": {
+        "P1": [
+          "沖縄県"
+        ],
+        "P3": [
+          "山口県"
+        ],
+        "P5": [
+          "秋田県"
+        ],
+        "P6": [
+          "東京都",
+          "神奈川県",
+          "滋賀県"
+        ]
+      }
+    }
+  },
+  "representatives_stability": [
+    {
+      "pref": "沖縄県",
+      "expected": "P1",
+      "relaxed": "✓",
+      "baseline": "✓",
+      "strict": "✓"
+    },
+    {
+      "pref": "山口県",
+      "expected": "P3",
+      "relaxed": "✓",
+      "baseline": "✓",
+      "strict": "✓"
+    },
+    {
+      "pref": "秋田県",
+      "expected": "P5",
+      "relaxed": "✓",
+      "baseline": "✓",
+      "strict": "✓"
+    },
+    {
+      "pref": "東京都",
+      "expected": "P6",
+      "relaxed": "✓",
+      "baseline": "✓",
+      "strict": "✓"
+    }
+  ],
+  "new_in_relaxed": {
+    "P1": [
+      "茨城県"
+    ],
+    "P3": [
+      "大阪府"
+    ],
+    "P5": [
+      "富山県"
+    ],
+    "P6": [
+      "埼玉県",
+      "千葉県",
+      "愛知県",
+      "兵庫県"
+    ]
+  },
+  "lost_in_strict": {
+    "P1": [],
+    "P3": [],
+    "P5": [
+      "青森県",
+      "岩手県",
+      "山形県",
+      "新潟県"
+    ],
+    "P6": [
+      "大阪府"
+    ]
+  }
+}
