@@ -244,20 +244,131 @@ const EXPECTED_STATS = {
   },
 };
 
+// ── 期待 confidence grade (P2-4) ──
+// reviewer 採択 Done 条件:
+//   - 沖縄 P1: A
+//   - 山口 P3: A or B
+//   - 秋田 P5: A
+//   - 東京 P6: A or B
+//   - boundary examples (大阪/青森/岩手/山形/新潟): B/C
+const EXPECTED_CONFIDENCE = {
+  '沖縄県': { P1: ['A'] },              // 期待 A のみ
+  '山口県': { P3: ['A', 'B'] },         // A or B
+  '秋田県': { P5: ['A'] },              // 期待 A のみ
+  '東京都': { P6: ['A', 'B'] },         // A or B
+  // boundary examples (baseline で出るが strict で消える) - B/C 期待
+  '青森県': { P5: ['B', 'C'] },
+  '岩手県': { P5: ['B', 'C'] },
+  '山形県': { P5: ['B', 'C'] },
+  '新潟県': { P5: ['B', 'C'] },
+  '大阪府': { P6: ['B', 'C'] },
+};
+
+// ── 3シナリオ stability map 計算 (P2-4: confidence grade 用) ──
+// 各 archetype が relaxed/baseline/strict 全てで該当する場合のみ stable=true
+function computeStabilityMap(pref, data) {
+  // ESM module を CJS から呼べないため、test 内で簡易判定ロジックを再現
+  // (lib/regionalMismatchLogic.js の judgeで baseline 該当を確認)
+  const SCENARIOS = {
+    relaxed:  { P1: { bmi_excess: 5, endo_deficit: -10 }, P3: { hc_excess: 30, outcome_excess: 10 }, P5: { p75_excess_pt: 0.5, hc_deficit: -10, rh_deficit: -10, cerebro_excess: 10 }, P6: { p75_deficit_pt: -0.5, hba1c_deficit: -2 } },
+    baseline: { P1: { bmi_excess: 10, endo_deficit: -20 }, P3: { hc_excess: 50, outcome_excess: 15 }, P5: { p75_excess_pt: 1.0, hc_deficit: -15, rh_deficit: -15, cerebro_excess: 15 }, P6: { p75_deficit_pt: -1.0, hba1c_deficit: -5 } },
+    strict:   { P1: { bmi_excess: 15, endo_deficit: -30 }, P3: { hc_excess: 70, outcome_excess: 20 }, P5: { p75_excess_pt: 2.0, hc_deficit: -20, rh_deficit: -20, cerebro_excess: 20 }, P6: { p75_deficit_pt: -2.0, hba1c_deficit: -10 } },
+  };
+  const result = {};
+  const scenarioMatches = {};
+  for (const [name, TH] of Object.entries(SCENARIOS)) {
+    scenarioMatches[name] = detectArchetypesSimple({ pref, ...data }, TH);
+  }
+  // 各 archetype id について、3シナリオ全てに含まれるかを記録
+  for (const id of ['P1', 'P3', 'P5', 'P6']) {
+    const inAll = ['relaxed', 'baseline', 'strict'].every(s => scenarioMatches[s].includes(id));
+    const inBaseline = scenarioMatches.baseline.includes(id);
+    if (inBaseline) result[id] = inAll;  // baseline 該当のみ stability を判定
+  }
+  return result;
+}
+
+// id だけを返す簡易版 (stability 計算用)
+function detectArchetypesSimple(ctx, TH) {
+  const { pref, ndbCheckupRiskRates, patientSurvey, mortalityOutcome2020, homecareCapability, agePyramid } = ctx;
+  const matches = [];
+  const bmi = ndbCheckupRiskRates?.risk_rates?.bmi_ge_25?.by_pref?.[pref]?.rate;
+  const bmiAvg = avg47(ndbCheckupRiskRates?.risk_rates?.bmi_ge_25?.by_pref);
+  const hba1c = ndbCheckupRiskRates?.risk_rates?.hba1c_ge_6_5?.by_pref?.[pref]?.rate;
+  const hba1cAvg = avg47(ndbCheckupRiskRates?.risk_rates?.hba1c_ge_6_5?.by_pref);
+  const endo = patientSurvey?.prefectures?.[pref]?.categories?.['Ⅳ_内分泌，栄養及び代謝疾患']?.outpatient;
+  const endoNat = patientSurvey?.prefectures?.['全国']?.categories?.['Ⅳ_内分泌，栄養及び代謝疾患']?.outpatient;
+  const hc = homecareCapability?.by_prefecture?.[pref]?.homecare_per75;
+  const hcAvg = avg47(Object.fromEntries(Object.entries(homecareCapability?.by_prefecture || {}).map(([k, v]) => [k, v?.homecare_per75])));
+  const rh = homecareCapability?.by_prefecture?.[pref]?.rehab_per75;
+  const rhAvg = avg47(Object.fromEntries(Object.entries(homecareCapability?.by_prefecture || {}).map(([k, v]) => [k, v?.rehab_per75])));
+  const p75 = compute75Plus(agePyramid?.prefectures?.[pref]);
+  const p75NatList = Object.values(agePyramid?.prefectures || {}).map(compute75Plus).filter(v => v != null);
+  const p75Avg = p75NatList.length ? p75NatList.reduce((s, v) => s + v, 0) / p75NatList.length : null;
+  const mAA = (cause) => { const d = mortalityOutcome2020?.prefectures?.[pref]?.[cause]?.age_adjusted; return (d?.male && d?.female) ? (d.male.rate + d.female.rate) / 2 : null; };
+  const mAANat = (cause) => { const d = mortalityOutcome2020?.national?.[cause]?.age_adjusted; return (d?.male && d?.female) ? (d.male.rate + d.female.rate) / 2 : null; };
+  if (bmi != null && bmiAvg != null && endo != null && endoNat != null) {
+    if (pctDiff(bmi, bmiAvg) > TH.P1.bmi_excess && pctDiff(endo, endoNat) < TH.P1.endo_deficit) matches.push('P1');
+  }
+  if (hc != null && hcAvg != null && pctDiff(hc, hcAvg) > TH.P3.hc_excess) {
+    let hit = false;
+    if (pctDiff(mAA('肺炎'), mAANat('肺炎')) > TH.P3.outcome_excess) hit = true;
+    if (pctDiff(mAA('心疾患'), mAANat('心疾患')) > TH.P3.outcome_excess) hit = true;
+    if (pctDiff(mAA('腎不全'), mAANat('腎不全')) > TH.P3.outcome_excess) hit = true;
+    if (hit) matches.push('P3');
+  }
+  if (p75 != null && p75Avg != null && (p75 - p75Avg) > TH.P5.p75_excess_pt) {
+    const hcD = pctDiff(hc, hcAvg); const rhD = pctDiff(rh, rhAvg); const cerebroD = pctDiff(mAA('脳血管疾患'), mAANat('脳血管疾患'));
+    if ((hcD != null && hcD < TH.P5.hc_deficit) && (rhD != null && rhD < TH.P5.rh_deficit) && (cerebroD != null && cerebroD > TH.P5.cerebro_excess)) matches.push('P5');
+  }
+  if (p75 != null && p75Avg != null && (p75 - p75Avg) < TH.P6.p75_deficit_pt) {
+    const hba1cD = pctDiff(hba1c, hba1cAvg);
+    if (hba1cD != null && hba1cD < TH.P6.hba1c_deficit) matches.push('P6');
+  }
+  return matches;
+}
+
+// confidence grade 計算 (lib と同等のロジックを test 内で再現)
+function computeConfidence(match, options = {}) {
+  const { stability = null, proxyCaveatIds = ['P3', 'P6'] } = options;
+  const evidence = match?.evidence || [];
+  const stats = evidence.map(e => e.stats).filter(Boolean);
+  const strongStats = stats.filter(s => Math.abs(s.zscore) >= 1.5 || s.rank <= 5 || (s.n - s.rank) <= 4).length;
+  const veryStrongStats = stats.filter(s => Math.abs(s.zscore) >= 2.0 || s.rank <= 3 || (s.n - s.rank) <= 2).length;
+  const evidenceCount = evidence.length;
+  const hasProxyCaveat = proxyCaveatIds.includes(match?.id);
+  let score = 0;
+  if (evidenceCount >= 3) score += 1;
+  if (strongStats >= 2) score += 1;
+  if (veryStrongStats >= 2) score += 1;
+  if (stability === true) score += 1;
+  if (stability === false) score -= 1;
+  if (hasProxyCaveat) score -= 1;
+  const grade = score >= 3 ? 'A' : score >= 1 ? 'B' : 'C';
+  return { grade, score, factors: { evidence_count: evidenceCount, strong_stats: strongStats, very_strong_stats: veryStrongStats, stability, has_proxy_caveat: hasProxyCaveat } };
+}
+
 // ── main ──
-function main() {
+async function main() {
   console.log(`${BOLD}${BLUE}═══════════════════════════════════════════════════════════════${RESET}`);
-  console.log(`${BOLD}${BLUE}  Regional Mismatch Snapshot QA (Phase 4-1 P2-1)${RESET}`);
+  console.log(`${BOLD}${BLUE}  Regional Mismatch Snapshot QA (Phase 4-1 P2-1 + P2-3 + P2-4)${RESET}`);
   console.log(`${BOLD}${BLUE}═══════════════════════════════════════════════════════════════${RESET}`);
+
+  // lib (ESM) を dynamic import で読み込み (Node 18+ で動作)
+  const lib = await import('../lib/regionalMismatchLogic.js');
+  const detectArchetypesFull = lib.detectArchetypes;
 
   const data = loadData();
   const snapshot = {};
   const errors = [];
 
-  // 47県全件評価
+  // 47県全件評価 (lib の detectArchetypes を使用、各県の stabilityMap を計算して confidence 付与)
+  const stabilityByPref = {};
   for (const pref of PREFECTURES_47) {
-    const matches = detectArchetypes({ pref, ...data });
-    snapshot[pref] = matches.map(m => ({ id: m.id, layer: m.layer, title: m.title }));
+    const stabMap = computeStabilityMap(pref, data);
+    stabilityByPref[pref] = stabMap;
+    const matches = detectArchetypesFull({ pref, ...data }, undefined, { stabilityMap: stabMap });
+    snapshot[pref] = matches.map(m => ({ id: m.id, layer: m.layer, title: m.title, confidence: m.confidence ? { grade: m.confidence.grade, score: m.confidence.score, factors: m.confidence.factors } : null }));
 
     // 各県のラベル数 0〜3 検証 (Done条件 #2)
     if (matches.length > 3) {
@@ -317,17 +428,61 @@ function main() {
     }
   }
 
+  // 代表県 / boundary の confidence grade assertion (P2-4)
+  for (const [pref, patternsExpected] of Object.entries(EXPECTED_CONFIDENCE)) {
+    for (const [pat, allowedGrades] of Object.entries(patternsExpected)) {
+      const match = snapshot[pref]?.find(m => m.id === pat);
+      if (!match) {
+        // 該当 archetype が baseline で発生していない場合は scope 外 (boundary でない)
+        // ただし EXPECTED_CONFIDENCE で指定されているなら該当しないこと自体が回帰
+        errors.push(`${pref} ${pat}: confidence assertion 対象だが baseline で archetype 不検出`);
+        continue;
+      }
+      if (!match.confidence) {
+        errors.push(`${pref} ${pat}: confidence field がない`);
+        continue;
+      }
+      if (!allowedGrades.includes(match.confidence.grade)) {
+        errors.push(`${pref} ${pat}: confidence grade=${match.confidence.grade} は期待 [${allowedGrades.join('|')}] 外 (score=${match.confidence.score})`);
+      }
+    }
+  }
+
   // 0件県・3件県の手動確認リスト (Done条件 #5)
   const zeroCountPrefs = Object.entries(snapshot).filter(([, m]) => m.length === 0).map(([p]) => p);
   const tripleCountPrefs = Object.entries(snapshot).filter(([, m]) => m.length === 3).map(([p]) => p);
 
   // ── レポート ──
-  console.log(`\n${BOLD}── 47都道府県 archetype 判定サマリ ──${RESET}`);
+  console.log(`\n${BOLD}── 47都道府県 archetype 判定サマリ (id + confidence grade) ──${RESET}`);
   for (const pref of PREFECTURES_47) {
     const matches = snapshot[pref];
-    const ids = matches.length === 0 ? `${YELLOW}[なし]${RESET}` : matches.map(m => m.layer === 'mismatch' ? `${RED}${m.id}${RESET}` : `${BLUE}${m.id}${RESET}`).join(' ');
-    console.log(`  ${pref.padEnd(6, '　')} : ${ids}`);
+    if (matches.length === 0) {
+      console.log(`  ${pref.padEnd(6, '　')} : ${YELLOW}[なし]${RESET}`);
+    } else {
+      const display = matches.map(m => {
+        const idColor = m.layer === 'mismatch' ? RED : BLUE;
+        const gradeText = m.confidence ? ` [${m.confidence.grade}]` : '';
+        return `${idColor}${m.id}${RESET}${gradeText}`;
+      }).join(' ');
+      console.log(`  ${pref.padEnd(6, '　')} : ${display}`);
+    }
   }
+
+  // confidence summary
+  const confSummary = { A: 0, B: 0, C: 0 };
+  const byGrade = { A: [], B: [], C: [] };
+  for (const [pref, matches] of Object.entries(snapshot)) {
+    for (const m of matches) {
+      if (m.confidence) {
+        confSummary[m.confidence.grade]++;
+        byGrade[m.confidence.grade].push(`${pref}/${m.id}`);
+      }
+    }
+  }
+  console.log(`\n${BOLD}── confidence grade 集計 (P2-4) ──${RESET}`);
+  console.log(`  ${GREEN}A (高 confidence)${RESET}: ${confSummary.A}件 — ${byGrade.A.join(', ') || '(なし)'}`);
+  console.log(`  ${YELLOW}B (中 confidence)${RESET}: ${confSummary.B}件 — ${byGrade.B.join(', ') || '(なし)'}`);
+  console.log(`  ${RED}C (参考 confidence)${RESET}: ${confSummary.C}件 — ${byGrade.C.join(', ') || '(なし)'}`);
 
   console.log(`\n${BOLD}── Pattern 別 出現県 (Done条件 #3) ──${RESET}`);
   console.log(`  ${RED}P1 (Risk-Care Gap)${RESET}        : ${byPattern.P1.length}県 — ${byPattern.P1.join('・') || '(なし)'}`);
@@ -347,7 +502,7 @@ function main() {
   const snapshotFile = path.join(snapshotDir, 'regional_mismatch_47pref.json');
   const snapshotPayload = {
     _generated: new Date().toISOString(),
-    _version: 'P2-1 MVP (4 archetype) + P2-3 (percentile/zscore)',
+    _version: 'P2-1 MVP (4 archetype) + P2-3 (percentile/zscore) + P2-4 (confidence grade)',
     _description: 'RegionalMismatchExplorer 判定の 47都道府県全件 snapshot',
     summary: {
       total_prefectures: 47,
@@ -359,10 +514,17 @@ function main() {
       },
       zero_count_prefs: zeroCountPrefs,
       triple_count_prefs: tripleCountPrefs,
+      confidence_summary: {
+        A_count: confSummary.A,
+        B_count: confSummary.B,
+        C_count: confSummary.C,
+        by_grade: byGrade,
+      },
     },
     by_pattern: byPattern,
     by_prefecture: snapshot,
     representative_stats: repStats,
+    stability_by_pref: stabilityByPref,
   };
   fs.writeFileSync(snapshotFile, JSON.stringify(snapshotPayload, null, 2), 'utf-8');
   console.log(`\n${BLUE}snapshot 保存: ${path.relative(ROOT, snapshotFile)}${RESET}`);
@@ -411,8 +573,13 @@ function main() {
   console.log(`${GREEN}  - 全47県でラベル数が 0〜3 に収まる${RESET}`);
   console.log(`${GREEN}  - 代表県4つすべて期待通り (沖縄P1 / 山口P3 / 秋田P5 / 東京P6)${RESET}`);
   console.log(`${GREEN}  - 代表県 stats (rank/percentile/zscore) も期待値内 (P2-3)${RESET}`);
+  console.log(`${GREEN}  - 代表県/boundary の confidence grade が期待通り (P2-4)${RESET}`);
   console.log(`${GREEN}  - snapshot 出力済 (差分は git diff で確認可能)${RESET}`);
   process.exit(0);
 }
 
-main();
+main().catch(err => {
+  console.error(`\n${RED}${BOLD}❌ FATAL: test execution failed${RESET}`);
+  console.error(err);
+  process.exit(1);
+});

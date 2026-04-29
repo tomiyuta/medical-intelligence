@@ -1,6 +1,6 @@
 {
-  "_generated": "2026-04-29T13:14:34.994Z",
-  "_version": "P2-1 MVP (4 archetype) + P2-3 (percentile/zscore)",
+  "_generated": "2026-04-29T14:22:49.031Z",
+  "_version": "P2-1 MVP (4 archetype) + P2-3 (percentile/zscore) + P2-4 (confidence grade)",
   "_description": "RegionalMismatchExplorer 判定の 47都道府県全件 snapshot",
   "summary": {
     "total_prefectures": 47,
@@ -48,7 +48,31 @@
       "宮崎県",
       "鹿児島県"
     ],
-    "triple_count_prefs": []
+    "triple_count_prefs": [],
+    "confidence_summary": {
+      "A_count": 4,
+      "B_count": 5,
+      "C_count": 2,
+      "by_grade": {
+        "A": [
+          "秋田県/P5",
+          "東京都/P6",
+          "山口県/P3",
+          "沖縄県/P1"
+        ],
+        "B": [
+          "青森県/P5",
+          "岩手県/P5",
+          "山形県/P5",
+          "神奈川県/P6",
+          "滋賀県/P6"
+        ],
+        "C": [
+          "新潟県/P5",
+          "大阪府/P6"
+        ]
+      }
+    }
   },
   "by_pattern": {
     "P1": [
@@ -77,14 +101,36 @@
       {
         "id": "P5",
         "layer": "mismatch",
-        "title": "Aging-Outcome Burden"
+        "title": "高齢化に対する在宅移行の遅れと Outcome の連動（Aging-Outcome Burden）",
+        "confidence": {
+          "grade": "B",
+          "score": 1,
+          "factors": {
+            "evidence_count": 4,
+            "strong_stats": 2,
+            "very_strong_stats": 0,
+            "stability": false,
+            "has_proxy_caveat": false
+          }
+        }
       }
     ],
     "岩手県": [
       {
         "id": "P5",
         "layer": "mismatch",
-        "title": "Aging-Outcome Burden"
+        "title": "高齢化に対する在宅移行の遅れと Outcome の連動（Aging-Outcome Burden）",
+        "confidence": {
+          "grade": "B",
+          "score": 2,
+          "factors": {
+            "evidence_count": 4,
+            "strong_stats": 2,
+            "very_strong_stats": 2,
+            "stability": false,
+            "has_proxy_caveat": false
+          }
+        }
       }
     ],
     "宮城県": [],
@@ -92,14 +138,36 @@
       {
         "id": "P5",
         "layer": "mismatch",
-        "title": "Aging-Outcome Burden"
+        "title": "高齢化に対する在宅移行の遅れと Outcome の連動（Aging-Outcome Burden）",
+        "confidence": {
+          "grade": "A",
+          "score": 4,
+          "factors": {
+            "evidence_count": 4,
+            "strong_stats": 4,
+            "very_strong_stats": 4,
+            "stability": true,
+            "has_proxy_caveat": false
+          }
+        }
       }
     ],
     "山形県": [
       {
         "id": "P5",
         "layer": "mismatch",
-        "title": "Aging-Outcome Burden"
+        "title": "高齢化に対する在宅移行の遅れと Outcome の連動（Aging-Outcome Burden）",
+        "confidence": {
+          "grade": "B",
+          "score": 1,
+          "factors": {
+            "evidence_count": 4,
+            "strong_stats": 2,
+            "very_strong_stats": 1,
+            "stability": false,
+            "has_proxy_caveat": false
+          }
+        }
       }
     ],
     "福島県": [],
@@ -112,21 +180,54 @@
       {
         "id": "P6",
         "layer": "context",
-        "title": "Urban Context"
+        "title": "都市低リスク・高機能集積の構造（Urban Context）",
+        "confidence": {
+          "grade": "A",
+          "score": 3,
+          "factors": {
+            "evidence_count": 3,
+            "strong_stats": 2,
+            "very_strong_stats": 2,
+            "stability": true,
+            "has_proxy_caveat": true
+          }
+        }
       }
     ],
     "神奈川県": [
       {
         "id": "P6",
         "layer": "context",
-        "title": "Urban Context"
+        "title": "都市低リスク・高機能集積の構造（Urban Context）",
+        "confidence": {
+          "grade": "B",
+          "score": 2,
+          "factors": {
+            "evidence_count": 3,
+            "strong_stats": 2,
+            "very_strong_stats": 1,
+            "stability": true,
+            "has_proxy_caveat": true
+          }
+        }
       }
     ],
     "新潟県": [
       {
         "id": "P5",
         "layer": "mismatch",
-        "title": "Aging-Outcome Burden"
+        "title": "高齢化に対する在宅移行の遅れと Outcome の連動（Aging-Outcome Burden）",
+        "confidence": {
+          "grade": "C",
+          "score": 0,
+          "factors": {
+            "evidence_count": 4,
+            "strong_stats": 1,
+            "very_strong_stats": 1,
+            "stability": false,
+            "has_proxy_caveat": false
+          }
+        }
       }
     ],
     "富山県": [],
@@ -142,7 +243,18 @@
       {
         "id": "P6",
         "layer": "context",
-        "title": "Urban Context"
+        "title": "都市低リスク・高機能集積の構造（Urban Context）",
+        "confidence": {
+          "grade": "B",
+          "score": 1,
+          "factors": {
+            "evidence_count": 3,
+            "strong_stats": 1,
+            "very_strong_stats": 0,
+            "stability": true,
+            "has_proxy_caveat": true
+          }
+        }
       }
     ],
     "京都府": [],
@@ -150,7 +262,18 @@
       {
         "id": "P6",
         "layer": "context",
-        "title": "Urban Context"
+        "title": "都市低リスク・高機能集積の構造（Urban Context）",
+        "confidence": {
+          "grade": "C",
+          "score": -1,
+          "factors": {
+            "evidence_count": 3,
+            "strong_stats": 0,
+            "very_strong_stats": 0,
+            "stability": false,
+            "has_proxy_caveat": true
+          }
+        }
       }
     ],
     "兵庫県": [],
@@ -164,7 +287,18 @@
       {
         "id": "P3",
         "layer": "mismatch",
-        "title": "Supply-Outcome Mismatch (肺炎/腎不全)"
+        "title": "供給 proxy と Outcome の不一致（Supply-Outcome Mismatch）",
+        "confidence": {
+          "grade": "A",
+          "score": 3,
+          "factors": {
+            "evidence_count": 3,
+            "strong_stats": 3,
+            "very_strong_stats": 2,
+            "stability": true,
+            "has_proxy_caveat": true
+          }
+        }
       }
     ],
     "徳島県": [],
@@ -182,7 +316,18 @@
       {
         "id": "P1",
         "layer": "mismatch",
-        "title": "Risk-Care Gap"
+        "title": "リスクと医療接触の乖離（Risk-Care Gap）",
+        "confidence": {
+          "grade": "A",
+          "score": 4,
+          "factors": {
+            "evidence_count": 4,
+            "strong_stats": 4,
+            "very_strong_stats": 3,
+            "stability": true,
+            "has_proxy_caveat": false
+          }
+        }
       }
     ]
   },
@@ -450,6 +595,77 @@
         "rank": 32,
         "n": 47
       }
+    }
+  },
+  "stability_by_pref": {
+    "北海道": {},
+    "青森県": {
+      "P5": false
+    },
+    "岩手県": {
+      "P5": false
+    },
+    "宮城県": {},
+    "秋田県": {
+      "P5": true
+    },
+    "山形県": {
+      "P5": false
+    },
+    "福島県": {},
+    "茨城県": {},
+    "栃木県": {},
+    "群馬県": {},
+    "埼玉県": {},
+    "千葉県": {},
+    "東京都": {
+      "P6": true
+    },
+    "神奈川県": {
+      "P6": true
+    },
+    "新潟県": {
+      "P5": false
+    },
+    "富山県": {},
+    "石川県": {},
+    "福井県": {},
+    "山梨県": {},
+    "長野県": {},
+    "岐阜県": {},
+    "静岡県": {},
+    "愛知県": {},
+    "三重県": {},
+    "滋賀県": {
+      "P6": true
+    },
+    "京都府": {},
+    "大阪府": {
+      "P6": false
+    },
+    "兵庫県": {},
+    "奈良県": {},
+    "和歌山県": {},
+    "鳥取県": {},
+    "島根県": {},
+    "岡山県": {},
+    "広島県": {},
+    "山口県": {
+      "P3": true
+    },
+    "徳島県": {},
+    "香川県": {},
+    "愛媛県": {},
+    "高知県": {},
+    "福岡県": {},
+    "佐賀県": {},
+    "長崎県": {},
+    "熊本県": {},
+    "大分県": {},
+    "宮崎県": {},
+    "鹿児島県": {},
+    "沖縄県": {
+      "P1": true
     }
   }
 }

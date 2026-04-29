@@ -313,7 +313,6 @@ NdbView (医療プロファイルタブ) で県を選んだ際、上部に「該
 | 3-1b | 沖縄糖尿病の粗死亡率→年齢調整で逆転 | Pattern 1 補強 |
 
 ---
-
 ## 9. 関連ドキュメント
 
 - `docs/OKINAWA_DIABETES_PARADOX.md` — Pattern 1 詳細
@@ -324,3 +323,37 @@ NdbView (医療プロファイルタブ) で県を選んだ際、上部に「該
 - `docs/capability_mapping.md` — supply proxy の定義 (keyword taxonomy v1)
 - `docs/PHASE2_RELEASE_NOTES.md` — Phase 2 全体サマリ
 - `data/static/age_adjusted_mortality_2020.json` — Phase 3-1 Option B
+
+---
+
+## 10. confidence grade の caveat (Phase 4-1 P2-4)
+
+P2-4 で各観察ラベルに confidence grade A/B/C を付与した。これは **観察信号の強さ** を示す補助バッジであり、以下のものではない (reviewer 採択):
+
+confidence grade は…… ではない観察信号の強さ (evidence completeness + 分布上の極端度 + シナリオ間 stability)真実性政策判断の正しさ医療の質地域の優劣統計的有意差
+
+### grade 計算ロジック (lib/regionalMismatchLogic.js#computeConfidence)
+
+```
+score = 0
++1 if evidence_count >= 3        (根拠が多角的)
++1 if strong_stats >= 2          (|z|>=1.5 or rank<=5/n-rank<=4)
++1 if very_strong_stats >= 2     (|z|>=2.0 or rank<=3/n-rank<=2)
++1 if stability == true           (3シナリオで安定)
+-1 if stability == false          (境界例)
+-1 if id in ['P3', 'P6']          (proxy caveat)
+
+grade = score >= 3 ? 'A' : score >= 1 ? 'B' : 'C'
+```
+
+### 実 baseline 結果 (47県)
+
+- **A 4件**: 沖縄 P1 / 山口 P3 / 秋田 P5 / 東京 P6 (全シナリオで安定 + 多角的根拠)
+- **B 5件**: 青森・岩手・山形 P5、神奈川・滋賀 P6
+- **C 2件**: 新潟 P5、大阪 P6 (boundary、strict で消失)
+
+### 注意事項
+
+- z-score は47都道府県分布内での相対的位置を示す補助指標であり、統計的有意差を示すものではない (n=47 のため厳密な統計検定には不十分)
+- proxy caveat 減点 (P3/P6) は、供給 proxy・構造プロファイルが直接の outcome 評価ではなく、複合要因を含むため
+- grade C は「ラベルが間違っている」ではなく「閾値・proxy・時点差を踏まえて参考程度に扱う」
