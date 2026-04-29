@@ -1,0 +1,3287 @@
+{
+  "source": "令和5年度人口動態統計特殊報告 令和2年都道府県別年齢調整死亡率の概況",
+  "source_url": "https://www.mhlw.go.jp/toukei/saikin/hw/jinkou/other/20sibou/index.html",
+  "year": 2020,
+  "standard_population": "平成27年(2015年)モデル人口",
+  "unit": "人口10万対",
+  "method": "直接法による年齢調整死亡率",
+  "causes": [
+    "悪性新生物",
+    "糖尿病",
+    "心疾患",
+    "脳血管疾患",
+    "腎不全",
+    "肺炎"
+  ],
+  "notes": [
+    "年齢調整死亡率は2020年(令和2年)時点",
+    "既存の粗死亡率データ (vital_stats_pref.json, 2024年) とは時点が異なる",
+    "基準人口は平成27年(2015年)モデル人口",
+    "5年ごとに公表 (次回は令和7年(2025年)、2027年頃公表予定)",
+    "total_simple_mean は男女の単純平均 (人口加重なし)。地域比較で用いる際は注意",
+    "Bridge UIへの反映はPhase 3-1 Option Bでは未実施。別途設計判断後にUI実装予定",
+    "rank は厚労省公表値 (該当死因における47県中の順位)"
+  ],
+  "extraction_date": "2026-04-29",
+  "extraction_phase": "Phase 3-1 Option B (ETL only, no UI integration)",
+  "national": {
+    "悪性新生物": {
+      "male": {
+        "rate": 394.7,
+        "rank": null
+      },
+      "female": {
+        "rate": 196.4,
+        "rank": null
+      }
+    },
+    "糖尿病": {
+      "male": {
+        "rate": 13.9,
+        "rank": null
+      },
+      "female": {
+        "rate": 6.9,
+        "rank": null
+      }
+    },
+    "心疾患": {
+      "male": {
+        "rate": 190.1,
+        "rank": null
+      },
+      "female": {
+        "rate": 109.2,
+        "rank": null
+      }
+    },
+    "脳血管疾患": {
+      "male": {
+        "rate": 93.8,
+        "rank": null
+      },
+      "female": {
+        "rate": 56.4,
+        "rank": null
+      }
+    },
+    "肺炎": {
+      "male": {
+        "rate": 90.1,
+        "rank": null
+      },
+      "female": {
+        "rate": 33.4,
+        "rank": null
+      }
+    },
+    "腎不全": {
+      "male": {
+        "rate": 27.3,
+        "rank": null
+      },
+      "female": {
+        "rate": 13.5,
+        "rank": null
+      }
+    }
+  },
+  "prefectures": {
+    "北海道": {
+      "悪性新生物": {
+        "male": {
+          "rate": 440.7,
+          "rank": 3
+        },
+        "female": {
+          "rate": 228,
+          "rank": 1
+        },
+        "total_simple_mean": 334.35
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 16,
+          "rank": 14
+        },
+        "female": {
+          "rate": 8.6,
+          "rank": 7
+        },
+        "total_simple_mean": 12.3
+      },
+      "心疾患": {
+        "male": {
+          "rate": 180,
+          "rank": 34
+        },
+        "female": {
+          "rate": 108.4,
+          "rank": 29
+        },
+        "total_simple_mean": 144.2
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 88.9,
+          "rank": 31
+        },
+        "female": {
+          "rate": 56.6,
+          "rank": 24
+        },
+        "total_simple_mean": 72.75
+      },
+      "肺炎": {
+        "male": {
+          "rate": 89,
+          "rank": 23
+        },
+        "female": {
+          "rate": 32.5,
+          "rank": 22
+        },
+        "total_simple_mean": 60.75
+      },
+      "腎不全": {
+        "male": {
+          "rate": 35.8,
+          "rank": 2
+        },
+        "female": {
+          "rate": 17.9,
+          "rank": 1
+        },
+        "total_simple_mean": 26.85
+      }
+    },
+    "青森県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 472.6,
+          "rank": 1
+        },
+        "female": {
+          "rate": 219.1,
+          "rank": 2
+        },
+        "total_simple_mean": 345.85
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 18.9,
+          "rank": 4
+        },
+        "female": {
+          "rate": 8.8,
+          "rank": 4
+        },
+        "total_simple_mean": 13.85
+      },
+      "心疾患": {
+        "male": {
+          "rate": 219,
+          "rank": 3
+        },
+        "female": {
+          "rate": 126.5,
+          "rank": 3
+        },
+        "total_simple_mean": 172.75
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 116.7,
+          "rank": 5
+        },
+        "female": {
+          "rate": 69.7,
+          "rank": 8
+        },
+        "total_simple_mean": 93.2
+      },
+      "肺炎": {
+        "male": {
+          "rate": 118.4,
+          "rank": 1
+        },
+        "female": {
+          "rate": 42.6,
+          "rank": 7
+        },
+        "total_simple_mean": 80.5
+      },
+      "腎不全": {
+        "male": {
+          "rate": 37.9,
+          "rank": 1
+        },
+        "female": {
+          "rate": 17.1,
+          "rank": 3
+        },
+        "total_simple_mean": 27.5
+      }
+    },
+    "岩手県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 411.6,
+          "rank": 9
+        },
+        "female": {
+          "rate": 214.4,
+          "rank": 3
+        },
+        "total_simple_mean": 313.0
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 14.6,
+          "rank": 22
+        },
+        "female": {
+          "rate": 8.7,
+          "rank": 6
+        },
+        "total_simple_mean": 11.65
+      },
+      "心疾患": {
+        "male": {
+          "rate": 213,
+          "rank": 6
+        },
+        "female": {
+          "rate": 121.6,
+          "rank": 6
+        },
+        "total_simple_mean": 167.3
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 147.2,
+          "rank": 1
+        },
+        "female": {
+          "rate": 84.3,
+          "rank": 1
+        },
+        "total_simple_mean": 115.75
+      },
+      "肺炎": {
+        "male": {
+          "rate": 85,
+          "rank": 28
+        },
+        "female": {
+          "rate": 29.6,
+          "rank": 31
+        },
+        "total_simple_mean": 57.3
+      },
+      "腎不全": {
+        "male": {
+          "rate": 30.2,
+          "rank": 9
+        },
+        "female": {
+          "rate": 14.1,
+          "rank": 21
+        },
+        "total_simple_mean": 22.15
+      }
+    },
+    "宮城県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 394.4,
+          "rank": 19
+        },
+        "female": {
+          "rate": 195.9,
+          "rank": 18
+        },
+        "total_simple_mean": 295.15
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 12.6,
+          "rank": 36
+        },
+        "female": {
+          "rate": 6.5,
+          "rank": 26
+        },
+        "total_simple_mean": 9.55
+      },
+      "心疾患": {
+        "male": {
+          "rate": 196.7,
+          "rank": 18
+        },
+        "female": {
+          "rate": 109.8,
+          "rank": 27
+        },
+        "total_simple_mean": 153.25
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 110.7,
+          "rank": 9
+        },
+        "female": {
+          "rate": 71,
+          "rank": 7
+        },
+        "total_simple_mean": 90.85
+      },
+      "肺炎": {
+        "male": {
+          "rate": 70.5,
+          "rank": 42
+        },
+        "female": {
+          "rate": 23.3,
+          "rank": 45
+        },
+        "total_simple_mean": 46.9
+      },
+      "腎不全": {
+        "male": {
+          "rate": 25.3,
+          "rank": 36
+        },
+        "female": {
+          "rate": 12.6,
+          "rank": 31
+        },
+        "total_simple_mean": 18.95
+      }
+    },
+    "秋田県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 445.9,
+          "rank": 2
+        },
+        "female": {
+          "rate": 203.5,
+          "rank": 7
+        },
+        "total_simple_mean": 324.7
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 19.5,
+          "rank": 3
+        },
+        "female": {
+          "rate": 8,
+          "rank": 15
+        },
+        "total_simple_mean": 13.75
+      },
+      "心疾患": {
+        "male": {
+          "rate": 182.2,
+          "rank": 31
+        },
+        "female": {
+          "rate": 99.3,
+          "rank": 37
+        },
+        "total_simple_mean": 140.75
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 124.1,
+          "rank": 2
+        },
+        "female": {
+          "rate": 78.2,
+          "rank": 2
+        },
+        "total_simple_mean": 101.15
+      },
+      "肺炎": {
+        "male": {
+          "rate": 105.4,
+          "rank": 10
+        },
+        "female": {
+          "rate": 31.9,
+          "rank": 23
+        },
+        "total_simple_mean": 68.65
+      },
+      "腎不全": {
+        "male": {
+          "rate": 29.9,
+          "rank": 11
+        },
+        "female": {
+          "rate": 13.8,
+          "rank": 23
+        },
+        "total_simple_mean": 21.85
+      }
+    },
+    "山形県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 395.7,
+          "rank": 18
+        },
+        "female": {
+          "rate": 195.6,
+          "rank": 19
+        },
+        "total_simple_mean": 295.65
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 9.7,
+          "rank": 46
+        },
+        "female": {
+          "rate": 6,
+          "rank": 36
+        },
+        "total_simple_mean": 7.85
+      },
+      "心疾患": {
+        "male": {
+          "rate": 203.4,
+          "rank": 11
+        },
+        "female": {
+          "rate": 111.5,
+          "rank": 25
+        },
+        "total_simple_mean": 157.45
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 114.6,
+          "rank": 8
+        },
+        "female": {
+          "rate": 71.4,
+          "rank": 6
+        },
+        "total_simple_mean": 93.0
+      },
+      "肺炎": {
+        "male": {
+          "rate": 86.3,
+          "rank": 25
+        },
+        "female": {
+          "rate": 27,
+          "rank": 37
+        },
+        "total_simple_mean": 56.65
+      },
+      "腎不全": {
+        "male": {
+          "rate": 29.3,
+          "rank": 16
+        },
+        "female": {
+          "rate": 13.2,
+          "rank": 25
+        },
+        "total_simple_mean": 21.25
+      }
+    },
+    "福島県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 404.2,
+          "rank": 12
+        },
+        "female": {
+          "rate": 199.2,
+          "rank": 9
+        },
+        "total_simple_mean": 301.7
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 17.9,
+          "rank": 5
+        },
+        "female": {
+          "rate": 10.1,
+          "rank": 1
+        },
+        "total_simple_mean": 14.0
+      },
+      "心疾患": {
+        "male": {
+          "rate": 212.9,
+          "rank": 8
+        },
+        "female": {
+          "rate": 118.9,
+          "rank": 10
+        },
+        "total_simple_mean": 165.9
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 109.6,
+          "rank": 10
+        },
+        "female": {
+          "rate": 75.2,
+          "rank": 3
+        },
+        "total_simple_mean": 92.4
+      },
+      "肺炎": {
+        "male": {
+          "rate": 90.4,
+          "rank": 20
+        },
+        "female": {
+          "rate": 35.5,
+          "rank": 18
+        },
+        "total_simple_mean": 62.95
+      },
+      "腎不全": {
+        "male": {
+          "rate": 27.5,
+          "rank": 22
+        },
+        "female": {
+          "rate": 13,
+          "rank": 28
+        },
+        "total_simple_mean": 20.25
+      }
+    },
+    "茨城県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 403.1,
+          "rank": 13
+        },
+        "female": {
+          "rate": 198.5,
+          "rank": 12
+        },
+        "total_simple_mean": 300.8
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 16.1,
+          "rank": 12
+        },
+        "female": {
+          "rate": 8,
+          "rank": 14
+        },
+        "total_simple_mean": 12.05
+      },
+      "心疾患": {
+        "male": {
+          "rate": 194.7,
+          "rank": 20
+        },
+        "female": {
+          "rate": 116,
+          "rank": 17
+        },
+        "total_simple_mean": 155.35
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 116.9,
+          "rank": 4
+        },
+        "female": {
+          "rate": 71.5,
+          "rank": 5
+        },
+        "total_simple_mean": 94.2
+      },
+      "肺炎": {
+        "male": {
+          "rate": 109,
+          "rank": 6
+        },
+        "female": {
+          "rate": 47.2,
+          "rank": 2
+        },
+        "total_simple_mean": 78.1
+      },
+      "腎不全": {
+        "male": {
+          "rate": 25.9,
+          "rank": 30
+        },
+        "female": {
+          "rate": 11.3,
+          "rank": 42
+        },
+        "total_simple_mean": 18.6
+      }
+    },
+    "栃木県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 391,
+          "rank": 22
+        },
+        "female": {
+          "rate": 199,
+          "rank": 10
+        },
+        "total_simple_mean": 295.0
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 16.6,
+          "rank": 10
+        },
+        "female": {
+          "rate": 8.7,
+          "rank": 5
+        },
+        "total_simple_mean": 12.65
+      },
+      "心疾患": {
+        "male": {
+          "rate": 213,
+          "rank": 7
+        },
+        "female": {
+          "rate": 118.2,
+          "rank": 12
+        },
+        "total_simple_mean": 165.6
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 119.7,
+          "rank": 3
+        },
+        "female": {
+          "rate": 74.5,
+          "rank": 4
+        },
+        "total_simple_mean": 97.1
+      },
+      "肺炎": {
+        "male": {
+          "rate": 93.1,
+          "rank": 19
+        },
+        "female": {
+          "rate": 34.9,
+          "rank": 20
+        },
+        "total_simple_mean": 64.0
+      },
+      "腎不全": {
+        "male": {
+          "rate": 27.2,
+          "rank": 24
+        },
+        "female": {
+          "rate": 11.5,
+          "rank": 40
+        },
+        "total_simple_mean": 19.35
+      }
+    },
+    "群馬県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 382.3,
+          "rank": 32
+        },
+        "female": {
+          "rate": 192.2,
+          "rank": 25
+        },
+        "total_simple_mean": 287.25
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 17.5,
+          "rank": 8
+        },
+        "female": {
+          "rate": 8.1,
+          "rank": 13
+        },
+        "total_simple_mean": 12.8
+      },
+      "心疾患": {
+        "male": {
+          "rate": 203.8,
+          "rank": 10
+        },
+        "female": {
+          "rate": 117.6,
+          "rank": 14
+        },
+        "total_simple_mean": 160.7
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 101.1,
+          "rank": 15
+        },
+        "female": {
+          "rate": 59.7,
+          "rank": 16
+        },
+        "total_simple_mean": 80.4
+      },
+      "肺炎": {
+        "male": {
+          "rate": 99.7,
+          "rank": 15
+        },
+        "female": {
+          "rate": 41,
+          "rank": 11
+        },
+        "total_simple_mean": 70.35
+      },
+      "腎不全": {
+        "male": {
+          "rate": 31,
+          "rank": 7
+        },
+        "female": {
+          "rate": 13.9,
+          "rank": 22
+        },
+        "total_simple_mean": 22.45
+      }
+    },
+    "埼玉県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 393.1,
+          "rank": 20
+        },
+        "female": {
+          "rate": 199.7,
+          "rank": 8
+        },
+        "total_simple_mean": 296.4
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 12.5,
+          "rank": 37
+        },
+        "female": {
+          "rate": 7.4,
+          "rank": 19
+        },
+        "total_simple_mean": 9.95
+      },
+      "心疾患": {
+        "male": {
+          "rate": 199.8,
+          "rank": 15
+        },
+        "female": {
+          "rate": 118.5,
+          "rank": 11
+        },
+        "total_simple_mean": 159.15
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 86.3,
+          "rank": 38
+        },
+        "female": {
+          "rate": 56.3,
+          "rank": 26
+        },
+        "total_simple_mean": 71.3
+      },
+      "肺炎": {
+        "male": {
+          "rate": 107.2,
+          "rank": 7
+        },
+        "female": {
+          "rate": 42.3,
+          "rank": 9
+        },
+        "total_simple_mean": 74.75
+      },
+      "腎不全": {
+        "male": {
+          "rate": 28.9,
+          "rank": 18
+        },
+        "female": {
+          "rate": 14.5,
+          "rank": 18
+        },
+        "total_simple_mean": 21.7
+      }
+    },
+    "千葉県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 389.6,
+          "rank": 25
+        },
+        "female": {
+          "rate": 194.5,
+          "rank": 20
+        },
+        "total_simple_mean": 292.05
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 16.5,
+          "rank": 11
+        },
+        "female": {
+          "rate": 7.7,
+          "rank": 16
+        },
+        "total_simple_mean": 12.1
+      },
+      "心疾患": {
+        "male": {
+          "rate": 200.2,
+          "rank": 14
+        },
+        "female": {
+          "rate": 116.3,
+          "rank": 16
+        },
+        "total_simple_mean": 158.25
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 91.2,
+          "rank": 27
+        },
+        "female": {
+          "rate": 55.5,
+          "rank": 28
+        },
+        "total_simple_mean": 73.35
+      },
+      "肺炎": {
+        "male": {
+          "rate": 102.2,
+          "rank": 12
+        },
+        "female": {
+          "rate": 38.7,
+          "rank": 13
+        },
+        "total_simple_mean": 70.45
+      },
+      "腎不全": {
+        "male": {
+          "rate": 25.1,
+          "rank": 38
+        },
+        "female": {
+          "rate": 11.4,
+          "rank": 41
+        },
+        "total_simple_mean": 18.25
+      }
+    },
+    "東京都": {
+      "悪性新生物": {
+        "male": {
+          "rate": 385.7,
+          "rank": 28
+        },
+        "female": {
+          "rate": 199,
+          "rank": 11
+        },
+        "total_simple_mean": 292.35
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 13.7,
+          "rank": 27
+        },
+        "female": {
+          "rate": 5.7,
+          "rank": 40
+        },
+        "total_simple_mean": 9.7
+      },
+      "心疾患": {
+        "male": {
+          "rate": 194.4,
+          "rank": 22
+        },
+        "female": {
+          "rate": 105.2,
+          "rank": 32
+        },
+        "total_simple_mean": 149.8
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 89.3,
+          "rank": 30
+        },
+        "female": {
+          "rate": 52.6,
+          "rank": 32
+        },
+        "total_simple_mean": 70.95
+      },
+      "肺炎": {
+        "male": {
+          "rate": 84.4,
+          "rank": 29
+        },
+        "female": {
+          "rate": 30.8,
+          "rank": 28
+        },
+        "total_simple_mean": 57.6
+      },
+      "腎不全": {
+        "male": {
+          "rate": 24.3,
+          "rank": 43
+        },
+        "female": {
+          "rate": 11.1,
+          "rank": 43
+        },
+        "total_simple_mean": 17.7
+      }
+    },
+    "神奈川県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 384.2,
+          "rank": 30
+        },
+        "female": {
+          "rate": 194.1,
+          "rank": 22
+        },
+        "total_simple_mean": 289.15
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 9.6,
+          "rank": 47
+        },
+        "female": {
+          "rate": 5.8,
+          "rank": 38
+        },
+        "total_simple_mean": 7.7
+      },
+      "心疾患": {
+        "male": {
+          "rate": 189.9,
+          "rank": 25
+        },
+        "female": {
+          "rate": 98.8,
+          "rank": 40
+        },
+        "total_simple_mean": 144.35
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 82.1,
+          "rank": 44
+        },
+        "female": {
+          "rate": 49.6,
+          "rank": 39
+        },
+        "total_simple_mean": 65.85
+      },
+      "肺炎": {
+        "male": {
+          "rate": 77.3,
+          "rank": 37
+        },
+        "female": {
+          "rate": 26.3,
+          "rank": 38
+        },
+        "total_simple_mean": 51.8
+      },
+      "腎不全": {
+        "male": {
+          "rate": 22.9,
+          "rank": 46
+        },
+        "female": {
+          "rate": 10.8,
+          "rank": 44
+        },
+        "total_simple_mean": 16.85
+      }
+    },
+    "新潟県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 414.5,
+          "rank": 8
+        },
+        "female": {
+          "rate": 188.3,
+          "rank": 30
+        },
+        "total_simple_mean": 301.4
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 12.7,
+          "rank": 34
+        },
+        "female": {
+          "rate": 6.9,
+          "rank": 22
+        },
+        "total_simple_mean": 9.8
+      },
+      "心疾患": {
+        "male": {
+          "rate": 170.1,
+          "rank": 42
+        },
+        "female": {
+          "rate": 99.2,
+          "rank": 38
+        },
+        "total_simple_mean": 134.65
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 116.3,
+          "rank": 6
+        },
+        "female": {
+          "rate": 68.8,
+          "rank": 9
+        },
+        "total_simple_mean": 92.55
+      },
+      "肺炎": {
+        "male": {
+          "rate": 71.1,
+          "rank": 41
+        },
+        "female": {
+          "rate": 23.9,
+          "rank": 43
+        },
+        "total_simple_mean": 47.5
+      },
+      "腎不全": {
+        "male": {
+          "rate": 24,
+          "rank": 44
+        },
+        "female": {
+          "rate": 12.4,
+          "rank": 36
+        },
+        "total_simple_mean": 18.2
+      }
+    },
+    "富山県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 393,
+          "rank": 21
+        },
+        "female": {
+          "rate": 198.2,
+          "rank": 13
+        },
+        "total_simple_mean": 295.6
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 13.7,
+          "rank": 28
+        },
+        "female": {
+          "rate": 6,
+          "rank": 35
+        },
+        "total_simple_mean": 9.85
+      },
+      "心疾患": {
+        "male": {
+          "rate": 151.7,
+          "rank": 45
+        },
+        "female": {
+          "rate": 91.1,
+          "rank": 44
+        },
+        "total_simple_mean": 121.4
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 101.8,
+          "rank": 14
+        },
+        "female": {
+          "rate": 64.6,
+          "rank": 11
+        },
+        "total_simple_mean": 83.2
+      },
+      "肺炎": {
+        "male": {
+          "rate": 90.3,
+          "rank": 21
+        },
+        "female": {
+          "rate": 29.2,
+          "rank": 33
+        },
+        "total_simple_mean": 59.75
+      },
+      "腎不全": {
+        "male": {
+          "rate": 23,
+          "rank": 45
+        },
+        "female": {
+          "rate": 12.1,
+          "rank": 39
+        },
+        "total_simple_mean": 17.55
+      }
+    },
+    "石川県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 410.9,
+          "rank": 10
+        },
+        "female": {
+          "rate": 196.2,
+          "rank": 15
+        },
+        "total_simple_mean": 303.55
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 13.5,
+          "rank": 29
+        },
+        "female": {
+          "rate": 6.3,
+          "rank": 29
+        },
+        "total_simple_mean": 9.9
+      },
+      "心疾患": {
+        "male": {
+          "rate": 183.2,
+          "rank": 28
+        },
+        "female": {
+          "rate": 104,
+          "rank": 33
+        },
+        "total_simple_mean": 143.6
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 97.3,
+          "rank": 22
+        },
+        "female": {
+          "rate": 57.1,
+          "rank": 22
+        },
+        "total_simple_mean": 77.2
+      },
+      "肺炎": {
+        "male": {
+          "rate": 88.4,
+          "rank": 24
+        },
+        "female": {
+          "rate": 29.4,
+          "rank": 32
+        },
+        "total_simple_mean": 58.9
+      },
+      "腎不全": {
+        "male": {
+          "rate": 24.6,
+          "rank": 40
+        },
+        "female": {
+          "rate": 10.2,
+          "rank": 45
+        },
+        "total_simple_mean": 17.4
+      }
+    },
+    "福井県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 380,
+          "rank": 35
+        },
+        "female": {
+          "rate": 170,
+          "rank": 47
+        },
+        "total_simple_mean": 275.0
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 13.5,
+          "rank": 30
+        },
+        "female": {
+          "rate": 7.2,
+          "rank": 20
+        },
+        "total_simple_mean": 10.35
+      },
+      "心疾患": {
+        "male": {
+          "rate": 202.7,
+          "rank": 12
+        },
+        "female": {
+          "rate": 121.4,
+          "rank": 7
+        },
+        "total_simple_mean": 162.05
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 95,
+          "rank": 24
+        },
+        "female": {
+          "rate": 58.5,
+          "rank": 18
+        },
+        "total_simple_mean": 76.75
+      },
+      "肺炎": {
+        "male": {
+          "rate": 99,
+          "rank": 16
+        },
+        "female": {
+          "rate": 35.2,
+          "rank": 19
+        },
+        "total_simple_mean": 67.1
+      },
+      "腎不全": {
+        "male": {
+          "rate": 26.6,
+          "rank": 28
+        },
+        "female": {
+          "rate": 15.5,
+          "rank": 11
+        },
+        "total_simple_mean": 21.05
+      }
+    },
+    "山梨県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 355.1,
+          "rank": 45
+        },
+        "female": {
+          "rate": 178,
+          "rank": 44
+        },
+        "total_simple_mean": 266.55
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 16.7,
+          "rank": 9
+        },
+        "female": {
+          "rate": 5.4,
+          "rank": 41
+        },
+        "total_simple_mean": 11.05
+      },
+      "心疾患": {
+        "male": {
+          "rate": 170.9,
+          "rank": 41
+        },
+        "female": {
+          "rate": 99,
+          "rank": 39
+        },
+        "total_simple_mean": 134.95
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 104.3,
+          "rank": 12
+        },
+        "female": {
+          "rate": 56.4,
+          "rank": 25
+        },
+        "total_simple_mean": 80.35
+      },
+      "肺炎": {
+        "male": {
+          "rate": 78.1,
+          "rank": 36
+        },
+        "female": {
+          "rate": 28.5,
+          "rank": 34
+        },
+        "total_simple_mean": 53.3
+      },
+      "腎不全": {
+        "male": {
+          "rate": 29.5,
+          "rank": 15
+        },
+        "female": {
+          "rate": 12.7,
+          "rank": 30
+        },
+        "total_simple_mean": 21.1
+      }
+    },
+    "長野県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 338.4,
+          "rank": 47
+        },
+        "female": {
+          "rate": 180.7,
+          "rank": 43
+        },
+        "total_simple_mean": 259.55
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 11.7,
+          "rank": 40
+        },
+        "female": {
+          "rate": 6.3,
+          "rank": 31
+        },
+        "total_simple_mean": 9.0
+      },
+      "心疾患": {
+        "male": {
+          "rate": 168.6,
+          "rank": 43
+        },
+        "female": {
+          "rate": 92.4,
+          "rank": 43
+        },
+        "total_simple_mean": 130.5
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 95.4,
+          "rank": 23
+        },
+        "female": {
+          "rate": 65.5,
+          "rank": 10
+        },
+        "total_simple_mean": 80.45
+      },
+      "肺炎": {
+        "male": {
+          "rate": 64.3,
+          "rank": 45
+        },
+        "female": {
+          "rate": 23.7,
+          "rank": 44
+        },
+        "total_simple_mean": 44.0
+      },
+      "腎不全": {
+        "male": {
+          "rate": 19,
+          "rank": 47
+        },
+        "female": {
+          "rate": 9.3,
+          "rank": 46
+        },
+        "total_simple_mean": 14.15
+      }
+    },
+    "岐阜県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 370.2,
+          "rank": 40
+        },
+        "female": {
+          "rate": 193.1,
+          "rank": 24
+        },
+        "total_simple_mean": 281.65
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 10.3,
+          "rank": 43
+        },
+        "female": {
+          "rate": 4.7,
+          "rank": 47
+        },
+        "total_simple_mean": 7.5
+      },
+      "心疾患": {
+        "male": {
+          "rate": 173.5,
+          "rank": 39
+        },
+        "female": {
+          "rate": 109.6,
+          "rank": 28
+        },
+        "total_simple_mean": 141.55
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 87,
+          "rank": 36
+        },
+        "female": {
+          "rate": 57.7,
+          "rank": 21
+        },
+        "total_simple_mean": 72.35
+      },
+      "肺炎": {
+        "male": {
+          "rate": 85.7,
+          "rank": 27
+        },
+        "female": {
+          "rate": 29.9,
+          "rank": 30
+        },
+        "total_simple_mean": 57.8
+      },
+      "腎不全": {
+        "male": {
+          "rate": 24.4,
+          "rank": 41
+        },
+        "female": {
+          "rate": 14.7,
+          "rank": 17
+        },
+        "total_simple_mean": 19.55
+      }
+    },
+    "静岡県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 371.7,
+          "rank": 39
+        },
+        "female": {
+          "rate": 190.8,
+          "rank": 27
+        },
+        "total_simple_mean": 281.25
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 15.8,
+          "rank": 16
+        },
+        "female": {
+          "rate": 7.5,
+          "rank": 18
+        },
+        "total_simple_mean": 11.65
+      },
+      "心疾患": {
+        "male": {
+          "rate": 182.5,
+          "rank": 30
+        },
+        "female": {
+          "rate": 101.5,
+          "rank": 35
+        },
+        "total_simple_mean": 142.0
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 114.7,
+          "rank": 7
+        },
+        "female": {
+          "rate": 64.2,
+          "rank": 12
+        },
+        "total_simple_mean": 89.45
+      },
+      "肺炎": {
+        "male": {
+          "rate": 76.6,
+          "rank": 38
+        },
+        "female": {
+          "rate": 27.6,
+          "rank": 35
+        },
+        "total_simple_mean": 52.1
+      },
+      "腎不全": {
+        "male": {
+          "rate": 29.7,
+          "rank": 14
+        },
+        "female": {
+          "rate": 12.2,
+          "rank": 37
+        },
+        "total_simple_mean": 20.95
+      }
+    },
+    "愛知県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 389.1,
+          "rank": 26
+        },
+        "female": {
+          "rate": 196.6,
+          "rank": 14
+        },
+        "total_simple_mean": 292.85
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 10.1,
+          "rank": 44
+        },
+        "female": {
+          "rate": 5,
+          "rank": 45
+        },
+        "total_simple_mean": 7.55
+      },
+      "心疾患": {
+        "male": {
+          "rate": 156.8,
+          "rank": 44
+        },
+        "female": {
+          "rate": 93,
+          "rank": 42
+        },
+        "total_simple_mean": 124.9
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 87.6,
+          "rank": 35
+        },
+        "female": {
+          "rate": 52,
+          "rank": 34
+        },
+        "total_simple_mean": 69.8
+      },
+      "肺炎": {
+        "male": {
+          "rate": 84.3,
+          "rank": 31
+        },
+        "female": {
+          "rate": 31,
+          "rank": 27
+        },
+        "total_simple_mean": 57.65
+      },
+      "腎不全": {
+        "male": {
+          "rate": 24.4,
+          "rank": 42
+        },
+        "female": {
+          "rate": 12.5,
+          "rank": 34
+        },
+        "total_simple_mean": 18.45
+      }
+    },
+    "三重県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 375.5,
+          "rank": 36
+        },
+        "female": {
+          "rate": 181,
+          "rank": 42
+        },
+        "total_simple_mean": 278.25
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 13.4,
+          "rank": 31
+        },
+        "female": {
+          "rate": 8.5,
+          "rank": 8
+        },
+        "total_simple_mean": 10.95
+      },
+      "心疾患": {
+        "male": {
+          "rate": 191.3,
+          "rank": 23
+        },
+        "female": {
+          "rate": 111.8,
+          "rank": 24
+        },
+        "total_simple_mean": 151.55
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 91.4,
+          "rank": 26
+        },
+        "female": {
+          "rate": 56.7,
+          "rank": 23
+        },
+        "total_simple_mean": 74.05
+      },
+      "肺炎": {
+        "male": {
+          "rate": 84.3,
+          "rank": 30
+        },
+        "female": {
+          "rate": 31.4,
+          "rank": 25
+        },
+        "total_simple_mean": 57.85
+      },
+      "腎不全": {
+        "male": {
+          "rate": 31.8,
+          "rank": 6
+        },
+        "female": {
+          "rate": 14.8,
+          "rank": 15
+        },
+        "total_simple_mean": 23.3
+      }
+    },
+    "滋賀県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 372,
+          "rank": 38
+        },
+        "female": {
+          "rate": 186.4,
+          "rank": 32
+        },
+        "total_simple_mean": 279.2
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 12.1,
+          "rank": 39
+        },
+        "female": {
+          "rate": 5.8,
+          "rank": 39
+        },
+        "total_simple_mean": 8.95
+      },
+      "心疾患": {
+        "male": {
+          "rate": 178.5,
+          "rank": 36
+        },
+        "female": {
+          "rate": 107.1,
+          "rank": 31
+        },
+        "total_simple_mean": 142.8
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 76.2,
+          "rank": 47
+        },
+        "female": {
+          "rate": 48,
+          "rank": 43
+        },
+        "total_simple_mean": 62.1
+      },
+      "肺炎": {
+        "male": {
+          "rate": 69.7,
+          "rank": 43
+        },
+        "female": {
+          "rate": 23.9,
+          "rank": 42
+        },
+        "total_simple_mean": 46.8
+      },
+      "腎不全": {
+        "male": {
+          "rate": 29.9,
+          "rank": 10
+        },
+        "female": {
+          "rate": 12.9,
+          "rank": 29
+        },
+        "total_simple_mean": 21.4
+      }
+    },
+    "京都府": {
+      "悪性新生物": {
+        "male": {
+          "rate": 389.6,
+          "rank": 24
+        },
+        "female": {
+          "rate": 190.6,
+          "rank": 29
+        },
+        "total_simple_mean": 290.1
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 11.5,
+          "rank": 42
+        },
+        "female": {
+          "rate": 5.3,
+          "rank": 44
+        },
+        "total_simple_mean": 8.4
+      },
+      "心疾患": {
+        "male": {
+          "rate": 198.4,
+          "rank": 16
+        },
+        "female": {
+          "rate": 114.8,
+          "rank": 19
+        },
+        "total_simple_mean": 156.6
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 83.3,
+          "rank": 43
+        },
+        "female": {
+          "rate": 47.2,
+          "rank": 45
+        },
+        "total_simple_mean": 65.25
+      },
+      "肺炎": {
+        "male": {
+          "rate": 73.1,
+          "rank": 40
+        },
+        "female": {
+          "rate": 26,
+          "rank": 40
+        },
+        "total_simple_mean": 49.55
+      },
+      "腎不全": {
+        "male": {
+          "rate": 24.9,
+          "rank": 39
+        },
+        "female": {
+          "rate": 13.6,
+          "rank": 24
+        },
+        "total_simple_mean": 19.25
+      }
+    },
+    "大阪府": {
+      "悪性新生物": {
+        "male": {
+          "rate": 423.3,
+          "rank": 5
+        },
+        "female": {
+          "rate": 206,
+          "rank": 6
+        },
+        "total_simple_mean": 314.65
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 14.4,
+          "rank": 23
+        },
+        "female": {
+          "rate": 6.3,
+          "rank": 32
+        },
+        "total_simple_mean": 10.35
+      },
+      "心疾患": {
+        "male": {
+          "rate": 217.6,
+          "rank": 4
+        },
+        "female": {
+          "rate": 122.7,
+          "rank": 5
+        },
+        "total_simple_mean": 170.15
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 78.6,
+          "rank": 45
+        },
+        "female": {
+          "rate": 45.5,
+          "rank": 47
+        },
+        "total_simple_mean": 62.05
+      },
+      "肺炎": {
+        "male": {
+          "rate": 113.4,
+          "rank": 4
+        },
+        "female": {
+          "rate": 43.7,
+          "rank": 6
+        },
+        "total_simple_mean": 78.55
+      },
+      "腎不全": {
+        "male": {
+          "rate": 30.6,
+          "rank": 8
+        },
+        "female": {
+          "rate": 17,
+          "rank": 4
+        },
+        "total_simple_mean": 23.8
+      }
+    },
+    "兵庫県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 402.2,
+          "rank": 15
+        },
+        "female": {
+          "rate": 190.7,
+          "rank": 28
+        },
+        "total_simple_mean": 296.45
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 15,
+          "rank": 20
+        },
+        "female": {
+          "rate": 6.5,
+          "rank": 27
+        },
+        "total_simple_mean": 10.75
+      },
+      "心疾患": {
+        "male": {
+          "rate": 188.4,
+          "rank": 26
+        },
+        "female": {
+          "rate": 112.1,
+          "rank": 23
+        },
+        "total_simple_mean": 150.25
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 88.7,
+          "rank": 32
+        },
+        "female": {
+          "rate": 51.4,
+          "rank": 36
+        },
+        "total_simple_mean": 70.05
+      },
+      "肺炎": {
+        "male": {
+          "rate": 83.8,
+          "rank": 32
+        },
+        "female": {
+          "rate": 30.1,
+          "rank": 29
+        },
+        "total_simple_mean": 56.95
+      },
+      "腎不全": {
+        "male": {
+          "rate": 28.7,
+          "rank": 20
+        },
+        "female": {
+          "rate": 14.3,
+          "rank": 20
+        },
+        "total_simple_mean": 21.5
+      }
+    },
+    "奈良県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 380.1,
+          "rank": 34
+        },
+        "female": {
+          "rate": 196.1,
+          "rank": 16
+        },
+        "total_simple_mean": 288.1
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 14.1,
+          "rank": 25
+        },
+        "female": {
+          "rate": 6.1,
+          "rank": 34
+        },
+        "total_simple_mean": 10.1
+      },
+      "心疾患": {
+        "male": {
+          "rate": 194.4,
+          "rank": 21
+        },
+        "female": {
+          "rate": 113.3,
+          "rank": 21
+        },
+        "total_simple_mean": 153.85
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 77,
+          "rank": 46
+        },
+        "female": {
+          "rate": 46.5,
+          "rank": 46
+        },
+        "total_simple_mean": 61.75
+      },
+      "肺炎": {
+        "male": {
+          "rate": 90,
+          "rank": 22
+        },
+        "female": {
+          "rate": 31.7,
+          "rank": 24
+        },
+        "total_simple_mean": 60.85
+      },
+      "腎不全": {
+        "male": {
+          "rate": 25.4,
+          "rank": 35
+        },
+        "female": {
+          "rate": 12.1,
+          "rank": 38
+        },
+        "total_simple_mean": 18.75
+      }
+    },
+    "和歌山県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 409.9,
+          "rank": 11
+        },
+        "female": {
+          "rate": 196.1,
+          "rank": 17
+        },
+        "total_simple_mean": 303.0
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 9.7,
+          "rank": 45
+        },
+        "female": {
+          "rate": 5,
+          "rank": 46
+        },
+        "total_simple_mean": 7.35
+      },
+      "心疾患": {
+        "male": {
+          "rate": 219.8,
+          "rank": 2
+        },
+        "female": {
+          "rate": 124.2,
+          "rank": 4
+        },
+        "total_simple_mean": 172.0
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 87.9,
+          "rank": 34
+        },
+        "female": {
+          "rate": 48.5,
+          "rank": 42
+        },
+        "total_simple_mean": 68.2
+      },
+      "肺炎": {
+        "male": {
+          "rate": 105.5,
+          "rank": 9
+        },
+        "female": {
+          "rate": 38.6,
+          "rank": 14
+        },
+        "total_simple_mean": 72.05
+      },
+      "腎不全": {
+        "male": {
+          "rate": 29.9,
+          "rank": 12
+        },
+        "female": {
+          "rate": 17.6,
+          "rank": 2
+        },
+        "total_simple_mean": 23.75
+      }
+    },
+    "鳥取県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 400.8,
+          "rank": 16
+        },
+        "female": {
+          "rate": 183.6,
+          "rank": 37
+        },
+        "total_simple_mean": 292.2
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 15.9,
+          "rank": 15
+        },
+        "female": {
+          "rate": 6.8,
+          "rank": 23
+        },
+        "total_simple_mean": 11.35
+      },
+      "心疾患": {
+        "male": {
+          "rate": 148.1,
+          "rank": 46
+        },
+        "female": {
+          "rate": 82.7,
+          "rank": 47
+        },
+        "total_simple_mean": 115.4
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 102.1,
+          "rank": 13
+        },
+        "female": {
+          "rate": 57.7,
+          "rank": 20
+        },
+        "total_simple_mean": 79.9
+      },
+      "肺炎": {
+        "male": {
+          "rate": 75.3,
+          "rank": 39
+        },
+        "female": {
+          "rate": 26.2,
+          "rank": 39
+        },
+        "total_simple_mean": 50.75
+      },
+      "腎不全": {
+        "male": {
+          "rate": 27.2,
+          "rank": 25
+        },
+        "female": {
+          "rate": 7.5,
+          "rank": 47
+        },
+        "total_simple_mean": 17.35
+      }
+    },
+    "島根県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 385.6,
+          "rank": 29
+        },
+        "female": {
+          "rate": 185.6,
+          "rank": 33
+        },
+        "total_simple_mean": 285.6
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 15.3,
+          "rank": 18
+        },
+        "female": {
+          "rate": 5.4,
+          "rank": 43
+        },
+        "total_simple_mean": 10.35
+      },
+      "心疾患": {
+        "male": {
+          "rate": 185.6,
+          "rank": 27
+        },
+        "female": {
+          "rate": 93.6,
+          "rank": 41
+        },
+        "total_simple_mean": 139.6
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 88,
+          "rank": 33
+        },
+        "female": {
+          "rate": 63.8,
+          "rank": 13
+        },
+        "total_simple_mean": 75.9
+      },
+      "肺炎": {
+        "male": {
+          "rate": 57.9,
+          "rank": 47
+        },
+        "female": {
+          "rate": 22.1,
+          "rank": 46
+        },
+        "total_simple_mean": 40.0
+      },
+      "腎不全": {
+        "male": {
+          "rate": 25.8,
+          "rank": 33
+        },
+        "female": {
+          "rate": 12.5,
+          "rank": 33
+        },
+        "total_simple_mean": 19.15
+      }
+    },
+    "岡山県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 372.2,
+          "rank": 37
+        },
+        "female": {
+          "rate": 177.3,
+          "rank": 45
+        },
+        "total_simple_mean": 274.75
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 13.9,
+          "rank": 26
+        },
+        "female": {
+          "rate": 6.7,
+          "rank": 24
+        },
+        "total_simple_mean": 10.3
+      },
+      "心疾患": {
+        "male": {
+          "rate": 180.7,
+          "rank": 32
+        },
+        "female": {
+          "rate": 112.2,
+          "rank": 22
+        },
+        "total_simple_mean": 146.45
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 91,
+          "rank": 28
+        },
+        "female": {
+          "rate": 50.9,
+          "rank": 38
+        },
+        "total_simple_mean": 70.95
+      },
+      "肺炎": {
+        "male": {
+          "rate": 101.4,
+          "rank": 14
+        },
+        "female": {
+          "rate": 33.4,
+          "rank": 21
+        },
+        "total_simple_mean": 67.4
+      },
+      "腎不全": {
+        "male": {
+          "rate": 25.1,
+          "rank": 37
+        },
+        "female": {
+          "rate": 12.5,
+          "rank": 35
+        },
+        "total_simple_mean": 18.8
+      }
+    },
+    "広島県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 369.5,
+          "rank": 41
+        },
+        "female": {
+          "rate": 183.4,
+          "rank": 39
+        },
+        "total_simple_mean": 276.45
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 11.6,
+          "rank": 41
+        },
+        "female": {
+          "rate": 7.1,
+          "rank": 21
+        },
+        "total_simple_mean": 9.35
+      },
+      "心疾患": {
+        "male": {
+          "rate": 196.8,
+          "rank": 17
+        },
+        "female": {
+          "rate": 115.3,
+          "rank": 18
+        },
+        "total_simple_mean": 156.05
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 86.2,
+          "rank": 39
+        },
+        "female": {
+          "rate": 48.8,
+          "rank": 40
+        },
+        "total_simple_mean": 67.5
+      },
+      "肺炎": {
+        "male": {
+          "rate": 78.7,
+          "rank": 35
+        },
+        "female": {
+          "rate": 27.3,
+          "rank": 36
+        },
+        "total_simple_mean": 53.0
+      },
+      "腎不全": {
+        "male": {
+          "rate": 27.3,
+          "rank": 23
+        },
+        "female": {
+          "rate": 14.8,
+          "rank": 16
+        },
+        "total_simple_mean": 21.05
+      }
+    },
+    "山口県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 398.9,
+          "rank": 17
+        },
+        "female": {
+          "rate": 185,
+          "rank": 34
+        },
+        "total_simple_mean": 291.95
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 15,
+          "rank": 19
+        },
+        "female": {
+          "rate": 8.4,
+          "rank": 11
+        },
+        "total_simple_mean": 11.7
+      },
+      "心疾患": {
+        "male": {
+          "rate": 215.7,
+          "rank": 5
+        },
+        "female": {
+          "rate": 126.7,
+          "rank": 2
+        },
+        "total_simple_mean": 171.2
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 99,
+          "rank": 21
+        },
+        "female": {
+          "rate": 56.2,
+          "rank": 27
+        },
+        "total_simple_mean": 77.6
+      },
+      "肺炎": {
+        "male": {
+          "rate": 116.7,
+          "rank": 2
+        },
+        "female": {
+          "rate": 44.9,
+          "rank": 4
+        },
+        "total_simple_mean": 80.8
+      },
+      "腎不全": {
+        "male": {
+          "rate": 32.4,
+          "rank": 4
+        },
+        "female": {
+          "rate": 15.5,
+          "rank": 10
+        },
+        "total_simple_mean": 23.95
+      }
+    },
+    "徳島県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 381.4,
+          "rank": 33
+        },
+        "female": {
+          "rate": 183.6,
+          "rank": 38
+        },
+        "total_simple_mean": 282.5
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 17.5,
+          "rank": 7
+        },
+        "female": {
+          "rate": 8.5,
+          "rank": 10
+        },
+        "total_simple_mean": 13.0
+      },
+      "心疾患": {
+        "male": {
+          "rate": 171.9,
+          "rank": 40
+        },
+        "female": {
+          "rate": 108.2,
+          "rank": 30
+        },
+        "total_simple_mean": 140.05
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 92.9,
+          "rank": 25
+        },
+        "female": {
+          "rate": 51.8,
+          "rank": 35
+        },
+        "total_simple_mean": 72.35
+      },
+      "肺炎": {
+        "male": {
+          "rate": 114.5,
+          "rank": 3
+        },
+        "female": {
+          "rate": 49,
+          "rank": 1
+        },
+        "total_simple_mean": 81.75
+      },
+      "腎不全": {
+        "male": {
+          "rate": 32.3,
+          "rank": 5
+        },
+        "female": {
+          "rate": 16.1,
+          "rank": 6
+        },
+        "total_simple_mean": 24.2
+      }
+    },
+    "香川県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 367.2,
+          "rank": 42
+        },
+        "female": {
+          "rate": 186.7,
+          "rank": 31
+        },
+        "total_simple_mean": 276.95
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 21.2,
+          "rank": 1
+        },
+        "female": {
+          "rate": 8.5,
+          "rank": 9
+        },
+        "total_simple_mean": 14.85
+      },
+      "心疾患": {
+        "male": {
+          "rate": 205.3,
+          "rank": 9
+        },
+        "female": {
+          "rate": 119.6,
+          "rank": 9
+        },
+        "total_simple_mean": 162.45
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 90.6,
+          "rank": 29
+        },
+        "female": {
+          "rate": 48.6,
+          "rank": 41
+        },
+        "total_simple_mean": 69.6
+      },
+      "肺炎": {
+        "male": {
+          "rate": 62.2,
+          "rank": 46
+        },
+        "female": {
+          "rate": 24.8,
+          "rank": 41
+        },
+        "total_simple_mean": 43.5
+      },
+      "腎不全": {
+        "male": {
+          "rate": 25.9,
+          "rank": 32
+        },
+        "female": {
+          "rate": 15.4,
+          "rank": 13
+        },
+        "total_simple_mean": 20.65
+      }
+    },
+    "愛媛県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 383.1,
+          "rank": 31
+        },
+        "female": {
+          "rate": 194.1,
+          "rank": 21
+        },
+        "total_simple_mean": 288.6
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 15.4,
+          "rank": 17
+        },
+        "female": {
+          "rate": 9,
+          "rank": 3
+        },
+        "total_simple_mean": 12.2
+      },
+      "心疾患": {
+        "male": {
+          "rate": 234.4,
+          "rank": 1
+        },
+        "female": {
+          "rate": 129.1,
+          "rank": 1
+        },
+        "total_simple_mean": 181.75
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 100.2,
+          "rank": 18
+        },
+        "female": {
+          "rate": 58.3,
+          "rank": 19
+        },
+        "total_simple_mean": 79.25
+      },
+      "肺炎": {
+        "male": {
+          "rate": 85.7,
+          "rank": 26
+        },
+        "female": {
+          "rate": 35.6,
+          "rank": 17
+        },
+        "total_simple_mean": 60.65
+      },
+      "腎不全": {
+        "male": {
+          "rate": 25.7,
+          "rank": 34
+        },
+        "female": {
+          "rate": 12.6,
+          "rank": 32
+        },
+        "total_simple_mean": 19.15
+      }
+    },
+    "高知県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 402.6,
+          "rank": 14
+        },
+        "female": {
+          "rate": 181.9,
+          "rank": 40
+        },
+        "total_simple_mean": 292.25
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 13.3,
+          "rank": 32
+        },
+        "female": {
+          "rate": 5.9,
+          "rank": 37
+        },
+        "total_simple_mean": 9.6
+      },
+      "心疾患": {
+        "male": {
+          "rate": 195.1,
+          "rank": 19
+        },
+        "female": {
+          "rate": 117.6,
+          "rank": 13
+        },
+        "total_simple_mean": 156.35
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 100.4,
+          "rank": 17
+        },
+        "female": {
+          "rate": 53.2,
+          "rank": 30
+        },
+        "total_simple_mean": 76.8
+      },
+      "肺炎": {
+        "male": {
+          "rate": 98.2,
+          "rank": 17
+        },
+        "female": {
+          "rate": 39.9,
+          "rank": 12
+        },
+        "total_simple_mean": 69.05
+      },
+      "腎不全": {
+        "male": {
+          "rate": 34.9,
+          "rank": 3
+        },
+        "female": {
+          "rate": 16.8,
+          "rank": 5
+        },
+        "total_simple_mean": 25.85
+      }
+    },
+    "福岡県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 423.8,
+          "rank": 4
+        },
+        "female": {
+          "rate": 206.3,
+          "rank": 5
+        },
+        "total_simple_mean": 315.05
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 15,
+          "rank": 21
+        },
+        "female": {
+          "rate": 7.6,
+          "rank": 17
+        },
+        "total_simple_mean": 11.3
+      },
+      "心疾患": {
+        "male": {
+          "rate": 143.7,
+          "rank": 47
+        },
+        "female": {
+          "rate": 89.7,
+          "rank": 45
+        },
+        "total_simple_mean": 116.7
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 86.7,
+          "rank": 37
+        },
+        "female": {
+          "rate": 47.7,
+          "rank": 44
+        },
+        "total_simple_mean": 67.2
+      },
+      "肺炎": {
+        "male": {
+          "rate": 97.9,
+          "rank": 18
+        },
+        "female": {
+          "rate": 35.8,
+          "rank": 16
+        },
+        "total_simple_mean": 66.85
+      },
+      "腎不全": {
+        "male": {
+          "rate": 25.9,
+          "rank": 31
+        },
+        "female": {
+          "rate": 13.1,
+          "rank": 27
+        },
+        "total_simple_mean": 19.5
+      }
+    },
+    "佐賀県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 418.2,
+          "rank": 6
+        },
+        "female": {
+          "rate": 194.1,
+          "rank": 23
+        },
+        "total_simple_mean": 306.15
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 14.2,
+          "rank": 24
+        },
+        "female": {
+          "rate": 6.5,
+          "rank": 25
+        },
+        "total_simple_mean": 10.35
+      },
+      "心疾患": {
+        "male": {
+          "rate": 176.2,
+          "rank": 37
+        },
+        "female": {
+          "rate": 109.9,
+          "rank": 26
+        },
+        "total_simple_mean": 143.05
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 85.1,
+          "rank": 42
+        },
+        "female": {
+          "rate": 52.7,
+          "rank": 31
+        },
+        "total_simple_mean": 68.9
+      },
+      "肺炎": {
+        "male": {
+          "rate": 102.9,
+          "rank": 11
+        },
+        "female": {
+          "rate": 44.1,
+          "rank": 5
+        },
+        "total_simple_mean": 73.5
+      },
+      "腎不全": {
+        "male": {
+          "rate": 26.3,
+          "rank": 29
+        },
+        "female": {
+          "rate": 13.2,
+          "rank": 26
+        },
+        "total_simple_mean": 19.75
+      }
+    },
+    "長崎県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 416.7,
+          "rank": 7
+        },
+        "female": {
+          "rate": 214.1,
+          "rank": 4
+        },
+        "total_simple_mean": 315.4
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 13,
+          "rank": 33
+        },
+        "female": {
+          "rate": 5.4,
+          "rank": 42
+        },
+        "total_simple_mean": 9.2
+      },
+      "心疾患": {
+        "male": {
+          "rate": 190.5,
+          "rank": 24
+        },
+        "female": {
+          "rate": 114.1,
+          "rank": 20
+        },
+        "total_simple_mean": 152.3
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 85.4,
+          "rank": 40
+        },
+        "female": {
+          "rate": 54.4,
+          "rank": 29
+        },
+        "total_simple_mean": 69.9
+      },
+      "肺炎": {
+        "male": {
+          "rate": 106,
+          "rank": 8
+        },
+        "female": {
+          "rate": 41.2,
+          "rank": 10
+        },
+        "total_simple_mean": 73.6
+      },
+      "腎不全": {
+        "male": {
+          "rate": 29.1,
+          "rank": 17
+        },
+        "female": {
+          "rate": 15.5,
+          "rank": 9
+        },
+        "total_simple_mean": 22.3
+      }
+    },
+    "熊本県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 357.1,
+          "rank": 44
+        },
+        "female": {
+          "rate": 181.3,
+          "rank": 41
+        },
+        "total_simple_mean": 269.2
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 12.7,
+          "rank": 35
+        },
+        "female": {
+          "rate": 6.4,
+          "rank": 28
+        },
+        "total_simple_mean": 9.55
+      },
+      "心疾患": {
+        "male": {
+          "rate": 179.5,
+          "rank": 35
+        },
+        "female": {
+          "rate": 101.2,
+          "rank": 36
+        },
+        "total_simple_mean": 140.35
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 85.2,
+          "rank": 41
+        },
+        "female": {
+          "rate": 51.2,
+          "rank": 37
+        },
+        "total_simple_mean": 68.2
+      },
+      "肺炎": {
+        "male": {
+          "rate": 80.7,
+          "rank": 34
+        },
+        "female": {
+          "rate": 31,
+          "rank": 26
+        },
+        "total_simple_mean": 55.85
+      },
+      "腎不全": {
+        "male": {
+          "rate": 28.6,
+          "rank": 21
+        },
+        "female": {
+          "rate": 14.4,
+          "rank": 19
+        },
+        "total_simple_mean": 21.5
+      }
+    },
+    "大分県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 365.8,
+          "rank": 43
+        },
+        "female": {
+          "rate": 175.8,
+          "rank": 46
+        },
+        "total_simple_mean": 270.8
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 12.2,
+          "rank": 38
+        },
+        "female": {
+          "rate": 6.3,
+          "rank": 30
+        },
+        "total_simple_mean": 9.25
+      },
+      "心疾患": {
+        "male": {
+          "rate": 182.8,
+          "rank": 29
+        },
+        "female": {
+          "rate": 103.9,
+          "rank": 34
+        },
+        "total_simple_mean": 143.35
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 100.7,
+          "rank": 16
+        },
+        "female": {
+          "rate": 59.4,
+          "rank": 17
+        },
+        "total_simple_mean": 80.05
+      },
+      "肺炎": {
+        "male": {
+          "rate": 82.6,
+          "rank": 33
+        },
+        "female": {
+          "rate": 36.4,
+          "rank": 15
+        },
+        "total_simple_mean": 59.5
+      },
+      "腎不全": {
+        "male": {
+          "rate": 29.8,
+          "rank": 13
+        },
+        "female": {
+          "rate": 15.5,
+          "rank": 12
+        },
+        "total_simple_mean": 22.65
+      }
+    },
+    "宮崎県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 386.1,
+          "rank": 27
+        },
+        "female": {
+          "rate": 191.3,
+          "rank": 26
+        },
+        "total_simple_mean": 288.7
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 17.8,
+          "rank": 6
+        },
+        "female": {
+          "rate": 6.2,
+          "rank": 33
+        },
+        "total_simple_mean": 12.0
+      },
+      "心疾患": {
+        "male": {
+          "rate": 202.7,
+          "rank": 13
+        },
+        "female": {
+          "rate": 119.8,
+          "rank": 8
+        },
+        "total_simple_mean": 161.25
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 105.2,
+          "rank": 11
+        },
+        "female": {
+          "rate": 61.4,
+          "rank": 14
+        },
+        "total_simple_mean": 83.3
+      },
+      "肺炎": {
+        "male": {
+          "rate": 102.2,
+          "rank": 13
+        },
+        "female": {
+          "rate": 42.5,
+          "rank": 8
+        },
+        "total_simple_mean": 72.35
+      },
+      "腎不全": {
+        "male": {
+          "rate": 26.6,
+          "rank": 27
+        },
+        "female": {
+          "rate": 16,
+          "rank": 7
+        },
+        "total_simple_mean": 21.3
+      }
+    },
+    "鹿児島県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 390.3,
+          "rank": 23
+        },
+        "female": {
+          "rate": 184.8,
+          "rank": 36
+        },
+        "total_simple_mean": 287.55
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 16.1,
+          "rank": 13
+        },
+        "female": {
+          "rate": 8.2,
+          "rank": 12
+        },
+        "total_simple_mean": 12.15
+      },
+      "心疾患": {
+        "male": {
+          "rate": 180.2,
+          "rank": 33
+        },
+        "female": {
+          "rate": 116.4,
+          "rank": 15
+        },
+        "total_simple_mean": 148.3
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 100,
+          "rank": 19
+        },
+        "female": {
+          "rate": 61.1,
+          "rank": 15
+        },
+        "total_simple_mean": 80.55
+      },
+      "肺炎": {
+        "male": {
+          "rate": 111.1,
+          "rank": 5
+        },
+        "female": {
+          "rate": 45,
+          "rank": 3
+        },
+        "total_simple_mean": 78.05
+      },
+      "腎不全": {
+        "male": {
+          "rate": 28.7,
+          "rank": 19
+        },
+        "female": {
+          "rate": 15.2,
+          "rank": 14
+        },
+        "total_simple_mean": 21.95
+      }
+    },
+    "沖縄県": {
+      "悪性新生物": {
+        "male": {
+          "rate": 352.9,
+          "rank": 46
+        },
+        "female": {
+          "rate": 184.9,
+          "rank": 35
+        },
+        "total_simple_mean": 268.9
+      },
+      "糖尿病": {
+        "male": {
+          "rate": 20.8,
+          "rank": 2
+        },
+        "female": {
+          "rate": 9.7,
+          "rank": 2
+        },
+        "total_simple_mean": 15.25
+      },
+      "心疾患": {
+        "male": {
+          "rate": 175.1,
+          "rank": 38
+        },
+        "female": {
+          "rate": 87.1,
+          "rank": 46
+        },
+        "total_simple_mean": 131.1
+      },
+      "脳血管疾患": {
+        "male": {
+          "rate": 99.9,
+          "rank": 20
+        },
+        "female": {
+          "rate": 52.4,
+          "rank": 33
+        },
+        "total_simple_mean": 76.15
+      },
+      "肺炎": {
+        "male": {
+          "rate": 65.4,
+          "rank": 44
+        },
+        "female": {
+          "rate": 17.9,
+          "rank": 47
+        },
+        "total_simple_mean": 41.65
+      },
+      "腎不全": {
+        "male": {
+          "rate": 26.9,
+          "rank": 26
+        },
+        "female": {
+          "rate": 15.5,
+          "rank": 8
+        },
+        "total_simple_mean": 21.2
+      }
+    }
+  }
+}
