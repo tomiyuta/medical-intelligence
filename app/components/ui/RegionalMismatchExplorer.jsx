@@ -74,10 +74,21 @@ export default function RegionalMismatchExplorer({ pref, ndbCheckupRiskRates, pa
               <div style={{ background: '#f8fafc', borderRadius: 4, padding: '10px 12px', fontSize: 11 }}>
                 <div style={{ fontSize: 10, fontWeight: 700, color: '#64748b', marginBottom: 6 }}>📊 根拠 (evidence)</div>
                 {m.evidence.map((e, j) => (
-                  <div key={j} style={{ display: 'flex', justifyContent: 'space-between', padding: '3px 0', borderBottom: j < m.evidence.length - 1 ? '1px dashed #e2e8f0' : 'none', gap: 12 }}>
-                    <div style={{ color: '#475569', flex: '1 1 60%' }}>{e.label}</div>
-                    <div style={{ color: '#1e293b', fontWeight: 600, flex: '0 0 auto', minWidth: 80, textAlign: 'right' }}>{e.value}</div>
-                    <div style={{ color: '#94a3b8', fontSize: 10, flex: '0 0 auto', minWidth: 140, textAlign: 'right' }}>{e.ref}</div>
+                  <div key={j} style={{ padding: '4px 0', borderBottom: j < m.evidence.length - 1 ? '1px dashed #e2e8f0' : 'none' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', gap: 12 }}>
+                      <div style={{ color: '#475569', flex: '1 1 60%' }}>{e.label}</div>
+                      <div style={{ color: '#1e293b', fontWeight: 600, flex: '0 0 auto', minWidth: 80, textAlign: 'right' }}>{e.value}</div>
+                      <div style={{ color: '#94a3b8', fontSize: 10, flex: '0 0 auto', minWidth: 140, textAlign: 'right' }}>{e.ref}</div>
+                    </div>
+                    {e.stats && (
+                      <div style={{ fontSize: 9, color: '#94a3b8', marginTop: 2, paddingLeft: 8, lineHeight: 1.4 }}>
+                        <span title={`47県分布: 平均=${e.stats.mean}, 標準偏差=${e.stats.std} (n=${e.stats.n})`}>
+                          47県分布: percentile <b style={{color:'#475569'}}>{e.stats.percentile.toFixed(0)}</b> /
+                          z = <b style={{color:'#475569'}}>{e.stats.zscore > 0 ? '+' : ''}{e.stats.zscore.toFixed(2)}</b> /
+                          rank {e.stats.rank}/{e.stats.n}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -92,6 +103,17 @@ export default function RegionalMismatchExplorer({ pref, ndbCheckupRiskRates, pa
         本機能は MVP (P1-4) です。現行は 4 archetype (Risk-Care / Supply-Outcome Mismatch / Aging-Outcome Burden / Urban Context) のみ判定対象。
         Pattern 2 (Supply-Outcome 並列悪化) と Pattern 4 (Alignment Context) は将来追加します。
         判定閾値は経験則 (±5%/15% neutral zone) に基づく暫定値であり、感度分析は P2 課題です。
+        <br />
+        <br />
+        <b>🧮 evidence の3指標について</b> (Phase 4-1 P2-3):
+        <br />
+        ・<b>全国比 / 47県平均比 (% diff)</b>: 中央傾向との相対位置。直感的だが分布の幅は反映されない。
+        <br />
+        ・<b>percentile</b>: 47県分布の中で何位相当か (0-100)。順位ベースで分布の歪みに頑健。
+        <br />
+        ・<b>z-score</b>: 標準偏差を単位とする位置 (正規分布前提)。±2 以上は「外れ値級」の目安。
+        <br />
+        ・3指標が一致して大きい場合は強い signal、不一致時は分布の偏りを示唆。
       </div>
     </div>
   );
