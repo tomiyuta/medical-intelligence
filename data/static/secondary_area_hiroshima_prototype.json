@@ -1,0 +1,309 @@
+{
+  "_phase": "Phase 4-3c-B-lite",
+  "_scope": "広島県のみ (Hiroshima focus)",
+  "_disclaimer": "Supply + Population prototype のみ。NDB Risk side は別フェーズで再設計が必要 (4-3c-Risk-NDB)",
+  "_generated_at": "2026-04-30",
+  "_data_sources": {
+    "existing_etl": {
+      "homecare": "data/static/area_emergency_homecare.json",
+      "beds": "data/static/medical_areas_national.json",
+      "demographics": "data/static/area_demographics.json"
+    },
+    "jmap_fixture": {
+      "_source": "JMAP screen-confirmed fixture (公益社団法人日本医師会)",
+      "_source_url": "https://jmap.jp/",
+      "_data_source_origin": "ウェルネスデータベース (地方厚生局公表資料、毎月25日に前月情報へ更新)",
+      "_confirmed_at": "2026-04-30",
+      "_scope": "広島県のみ (全国拡張禁止、Phase 4-3c-B-lite)",
+      "_disclaimer": "本データは画面表示の確認値であり、JMAP の一括 download (医師会員限定) ではない。対外公開時は JMAP の名称と情報入手元の表記を行うこと。",
+      "areas": [
+        {
+          "area": "広島",
+          "area_alt": "広島(広島市安佐南区など)",
+          "jmap_hospitals": 92
+        },
+        {
+          "area": "広島西",
+          "area_alt": "広島西(廿日市市など)",
+          "jmap_hospitals": 12
+        },
+        {
+          "area": "呉",
+          "area_alt": "呉(呉市など)",
+          "jmap_hospitals": 28
+        },
+        {
+          "area": "広島中央",
+          "area_alt": "広島中央(東広島市など)",
+          "jmap_hospitals": 19
+        },
+        {
+          "area": "尾三",
+          "area_alt": "尾三(尾道市など)",
+          "jmap_hospitals": 21
+        },
+        {
+          "area": "福山・府中",
+          "area_alt": "福山・府中(福山市など)",
+          "jmap_hospitals": 45
+        },
+        {
+          "area": "備北",
+          "area_alt": "備北(三次市など)",
+          "jmap_hospitals": 10
+        }
+      ],
+      "_total_jmap": 227
+    },
+    "ipss_2023_projection_skeleton": {
+      "url": "https://www.ipss.go.jp/pp-shicyoson/j/shicyoson23/t-page.asp",
+      "title": "日本の地域別将来推計人口（令和5年推計）",
+      "publication": "2023-12-22 公表 / 2024-10 報告書刊行",
+      "note": "市区町村別 Excel から二次医療圏に集計が必要。本 prototype では既存 area_demographics.json (国勢調査 2020 ベース) で代替。社人研 2023 推計の取り込みは別フェーズで実施。",
+      "scope": "skeleton のみ"
+    }
+  },
+  "area_count": {
+    "homecare_etl": 7,
+    "bed_etl": 7,
+    "demo_etl": 7,
+    "jmap_fixture": 7,
+    "consistent": true
+  },
+  "expected_area_names": [
+    "広島",
+    "広島西",
+    "呉",
+    "広島中央",
+    "尾三",
+    "福山・府中",
+    "備北"
+  ],
+  "cross_reference": [
+    {
+      "area": "広島",
+      "munis_count": 7,
+      "supply": {
+        "etl_hospitals": 84,
+        "etl_homecare_facilities": 79,
+        "etl_homecare_patients": 33693,
+        "etl_beds": 11642,
+        "etl_wards": 287,
+        "jmap_hospitals": 92,
+        "jmap_area_alt": "広島(広島市安佐南区など)",
+        "diff_hospitals_etl_vs_jmap": 8
+      },
+      "population": {
+        "pop_total": 167218,
+        "p65_total": 52439,
+        "aging_ratio": 31.36
+      }
+    },
+    {
+      "area": "広島西",
+      "munis_count": 2,
+      "supply": {
+        "etl_hospitals": 12,
+        "etl_homecare_facilities": 12,
+        "etl_homecare_patients": 1613,
+        "etl_beds": 1900,
+        "etl_wards": 44,
+        "jmap_hospitals": 12,
+        "jmap_area_alt": "広島西(廿日市市など)",
+        "diff_hospitals_etl_vs_jmap": 0
+      },
+      "population": {
+        "pop_total": 140804,
+        "p65_total": 45981,
+        "aging_ratio": 32.66
+      }
+    },
+    {
+      "area": "呉",
+      "munis_count": 2,
+      "supply": {
+        "etl_hospitals": 23,
+        "etl_homecare_facilities": 23,
+        "etl_homecare_patients": 6998,
+        "etl_beds": 2951,
+        "etl_wards": 68,
+        "jmap_hospitals": 28,
+        "jmap_area_alt": "呉(呉市など)",
+        "diff_hospitals_etl_vs_jmap": 5
+      },
+      "population": {
+        "pop_total": 221932,
+        "p65_total": 82937,
+        "aging_ratio": 37.37
+      }
+    },
+    {
+      "area": "広島中央",
+      "munis_count": 3,
+      "supply": {
+        "etl_hospitals": 17,
+        "etl_homecare_facilities": 16,
+        "etl_homecare_patients": 5223,
+        "etl_beds": 2302,
+        "etl_wards": 50,
+        "jmap_hospitals": 19,
+        "jmap_area_alt": "広島中央(東広島市など)",
+        "diff_hospitals_etl_vs_jmap": 2
+      },
+      "population": {
+        "pop_total": 220247,
+        "p65_total": 60321,
+        "aging_ratio": 27.39
+      }
+    },
+    {
+      "area": "尾三",
+      "munis_count": 3,
+      "supply": {
+        "etl_hospitals": 21,
+        "etl_homecare_facilities": 20,
+        "etl_homecare_patients": 9554,
+        "etl_beds": 3038,
+        "etl_wards": 74,
+        "jmap_hospitals": 21,
+        "jmap_area_alt": "尾三(尾道市など)",
+        "diff_hospitals_etl_vs_jmap": 0
+      },
+      "population": {
+        "pop_total": 227990,
+        "p65_total": 84887,
+        "aging_ratio": 37.23
+      }
+    },
+    {
+      "area": "福山・府中",
+      "munis_count": 3,
+      "supply": {
+        "etl_hospitals": 40,
+        "etl_homecare_facilities": 37,
+        "etl_homecare_patients": 21781,
+        "etl_beds": 4583,
+        "etl_wards": 112,
+        "jmap_hospitals": 45,
+        "jmap_area_alt": "福山・府中(福山市など)",
+        "diff_hospitals_etl_vs_jmap": 5
+      },
+      "population": {
+        "pop_total": 497935,
+        "p65_total": 152011,
+        "aging_ratio": 30.53
+      }
+    },
+    {
+      "area": "備北",
+      "munis_count": 2,
+      "supply": {
+        "etl_hospitals": 10,
+        "etl_homecare_facilities": 8,
+        "etl_homecare_patients": 1376,
+        "etl_beds": 1427,
+        "etl_wards": 30,
+        "jmap_hospitals": 10,
+        "jmap_area_alt": "備北(三次市など)",
+        "diff_hospitals_etl_vs_jmap": 0
+      },
+      "population": {
+        "pop_total": 79102,
+        "p65_total": 31605,
+        "aging_ratio": 39.95
+      }
+    }
+  ],
+  "municipality_aggregation": {
+    "備北": {
+      "muni_count": 2,
+      "muni_names": [
+        "三次市",
+        "庄原市"
+      ],
+      "agg_pop": 79102,
+      "agg_p65": 31605,
+      "agg_aging_ratio": 39.95
+    },
+    "呉": {
+      "muni_count": 2,
+      "muni_names": [
+        "呉市",
+        "江田島市"
+      ],
+      "agg_pop": 221932,
+      "agg_p65": 82937,
+      "agg_aging_ratio": 37.37
+    },
+    "尾三": {
+      "muni_count": 3,
+      "muni_names": [
+        "尾道市",
+        "三原市",
+        "世羅町"
+      ],
+      "agg_pop": 227990,
+      "agg_p65": 84887,
+      "agg_aging_ratio": 37.23
+    },
+    "広島": {
+      "muni_count": 7,
+      "muni_names": [
+        "府中町",
+        "海田町",
+        "安芸高田市",
+        "熊野町",
+        "北広島町",
+        "坂町",
+        "安芸太田町"
+      ],
+      "agg_pop": 167218,
+      "agg_p65": 52439,
+      "agg_aging_ratio": 31.36
+    },
+    "広島中央": {
+      "muni_count": 3,
+      "muni_names": [
+        "東広島市",
+        "竹原市",
+        "大崎上島町"
+      ],
+      "agg_pop": 220247,
+      "agg_p65": 60321,
+      "agg_aging_ratio": 27.39
+    },
+    "広島西": {
+      "muni_count": 2,
+      "muni_names": [
+        "廿日市市",
+        "大竹市"
+      ],
+      "agg_pop": 140804,
+      "agg_p65": 45981,
+      "agg_aging_ratio": 32.66
+    },
+    "福山・府中": {
+      "muni_count": 3,
+      "muni_names": [
+        "福山市",
+        "府中市",
+        "神石高原町"
+      ],
+      "agg_pop": 497935,
+      "agg_p65": 152011,
+      "agg_aging_ratio": 30.53
+    }
+  },
+  "totals": {
+    "jmap_hospitals": 227,
+    "etl_hospitals": 207,
+    "diff": 20,
+    "diff_explanation": "JMAP (毎月25日更新の最新) と既存 ETL (取り込み時点) の時期差。差分が大きい場合は ETL 再取得を推奨。"
+  },
+  "ndb_risk_side_status": {
+    "implemented": false,
+    "reason": "reviewer 採択方針 (Phase 4-3c-B-lite scope 外)",
+    "deferred_to": "Phase 4-3c-Risk-NDB (別フェーズ、性年齢別再集計・分母再設計・秘匿値「－」のゼロ変換・年齢標準化の再設計が必要)",
+    "details_doc": "docs/PHASE4_3C_REQUIREMENTS.md §12.5"
+  }
+}
