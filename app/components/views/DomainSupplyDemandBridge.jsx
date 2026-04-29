@@ -6,7 +6,7 @@ const MAX_RISKS_COLLAPSED = 3;
 
 const ACTIVE_FUNCS = ['高度急性期', '急性期', '回復期', '慢性期'];
 
-export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ, vitalStats, bedFunc, ndbRx, agePyramid, mob, ndbHc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd }) {
+export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ, vitalStats, bedFunc, ndbRx, agePyramid, mob, ndbHc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd, mortalityOutcome2020 }) {
   // Phase 2A: risks[] が4件以上の領域は3件で折りたたみ表示
   const [expandedRisks, setExpandedRisks] = useState({});
   const toggleExpand = (id) => setExpandedRisks(prev => ({ ...prev, [id]: !prev[id] }));
@@ -33,6 +33,27 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
   const ndbQPref = ndbQ?.prefectures?.[ndbPref];
   const vsNat = vitalStats?.national;
   const vsPref = vitalStats?.prefectures?.find(p => p.pref === ndbPref);
+  // Phase 4-1 P1-1: 2020年 粗死亡率 + 年齢調整死亡率 (新規)
+  const moPref = mortalityOutcome2020?.prefectures?.[ndbPref];
+  const moNat = mortalityOutcome2020?.national;
+  // Outcome の3段データ取得ヘルパー
+  // 戻り値: { crude2020: {male, female}, ageAdj2020: {male, female}, crude2024: total }
+  const getOutcomeTriad = (cfg) => {
+    if (!cfg) return null;
+    const aamCause = cfg.aamCause;
+    const aamPref = aamCause ? moPref?.[aamCause] : null;
+    const aamNat = aamCause ? moNat?.[aamCause] : null;
+    const c2024Pref = vsPref?.causes?.find(c => c.cause === cfg.vitalCause)?.rate;
+    const c2024Nat = vsNat?.causes?.find(c => c.cause === cfg.vitalCause)?.rate;
+    return {
+      crude2020: aamPref?.crude || null,
+      ageAdj2020: aamPref?.age_adjusted || null,
+      crude2020Nat: aamNat?.crude || null,
+      ageAdj2020Nat: aamNat?.age_adjusted || null,
+      crude2024: c2024Pref,
+      crude2024Nat: c2024Nat,
+    };
+  };
   const bfNat = bedFunc?.national;
   const bfPref = bedFunc?.prefectures?.[ndbPref];
 
@@ -332,7 +353,89 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
                     }
                   </td>
                   <td style={{padding:'12px 8px',verticalAlign:'top'}}>
-                    {renderCell(outcome)}
+                    {(() => {
+                      // Phase 4-1 P1-1: Outcome 3段表示 (2020粗 / 2020年齢調整 / 2024粗)
+                      const triad = domain.outcome ? getOutcomeTriad(domain.outcome) : null;
+                      const causeLabel = domain.outcome?.label || '';
+                      if (!triad || (!triad.crude2020 && !triad.ageAdj2020 && triad.crude2024 == null)) {
+                        return <span style={{fontSize:11,color:'#cbd5e1'}}>データなし</span>;
+                      }
+                      const fmt = (v) => v == null ? '—' : (typeof v === 'number' ? v.toFixed(1) : String(v));
+                      // delta 計算: 値 vs 全国
+                      const deltaPct = (val, nat) => (val == null || nat == null || nat === 0) ? null : ((val/nat - 1) * 100);
+                      const deltaColor = (pct) => pct == null ? '#94a3b8' : (pct > 5 ? '#dc2626' : pct < -5 ? '#16a34a' : '#94a3b8');
+                      const deltaLabel = (pct) => pct == null ? '' : ((pct > 0 ? '+' : '') + pct.toFixed(1) + '%');
+                      // 男女平均 (簡易: 男+女)/2 — 人口加重未対応 (P2将来)
+                      const avg = (m, f) => (m == null || f == null) ? null : (m + f) / 2;
+                      const pAvgC = avg(triad.crude2020?.male?.rate, triad.crude2020?.female?.rate);
+                      const nAvgC = avg(triad.crude2020Nat?.male?.rate, triad.crude2020Nat?.female?.rate);
+                      const pAvgA = avg(triad.ageAdj2020?.male?.rate, triad.ageAdj2020?.female?.rate);
+                      const nAvgA = avg(triad.ageAdj2020Nat?.male?.rate, triad.ageAdj2020Nat?.female?.rate);
+
+                      return (
+                        <div>
+                          {/* 2020 粗死亡率 */}
+                          {triad.crude2020 && (
+                            <div style={{marginBottom:8}}>
+                              <div style={{fontSize:9,fontWeight:600,color:'#64748b',marginBottom:2}}>2020 粗死亡率</div>
+                              <div style={{fontSize:11,color:'#475569'}}>
+                                男 <b>{fmt(triad.crude2020.male?.rate)}</b>
+                                <span style={{fontSize:9,color:'#94a3b8',marginLeft:4}}>({triad.crude2020.male?.rank}位)</span>
+                                {' / '}
+                                女 <b>{fmt(triad.crude2020.female?.rate)}</b>
+                                <span style={{fontSize:9,color:'#94a3b8',marginLeft:4}}>({triad.crude2020.female?.rank}位)</span>
+                              </div>
+                              {pAvgC != null && nAvgC != null && (
+                                <div style={{fontSize:9,color:deltaColor(deltaPct(pAvgC, nAvgC)),fontWeight:600,marginTop:1}}>
+                                  vs 全国平均 {deltaLabel(deltaPct(pAvgC, nAvgC))}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          {/* 2020 年齢調整死亡率 (主指標) */}
+                          {triad.ageAdj2020 && (
+                            <div style={{marginBottom:8,padding:'6px 8px',background:'#faf5ff',borderRadius:4,borderLeft:'3px solid #a855f7'}}>
+                              <div style={{fontSize:9,fontWeight:700,color:'#7c3aed',marginBottom:2}}>2020 年齢調整死亡率（主指標）</div>
+                              <div style={{fontSize:13,fontWeight:700,color:'#581c87'}}>
+                                男 {fmt(triad.ageAdj2020.male?.rate)}
+                                <span style={{fontSize:9,color:'#a855f7',marginLeft:4}}>({triad.ageAdj2020.male?.rank}位)</span>
+                              </div>
+                              <div style={{fontSize:13,fontWeight:700,color:'#581c87'}}>
+                                女 {fmt(triad.ageAdj2020.female?.rate)}
+                                <span style={{fontSize:9,color:'#a855f7',marginLeft:4}}>({triad.ageAdj2020.female?.rank}位)</span>
+                              </div>
+                              {pAvgA != null && nAvgA != null && (
+                                <div style={{fontSize:9,color:deltaColor(deltaPct(pAvgA, nAvgA)),fontWeight:600,marginTop:2}}>
+                                  vs 全国平均 {deltaLabel(deltaPct(pAvgA, nAvgA))}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          {/* 2024 粗死亡率 (最新参考) */}
+                          {triad.crude2024 != null && (
+                            <div style={{marginTop:8,paddingTop:6,borderTop:'1px dashed #e2e8f0'}}>
+                              <div style={{fontSize:9,fontWeight:600,color:'#64748b',marginBottom:2}}>2024 粗死亡率（最新参考）</div>
+                              <div style={{fontSize:11,color:'#475569'}}>
+                                総数 <b>{fmt(triad.crude2024)}</b>
+                                <span style={{fontSize:9,color:'#94a3b8',marginLeft:4}}>/10万</span>
+                              </div>
+                              {triad.crude2024Nat != null && (
+                                <div style={{fontSize:9,color:deltaColor(deltaPct(triad.crude2024, triad.crude2024Nat)),fontWeight:600,marginTop:1}}>
+                                  vs 全国 {deltaLabel(deltaPct(triad.crude2024, triad.crude2024Nat))}
+                                </div>
+                              )}
+                            </div>
+                          )}
+                          {/* 注記 */}
+                          <div style={{fontSize:9,color:'#94a3b8',marginTop:6,lineHeight:1.5,fontStyle:'italic'}}>
+                            ※ 2020年齢調整値と2024粗死亡率を直接比較しない<br/>
+                            ※ 男女平均は単純平均（人口加重なし）<br/>
+                            ※ 死亡率は医療の優劣を示す指標ではない
+                          </div>
+                          <div style={{fontSize:9,color:'#cbd5e1',marginTop:3,lineHeight:1.4}}>{causeLabel}</div>
+                        </div>
+                      );
+                    })()}
                     {domain.outcome?.additionalCauses?.map((ac, ai) => {
                       const acPref = vsPref?.causes?.find(c => c.cause === ac.vitalCause)?.rate;
                       const acNat = vsNat?.causes?.find(c => c.cause === ac.vitalCause)?.rate;
@@ -349,7 +452,7 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
                               {acDelta.label} ({acDelta.deltaPct > 0 ? '+' : ''}{acDelta.deltaPct.toFixed(1)}%)
                             </div>
                           )}
-                          <div style={{fontSize:9,color:'#cbd5e1',marginTop:3,lineHeight:1.4}}>{ac.label}</div>
+                          <div style={{fontSize:9,color:'#cbd5e1',marginTop:3,lineHeight:1.4}}>{ac.label}（2024粗）</div>
                         </div>
                       );
                     })}
@@ -376,7 +479,9 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
         ・「供給proxy」は<b>各疾患専用の供給体制ではない</b>(例: 急性期床は循環器も整形外科も含む)。proxyラベルを参照のこと。<br/>
         ・受療率は<b>標本推計</b>(令和5年患者調査・3年に1回)。「罹患率」とは異なる指標。<br/>
         ・<b>「リスク」列の比較は47都道府県の単純平均</b>(NDB質問票に全国エントリがないため代理使用)。人口加重ではない。<br/>
-        ・<b>「結果」列は粗死亡率(年齢調整前)</b>。年齢構成の影響を強く受けるため、医療アウトカムの優劣として直接解釈しない。<br/>
+        ・<b>「結果」列は3段表示</b>: <span style={{color:'#7c3aed',fontWeight:500}}>2020年齢調整死亡率(主指標)</span> + 2020粗死亡率 + 2024粗死亡率。<u>2020年齢調整死亡率と2024粗死亡率を直接比較しないこと</u>(年次変化と年齢補正の混同を避ける)。<br/>
+        ・年齢調整死亡率は<b>令和2年(2020年)時点</b>のデータ。NDB(令和4-5年)・患者調査(令和5年)・病床機能(令和6年)とは時点差あり。<br/>
+        ・男女平均は<b>単純平均</b>(男+女)/2 — 人口加重未対応(将来課題)。<br/>
         ・差は分母=参照値での自然言語ラベル化(±5%未満=同程度 / ±15%以上=顕著)。z-score化はPhase 2課題。
       </div>
     </div>
