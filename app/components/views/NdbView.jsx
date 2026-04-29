@@ -4,6 +4,7 @@ import { fmt, sortPrefs } from '../shared';
 
 import DomainSupplyDemandBridge from './DomainSupplyDemandBridge';
 import InterpretationGuard from '../ui/InterpretationGuard';
+import RegionalMismatchExplorer from '../ui/RegionalMismatchExplorer';
 const CAT_LABELS = {'A_初再診料':'外来受診','B_医学管理等':'慢性疾患管理','C_在宅医療':'在宅医療'};
 const RISK_META = {
   'ヘモグロビン': {unit:'g/dL', note:'低値=貧血リスク', icon:'🩸'},
@@ -67,7 +68,7 @@ const GAP_TEMPLATES = [
     note:'X軸は睡眠で休養がとれている人の割合（高=低リスク）。睡眠不足と循環器の関連は確立。'},
 ];
 
-export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ, agePyramid, futureDemo, patientSurvey, bedFunc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd, mortalityOutcome2020 }) {
+export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ, agePyramid, futureDemo, patientSurvey, bedFunc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd, mortalityOutcome2020, homecareCapability }) {
   const diagByPref = ndbDiag.filter(d=>d.prefecture===ndbPref);
   const hcPref = ndbHc.filter(d=>d.pref===ndbPref);
   const vp = vitalStats?.prefectures?.find(p=>p.pref===ndbPref);
@@ -733,6 +734,16 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     ndbCheckupRiskRates={ndbCheckupRiskRates}
     ndbCheckupRiskRatesStd={ndbCheckupRiskRatesStd}
     mortalityOutcome2020={mortalityOutcome2020}
+  />
+
+  {/* ═══ Layer 7: REGIONAL MISMATCH EXPLORER (Phase 4-1 P1-4 MVP) ═══ */}
+  <RegionalMismatchExplorer
+    pref={ndbPref}
+    ndbCheckupRiskRates={ndbCheckupRiskRates}
+    patientSurvey={patientSurvey}
+    mortalityOutcome2020={mortalityOutcome2020}
+    homecareCapability={homecareCapability}
+    agePyramid={agePyramid}
   />
 
   <div style={{padding:'10px 0',fontSize:11,color:'#94a3b8',marginTop:8,lineHeight:1.8}}>
