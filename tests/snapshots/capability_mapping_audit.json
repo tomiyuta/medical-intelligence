@@ -1,0 +1,377 @@
+{
+  "_generated": "2026-04-29T15:02:42.689Z",
+  "_phase": "Phase 4-3e",
+  "_description": "capability mapping audit: 集中度 (1施設あたり患者数) と 47県 ranking",
+  "_conclusion": "capability proxy (施設数ベース) は規模・集中度を吸収できない。caveat 強化で運用、proxy 修正は行わない。",
+  "homecare_keywords": [
+    "在宅",
+    "訪問診療",
+    "訪問看護",
+    "訪問リハ",
+    "居宅",
+    "往診"
+  ],
+  "concentration_47pref": [
+    {
+      "rank": 1,
+      "pref": "宮崎県",
+      "ratio": 119.14,
+      "n_facilities": 431,
+      "patients": 51349
+    },
+    {
+      "rank": 2,
+      "pref": "大分県",
+      "ratio": 106.21,
+      "n_facilities": 587,
+      "patients": 62345
+    },
+    {
+      "rank": 3,
+      "pref": "岩手県",
+      "ratio": 83.37,
+      "n_facilities": 395,
+      "patients": 32933
+    },
+    {
+      "rank": 4,
+      "pref": "鹿児島県",
+      "ratio": 83.14,
+      "n_facilities": 866,
+      "patients": 72003
+    },
+    {
+      "rank": 5,
+      "pref": "北海道",
+      "ratio": 83.08,
+      "n_facilities": 2381,
+      "patients": 197820
+    },
+    {
+      "rank": 6,
+      "pref": "山形県",
+      "ratio": 73.43,
+      "n_facilities": 384,
+      "patients": 28198
+    },
+    {
+      "rank": 7,
+      "pref": "高知県",
+      "ratio": 73.08,
+      "n_facilities": 403,
+      "patients": 29450
+    },
+    {
+      "rank": 8,
+      "pref": "青森県",
+      "ratio": 71.86,
+      "n_facilities": 434,
+      "patients": 31189
+    },
+    {
+      "rank": 9,
+      "pref": "茨城県",
+      "ratio": 71.45,
+      "n_facilities": 1038,
+      "patients": 74169
+    },
+    {
+      "rank": 10,
+      "pref": "熊本県",
+      "ratio": 70.3,
+      "n_facilities": 967,
+      "patients": 67982
+    },
+    {
+      "rank": 11,
+      "pref": "沖縄県",
+      "ratio": 68.86,
+      "n_facilities": 491,
+      "patients": 33810
+    },
+    {
+      "rank": 12,
+      "pref": "福島県",
+      "ratio": 64.86,
+      "n_facilities": 588,
+      "patients": 38140
+    },
+    {
+      "rank": 13,
+      "pref": "埼玉県",
+      "ratio": 63.75,
+      "n_facilities": 2501,
+      "patients": 159435
+    },
+    {
+      "rank": 14,
+      "pref": "山梨県",
+      "ratio": 62.59,
+      "n_facilities": 381,
+      "patients": 23848
+    },
+    {
+      "rank": 15,
+      "pref": "千葉県",
+      "ratio": 62.52,
+      "n_facilities": 1993,
+      "patients": 124593
+    },
+    {
+      "rank": 16,
+      "pref": "愛媛県",
+      "ratio": 59.74,
+      "n_facilities": 816,
+      "patients": 48751
+    },
+    {
+      "rank": 17,
+      "pref": "群馬県",
+      "ratio": 59.22,
+      "n_facilities": 915,
+      "patients": 54184
+    },
+    {
+      "rank": 18,
+      "pref": "長崎県",
+      "ratio": 59.05,
+      "n_facilities": 931,
+      "patients": 54971
+    },
+    {
+      "rank": 19,
+      "pref": "佐賀県",
+      "ratio": 58.44,
+      "n_facilities": 506,
+      "patients": 29573
+    },
+    {
+      "rank": 20,
+      "pref": "徳島県",
+      "ratio": 57.6,
+      "n_facilities": 472,
+      "patients": 27187
+    },
+    {
+      "rank": 21,
+      "pref": "宮城県",
+      "ratio": 56.15,
+      "n_facilities": 902,
+      "patients": 50651
+    },
+    {
+      "rank": 22,
+      "pref": "新潟県",
+      "ratio": 55.78,
+      "n_facilities": 850,
+      "patients": 47416
+    },
+    {
+      "rank": 23,
+      "pref": "石川県",
+      "ratio": 53.11,
+      "n_facilities": 615,
+      "patients": 32663
+    },
+    {
+      "rank": 24,
+      "pref": "秋田県",
+      "ratio": 51.4,
+      "n_facilities": 374,
+      "patients": 19222
+    },
+    {
+      "rank": 25,
+      "pref": "富山県",
+      "ratio": 51.27,
+      "n_facilities": 541,
+      "patients": 27738
+    },
+    {
+      "rank": 26,
+      "pref": "福井県",
+      "ratio": 49.62,
+      "n_facilities": 424,
+      "patients": 21039
+    },
+    {
+      "rank": 27,
+      "pref": "長野県",
+      "ratio": 49.23,
+      "n_facilities": 947,
+      "patients": 46625
+    },
+    {
+      "rank": 28,
+      "pref": "福岡県",
+      "ratio": 47.91,
+      "n_facilities": 3154,
+      "patients": 151102
+    },
+    {
+      "rank": 29,
+      "pref": "香川県",
+      "ratio": 46.7,
+      "n_facilities": 641,
+      "patients": 29933
+    },
+    {
+      "rank": 30,
+      "pref": "神奈川県",
+      "ratio": 45.07,
+      "n_facilities": 3323,
+      "patients": 149756
+    },
+    {
+      "rank": 31,
+      "pref": "兵庫県",
+      "ratio": 43.96,
+      "n_facilities": 3622,
+      "patients": 159234
+    },
+    {
+      "rank": 32,
+      "pref": "和歌山県",
+      "ratio": 43.29,
+      "n_facilities": 638,
+      "patients": 27617
+    },
+    {
+      "rank": 33,
+      "pref": "東京都",
+      "ratio": 42.9,
+      "n_facilities": 7328,
+      "patients": 314372
+    },
+    {
+      "rank": 34,
+      "pref": "栃木県",
+      "ratio": 40.97,
+      "n_facilities": 810,
+      "patients": 33188
+    },
+    {
+      "rank": 35,
+      "pref": "京都府",
+      "ratio": 38.8,
+      "n_facilities": 1755,
+      "patients": 68094
+    },
+    {
+      "rank": 36,
+      "pref": "静岡県",
+      "ratio": 37.63,
+      "n_facilities": 1717,
+      "patients": 64604
+    },
+    {
+      "rank": 37,
+      "pref": "奈良県",
+      "ratio": 36.4,
+      "n_facilities": 819,
+      "patients": 29813
+    },
+    {
+      "rank": 38,
+      "pref": "三重県",
+      "ratio": 35.51,
+      "n_facilities": 975,
+      "patients": 34624
+    },
+    {
+      "rank": 39,
+      "pref": "岡山県",
+      "ratio": 35.31,
+      "n_facilities": 1919,
+      "patients": 67766
+    },
+    {
+      "rank": 40,
+      "pref": "大阪府",
+      "ratio": 33.68,
+      "n_facilities": 6276,
+      "patients": 211361
+    },
+    {
+      "rank": 41,
+      "pref": "愛知県",
+      "ratio": 32.86,
+      "n_facilities": 4099,
+      "patients": 134683
+    },
+    {
+      "rank": 42,
+      "pref": "滋賀県",
+      "ratio": 29.54,
+      "n_facilities": 686,
+      "patients": 20264
+    },
+    {
+      "rank": 43,
+      "pref": "岐阜県",
+      "ratio": 29.15,
+      "n_facilities": 1104,
+      "patients": 32185
+    },
+    {
+      "rank": 44,
+      "pref": "鳥取県",
+      "ratio": 28.11,
+      "n_facilities": 692,
+      "patients": 19454
+    },
+    {
+      "rank": 45,
+      "pref": "島根県",
+      "ratio": 26.81,
+      "n_facilities": 743,
+      "patients": 19923
+    },
+    {
+      "rank": 46,
+      "pref": "山口県",
+      "ratio": 24.13,
+      "n_facilities": 1832,
+      "patients": 44203
+    },
+    {
+      "rank": 47,
+      "pref": "広島県",
+      "ratio": 18.41,
+      "n_facilities": 4359,
+      "patients": 80238
+    }
+  ],
+  "focus_5": {
+    "広島県": {
+      "rank": 47,
+      "ratio": 18.41,
+      "n_facilities": 4359,
+      "patients": 80238
+    },
+    "山口県": {
+      "rank": 46,
+      "ratio": 24.13,
+      "n_facilities": 1832,
+      "patients": 44203
+    },
+    "岡山県": {
+      "rank": 39,
+      "ratio": 35.31,
+      "n_facilities": 1919,
+      "patients": 67766
+    },
+    "秋田県": {
+      "rank": 24,
+      "ratio": 51.4,
+      "n_facilities": 374,
+      "patients": 19222
+    },
+    "宮崎県": {
+      "rank": 1,
+      "ratio": 119.14,
+      "n_facilities": 431,
+      "patients": 51349
+    }
+  }
+}

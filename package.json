@@ -6,12 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node tests/terminology_guard.test.js && node tests/regional_mismatch_snapshot_qa.test.js && node tests/threshold_sensitivity_analysis.test.js && node tests/pattern_2_4_evaluation.test.js && node tests/homecare_actual_audit.test.js",
+    "test": "node tests/terminology_guard.test.js && node tests/regional_mismatch_snapshot_qa.test.js && node tests/threshold_sensitivity_analysis.test.js && node tests/pattern_2_4_evaluation.test.js && node tests/homecare_actual_audit.test.js && node tests/capability_mapping_audit.test.js",
     "test:terminology": "node tests/terminology_guard.test.js",
     "test:regional-mismatch": "node tests/regional_mismatch_snapshot_qa.test.js",
     "test:threshold-sensitivity": "node tests/threshold_sensitivity_analysis.test.js",
     "test:pattern-2-4-evaluation": "node tests/pattern_2_4_evaluation.test.js",
-    "test:homecare-actual": "node tests/homecare_actual_audit.test.js"
+    "test:homecare-actual": "node tests/homecare_actual_audit.test.js",
+    "test:capability-mapping": "node tests/capability_mapping_audit.test.js"
   },
   "dependencies": {
     "@svg-maps/japan": "^2.0.0",
