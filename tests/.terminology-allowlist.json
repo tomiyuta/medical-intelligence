@@ -1,0 +1,82 @@
+{
+  "_comment": "Phase 4-1 P0-5: terminology guard CI 設定。reviewer Conditional Go の P0 (#1 診断語除去) の再混入を防ぐ。",
+  "_documentation": "https://github.com/tomiyuta/medical-intelligence/blob/main/docs/PHASE4_REVIEW_PACKAGE.md",
+  "_added": "2026-04-29",
+
+  "forbidden_terms": [
+    {
+      "term": "診断ツール",
+      "reason": "MedIntel は仮説生成ツールであり、診断ツールではない (Conditional Go #1)",
+      "severity": "P0"
+    },
+    {
+      "term": "ランキングサイト",
+      "reason": "ランキングではなく構造観察",
+      "severity": "P0"
+    },
+    {
+      "term": "優良施設",
+      "reason": "施設の優劣評価ではない",
+      "severity": "P0"
+    },
+    {
+      "term": "劣後地域",
+      "reason": "地域の優劣評価ではない",
+      "severity": "P0"
+    },
+    {
+      "term": "劣後施設",
+      "reason": "施設の優劣評価ではない",
+      "severity": "P0"
+    },
+    {
+      "term": "県の優劣",
+      "reason": "県の優劣評価ではない",
+      "severity": "P0"
+    }
+  ],
+
+  "scan_paths": [
+    "app",
+    "lib",
+    "docs",
+    "README.md"
+  ],
+
+  "exclude_paths": [
+    "node_modules",
+    ".next",
+    ".git",
+    "tests/.terminology-allowlist.json",
+    "tests/terminology_guard.test.js"
+  ],
+
+  "_allowlist_files_comment": "以下のファイルは historical notes / self-reference を含むため例外化。reviewer 採択 Done条件: 'PHASE4_REVIEW_PACKAGE.md の historical notes は例外化'",
+
+  "allowlist_files": [
+    {
+      "path": "docs/PHASE4_REVIEW_PACKAGE.md",
+      "reason": "P0 修正記録・否定文・Done条件検証で禁止語が self-reference として現れる"
+    },
+    {
+      "path": "docs/CHATGPT_REVIEW_BRIEF.md",
+      "reason": "Phase 4 開始前のアーカイブ docs (歴史記録)"
+    },
+    {
+      "path": "docs/PHASE4_1_BRIDGE_OUTCOME_UI_DESIGN.md",
+      "reason": "P1-1 設計 docs に reviewer 採択経緯が記載される"
+    },
+    {
+      "path": "tests/.terminology-allowlist.json",
+      "reason": "本ファイル自身 (forbidden term list を保持)"
+    },
+    {
+      "path": "tests/terminology_guard.test.js",
+      "reason": "テストスクリプト自身が禁止語を参照する"
+    },
+    {
+      "path": "HANDOFF.md",
+      "reason": "全フェーズの進捗記録 (歴史記録)"
+    }
+  ]
+}

@@ -5,7 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "test": "node tests/terminology_guard.test.js",
+    "test:terminology": "node tests/terminology_guard.test.js"
   },
   "dependencies": {
     "@svg-maps/japan": "^2.0.0",
