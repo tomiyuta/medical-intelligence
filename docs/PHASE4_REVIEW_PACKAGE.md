@@ -415,10 +415,11 @@ reviewer が本パッケージを読んで以下を判定する:
 ## 11. 公開先と本リポジトリ
 
 - **本番サイト**: https://medical-intelligence-two.vercel.app/
-- **GitHub**: https://github.com/tomiyuta/-medical-intelligence
+- **GitHub**: https://github.com/tomiyuta/medical-intelligence
 - **Phase 2 release tag**: `medintel-phase2-release` (`d597192`)
 - **Phase 4-0 完了**: `5c821fa`
-- **Phase 4 Review Package v2**: 本commit
+- **Phase 4 Review Package v2**: `92d9eb8`
+- **Phase 4 Review Package v3**: `0f9cb5a` (現在地)
 
 ---
 
