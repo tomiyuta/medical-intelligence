@@ -26,27 +26,46 @@
 
 ## 1. MedIntel の設計思想 (再掲)
 
+6軸は因果順ではなく、地域構造を横断的に観察するための **独立した観察軸** である:
+
 ```
-リスク (Risk)        — 行動・生体・既往
-   ↓
-受療 (Demand)        — 患者調査
-   ↓
-医療利用 (Use)       — NDB処方・診療行為
-   ↓
-供給 (Supply)        — 病床・cap・施設
-   ↓
-結果 (Outcome)       — 死亡率 (粗 + 年齢調整)
+6 axes observed independently (順序は読む方向、因果ではない):
+
+- Risk proxy           — 行動・生体・既往 (NDB特定健診)
+- Demand proxy         — 患者調査受療率
+- Use proxy            — NDB処方・診療行為
+- Supply proxy         — 病床・cap・施設基準
+- Outcome proxy        — 死亡率 (粗 + 年齢調整)
+- Aging / demographic  — 住基・将来推計
 ```
 
-**重要原則**: これらの軸は **独立に評価する**。
+**重要原則**: これらの軸は **独立に評価する**。本モデルは、Risk が Demand を生み、Demand が Use を生み、Supply が Outcome を改善する、という因果連鎖を **仮定しない**。
 
-- 「リスク高 → 受療高 → 医療利用高 → 結果改善」 という線形連鎖は **必ずしも成立しない**
-- 「供給厚 → 結果良好」も **成立しない**
+- 「リスク高 → 受療高 → 医療利用高 → 結果改善」 という線形連鎖は **必ずしも成立しない** (反証: 沖縄)
+- 「供給厚 → 結果良好」も **成立しない** (反証: 山口・徳島・鹿児島)
 - **「不一致こそが情報」** であり、追加調査の動機付けとなる
 
 ---
 
-## 2. 6つの地域医療プロファイル (multi-label archetype)
+## 2. Archetype の二層構造 (multi-label archetype)
+
+reviewer指摘 (P0-4) に基づき、6 archetype を **2 層** に分けて扱う:
+
+### 2.A. Mismatch Signal Tags (不一致シグナル)
+複数軸の間に観察される **乖離** を示すラベル。仮説生成の主対象。
+
+- **Pattern 1**: Risk-Care Gap (沖縄)
+- **Pattern 2**: Supply-Outcome Gap (供給薄×結果悪、東北)
+- **Pattern 3**: Supply-Outcome Mismatch (供給+×結果悪、山口・徳島・鹿児島)
+- **Pattern 5**: Aging-Outcome Burden (高齢化-在宅移行、秋田・青森)
+
+### 2.B. Context Archetypes (背景構造プロファイル)
+地域構造の **背景や参照パターン** を示すラベル。これらは単独では「不一致シグナル」ではない。
+
+- **Pattern 4**: Supply-Outcome Alignment Context (岡山・熊本・島根)
+- **Pattern 6**: Urban Low-risk / High-capability Context (東京・大阪)
+
+### 2.C. 6 archetype の詳細
 
 ### Pattern 1: Risk-Care 乖離 (Risk high / Care low)
 
@@ -118,10 +137,10 @@
 
 ---
 
-### Pattern 4: Supply-Outcome 整合 (Supply high / Outcome stable) — 構造プロファイル
+### Pattern 4: Supply-Outcome 整合 (Supply high / Outcome stable) — Context Archetype
 
-⚠️ **注**: 厳密には「不一致」ではなく **「構造プロファイル」** に近い。  
-multi-label archetype の枠内で、Pattern 3 (不一致) との対比のために含める。
+⚠️ **注**: これは Mismatch Signal ではなく **Context Archetype (背景構造)** である。  
+Pattern 3 (不一致) との対比のために archetype 内に含めるが、単独では「不一致」を示さない。
 
 **特徴**: 供給 proxy が厚く、結果指標も安定または良好
 
@@ -163,10 +182,10 @@ multi-label archetype の枠内で、Pattern 3 (不一致) との対比のため
 
 ---
 
-### Pattern 6: 都市低リスク・高機能集積 (Urban low-risk / high-function) — 構造プロファイル
+### Pattern 6: 都市低リスク・高機能集積 (Urban low-risk / high-function) — Context Archetype
 
-⚠️ **注**: 厳密には「不一致」ではなく **「構造プロファイル」** に近い。  
-若年構造 + リスク低 + 専門医療集積という複合的な構造特徴を示す。
+⚠️ **注**: これは Mismatch Signal ではなく **Context Archetype (背景構造)** である。  
+若年構造 + リスク低 + 専門医療集積という複合的な構造特徴を示すが、単独では「不一致」を示さない。
 
 **特徴**: 大都市圏で若年人口比率が高く、リスクが低く、高機能病院が集積する
 
@@ -189,14 +208,21 @@ multi-label archetype の枠内で、Pattern 3 (不一致) との対比のため
 
 ## 3. プロファイル対応表 (代表県、multi-label)
 
+**A. Mismatch Signal Tags** (不一致シグナル):
+
 | パターン | 代表例 | 関連 docs |
 |---|---|---|
 | 1. Risk-Care 乖離 | **沖縄** | OKINAWA_DIABETES_PARADOX.md |
 | 2. Supply-Outcome 並列悪化 | **秋田、青森、岩手、山形** | PHASE_2E_2_TOHOKU_HOMECARE.md |
 | 3. Supply-Outcome 不一致 | **山口、徳島、鹿児島** | PHASE_2E_3_WESTERN_JAPAN_HOMECARE.md |
-| 4. Supply-Outcome 整合 | **岡山、熊本、島根** | PHASE_2E_3_WESTERN_JAPAN_HOMECARE.md |
 | 5. 高齢化-在宅移行ギャップ | **秋田、青森、岩手、北海道(特殊)** | PHASE_2E_2_TOHOKU_HOMECARE.md |
-| 6. 都市低リスク・高機能集積 | **東京、大阪** | (Phase 1〜2 全体) |
+
+**B. Context Archetypes** (背景構造プロファイル):
+
+| パターン | 代表例 | 関連 docs |
+|---|---|---|
+| 4. Supply-Outcome 整合 (Context) | **岡山、熊本、島根** | PHASE_2E_3_WESTERN_JAPAN_HOMECARE.md |
+| 6. 都市低リスク・高機能集積 (Context) | **東京、大阪** | (Phase 1〜2 全体) |
 
 **注**: 1県は **複数プロファイルに同時該当** することがある (例: 秋田は Pattern 2 と Pattern 5 の両方)。これは仕様であって不具合ではない。multi-label の検証として扱う。
 

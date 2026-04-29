@@ -1,7 +1,8 @@
-# Phase 4 Review Package — MedIntel 外部レビュー用 (v2 micro-fix済)
+# Phase 4 Review Package — MedIntel 外部レビュー用 (v3 P0 alignment済)
 
 **作成日**: 2026-04-29  
-**改訂**: 2026-04-29 (peer review v1 採択 micro-fix 6項目反映)  
+**改訂 v2**: 2026-04-29 (peer review v1 採択 micro-fix 6項目反映)  
+**改訂 v3**: 2026-04-29 (外部レビュー判定後 P0-1〜4 docs alignment 反映) ← 本版  
 **対象 commit**: `5c821fa` (Phase 4-0 完了地点)  
 **対象 release tag**: `medintel-phase2-release` (`d597192`)  
 **ステータス**: 外部レビュー受付中 (UI追加実装は未着手、思想・データ・解釈を評価対象)
@@ -14,7 +15,7 @@
 >
 > 機能追加・UI実装はこのレビュー後に判断する。今は **設計思想とデータ解釈の妥当性** に絞ってレビューを依頼する。
 
-### 0.1 v1 → v2 の修正点 (peer review 採択分)
+### 0.1 v1 → v2 の修正点 (peer review v1 採択分)
 
 | # | 修正内容 |
 |---|---|
@@ -24,6 +25,15 @@
 | 4 | 6軸モデルの矢印削除 (因果連鎖風表現を解消) |
 | 5 | 年齢調整死亡率2020年の時点差を代表例ごとに再掲 |
 | 6 | Q2のレビュー質問を MECE性 → multi-label archetype 妥当性に変更 |
+
+### 0.2 v2 → v3 の修正点 (外部レビュー P0 採択分)
+
+| # | 修正内容 |
+|---|---|
+| P0-1 | 「診断ツール」表現を全廃 (PHASE2_RELEASE_NOTES / PHASE_2E_3_WESTERN_JAPAN / 自身) → 「探索・仮説生成ツール」に統一 |
+| P0-2 | REGIONAL_MISMATCH_PATTERNS.md §1 の下向き矢印 (↓) を削除、6軸を独立観察軸として再記述 |
+| P0-3 | AGE_ADJUSTED_MORTALITY_AUDIT.md の糖尿病取得経路矛盾を統一 (Phase 3-1b で撤回明示) |
+| P0-4 | Pattern 4/6 を **Context Archetype** として別層に分離 (Mismatch Signal Tags vs Context Archetypes 二層構造) |
 
 ---
 
@@ -117,7 +127,7 @@ NDB処方・診療: 令和5年度 (2023)
 
 ---
 
-## 4. 6つの地域医療プロファイル (Phase 4-0 で統合) ⚠️ multi-label archetype
+## 4. 6つの地域医療プロファイル (Phase 4-0 で統合) ⚠️ multi-label archetype の二層構造
 
 ### 4.1 重要な前提 (peer review v1 採択)
 
@@ -126,29 +136,43 @@ NDB処方・診療: 令和5年度 (2023)
 >
 > 例: 秋田県は Pattern 2 (Supply-Outcome 並列悪化) と Pattern 5 (高齢化-在宅移行ギャップ) の **両方に該当** する。
 
-### 4.2 6プロファイルの概観
+### 4.2 二層構造 (peer review v2 採択)
+
+reviewer指摘に基づき、6 archetype を **2 層** に分離:
+
+#### A. Mismatch Signal Tags (不一致シグナル) — 仮説生成の主対象
 
 | # | プロファイル | 内容 | 軸 | 代表県 | 関連 docs |
 |---|---|---|---|---|---|
-| **1** | **Risk-Care 乖離** | リスク高 × 受療低 | Risk vs Demand | **沖縄** (糖尿病) | OKINAWA_DIABETES_PARADOX.md |
-| **2** | **Supply-Outcome 並列悪化** | 供給薄 × 結果悪 | Supply vs Outcome | **秋田・青森・岩手・山形** | PHASE_2E_2_TOHOKU_HOMECARE.md |
-| **3** | **Supply-Outcome 不一致** | 供給+ × 結果悪 | Supply vs Outcome | **山口・徳島・鹿児島** | PHASE_2E_3_WESTERN_JAPAN_HOMECARE.md |
-| **4** | **Supply-Outcome 整合 (構造プロファイル)** | 供給+ × 結果良 | Supply vs Outcome | **岡山・熊本・島根** | PHASE_2E_3_WESTERN_JAPAN_HOMECARE.md |
-| **5** | **高齢化-在宅移行ギャップ** | 高齢化進行 × 在宅薄 | Aging vs Supply | **秋田・青森・北海道(特殊)** | PHASE_2E_2_TOHOKU_HOMECARE.md |
-| **6** | **都市低リスク・高機能集積 (構造プロファイル)** | 大都市 × 高機能集積 | Risk + Supply | **東京・大阪** | (Phase 1〜2 全体) |
+| **1** | **Risk-Care Gap** | リスク高 × 受療低 | Risk vs Demand | **沖縄** (糖尿病) | OKINAWA_DIABETES_PARADOX.md |
+| **2** | **Supply-Outcome Gap (並列悪化)** | 供給薄 × 結果悪 | Supply vs Outcome | **秋田・青森・岩手・山形** | PHASE_2E_2_TOHOKU_HOMECARE.md |
+| **3** | **Supply-Outcome Mismatch** | 供給+ × 結果悪 | Supply vs Outcome | **山口・徳島・鹿児島** | PHASE_2E_3_WESTERN_JAPAN_HOMECARE.md |
+| **5** | **Aging-Outcome Burden** | 高齢化進行 × 在宅薄 | Aging vs Supply | **秋田・青森・北海道(特殊)** | PHASE_2E_2_TOHOKU_HOMECARE.md |
 
-**注**: Pattern 4 と Pattern 6 は厳密には「不一致」ではなく **「構造プロファイル」** に近い (peer review v1 採択)。
+#### B. Context Archetypes (背景構造プロファイル) — 単独では不一致を示さない
+
+| # | プロファイル | 内容 | 軸 | 代表県 | 関連 docs |
+|---|---|---|---|---|---|
+| **4** | **Supply-Outcome Alignment Context** | 供給+ × 結果良 | Supply vs Outcome | **岡山・熊本・島根** | PHASE_2E_3_WESTERN_JAPAN_HOMECARE.md |
+| **6** | **Urban Low-risk / High-capability Context** | 大都市 × 高機能集積 | Risk + Supply | **東京・大阪** | (Phase 1〜2 全体) |
+
+**重要**: Pattern 4 と 6 は **Mismatch Signal ではなく Context Archetype**。背景構造の参照ラベルとして使用し、単独では仮説生成の主対象とはしない。
 
 ### 4.3 軸の対応関係 (multi-label の検証)
 
 ```
-Risk vs Demand   軸 → Pattern 1 (Risk-Care)
-Supply vs Outcome 軸 → Pattern 2/3/4 (3 状態の連続体)
-Aging vs Supply  軸 → Pattern 5
-Risk + Supply 結合 → Pattern 6
+Mismatch Signal Tags:
+  Risk vs Demand   軸 → Pattern 1 (Risk-Care Gap)
+  Supply vs Outcome 軸 → Pattern 2 (Gap), Pattern 3 (Mismatch)
+  Aging vs Supply  軸 → Pattern 5 (Aging-Outcome Burden)
+
+Context Archetypes:
+  Supply vs Outcome 軸 → Pattern 4 (Alignment Context)
+  Risk + Supply 結合 → Pattern 6 (Urban Context)
 ```
 
-→ Pattern 2 と 5 は秋田・青森で**重複**し得る。これは仕様であって不具合ではない。
+→ Pattern 2 と 5 は秋田・青森で **重複** し得る。これは multi-label 仕様であって不具合ではない。  
+→ 同一県が Mismatch Signal と Context Archetype の両方に該当することも有り得る。
 
 ---
 
@@ -410,16 +434,40 @@ reviewer が本パッケージを読んで以下を判定する:
 
 ---
 
-## 13. v1 → v2 改訂履歴 (2026-04-29)
+## 13. 改訂履歴 (2026-04-29)
 
-peer review v1 採択の修正6項目を反映:
+### v1 → v2 (peer review v1 採択 6項目)
 
 | # | 修正 | 反映箇所 |
 |---|---|---|
 | 1 | 沖縄テーブルの実値 vs 全国比分離 | §5.1 (BMI 39.8% / HbA1c 8.7% / 内分泌外来 184/10万 / 糖尿病薬 6.9%) |
 | 2 | 「6不一致パターン」→「6つの地域医療プロファイル / mismatch archetypes」 | §4 全体 |
 | 3 | multi-label archetype 性を明記 | §4.1 (重要な前提)、§6.1, §8.3 |
-| 4 | 6軸モデルの矢印削除 | §3 (因果連鎖風表現を削除) |
+| 4 | 6軸モデルの矢印削除 (本docs内) | §3 (因果連鎖風表現を削除) |
 | 5 | 年齢調整死亡率2020年の時点差を代表例ごとに再掲 | §5.1〜5.4 (各セクション末に注記) |
 | 6 | Q2のレビュー質問を MECE性 → multi-label archetype 妥当性に変更 | §7 Q2 |
+
+### v2 → v3 (外部レビュー P0 alignment 4項目)
+
+| # | 修正 | 反映箇所 |
+|---|---|---|
+| P0-1 | 「診断ツール」表現の全廃 | PHASE2_RELEASE_NOTES.md / PHASE_2E_3_WESTERN_JAPAN_HOMECARE.md / 本docs |
+| P0-2 | REGIONAL_MISMATCH_PATTERNS.md §1 下向き矢印の削除 | REGIONAL_MISMATCH_PATTERNS.md §1 |
+| P0-3 | AGE_ADJUSTED_MORTALITY_AUDIT.md 糖尿病取得経路矛盾の統一 | AGE_ADJUSTED_MORTALITY_AUDIT.md §3.1 / §4.5 / 改訂履歴 |
+| P0-4 | Pattern 4/6 の Context Archetype 別層分離 | REGIONAL_MISMATCH_PATTERNS.md §2 / 本docs §4.2 |
+
+### Done 条件 (v3 完了確認)
+
+- ✅ docs 内の「診断ツール」表現が除去または再定義されている
+- ✅ Risk → Demand → Use → Supply → Outcome の因果矢印が削除されている
+- ✅ AGE_ADJUSTED_MORTALITY_AUDIT.md の糖尿病取得経路が一貫している (Phase 3-1b で撤回明示)
+- ✅ Pattern 4/6 が Context Archetype として分離されている
+- ✅ Phase 4 Review Package 側にも同じ二層構造が反映されている
+
+### v3 で **やらなかったこと** (P1 以降に分離)
+
+- ❌ UI footer の InterpretationGuard component (P1 機能実装)
+- ❌ tests/terminology_guard.test.js CI禁止語検出 (P0-5、後日)
+- ❌ Bridge OUTCOME 列の年齢調整死亡率反映 (P1 機能実装)
+- ❌ Regional Mismatch Explorer MVP (P1 機能実装)
 

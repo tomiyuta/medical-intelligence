@@ -4,8 +4,8 @@
 **ステータス**: ✅ audit + Phase 3-1b 完了 (糖尿病含む6死因すべて取得可、ETL実装可、user判断待ち)
 
 ### 改訂履歴
-- **2026-04-29 (Phase 3-1)**: 初版audit。糖尿病は別途 e-Stat DB API 必要と判断
-- **2026-04-29 (Phase 3-1b)**: xlsx 再走査により糖尿病も同 xlsx 内に存在することを確認。Option A の障壁解消  
+- **2026-04-29 (Phase 3-1)**: 初版audit。糖尿病は別途 e-Stat DB API 必要と一時判断 → **後に Phase 3-1b で撤回**
+- **2026-04-29 (Phase 3-1b)**: xlsx 再走査により **糖尿病も同 xlsx 内 (参考2(1) col 22-25) に存在** することを確認。Phase 3-1 の判断を撤回し、6死因すべて同一ソースから取得可能に統一  
 **audit script**: 本docsの調査記録 (raw download `data/raw_age_adjusted_mortality/r2_age_adjusted_mortality.xlsx`)
 
 ---
@@ -111,14 +111,14 @@ scripts/etl_age_adjusted_mortality.py:
   - input:  data/raw_age_adjusted_mortality/r2_age_adjusted_mortality.xlsx
   - シート: 参考1(粗死亡率) + 参考2(年齢調整死亡率)
   - 構造: pref × cause × sex の階層化
-  - 抽出死因 (Bridge直結6つ + 全死因):
+  - 抽出死因 (Bridge直結6つ + 全死因) — Phase 3-1b 確認により全て同一 xlsx 内取得可能:
     - 全死因
     - 悪性新生物 (がん)
     - 心疾患 (循環器)
     - 脳血管疾患 (脳血管)
     - 肺炎 (呼吸器)
     - 腎不全 (腎疾患)
-    - 糖尿病 (糖尿病) — e-Stat DB API 経由で別途取得
+    - 糖尿病 (糖尿病) — 参考2(1) col 22-25
   - output: data/static/mortality_age_adjusted_r2.json
 ```
 
@@ -158,9 +158,10 @@ UI反映方針 (将来):
 - 次回公表は **令和7年 (2025年) 都道府県別年齢調整死亡率**、おそらく **令和9年 (2027年) 頃**
 - リアルタイム性は粗死亡率に比べて劣る
 
-### 4.5 糖尿病の取得粒度
-- 主シートには糖尿病の年齢調整死亡率が **集約データのみ** (詳細は別シート/DB API要)
-- 6死因のうち糖尿病だけ別経路の取得が必要
+### 4.5 糖尿病の取得 (Phase 3-1b で確認済)
+- 当初は糖尿病のみ別経路 (e-Stat DB API) が必要と整理していたが、**Phase 3-1b の再走査により撤回**
+- 参考2(1) シート col 22-25 に糖尿病の年齢調整死亡率が格納されており、6死因すべて同一 xlsx から取得可能
+- 47都道府県完全カバレッジ + 男女別欠損ゼロを確認済
 
 ---
 
