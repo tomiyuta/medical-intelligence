@@ -1564,3 +1564,36 @@ B. Context Archetypes (背景構造プロファイル):
 1. 外部 reviewer に **delta review** 依頼 (P0 修正点のみ確認)
 2. Conditional Go 5条件のうち #2-5 (UI実装) は P1 で実施
 3. P0-5 (terminology_guard CI test) は別タスクとして残置
+
+
+## Phase 4-1 Bridge Outcome UI 設計 docs (2026-04-29、peer review v2)
+
+### reviewer 採択による設計 docs 全面リファクタ
+
+旧: docs/PHASE3_1_UI_DESIGN.md (削除)
+新: docs/PHASE4_1_BRIDGE_OUTCOME_UI_DESIGN.md (286行)
+
+### reviewer 採択 6項目反映:
+
+| # | 採択内容 |
+|---|---|
+| 1 | ファイル名変更: PHASE3_1_UI_DESIGN.md → PHASE4_1_BRIDGE_OUTCOME_UI_DESIGN.md |
+| 2 | ETL方針変更: 既存ファイル拡張 → 新規 mortality_outcome_2020.json |
+| 3 | schema変更: cause 直下に crude / age_adjusted を並列で配置 |
+| 4 | 重要ルール明記: 2020粗 vs 2020年齢調整は比較OK、2020年齢調整 vs 2024粗は比較NG |
+| 5 | 位置づけ: UI改修ではなく data-to-UI correction |
+| 6 | delta review への添付方針: 主レビュー対象としない、メモ程度で添える |
+
+### 既存ファイルの扱い (重要)
+- data/static/age_adjusted_mortality_2020.json: 残置 (Phase 3-1b 監査記録)
+- scripts/etl_age_adjusted_mortality_2020.py: 残置
+- 新規: data/static/mortality_outcome_2020.json (UI専用)
+- 新規: scripts/etl_mortality_outcome_2020.py
+- 二重持ちは一時期間許容。一本化判断は P2 以降。
+
+### 実装順序 (5 commit 単位、未着手):
+1. ETL 新規 (参考1+2 統合抽出 → mortality_outcome_2020.json)
+2. lib/domainMapping.js に aamCause フィールド追加
+3. /api/mortality-outcome-2020 endpoint 新規
+4. DomainSupplyDemandBridge.jsx 3段表示化
+5. QA checklist 更新
