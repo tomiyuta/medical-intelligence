@@ -1597,3 +1597,36 @@ B. Context Archetypes (背景構造プロファイル):
 3. /api/mortality-outcome-2020 endpoint 新規
 4. DomainSupplyDemandBridge.jsx 3段表示化
 5. QA checklist 更新
+
+
+## Phase 4-1 並行作業メモ (2026-04-29、reviewer 採択許可範囲)
+
+### 実施した並行作業 (実装は禁止)
+
+reviewer peer review v2 採択許可範囲のみ実施:
+- ✅ 実装ブランチ名: feature/p1-1-mortality-outcome-2020 (確定)
+- ✅ ETL対象 xlsx の列・表構造メモ (6シート × cause→col マッピング)
+- ✅ expected JSON fixture (4代表県 + 全国、6死因、男女別)
+- ❌ 実装コード追加: なし (delta review OK まで待機)
+
+### 重要発見 (fixture 抽出時)
+
+沖縄 糖尿病 粗 vs 年齢調整 の劇的逆転確認:
+- 男: 粗16.3 (15位) → 調整20.8 (2位)、+27.6%
+- 女: 粗10.5 (29位) → 調整9.7 (2位)、rate-7.6% だが順位劇的上昇
+
+これは Pattern 1 (Risk-Care 乖離) の最強証拠であり、UI 表示分離後にユーザーが直接観察可能。
+
+### 設計 docs 構成 (517行 14章)
+
+§0 位置づけ → §13 関連docs に加え、§14 並行作業メモを追加:
+- §14.1 実装ブランチ名 確定案
+- §14.2 ETL対象 xlsx 列・表構造メモ (CAUSE_LOC マッピング含む)
+- §14.3 expected JSON fixture (沖縄/秋田/山口/東京 + 全国)
+- §14.4 検証ポイント (T1-T8)
+- §14.5 並行作業 Done 状態
+
+### 現在地
+- HEAD: (本commit)
+- delta review 提出可能 (user 側で送信)
+- 実装着手は delta review OK 受領後
