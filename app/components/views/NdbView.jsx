@@ -583,9 +583,11 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
       <span style={{fontSize:18}}>📊</span>
       <div>
         <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>死因構造 <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#fce7f3',color:'#9f1239',fontWeight:500}}>結果</span></div>
-        <div style={{fontSize:11,color:'#94a3b8'}}>厚労省人口動態統計 2024年確定数（死亡率 人口10万対）</div>
+        <div style={{fontSize:11,color:'#94a3b8'}}>厚労省人口動態統計 2024年確定数（粗死亡率 人口10万対、年齢調整前）</div>
       </div>
     </div>
+    {/* P1-2: 解釈注意 (死亡率指標の誤読防止) */}
+    <InterpretationGuard variant="mortality" compact={true} />
     <div style={{display:'flex',flexDirection:'column',gap:4}}>
       {causes.map((c,i)=>{
         const maxRate = causes[0]?.rate || 1;
