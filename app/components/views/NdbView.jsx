@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { fmt, sortPrefs } from '../shared';
+import { dispersionForCause, classifyDispersion } from '../../../lib/dispersionMetrics';
 
 import DomainSupplyDemandBridge from './DomainSupplyDemandBridge';
 import InterpretationGuard from '../ui/InterpretationGuard';
@@ -589,18 +590,60 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     </div>
     {/* P1-2: 解釈注意 (死亡率指標の誤読防止) */}
     <InterpretationGuard variant="mortality" compact={true} />
+    {/* Phase 4-3 R1: 47県 dispersion KPI 凡例 */}
+    <div style={{fontSize:10,color:'#64748b',background:'#f8fafc',padding:'6px 10px',borderRadius:4,marginBottom:8,lineHeight:1.5}}
+         title="CV (変動係数) = SD/平均×100。47県分布のばらつきを表す相対指標。CV が大きいほど県差が大きい。base rate (絶対値) の影響を受けないため、死因間の県差を公平比較可能。詳細: docs/ANALYSIS_MORTALITY_DISPERSION.md">
+      💡 <b>県差度 (CV / max-min 比)</b>: 各バーの右に 47 県 dispersion を併記。CV 大 = 県差大。
+      <span style={{color:'#94a3b8',marginLeft:8}}>体感「ガンだけ差が大」は data 上 逆の場合あり (合算で打ち消し効果)</span>
+    </div>
     <div style={{display:'flex',flexDirection:'column',gap:4}}>
       {causes.map((c,i)=>{
         const maxRate = causes[0]?.rate || 1;
+        // Phase 4-3 R1: 47県 dispersion KPI 計算
+        const allPref = vitalStats?.prefectures || [];
+        const disp = dispersionForCause(allPref, c.cause.replace(/\(.+\)/,'').trim());
+        const dispLabel = classifyDispersion(disp);
+        const levelColor = dispLabel?.level === 'high' ? '#dc2626' : dispLabel?.level === 'medium' ? '#d97706' : '#64748b';
         return <div key={i} style={{display:'flex',alignItems:'center',gap:8}}>
           <span style={{width:mob?90:120,fontSize:12,fontWeight:500,color:'#475569',flexShrink:0}}>{c.cause.replace(/\(.+\)/,'')}</span>
           <div style={{flex:1,height:16,background:'#f1f5f9',borderRadius:3,overflow:'hidden'}}>
             <div style={{height:'100%',borderRadius:3,background:i<3?'#7c3aed':'#a78bfa',width:`${c.rate/maxRate*100}%`,opacity:0.85}}/>
           </div>
           <span style={{fontSize:12,fontWeight:600,color:'#7c3aed',fontVariantNumeric:'tabular-nums',width:60,textAlign:'right',flexShrink:0}}>{c.rate}</span>
+          {dispLabel && (
+            <span
+              title={dispLabel.label_full}
+              style={{fontSize:9,color:levelColor,fontVariantNumeric:'tabular-nums',width:mob?75:100,textAlign:'right',flexShrink:0,cursor:'help',background:dispLabel.level==='high'?'#fef2f2':dispLabel.level==='medium'?'#fffbeb':'#f1f5f9',padding:'2px 5px',borderRadius:3,fontWeight:600}}
+            >
+              CV {disp.cv_pct.toFixed(1)}% / 比{disp.max_min_ratio?.toFixed(1) || '-'}
+            </span>
+          )}
         </div>;
       })}
     </div>
+    {/* Phase 4-3 R1: 県差 ranking 概要 */}
+    {(() => {
+      const allPref = vitalStats?.prefectures || [];
+      if (allPref.length < 40) return null;
+      const dispersions = causes.slice(0, 8).map(c => {
+        const d = dispersionForCause(allPref, c.cause.replace(/\(.+\)/,'').trim());
+        return d ? { cause: c.cause.replace(/\(.+\)/,'').trim(), cv: d.cv_pct, ratio: d.max_min_ratio, mean: d.mean } : null;
+      }).filter(Boolean);
+      if (dispersions.length === 0) return null;
+      const sorted = [...dispersions].sort((a,b) => b.cv - a.cv);
+      const top = sorted[0], bottom = sorted[sorted.length - 1];
+      return (
+        <div style={{marginTop:10,padding:'8px 12px',background:'#fffbeb',borderLeft:'3px solid #f59e0b',borderRadius:3,fontSize:11,lineHeight:1.6}}>
+          <div style={{fontWeight:700,color:'#78350f',marginBottom:3}}>📐 県差度 ranking (CV 順)</div>
+          <div style={{color:'#92400e'}}>
+            <b>県差最大</b>: {top.cause} (CV {top.cv.toFixed(1)}%, 比 {top.ratio?.toFixed(1)})
+            <span style={{margin:'0 6px',color:'#cbd5e1'}}>vs</span>
+            <b>県差最小</b>: {bottom.cause} (CV {bottom.cv.toFixed(1)}%, 比 {bottom.ratio?.toFixed(1)})
+          </div>
+          <div style={{fontSize:9,color:'#78350f',marginTop:3}}>注: 「県差大 = 重要」「県差小 = 不重要」ではありません。base rate (絶対値) と CV (相対ばらつき) は別の指標です。</div>
+        </div>
+      );
+    })()}
   </div>}
 
   {/* ═══ GAP FINDER: リスク×結果の不一致検出（テンプレ切替）═══ */}
