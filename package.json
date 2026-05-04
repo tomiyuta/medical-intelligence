@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "test": "node tests/terminology_guard.test.js && node tests/regional_mismatch_snapshot_qa.test.js && node tests/threshold_sensitivity_analysis.test.js && node tests/pattern_2_4_evaluation.test.js && node tests/homecare_actual_audit.test.js && node tests/capability_mapping_audit.test.js && node tests/ndb_26_risk_proxy_audit.test.js && node tests/secondary_area_hiroshima_prototype.test.js && node tests/cancer_sites_dispersion.test.js",
+    "test": "node tests/terminology_guard.test.js && node tests/regional_mismatch_snapshot_qa.test.js && node tests/threshold_sensitivity_analysis.test.js && node tests/pattern_2_4_evaluation.test.js && node tests/homecare_actual_audit.test.js && node tests/capability_mapping_audit.test.js && node tests/ndb_26_risk_proxy_audit.test.js && node tests/secondary_area_hiroshima_prototype.test.js && node tests/cancer_sites_dispersion.test.js && node tests/dispersion_metrics.test.js",
     "test:terminology": "node tests/terminology_guard.test.js",
     "test:regional-mismatch": "node tests/regional_mismatch_snapshot_qa.test.js",
     "test:threshold-sensitivity": "node tests/threshold_sensitivity_analysis.test.js",
@@ -15,7 +15,8 @@
     "test:capability-mapping": "node tests/capability_mapping_audit.test.js",
     "test:ndb-26-audit": "node tests/ndb_26_risk_proxy_audit.test.js",
     "test:hiroshima-prototype": "node tests/secondary_area_hiroshima_prototype.test.js",
-    "test:cancer-sites": "node tests/cancer_sites_dispersion.test.js"
+    "test:cancer-sites": "node tests/cancer_sites_dispersion.test.js",
+    "test:dispersion-metrics": "node tests/dispersion_metrics.test.js"
   },
   "dependencies": {
     "@svg-maps/japan": "^2.0.0",
