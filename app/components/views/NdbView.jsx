@@ -69,7 +69,7 @@ const GAP_TEMPLATES = [
     note:'X軸は睡眠で休養がとれている人の割合（高=低リスク）。睡眠不足と循環器の関連は確立。'},
 ];
 
-export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ, agePyramid, futureDemo, patientSurvey, bedFunc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd, mortalityOutcome2020, homecareCapability }) {
+export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ, agePyramid, futureDemo, patientSurvey, bedFunc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd, mortalityOutcome2020, cancerSites2024, homecareCapability }) {
   const diagByPref = ndbDiag.filter(d=>d.prefecture===ndbPref);
   const hcPref = ndbHc.filter(d=>d.pref===ndbPref);
   const vp = vitalStats?.prefectures?.find(p=>p.pref===ndbPref);
@@ -152,6 +152,21 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
   // ── Gap Finder: state & 全都道府県メトリック計算 ──
   const [gapTemplate, setGapTemplate] = useState('smoke_cancer');
   const [psMode, setPsMode] = useState('outpatient'); // 患者調査: 入院/外来切替
+  // Phase 4-3 R3: 粗死亡率 (2024 全14) vs 年齢調整死亡率 (2020 6死因) toggle
+  const [mortalityMode, setMortalityMode] = useState('crude');
+  const [mortalitySex, setMortalitySex] = useState('male');
+
+  // Phase 4-3 R3: mode に応じて表示する causes を切り替える
+  const displayCauses = (() => {
+    if (mortalityMode === 'crude') return causes;
+    if (!mortalityOutcome2020?.prefectures?.[ndbPref]) return causes;
+    const aaData = mortalityOutcome2020.prefectures[ndbPref];
+    const SIX_CAUSES = ['悪性新生物', '心疾患', '脳血管疾患', '肺炎', '糖尿病', '腎不全'];
+    return SIX_CAUSES.map(name => {
+      const rate = aaData[name]?.age_adjusted?.[mortalitySex]?.rate;
+      return rate != null ? { cause: name, rate } : null;
+    }).filter(Boolean).sort((a, b) => b.rate - a.rate);
+  })();
   const prefMaps = (()=>{
     const popByPref = {}, p65ByPref = {};
     if (areaDemoData) {
@@ -581,11 +596,44 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
 
   {/* ═══ Layer 5: OUTCOME (結果 — 死因構造) ═══ */}
   {causes.length > 0 && <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16}}>
-    <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
-      <span style={{fontSize:18}}>📊</span>
-      <div>
-        <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>死因構造 <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#fce7f3',color:'#9f1239',fontWeight:500}}>結果</span></div>
-        <div style={{fontSize:11,color:'#94a3b8'}}>厚労省人口動態統計 2024年確定数（粗死亡率 人口10万対、年齢調整前）</div>
+    <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:14,flexWrap:'wrap',gap:8}}>
+      <div style={{display:'flex',alignItems:'center',gap:8}}>
+        <span style={{fontSize:18}}>📊</span>
+        <div>
+          <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>死因構造 <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#fce7f3',color:'#9f1239',fontWeight:500}}>結果</span></div>
+          <div style={{fontSize:11,color:'#94a3b8'}}>
+            {mortalityMode === 'crude'
+              ? '厚労省人口動態統計 2024年確定数（粗死亡率 人口10万対、年齢調整前）'
+              : `令和5年度人口動態統計特殊報告 2020年都道府県別年齢調整死亡率（1985年モデル人口、${mortalitySex === 'male' ? '男' : '女'}）`}
+          </div>
+        </div>
+      </div>
+      {/* Phase 4-3 R3: 粗 vs 年齢調整 toggle */}
+      <div style={{display:'flex',gap:6,alignItems:'center',flexWrap:'wrap'}}>
+        <div style={{display:'flex',gap:0,background:'#f1f5f9',padding:2,borderRadius:5}}>
+          <button
+            onClick={() => setMortalityMode('crude')}
+            style={{padding:'4px 10px',fontSize:10,fontWeight:600,border:'none',borderRadius:3,cursor:'pointer',background:mortalityMode==='crude'?'#fff':'transparent',color:mortalityMode==='crude'?'#0f172a':'#64748b',boxShadow:mortalityMode==='crude'?'0 1px 2px rgba(0,0,0,0.05)':'none'}}
+            title="2024年確定数 全14死因 (年齢調整前)"
+          >粗死亡率 2024</button>
+          <button
+            onClick={() => setMortalityMode('age_adjusted')}
+            style={{padding:'4px 10px',fontSize:10,fontWeight:600,border:'none',borderRadius:3,cursor:'pointer',background:mortalityMode==='age_adjusted'?'#fff':'transparent',color:mortalityMode==='age_adjusted'?'#0f172a':'#64748b',boxShadow:mortalityMode==='age_adjusted'?'0 1px 2px rgba(0,0,0,0.05)':'none'}}
+            title="2020年 6死因 (1985年モデル人口で年齢調整)"
+          >年齢調整 2020</button>
+        </div>
+        {mortalityMode === 'age_adjusted' && (
+          <div style={{display:'flex',gap:0,background:'#f1f5f9',padding:2,borderRadius:5}}>
+            <button
+              onClick={() => setMortalitySex('male')}
+              style={{padding:'4px 10px',fontSize:10,fontWeight:600,border:'none',borderRadius:3,cursor:'pointer',background:mortalitySex==='male'?'#fff':'transparent',color:mortalitySex==='male'?'#1e40af':'#64748b'}}
+            >男</button>
+            <button
+              onClick={() => setMortalitySex('female')}
+              style={{padding:'4px 10px',fontSize:10,fontWeight:600,border:'none',borderRadius:3,cursor:'pointer',background:mortalitySex==='female'?'#fff':'transparent',color:mortalitySex==='female'?'#be185d':'#64748b'}}
+            >女</button>
+          </div>
+        )}
       </div>
     </div>
     {/* P1-2: 解釈注意 (死亡率指標の誤読防止) */}
@@ -597,11 +645,29 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
       <span style={{color:'#94a3b8',marginLeft:8}}>体感「ガンだけ差が大」は data 上 逆の場合あり (合算で打ち消し効果)</span>
     </div>
     <div style={{display:'flex',flexDirection:'column',gap:4}}>
-      {causes.map((c,i)=>{
-        const maxRate = causes[0]?.rate || 1;
-        // Phase 4-3 R1: 47県 dispersion KPI 計算
-        const allPref = vitalStats?.prefectures || [];
-        const disp = dispersionForCause(allPref, c.cause.replace(/\(.+\)/,'').trim());
+      {displayCauses.map((c,i)=>{
+        const maxRate = displayCauses[0]?.rate || 1;
+        // Phase 4-3 R1+R3: 47県 dispersion KPI 計算 (mode に応じて source 切替)
+        let disp;
+        if (mortalityMode === 'crude') {
+          const allPref = vitalStats?.prefectures || [];
+          disp = dispersionForCause(allPref, c.cause.replace(/\(.+\)/,'').trim());
+        } else {
+          // 年齢調整 mode: mortalityOutcome2020 から 47 県 dispersion を計算
+          const moPrefs = mortalityOutcome2020?.prefectures || {};
+          const data = Object.entries(moPrefs).map(([p, d]) => ({pref: p, value: d?.[c.cause]?.age_adjusted?.[mortalitySex]?.rate})).filter(x => x.value != null);
+          if (data.length >= 40) {
+            const vals = data.map(x => x.value);
+            const mean = vals.reduce((a,b)=>a+b,0) / vals.length;
+            const variance = vals.reduce((a,b) => a + (b-mean)**2, 0) / (vals.length - 1);
+            const sd = Math.sqrt(variance);
+            const cv = sd / mean * 100;
+            const mn = Math.min(...vals), mx = Math.max(...vals);
+            const pmax = data.find(x => x.value === mx).pref;
+            const pmin = data.find(x => x.value === mn).pref;
+            disp = {n: data.length, mean: Math.round(mean*100)/100, sd: Math.round(sd*100)/100, cv_pct: Math.round(cv*100)/100, min: mn, max: mx, max_min_ratio: Math.round(mx/mn*1000)/1000, pref_max: pmax, pref_min: pmin};
+          }
+        }
         const dispLabel = classifyDispersion(disp);
         const levelColor = dispLabel?.level === 'high' ? '#dc2626' : dispLabel?.level === 'medium' ? '#d97706' : '#64748b';
         return <div key={i} style={{display:'flex',alignItems:'center',gap:8}}>
@@ -641,6 +707,101 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
             <b>県差最小</b>: {bottom.cause} (CV {bottom.cv.toFixed(1)}%, 比 {bottom.ratio?.toFixed(1)})
           </div>
           <div style={{fontSize:9,color:'#78350f',marginTop:3}}>注: 「県差大 = 重要」「県差小 = 不重要」ではありません。base rate (絶対値) と CV (相対ばらつき) は別の指標です。</div>
+        </div>
+      );
+    })()}
+    {/* Phase 4-3 R5: 5 大がん部位別 (75歳未満年齢調整、別 source) */}
+    {cancerSites2024 && cancerSites2024.prefectures?.[ndbPref] && (() => {
+      const csPref = cancerSites2024.prefectures[ndbPref];
+      const csNat = cancerSites2024.national || {};
+      const SITE_LABELS = [
+        {key:'all', label:'全部位 (5大+他)', sex:'男女計', baseline:true},
+        {key:'stomach', label:'胃', sex:'男女計'},
+        {key:'colorectal', label:'大腸', sex:'男女計'},
+        {key:'liver', label:'肝・肝内胆管', sex:'男女計'},
+        {key:'lung', label:'肺・気管', sex:'男女計'},
+        {key:'breast', label:'乳房 (女)', sex:'女'},
+        {key:'prostate', label:'前立腺 (男)', sex:'男'},
+      ];
+      // 47 県 dispersion を計算
+      const allPrefs = Object.entries(cancerSites2024.prefectures);
+      const computeSiteDispersion = (siteKey, sex) => {
+        const data = allPrefs.map(([p, d]) => ({pref: p, value: d[siteKey]?.[sex]})).filter(x => x.value != null);
+        if (data.length < 40) return null;
+        const vals = data.map(x => x.value);
+        const mean = vals.reduce((a,b)=>a+b,0) / vals.length;
+        const variance = vals.reduce((a,b) => a + (b-mean)**2, 0) / (vals.length - 1);
+        const sd = Math.sqrt(variance);
+        const cv = sd / mean * 100;
+        const mn = Math.min(...vals), mx = Math.max(...vals);
+        const pmax = data.find(x => x.value === mx).pref;
+        const pmin = data.find(x => x.value === mn).pref;
+        return {cv, ratio: mx/mn, mean, max: mx, min: mn, pmax, pmin};
+      };
+      const rows = SITE_LABELS.map(s => {
+        const v = csPref[s.key]?.[s.sex];
+        const nat = csNat[s.key]?.[s.sex];
+        const disp = computeSiteDispersion(s.key, s.sex);
+        return {...s, v, nat, disp};
+      }).filter(r => r.v != null);
+      if (rows.length === 0) return null;
+      const maxV = Math.max(...rows.map(r => r.v));
+      return (
+        <div style={{marginTop:16,padding:'14px 16px',background:'#fafaf9',borderRadius:8,border:'1px solid #e7e5e4'}}>
+          <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
+            <span style={{fontSize:14}}>🎯</span>
+            <div>
+              <div style={{fontSize:12,fontWeight:700,color:'#1e293b'}}>5 大がん部位別 死亡率 <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#fef3c7',color:'#92400e',fontWeight:500}}>R5: 部位別</span></div>
+              <div style={{fontSize:10,color:'#94a3b8'}}>国立がん研究センター 2024年 75歳未満年齢調整死亡率 (人口10万対、1985 model 人口)</div>
+            </div>
+          </div>
+          <div style={{fontSize:9,color:'#92400e',background:'#fffbeb',padding:'5px 8px',borderRadius:3,marginBottom:8,lineHeight:1.5}}>
+            ⚠ caveat: 本指標は <b>75 歳未満限定</b>。上の死因構造 (全年齢粗死亡率 vital_stats) と直接比較不可。<br/>
+            合算で打ち消されている部位別県差を分解して可視化 (詳細: docs/PHASE4_3_CANCER_SITES_ANALYSIS.md)
+          </div>
+          <div style={{display:'flex',flexDirection:'column',gap:3}}>
+            {rows.map((r,i) => {
+              const dispLevel = r.disp ? (r.disp.cv >= 20 ? 'high' : r.disp.cv >= 10 ? 'medium' : 'low') : null;
+              const lvColor = dispLevel === 'high' ? '#dc2626' : dispLevel === 'medium' ? '#d97706' : '#64748b';
+              const lvBg = dispLevel === 'high' ? '#fef2f2' : dispLevel === 'medium' ? '#fffbeb' : '#f1f5f9';
+              return (
+                <div key={i} style={{display:'flex',alignItems:'center',gap:6}}>
+                  <span style={{width:mob?100:130,fontSize:11,color:r.baseline?'#475569':'#0f172a',fontWeight:r.baseline?500:600,flexShrink:0}}>
+                    {r.label}
+                  </span>
+                  <div style={{flex:1,height:14,background:'#f5f5f4',borderRadius:2,overflow:'hidden'}}>
+                    <div style={{height:'100%',background:r.baseline?'#a8a29e':'#dc2626',width:`${r.v/maxV*100}%`,opacity:0.85}}/>
+                  </div>
+                  <span style={{fontSize:11,fontWeight:600,color:'#dc2626',fontVariantNumeric:'tabular-nums',width:50,textAlign:'right',flexShrink:0}}>{r.v}</span>
+                  <span style={{fontSize:8,color:'#94a3b8',width:48,textAlign:'right',flexShrink:0}}>全国 {r.nat?.toFixed(1) || '-'}</span>
+                  {r.disp && (
+                    <span
+                      title={`47県分布: 平均 ${r.disp.mean.toFixed(2)}, CV ${r.disp.cv.toFixed(2)}%, max ${r.disp.max} (${r.disp.pmax}), min ${r.disp.min} (${r.disp.pmin}), max-min 比 ${r.disp.ratio.toFixed(2)}`}
+                      style={{fontSize:9,color:lvColor,fontVariantNumeric:'tabular-nums',width:mob?68:90,textAlign:'right',flexShrink:0,cursor:'help',background:lvBg,padding:'2px 4px',borderRadius:3,fontWeight:600}}
+                    >
+                      CV {r.disp.cv.toFixed(1)}% / 比{r.disp.ratio.toFixed(1)}
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          {(() => {
+            const siteRows = rows.filter(r => !r.baseline);
+            const allBase = rows.find(r => r.baseline);
+            if (!allBase?.disp || siteRows.length === 0) return null;
+            const maxCv = siteRows.reduce((a,b) => (a.disp?.cv||0) > (b.disp?.cv||0) ? a : b);
+            const expansion = maxCv.disp.cv / allBase.disp.cv;
+            return (
+              <div style={{marginTop:8,padding:'7px 10px',background:'#fef3c7',borderLeft:'3px solid #f59e0b',borderRadius:3,fontSize:10,lineHeight:1.5}}>
+                <b style={{color:'#92400e'}}>📊 部位別の発見</b>
+                <span style={{color:'#78350f',marginLeft:6}}>
+                  全部位 CV {allBase.disp.cv.toFixed(1)}% に対し <b>{maxCv.label} CV {maxCv.disp.cv.toFixed(1)}%</b> = <b>{expansion.toFixed(1)} 倍</b>。
+                  合算では打ち消されていた部位別県差が顕在化。
+                </span>
+              </div>
+            );
+          })()}
         </div>
       );
     })()}
