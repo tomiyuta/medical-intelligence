@@ -69,7 +69,7 @@ const GAP_TEMPLATES = [
     note:'X軸は睡眠で休養がとれている人の割合（高=低リスク）。睡眠不足と循環器の関連は確立。'},
 ];
 
-export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ, agePyramid, futureDemo, patientSurvey, bedFunc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd, mortalityOutcome2020, homecareCapability }) {
+export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ, agePyramid, futureDemo, patientSurvey, bedFunc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd, mortalityOutcome2020, cancerSites2024, homecareCapability }) {
   const diagByPref = ndbDiag.filter(d=>d.prefecture===ndbPref);
   const hcPref = ndbHc.filter(d=>d.pref===ndbPref);
   const vp = vitalStats?.prefectures?.find(p=>p.pref===ndbPref);
@@ -641,6 +641,101 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
             <b>県差最小</b>: {bottom.cause} (CV {bottom.cv.toFixed(1)}%, 比 {bottom.ratio?.toFixed(1)})
           </div>
           <div style={{fontSize:9,color:'#78350f',marginTop:3}}>注: 「県差大 = 重要」「県差小 = 不重要」ではありません。base rate (絶対値) と CV (相対ばらつき) は別の指標です。</div>
+        </div>
+      );
+    })()}
+    {/* Phase 4-3 R5: 5 大がん部位別 (75歳未満年齢調整、別 source) */}
+    {cancerSites2024 && cancerSites2024.prefectures?.[ndbPref] && (() => {
+      const csPref = cancerSites2024.prefectures[ndbPref];
+      const csNat = cancerSites2024.national || {};
+      const SITE_LABELS = [
+        {key:'all', label:'全部位 (5大+他)', sex:'男女計', baseline:true},
+        {key:'stomach', label:'胃', sex:'男女計'},
+        {key:'colorectal', label:'大腸', sex:'男女計'},
+        {key:'liver', label:'肝・肝内胆管', sex:'男女計'},
+        {key:'lung', label:'肺・気管', sex:'男女計'},
+        {key:'breast', label:'乳房 (女)', sex:'女'},
+        {key:'prostate', label:'前立腺 (男)', sex:'男'},
+      ];
+      // 47 県 dispersion を計算
+      const allPrefs = Object.entries(cancerSites2024.prefectures);
+      const computeSiteDispersion = (siteKey, sex) => {
+        const data = allPrefs.map(([p, d]) => ({pref: p, value: d[siteKey]?.[sex]})).filter(x => x.value != null);
+        if (data.length < 40) return null;
+        const vals = data.map(x => x.value);
+        const mean = vals.reduce((a,b)=>a+b,0) / vals.length;
+        const variance = vals.reduce((a,b) => a + (b-mean)**2, 0) / (vals.length - 1);
+        const sd = Math.sqrt(variance);
+        const cv = sd / mean * 100;
+        const mn = Math.min(...vals), mx = Math.max(...vals);
+        const pmax = data.find(x => x.value === mx).pref;
+        const pmin = data.find(x => x.value === mn).pref;
+        return {cv, ratio: mx/mn, mean, max: mx, min: mn, pmax, pmin};
+      };
+      const rows = SITE_LABELS.map(s => {
+        const v = csPref[s.key]?.[s.sex];
+        const nat = csNat[s.key]?.[s.sex];
+        const disp = computeSiteDispersion(s.key, s.sex);
+        return {...s, v, nat, disp};
+      }).filter(r => r.v != null);
+      if (rows.length === 0) return null;
+      const maxV = Math.max(...rows.map(r => r.v));
+      return (
+        <div style={{marginTop:16,padding:'14px 16px',background:'#fafaf9',borderRadius:8,border:'1px solid #e7e5e4'}}>
+          <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
+            <span style={{fontSize:14}}>🎯</span>
+            <div>
+              <div style={{fontSize:12,fontWeight:700,color:'#1e293b'}}>5 大がん部位別 死亡率 <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#fef3c7',color:'#92400e',fontWeight:500}}>R5: 部位別</span></div>
+              <div style={{fontSize:10,color:'#94a3b8'}}>国立がん研究センター 2024年 75歳未満年齢調整死亡率 (人口10万対、1985 model 人口)</div>
+            </div>
+          </div>
+          <div style={{fontSize:9,color:'#92400e',background:'#fffbeb',padding:'5px 8px',borderRadius:3,marginBottom:8,lineHeight:1.5}}>
+            ⚠ caveat: 本指標は <b>75 歳未満限定</b>。上の死因構造 (全年齢粗死亡率 vital_stats) と直接比較不可。<br/>
+            合算で打ち消されている部位別県差を分解して可視化 (詳細: docs/PHASE4_3_CANCER_SITES_ANALYSIS.md)
+          </div>
+          <div style={{display:'flex',flexDirection:'column',gap:3}}>
+            {rows.map((r,i) => {
+              const dispLevel = r.disp ? (r.disp.cv >= 20 ? 'high' : r.disp.cv >= 10 ? 'medium' : 'low') : null;
+              const lvColor = dispLevel === 'high' ? '#dc2626' : dispLevel === 'medium' ? '#d97706' : '#64748b';
+              const lvBg = dispLevel === 'high' ? '#fef2f2' : dispLevel === 'medium' ? '#fffbeb' : '#f1f5f9';
+              return (
+                <div key={i} style={{display:'flex',alignItems:'center',gap:6}}>
+                  <span style={{width:mob?100:130,fontSize:11,color:r.baseline?'#475569':'#0f172a',fontWeight:r.baseline?500:600,flexShrink:0}}>
+                    {r.label}
+                  </span>
+                  <div style={{flex:1,height:14,background:'#f5f5f4',borderRadius:2,overflow:'hidden'}}>
+                    <div style={{height:'100%',background:r.baseline?'#a8a29e':'#dc2626',width:`${r.v/maxV*100}%`,opacity:0.85}}/>
+                  </div>
+                  <span style={{fontSize:11,fontWeight:600,color:'#dc2626',fontVariantNumeric:'tabular-nums',width:50,textAlign:'right',flexShrink:0}}>{r.v}</span>
+                  <span style={{fontSize:8,color:'#94a3b8',width:48,textAlign:'right',flexShrink:0}}>全国 {r.nat?.toFixed(1) || '-'}</span>
+                  {r.disp && (
+                    <span
+                      title={`47県分布: 平均 ${r.disp.mean.toFixed(2)}, CV ${r.disp.cv.toFixed(2)}%, max ${r.disp.max} (${r.disp.pmax}), min ${r.disp.min} (${r.disp.pmin}), max-min 比 ${r.disp.ratio.toFixed(2)}`}
+                      style={{fontSize:9,color:lvColor,fontVariantNumeric:'tabular-nums',width:mob?68:90,textAlign:'right',flexShrink:0,cursor:'help',background:lvBg,padding:'2px 4px',borderRadius:3,fontWeight:600}}
+                    >
+                      CV {r.disp.cv.toFixed(1)}% / 比{r.disp.ratio.toFixed(1)}
+                    </span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+          {(() => {
+            const siteRows = rows.filter(r => !r.baseline);
+            const allBase = rows.find(r => r.baseline);
+            if (!allBase?.disp || siteRows.length === 0) return null;
+            const maxCv = siteRows.reduce((a,b) => (a.disp?.cv||0) > (b.disp?.cv||0) ? a : b);
+            const expansion = maxCv.disp.cv / allBase.disp.cv;
+            return (
+              <div style={{marginTop:8,padding:'7px 10px',background:'#fef3c7',borderLeft:'3px solid #f59e0b',borderRadius:3,fontSize:10,lineHeight:1.5}}>
+                <b style={{color:'#92400e'}}>📊 部位別の発見</b>
+                <span style={{color:'#78350f',marginLeft:6}}>
+                  全部位 CV {allBase.disp.cv.toFixed(1)}% に対し <b>{maxCv.label} CV {maxCv.disp.cv.toFixed(1)}%</b> = <b>{expansion.toFixed(1)} 倍</b>。
+                  合算では打ち消されていた部位別県差が顕在化。
+                </span>
+              </div>
+            );
+          })()}
         </div>
       );
     })()}

@@ -67,6 +67,7 @@ export default function Home() {
   const [patientSurvey, setPatientSurvey] = useState(null);
   const [bedFunc, setBedFunc] = useState(null);
   const [mortalityOutcome2020, setMortalityOutcome2020] = useState(null);
+  const [cancerSites2024, setCancerSites2024] = useState(null);
 
   useEffect(() => {
     Promise.all([
@@ -99,6 +100,7 @@ export default function Home() {
     fetch('/api/patient-survey').then(r=>r.json()).then(d=>setPatientSurvey(d));
     fetch('/api/bed-function').then(r=>r.json()).then(d=>setBedFunc(d));
     fetch('/api/mortality-outcome-2020').then(r=>r.json()).then(d=>setMortalityOutcome2020(d));
+    fetch('/api/cancer-sites-2024').then(r=>r.json()).then(d=>setCancerSites2024(d));
     fetch('/api/facility-standards?summary=true').then(r=>r.json()).then(d=>setKijunSummary(d));
   }, []);
 
@@ -180,7 +182,7 @@ export default function Home() {
         {view==='bedfunc' && <RegionalBedFunctionView mob={mob} bedFunc={bedFunc} regPref={globalPref} setRegPref={setGlobalPref} agePyramid={agePyramid} ndbDiag={ndbDiag} homecareCapability={homecareCapability} />}
 
         {/* ═══ NDB VIEW ═══ */}
-        {view==='ndb' && <NdbView mob={mob} ndbDiag={ndbDiag} ndbRx={ndbRx} ndbHc={ndbHc} ndbPref={globalPref} setNdbPref={setGlobalPref} setNdbRx={setNdbRx} vitalStats={vitalStats} areaDemoData={areaDemoData} ndbQ={ndbQ} agePyramid={agePyramid} futureDemo={futureDemo} patientSurvey={patientSurvey} bedFunc={bedFunc} ndbCheckupRiskRates={ndbCheckupRiskRates} ndbCheckupRiskRatesStd={ndbCheckupRiskRatesStd} mortalityOutcome2020={mortalityOutcome2020} homecareCapability={homecareCapability} />}
+        {view==='ndb' && <NdbView mob={mob} ndbDiag={ndbDiag} ndbRx={ndbRx} ndbHc={ndbHc} ndbPref={globalPref} setNdbPref={setGlobalPref} setNdbRx={setNdbRx} vitalStats={vitalStats} areaDemoData={areaDemoData} ndbQ={ndbQ} agePyramid={agePyramid} futureDemo={futureDemo} patientSurvey={patientSurvey} bedFunc={bedFunc} ndbCheckupRiskRates={ndbCheckupRiskRates} ndbCheckupRiskRatesStd={ndbCheckupRiskRatesStd} mortalityOutcome2020={mortalityOutcome2020} cancerSites2024={cancerSites2024} homecareCapability={homecareCapability} />}
 
         {/* ═══ FACILITY STANDARDS VIEW ═══ */}
         {view==='explorer' && <FacilityExplorerView mob={mob} kijunData={kijunData} setKijunData={setKijunData} kijunSummary={kijunSummary} kijunPref={globalPref} setKijunPref={setGlobalPref} kijunPage={kijunPage} setKijunPage={setKijunPage} kijunSearch={kijunSearch} setKijunSearch={setKijunSearch} kijunSort={kijunSort} setKijunSort={setKijunSort} kijunExpanded={kijunExpanded} setKijunExpanded={setKijunExpanded} topFac={topFac} facSearch={facSearch} setFacSearch={setFacSearch} searchResults={searchResults} doSearch={doSearch} geoFacilities={geoFacilities} />}
