@@ -47,18 +47,24 @@ export default function HsaDpcPanel({ code, mob }) {
   // 退院患者数の年度推移（#25・DPC対象病院・真の総数）
   const trendRows = useMemo(() => (area?.trend || []).map(t => ({ year: `${t.year}`, 退院患者数: t.count })), [area]);
 
-  // 手術シェア×救急搬送シェア散布図（#69）
+  // 散布図: #69 手術シェア×救急シェア / #71 手術割合×患者シェア / 救急割合×患者シェア
+  const [scMode, setScMode] = useState('share');
   const scatter = useMemo(() => {
     if (!area) return [];
     const sT = area.facilities.reduce((s, f) => s + (f.surgery || 0), 0);
     const aT = area.facilities.reduce((s, f) => s + (f.ambulance || 0), 0);
-    return area.facilities.filter(f => f.total > 0).map(f => ({
-      name: f.name,
-      x: sT ? Math.round(f.surgery / sT * 1000) / 10 : 0,
-      y: aT ? Math.round(f.ambulance / aT * 1000) / 10 : 0,
-      z: f.total,
-    }));
-  }, [area]);
+    const tT = area.totals.total || 1;
+    return area.facilities.filter(f => f.total > 0).map(f => {
+      if (scMode === 'surgRate') return { name: f.name, x: Math.round(f.surgery / f.total * 1000) / 10, y: Math.round(f.total / tT * 1000) / 10, z: f.total };
+      if (scMode === 'emrgRate') return { name: f.name, x: Math.round((f.ambulance || 0) / f.total * 1000) / 10, y: Math.round(f.total / tT * 1000) / 10, z: f.total };
+      return { name: f.name, x: sT ? Math.round(f.surgery / sT * 1000) / 10 : 0, y: aT ? Math.round((f.ambulance || 0) / aT * 1000) / 10 : 0, z: f.total };
+    });
+  }, [area, scMode]);
+  const SC_AXES = {
+    share: { xl: '手術シェア（%）', yl: '救急搬送シェア（%）', note: '右上ほど圏内で手術・救急を集中的に担う急性期の中核病院。カルテ #69。' },
+    surgRate: { xl: '手術実施割合（%）', yl: '患者シェア（%）', note: '横=各病院の手術実施割合、縦=圏内患者シェア。カルテ #71。' },
+    emrgRate: { xl: '救急患者割合（%）', yl: '患者シェア（%）', note: '横=各病院の救急患者割合、縦=圏内患者シェア。カルテ #71。' },
+  };
 
   // 医療機関シェア（MDC別・施設スタック, 上位施設）
   const topFacs = useMemo(() => (area?.facilities || []).slice(0, 7), [area]);
@@ -203,12 +209,18 @@ export default function HsaDpcPanel({ code, mob }) {
 
             {tab === 'scatter' && (
               <>
-                <div style={{ fontSize: 11.5, color: '#94a3b8', marginBottom: 6 }}>各病院の急性期ポジション（横=手術シェア、縦=救急搬送シェア、バブル=退院患者数）</div>
+                <div style={{ display: 'flex', gap: 6, marginBottom: 8, flexWrap: 'wrap' }}>
+                  {[['share', 'シェア×シェア (#69)'], ['surgRate', '手術割合×患者シェア (#71)'], ['emrgRate', '救急割合×患者シェア (#71)']].map(([id, l]) => (
+                    <button key={id} onClick={() => setScMode(id)}
+                            style={{ padding: '4px 10px', borderRadius: 6, border: '1px solid ' + (scMode === id ? '#2563EB' : '#e2e8f0'), background: scMode === id ? '#eff6ff' : '#fff', color: scMode === id ? '#2563EB' : '#64748b', fontSize: 11, fontWeight: 600, cursor: 'pointer' }}>{l}</button>
+                  ))}
+                </div>
+                <div style={{ fontSize: 11.5, color: '#94a3b8', marginBottom: 6 }}>各病院のポジション（横={SC_AXES[scMode].xl}、縦={SC_AXES[scMode].yl}、バブル=退院患者数）</div>
                 <ResponsiveContainer width="100%" height={340}>
                   <ScatterChart margin={{ top: 12, right: 24, bottom: 30, left: 8 }}>
                     <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
-                    <XAxis type="number" dataKey="x" name="手術シェア" unit="%" domain={[0, 100]} tick={{ fontSize: 10, fill: '#94a3b8' }} label={{ value: '手術シェア（%）', position: 'insideBottom', offset: -14, fontSize: 11, fill: '#64748b' }} />
-                    <YAxis type="number" dataKey="y" name="救急搬送シェア" unit="%" domain={[0, 100]} tick={{ fontSize: 10, fill: '#94a3b8' }} label={{ value: '救急搬送シェア（%）', angle: -90, position: 'insideLeft', fontSize: 11, fill: '#64748b' }} />
+                    <XAxis type="number" dataKey="x" name={SC_AXES[scMode].xl} unit="%" domain={[0, dm => Math.max(100, Math.ceil(dm / 20) * 20)]} tick={{ fontSize: 10, fill: '#94a3b8' }} label={{ value: SC_AXES[scMode].xl, position: 'insideBottom', offset: -14, fontSize: 11, fill: '#64748b' }} />
+                    <YAxis type="number" dataKey="y" name={SC_AXES[scMode].yl} unit="%" domain={[0, dm => Math.max(100, Math.ceil(dm / 20) * 20)]} tick={{ fontSize: 10, fill: '#94a3b8' }} label={{ value: SC_AXES[scMode].yl, angle: -90, position: 'insideLeft', fontSize: 11, fill: '#64748b' }} />
                     <ZAxis type="number" dataKey="z" range={[60, 900]} name="退院患者数" />
                     <Tooltip cursor={{ strokeDasharray: '3 3' }} content={({ active, payload }) => {
                       if (!active || !payload?.length) return null;
@@ -231,7 +243,7 @@ export default function HsaDpcPanel({ code, mob }) {
                     </span>
                   ))}
                 </div>
-                <div style={{ fontSize: 10.5, color: '#94a3b8', marginTop: 6 }}>右上ほど圏内で手術・救急を集中的に担う急性期の中核病院。カルテ #69 と同じ指標。</div>
+                <div style={{ fontSize: 10.5, color: '#94a3b8', marginTop: 6 }}>{SC_AXES[scMode].note}</div>
               </>
             )}
 
@@ -239,7 +251,7 @@ export default function HsaDpcPanel({ code, mob }) {
               <div style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5, minWidth: 480 }}>
                   <thead><tr style={{ background: '#fafbfc' }}>
-                    {['医療機関名', '病院類型', 'DPC退院患者数', '圏内シェア'].map((h, i) => (
+                    {['医療機関名', '病院類型', 'DPC退院患者数', '圏内シェア', '平均在院日数'].map((h, i) => (
                       <th key={i} style={{ padding: '8px 10px', fontSize: 10.5, fontWeight: 600, color: '#94a3b8', textAlign: i >= 2 ? 'right' : 'left', borderBottom: '1px solid #f1f5f9', whiteSpace: 'nowrap' }}>{h}</th>
                     ))}
                   </tr></thead>
@@ -249,6 +261,7 @@ export default function HsaDpcPanel({ code, mob }) {
                       <td style={{ padding: '7px 10px', color: '#64748b', fontSize: 11.5 }}>{f.isDpc ? <span style={{ color: '#0891b2', fontWeight: 600 }}>DPC対象</span> : f.ruikei.replace(/病院$/, '')}</td>
                       <td style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>{fmt(f.total)}</td>
                       <td style={{ padding: '7px 10px', textAlign: 'right', color: '#64748b', fontVariantNumeric: 'tabular-nums' }}>{Math.round(f.total / area.totals.total * 100)}%</td>
+                      <td style={{ padding: '7px 10px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{f.los != null ? `${f.los}日` : '–'}</td>
                     </tr>
                   ))}</tbody>
                 </table>

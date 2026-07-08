@@ -12,6 +12,45 @@ const FUNC = [
   { key: '休棟', color: '#cbd5e1' },
 ];
 
+// 入退棟経路(#56)の場所カテゴリ配色
+const ADMIT_CATS = [
+  { key: '院内他病棟', color: '#64748b' },
+  { key: '家庭', color: '#16a34a' },
+  { key: '他院', color: '#f97316' },
+  { key: '介護', color: '#7c3aed' },
+  { key: '出生', color: '#ec4899' },
+  { key: 'その他', color: '#cbd5e1' },
+];
+const DISCH_CATS = [
+  { key: '院内他病棟', color: '#64748b' },
+  { key: '家庭', color: '#16a34a' },
+  { key: '他院', color: '#f97316' },
+  { key: '介護', color: '#7c3aed' },
+  { key: '死亡等', color: '#334155' },
+  { key: 'その他', color: '#cbd5e1' },
+];
+const FUNC_GROUP_COLORS = { '高度急性期・急性期': '#dc2626', '回復期': '#16a34a', '慢性期': '#2563EB' };
+
+// 100%積み上げ横バー（構成割合）。route={cat: count}, cats=[{key,color}]
+function RouteBar({ route, cats }) {
+  const total = cats.reduce((s, c) => s + (route[c.key] || 0), 0);
+  if (!total) return <div style={{ fontSize: 11, color: '#cbd5e1' }}>該当なし</div>;
+  return (
+    <div style={{ display: 'flex', height: 26, borderRadius: 5, overflow: 'hidden', border: '1px solid #f0f0f0' }}>
+      {cats.map(c => {
+        const v = route[c.key] || 0; if (!v) return null;
+        const pct = v / total * 100;
+        return (
+          <div key={c.key} title={`${c.key} ${fmt(v)}件 (${pct.toFixed(1)}%)`}
+               style={{ width: `${pct}%`, background: c.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {pct >= 9 && <span style={{ fontSize: 10, fontWeight: 700, color: '#fff' }}>{pct.toFixed(0)}%</span>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function StackTip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   const total = payload.reduce((s, p) => s + (p.value || 0), 0);
@@ -110,7 +149,7 @@ export default function HsaBedDetailPanel({ code, mob }) {
 
             {/* タブ */}
             <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
-              {[['chart', '施設別グラフ'], ['adm', '入院料別'], ['table', '表']].map(([id, l]) => (
+              {[['chart', '施設別グラフ'], ['adm', '入院料別'], ['route', '入退棟経路'], ['table', '表']].map(([id, l]) => (
                 <button key={id} onClick={() => setTab(id)}
                         style={{ padding: '5px 12px', borderRadius: 7, border: '1px solid ' + (tab === id ? '#2563EB' : '#e2e8f0'),
                                  background: tab === id ? '#eff6ff' : '#fff', color: tab === id ? '#2563EB' : '#64748b',
@@ -145,6 +184,36 @@ export default function HsaBedDetailPanel({ code, mob }) {
                 </ResponsiveContainer>
               </>
             ) : <div style={{ padding: 16, fontSize: 12, color: '#94a3b8' }}>入院料の届出データがありません。</div>)}
+
+            {tab === 'route' && (area.routes && Object.keys(area.routes).length ? (
+              <>
+                <div style={{ fontSize: 11.5, color: '#94a3b8', marginBottom: 10 }}>病床機能グループ別の入棟経路（入棟前の場所）・退棟先の構成割合（年間・令和6年度）</div>
+                {Object.entries(area.routes).map(([grp, r]) => (
+                  <div key={grp} style={{ marginBottom: 16 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+                      <span style={{ width: 10, height: 10, borderRadius: 3, background: FUNC_GROUP_COLORS[grp] || '#64748b' }} />
+                      <span style={{ fontSize: 12.5, fontWeight: 700, color: '#334155' }}>{grp}</span>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: mob ? '1fr' : '46px 1fr', gap: mob ? 3 : 8, alignItems: 'center', marginBottom: 5 }}>
+                      <span style={{ fontSize: 10.5, color: '#94a3b8', fontWeight: 600 }}>入棟前</span>
+                      <RouteBar route={r.admit} cats={ADMIT_CATS} />
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: mob ? '1fr' : '46px 1fr', gap: mob ? 3 : 8, alignItems: 'center' }}>
+                      <span style={{ fontSize: 10.5, color: '#94a3b8', fontWeight: 600 }}>退棟先</span>
+                      <RouteBar route={r.discharge} cats={DISCH_CATS} />
+                    </div>
+                  </div>
+                ))}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, fontSize: 11, marginTop: 4 }}>
+                  {[...ADMIT_CATS, { key: '死亡等', color: '#334155' }].filter((c, i, a) => a.findIndex(x => x.key === c.key) === i).map(c => (
+                    <span key={c.key} style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#475569' }}>
+                      <span style={{ width: 9, height: 9, borderRadius: 2, background: c.color }} />{c.key}
+                    </span>
+                  ))}
+                </div>
+                <div style={{ fontSize: 10.5, color: '#94a3b8', marginTop: 8 }}>介護＝入棟前は介護施設・福祉施設＋介護医療院、退棟先は介護老人保健・福祉施設＋介護医療院＋社会福祉施設・有料老人ホーム等。カルテ #56 の2024年の機能別構成割合と数値一致（検証済み）。</div>
+              </>
+            ) : (tab === 'route' && <div style={{ padding: 16, fontSize: 12, color: '#94a3b8' }}>入退棟経路データがありません。</div>))}
 
             {tab === 'table' && (
               <div style={{ overflowX: 'auto' }}>

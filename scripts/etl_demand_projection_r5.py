@@ -39,6 +39,13 @@ for p in PREFS:
     short = p if p == '北海道' else p[:-1]   # 県/都/府 を除去
     SHORT2FULL[short] = p
 ROMAN = tuple('ⅠⅡⅢⅣⅤⅥⅦⅧⅨⅩⅪⅫ')
+# 疾患別推計(#46-49)用の中分類・再掲行 → 表示名
+DISEASES = {
+    '（悪性新生物＜腫瘍＞）（再掲）': 'がん',
+    '（脳血管疾患）（再掲）': '脳卒中',
+    '虚血性心疾患': '虚血性心疾患',
+    '糖尿病': '糖尿病',
+}
 
 
 def num(v):
@@ -70,11 +77,16 @@ def parse_rates(path):
         label = r[0].strip()
         if not label:
             continue
-        # 総数 or ICD大分類(ローマ数字始まり)のみ。中分類(全角空白始まり)は除外
+        # 総数 / ICD大分類(ローマ数字始まり) / 主要4疾患(#46-49)を捕捉。他の中分類は除外
+        norm = re.sub(r'\s+', '', label)
         if label == '総数':
             key = '総数'
         elif label.startswith(ROMAN):
             key = re.sub(r'\s+', ' ', label)
+        elif norm in {re.sub(r'\s+', '', k) for k in DISEASES}:
+            # 疾患別(表示名で格納)
+            dname = next(v for k, v in DISEASES.items() if re.sub(r'\s+', '', k) == norm)
+            key = 'D:' + dname
         else:
             continue
         out[cur][key] = [num(r[c]) for c in RATE_COLS]
@@ -112,11 +124,27 @@ def main():
         pref = pref_of.get(code)
         if not pref or pref not in inp:
             continue
-        adm = project(inp[pref], a['years'], years)     # 入院
+        adm = project(inp[pref], a['years'], years)     # 入院(総数+ICD大分類+D:疾患)
         amb = project(outp.get(pref, {}), a['years'], years)  # 外来
+        # 疾患別(#46-49)を分離: D:接頭辞 → {疾患: {入院:{年}, 外来:{年}}}
+        diseases = {}
+        for k in list(adm.keys()):
+            if k.startswith('D:'):
+                dn = k[2:]
+                diseases[dn] = {'inpatient': adm.pop(k), 'outpatient': amb.pop(k, {})}
+        for k in list(amb.keys()):
+            if k.startswith('D:'):
+                amb.pop(k)
+        # 全国受療率ベースの総数推計(#31 受療率の比較 用・2023年受療率)
+        national = None
+        if '全国' in inp:
+            nat_adm = project({'総数': inp['全国']['総数']}, a['years'], years)['総数'] if '総数' in inp['全国'] else {}
+            nat_amb = project({'総数': outp['全国']['総数']}, a['years'], years)['総数'] if '全国' in outp and '総数' in outp['全国'] else {}
+            national = {'inpatient': nat_adm, 'outpatient': nat_amb}
         areas[code] = {
             'pref': a['pref'], 'area': a['area'],
-            'inpatient': adm, 'outpatient': amb,
+            'inpatient': adm, 'outpatient': amb, 'diseases': diseases,
+            'national': national,
         }
 
     payload = {

@@ -72,6 +72,15 @@ def pref2(v):
     return s.zfill(2)
 
 
+# 入退棟経路(#56)用: 病床機能を3グループに集約(高度急性期・急性期/回復期/慢性期)
+FUNC_GROUPS = ['高度急性期・急性期', '回復期', '慢性期']
+def func_group(v):
+    f = norm_func(v)
+    if f in ('高度急性期', '急性期'): return '高度急性期・急性期'
+    if f in ('回復期', '慢性期'): return f
+    return None
+
+
 def main():
     master = json.load(open(MASTER, encoding='utf-8'))['areas']
     # (pref_code, siteArea) -> hsaCode
@@ -88,6 +97,12 @@ def main():
         'staff': {k: 0.0 for k in STAFF_COLS},
         'admFees': defaultdict(int),
     }))
+    # 入退棟経路(#56) 病床機能グループ別・年間集計(R6=2024)。カルテ#56の2024列と一致。
+    # 入棟前の場所: 院内他病棟149/家庭162/他院175/介護(施設188+医療院201)/出生214/その他227
+    # 退棟先の場所: 院内他病棟253/家庭266/他院279/介護(老健292+特養305+医療院318+社福有料331)/死亡等344/その他357
+    ADMIT_COLS = {'院内他病棟': [149], '家庭': [162], '他院': [175], '介護': [188, 201], '出生': [214], 'その他': [227]}
+    DISCH_COLS = {'院内他病棟': [253], '家庭': [266], '他院': [279], '介護': [292, 305, 318, 331], '死亡等': [344], 'その他': [357]}
+    route = defaultdict(lambda: defaultdict(lambda: {'admit': defaultdict(int), 'discharge': defaultdict(int)}))
     unmatched_areas = set()
     total_rows = 0
 
@@ -122,6 +137,13 @@ def main():
                 fac['admFees'][str(fee).strip()] += beds
             for role, col in STAFF_COLS.items():
                 fac['staff'][role] += num(row[col] if len(row) > col else 0)
+            # 入退棟経路(#56) 病床機能グループ別に年間集計
+            fg = func_group(row[C_FUNC])
+            if fg:
+                for cat, cols in ADMIT_COLS.items():
+                    route[hsa][fg]['admit'][cat] += sum(num(row[c] if len(row) > c else 0) for c in cols)
+                for cat, cols in DISCH_COLS.items():
+                    route[hsa][fg]['discharge'][cat] += sum(num(row[c] if len(row) > c else 0) for c in cols)
         wb.close()
         print(f"[etl] {fn} 完了 (累計行 {total_rows})", flush=True)
 
@@ -141,9 +163,18 @@ def main():
             for k in STAFF_COLS: totals['staff'][k] += f['staff'][k]
         totals['staff'] = {k: round(v, 1) for k, v in totals['staff'].items()}
         fac_list.sort(key=lambda x: -x['beds'])
+        rt = route.get(hsa)
+        routes = None
+        if rt:
+            routes = {}
+            for fgk in FUNC_GROUPS:
+                d = rt.get(fgk)
+                if d and (sum(d['admit'].values()) or sum(d['discharge'].values())):
+                    routes[fgk] = {'admit': dict(d['admit']), 'discharge': dict(d['discharge'])}
         out_areas[hsa] = {
             'pref': m['pref'] if m else '', 'area': m['area'] if m else '',
             'facilities': fac_list, 'totals': totals,
+            'routes': routes,
         }
 
     OUT.parent.mkdir(parents=True, exist_ok=True)

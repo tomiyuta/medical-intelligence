@@ -20,15 +20,20 @@ export default function HsaDemandPanel({ code, mob }) {
   const area = d?.area;
   const years = d?.years || [];
 
-  // 入院・外来 総数の推移
+  // 入院・外来 総数の推移（都道府県受療率）＋全国受療率ベース（#31 受療率の比較）
   const trendRows = useMemo(() => {
     if (!area) return [];
     return years.map(y => ({
       year: `${y}`,
       入院: area.inpatient?.['総数']?.[String(y)] || 0,
       外来: area.outpatient?.['総数']?.[String(y)] || 0,
+      入院_全国: area.national?.inpatient?.[String(y)] ?? null,
+      外来_全国: area.national?.outpatient?.[String(y)] ?? null,
     }));
   }, [area, years]);
+  const hasNational = !!area?.national?.inpatient?.[String(years[0])];
+  // #31: 都道府県受療率が全国を下回る→入院需要縮小リスク
+  const inpBelowNat = hasNational && trendRows[0] && trendRows[0].入院 < trendRows[0].入院_全国;
 
   // ICD別 入院需要 増減率(2050 vs 2020)
   const icdRows = useMemo(() => {
@@ -43,6 +48,18 @@ export default function HsaDemandPanel({ code, mob }) {
       .filter(r => r.v2020 >= 1)
       .sort((a, b) => b.v2050 - a.v2050).slice(0, 12);
   }, [area, years]);
+
+  // 疾患別(#46-49) 入院1日平均の推移
+  const DISEASE_COLORS = { 'がん': '#dc2626', '脳卒中': '#7c3aed', '虚血性心疾患': '#f97316', '糖尿病': '#0891b2' };
+  const diseaseRows = useMemo(() => {
+    if (!area?.diseases) return [];
+    return years.map(y => {
+      const o = { year: `${y}` };
+      Object.entries(area.diseases).forEach(([dn, v]) => { o[dn] = v.inpatient?.[String(y)] || 0; });
+      return o;
+    });
+  }, [area, years]);
+  const diseaseKeys = area?.diseases ? Object.keys(area.diseases) : [];
 
   const base = trendRows[0], last = trendRows[trendRows.length - 1];
   const inpChange = base && last && base.入院 ? Math.round((last.入院 / base.入院 - 1) * 1000) / 10 : null;
@@ -81,13 +98,14 @@ export default function HsaDemandPanel({ code, mob }) {
             </div>
 
             <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
-              {[['trend', '入院・外来需要の推移'], ['icd', 'ICD別 入院需要の増減']].map(([id, l]) => (
+              {[['trend', '入院・外来需要の推移'], ['icd', 'ICD別 入院需要の増減'], ['disease', '疾患別推計']].map(([id, l]) => (
                 <button key={id} onClick={() => setTab(id)}
                         style={{ padding: '5px 12px', borderRadius: 7, border: '1px solid ' + (tab === id ? '#2563EB' : '#e2e8f0'), background: tab === id ? '#eff6ff' : '#fff', color: tab === id ? '#2563EB' : '#64748b', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>{l}</button>
               ))}
             </div>
 
             {tab === 'trend' && (
+              <>
               <ResponsiveContainer width="100%" height={280}>
                 <ComposedChart data={trendRows} margin={{ left: 8, right: 8, top: 8 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
@@ -95,10 +113,21 @@ export default function HsaDemandPanel({ code, mob }) {
                   <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
                   <Tooltip formatter={(v, n) => [`${fmt(Math.round(v))}人/日`, n]} contentStyle={{ fontSize: 12, borderRadius: 8 }} />
                   <Legend wrapperStyle={{ fontSize: 11 }} />
-                  <Line dataKey="入院" stroke="#2563EB" strokeWidth={2.5} dot={{ r: 3 }} name="入院(1日平均)" />
-                  <Line dataKey="外来" stroke="#0891b2" strokeWidth={2.5} dot={{ r: 3 }} name="外来(1日平均)" />
+                  <Line dataKey="入院" stroke="#2563EB" strokeWidth={2.5} dot={{ r: 3 }} name="入院(都道府県受療率)" />
+                  <Line dataKey="外来" stroke="#0891b2" strokeWidth={2.5} dot={{ r: 3 }} name="外来(都道府県受療率)" />
+                  {hasNational && <Line dataKey="入院_全国" stroke="#2563EB" strokeWidth={1.6} strokeDasharray="5 4" dot={false} name="入院(全国受療率)" />}
+                  {hasNational && <Line dataKey="外来_全国" stroke="#0891b2" strokeWidth={1.6} strokeDasharray="5 4" dot={false} name="外来(全国受療率)" />}
                 </ComposedChart>
               </ResponsiveContainer>
+              {hasNational && (
+                <div style={{ fontSize: 11, color: inpBelowNat ? '#b45309' : '#0f6e5d', background: inpBelowNat ? '#fdf7ee' : '#eefaf4', border: '1px solid ' + (inpBelowNat ? '#f3e2c4' : '#cdeee0'), borderRadius: 8, padding: '8px 12px', marginTop: 8, lineHeight: 1.6 }}>
+                  <b>受療率の比較（カルテ #31）</b>：当圏の入院需要は、都道府県受療率ベースが全国受療率ベースを{inpBelowNat ? '下回ります' : '上回ります'}。
+                  {inpBelowNat
+                    ? '全国水準まで受療率が収れんすると入院需要が縮小するリスクがあります（点線＝全国受療率での推計）。'
+                    : '全国より受療率が高く、入院需要は相対的に大きい水準です（点線＝全国受療率での推計）。'}
+                </div>
+              )}
+              </>
             )}
 
             {tab === 'icd' && (
@@ -117,6 +146,23 @@ export default function HsaDemandPanel({ code, mob }) {
                 </ResponsiveContainer>
               </>
             )}
+
+            {tab === 'disease' && (diseaseRows.length ? (
+              <>
+                <div style={{ fontSize: 11.5, color: '#94a3b8', marginBottom: 6 }}>主要疾患別 入院需要（1日平均患者数）の推移</div>
+                <ResponsiveContainer width="100%" height={280}>
+                  <ComposedChart data={diseaseRows} margin={{ left: 8, right: 8, top: 8 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                    <XAxis dataKey="year" tick={{ fontSize: 11, fill: '#475569' }} axisLine={false} tickLine={false} />
+                    <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                    <Tooltip formatter={(v, n) => [`${Math.round(v)}人/日`, n]} contentStyle={{ fontSize: 12, borderRadius: 8 }} />
+                    <Legend wrapperStyle={{ fontSize: 11 }} />
+                    {diseaseKeys.map(dn => <Line key={dn} dataKey={dn} stroke={DISEASE_COLORS[dn] || '#64748b'} strokeWidth={2.2} dot={{ r: 2.5 }} name={dn} />)}
+                  </ComposedChart>
+                </ResponsiveContainer>
+                <div style={{ fontSize: 10.5, color: '#94a3b8', marginTop: 6 }}>がん=悪性新生物、脳卒中=脳血管疾患。カルテ #46-49 の1日平均患者数に相当（DPC・手術件数の推計は別データ）。</div>
+              </>
+            ) : <div style={{ padding: 16, fontSize: 12, color: '#94a3b8' }}>疾患別データがありません。</div>)}
 
             <div style={{ fontSize: 10.5, color: '#94a3b8', lineHeight: 1.7, marginTop: 10, paddingTop: 10, borderTop: '1px solid #f1f5f9' }}>
               手法: {d.note}<br />
