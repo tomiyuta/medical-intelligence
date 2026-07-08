@@ -4,6 +4,7 @@ import NdbView from './components/views/NdbView';
 import RegionalBedFunctionView from './components/views/RegionalBedFunctionView';
 import FacilityExplorerView from './components/views/FacilityExplorerView';
 import AreaView from './components/views/AreaView';
+import AreaReportView from './components/views/AreaReportView';
 import MuniView from './components/views/MuniView';
 import MapView from './components/views/MapView';
 
@@ -139,7 +140,7 @@ export default function Home() {
       {/* Desktop Sidebar / Mobile Bottom Nav */}
       {mob ? (
         <nav style={{position:'fixed',bottom:0,left:0,right:0,background:'#fff',borderTop:'1px solid #e2e8f0',display:'flex',zIndex:50,padding:'6px 0 env(safe-area-inset-bottom)',boxShadow:'0 -2px 8px rgba(0,0,0,0.06)',overflowX:'auto'}}>
-          {[['map','概況','M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z'],['muni','人口推計','M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z'],['area','医療圏','M22 12h-4l-3 9L9 3l-3 9H2'],['ndb','処方・診療','M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'],['bedfunc','病床機能','M18 20V10M12 20V4M6 20v-6'],['explorer','施設','M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z']].map(([id,l,ic])=>(
+          {[['map','概況','M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z'],['muni','人口推計','M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z'],['area','医療圏','M22 12h-4l-3 9L9 3l-3 9H2'],['report','カルテ','M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8'],['ndb','処方・診療','M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'],['bedfunc','病床機能','M18 20V10M12 20V4M6 20v-6'],['explorer','施設','M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z']].map(([id,l,ic])=>(
             <button key={id} onClick={()=>setView(id)} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:2,padding:'6px 0',border:'none',background:'transparent',cursor:'pointer',color:view===id?'#2563EB':'#94a3b8',fontSize:10,fontWeight:view===id?700:400}}>
               <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={view===id?'#2563EB':'#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={ic}/></svg>
               {l}
@@ -157,6 +158,7 @@ export default function Home() {
         <Nav icon="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z" label="人口動態・将来推計" active={view==='muni'} onClick={()=>setView('muni')}/>
         <div style={{padding:'6px 14px 4px',fontSize:10,fontWeight:600,color:'#cbd5e1',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:8,borderTop:'1px solid #f0f0f0',paddingTop:12}}>疾患・診療</div>
         <Nav icon="M22 12h-4l-3 9L9 3l-3 9H2" label="医療圏・疾病構造" active={view==='area'} onClick={()=>setView('area')}/>
+        <Nav icon="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8" label="医療圏カルテ" active={view==='report'} onClick={()=>setView('report')}/>
         <Nav icon="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" label="医療プロファイル" active={view==='ndb'} onClick={()=>setView('ndb')}/>
         <div style={{padding:'6px 14px 4px',fontSize:10,fontWeight:600,color:'#cbd5e1',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:8,borderTop:'1px solid #f0f0f0',paddingTop:12}}>医療インフラ</div>
         <Nav icon="M18 20V10M12 20V4M6 20v-6" label="地域医療構想・病床機能" active={view==='bedfunc'} onClick={()=>setView('bedfunc')}/>
@@ -177,6 +179,9 @@ export default function Home() {
 
         {/* ═══ AREA VIEW ═══ */}
         {view==='area' && <AreaView mob={mob} areaData={areaData} areaPref={globalPref} setAreaPref={setGlobalPref} areaPrefList={areaPrefList} vitalStats={vitalStats} />}
+
+        {/* ═══ AREA REPORT VIEW (医療圏カルテ) ═══ */}
+        {view==='report' && <AreaReportView mob={mob} globalPref={globalPref} setGlobalPref={setGlobalPref} />}
 
         {/* ═══ SCORING VIEW ═══ */}
         {view==='bedfunc' && <RegionalBedFunctionView mob={mob} bedFunc={bedFunc} regPref={globalPref} setRegPref={setGlobalPref} agePyramid={agePyramid} ndbDiag={ndbDiag} homecareCapability={homecareCapability} />}
