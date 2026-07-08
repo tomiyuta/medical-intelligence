@@ -9,6 +9,7 @@ import HsaPopulationPanel from './HsaPopulationPanel';
 import HsaDemandPanel from './HsaDemandPanel';
 import HsaCarePanel from './HsaCarePanel';
 import HsaOverviewPanel from './HsaOverviewPanel';
+import HsaSpecialtyPanel from './HsaSpecialtyPanel';
 
 // PDF由来フォント名 → ローカル日本語フォントへのエイリアス。
 // SVGテキストは各グリフ絶対座標配置のため、字幅差があってもレイアウトは崩れない。
@@ -315,6 +316,7 @@ export default function AreaReportView({ mob, globalPref, setGlobalPref }) {
         {meta && <HsaDemandPanel code={meta.code} mob={mob} />}
         {meta && <HsaCarePanel code={meta.code} mob={mob} />}
         {meta && <HsaPhysicianPanel code={meta.code} mob={mob} />}
+        {meta && <HsaSpecialtyPanel code={meta.code} mob={mob} />}
         {meta && <HsaBedDetailPanel code={meta.code} mob={mob} />}
         {meta && <HsaEmergencyPanel code={meta.code} mob={mob} />}
         {meta && <HsaDpcPanel code={meta.code} mob={mob} />}
