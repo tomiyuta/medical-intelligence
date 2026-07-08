@@ -7,6 +7,7 @@ export default function HsaOverviewPanel({ code, mob }) {
   const [d, setD] = useState(null);
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(true);
+  const [tab, setTab] = useState('basic');
 
   useEffect(() => {
     if (!code) return;
@@ -52,6 +53,14 @@ export default function HsaOverviewPanel({ code, mob }) {
               ))}
             </div>
 
+            <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
+              {[['basic', '人口・面積 (#4)'], ['medical', '医療資源 10万対 (#9)']].map(([id, l]) => (
+                <button key={id} onClick={() => setTab(id)}
+                        style={{ padding: '5px 12px', borderRadius: 7, border: '1px solid ' + (tab === id ? '#2563EB' : '#e2e8f0'), background: tab === id ? '#eff6ff' : '#fff', color: tab === id ? '#2563EB' : '#64748b', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>{l}</button>
+              ))}
+            </div>
+
+            {tab === 'basic' && <>
             <div style={{ fontSize: 11.5, color: '#94a3b8', marginBottom: 6 }}>{d.pref}内の二次医療圏比較</div>
             <div style={{ overflowX: 'auto' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5, minWidth: 360 }}>
@@ -95,6 +104,57 @@ export default function HsaOverviewPanel({ code, mob }) {
             <div style={{ fontSize: 10.5, color: '#94a3b8', lineHeight: 1.7, marginTop: 10, paddingTop: 10, borderTop: '1px solid #f1f5f9' }}>
               出典: {d.source}｜人口密度=人口÷面積。カルテ #4 と<b style={{ color: '#0f6e5d' }}>数値一致</b>を検証済み。
             </div>
+            </>}
+
+            {tab === 'medical' && <>
+            <div style={{ fontSize: 11.5, color: '#94a3b8', marginBottom: 6 }}>{d.pref}内の人口10万人あたり 医療機関数・病床数</div>
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5, minWidth: 420 }}>
+                <thead><tr>
+                  <th style={{ ...th, textAlign: 'left' }}>二次医療圏</th>
+                  <th style={{ ...th, textAlign: 'right' }}>病院数</th>
+                  <th style={{ ...th, textAlign: 'right' }}>診療所数</th>
+                  <th style={{ ...th, textAlign: 'right' }}>一般病床</th>
+                  <th style={{ ...th, textAlign: 'right' }}>療養病床</th>
+                </tr></thead>
+                <tbody>
+                  {rows.map(r => {
+                    const cur = r.code === code; const md = r.med || {};
+                    return (
+                      <tr key={r.code} style={{ background: cur ? '#eff6ff' : 'transparent', borderBottom: '1px solid #f8f9fa' }}>
+                        <td style={{ ...td, fontWeight: cur ? 700 : 500, color: cur ? '#2563EB' : '#334155' }}>{r.area}</td>
+                        <td style={{ ...td, textAlign: 'right' }}>{cell(md.byoinP, '')}</td>
+                        <td style={{ ...td, textAlign: 'right' }}>{cell(md.shinryoP, '')}</td>
+                        <td style={{ ...td, textAlign: 'right' }}>{cell(md.ippanP, '')}</td>
+                        <td style={{ ...td, textAlign: 'right' }}>{cell(md.ryoyoP, '')}</td>
+                      </tr>
+                    );
+                  })}
+                  {d.prefTotal?.med && (
+                    <tr style={{ borderTop: '2px solid #eef2f6', fontWeight: 700, color: '#475569' }}>
+                      <td style={td}>{d.pref} 計</td>
+                      <td style={{ ...td, textAlign: 'right' }}>{cell(d.prefTotal.med.byoinP, '')}</td>
+                      <td style={{ ...td, textAlign: 'right' }}>{cell(d.prefTotal.med.shinryoP, '')}</td>
+                      <td style={{ ...td, textAlign: 'right' }}>{cell(d.prefTotal.med.ippanP, '')}</td>
+                      <td style={{ ...td, textAlign: 'right' }}>{cell(d.prefTotal.med.ryoyoP, '')}</td>
+                    </tr>
+                  )}
+                  {d.national?.med && (
+                    <tr style={{ color: '#94a3b8' }}>
+                      <td style={td}>全国</td>
+                      <td style={{ ...td, textAlign: 'right' }}>{cell(d.national.med.byoinP, '')}</td>
+                      <td style={{ ...td, textAlign: 'right' }}>{cell(d.national.med.shinryoP, '')}</td>
+                      <td style={{ ...td, textAlign: 'right' }}>{cell(d.national.med.ippanP, '')}</td>
+                      <td style={{ ...td, textAlign: 'right' }}>{cell(d.national.med.ryoyoP, '')}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div style={{ fontSize: 10.5, color: '#94a3b8', lineHeight: 1.7, marginTop: 10, paddingTop: 10, borderTop: '1px solid #f1f5f9' }}>
+              {d.facSource}｜病院数・診療所数は実数がカルテ #9 と一致。全国より病床が多い＝医療資源の分散、診療所が少ない＝かかりつけ医確保が課題の目安。
+            </div>
+            </>}
           </>}
           {!loading && !self && <div style={{ padding: 20, fontSize: 12.5, color: '#94a3b8' }}>この圏域の概況データは見つかりませんでした。</div>}
         </div>
