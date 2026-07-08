@@ -99,6 +99,26 @@ export default function HsaBedDetailPanel({ code, mob }) {
   }));
   const t = area?.totals;
 
+  // 病床機能別 推移＋2025必要数（カルテ #19）
+  const NEC_FUNCS = [
+    { key: '高度急性期', color: '#dc2626' },
+    { key: '急性期', color: '#f97316' },
+    { key: '回復期', color: '#16a34a' },
+    { key: '慢性期', color: '#2563EB' },
+  ];
+  const nec = data?.necessity;
+  const NEC_YEARS = [['2015', '15'], ['2018', '18'], ['2019', '19'], ['2020', '20'], ['2021', '21'], ['2022', '22'], ['2023', '23'], ['2024', "'24"], ['見込', '25見込'], ['必要', '25必要']];
+  const necRows = nec ? NEC_YEARS.map(([y, label]) => {
+    const o = { year: label, key: y };
+    NEC_FUNCS.forEach(f => { o[f.key] = nec.series?.[f.key]?.[y] ?? 0; });
+    return o;
+  }) : [];
+  const necDiff = nec ? NEC_FUNCS.map(f => {
+    const cur = nec.series?.[f.key]?.['2024'] ?? 0;
+    const need = nec.series?.[f.key]?.['必要'] ?? 0;
+    return { ...f, cur, need, diff: cur - need };
+  }) : [];
+
   return (
     <div style={{ background: '#fff', border: '1px solid #e8ecf0', borderRadius: 12, marginBottom: 20, overflow: 'hidden' }}>
       <button onClick={() => setOpen(o => !o)}
@@ -149,7 +169,7 @@ export default function HsaBedDetailPanel({ code, mob }) {
 
             {/* タブ */}
             <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
-              {[['chart', '施設別グラフ'], ['adm', '入院料別'], ['route', '入退棟経路'], ['table', '表']].map(([id, l]) => (
+              {[['chart', '施設別グラフ'], ['adm', '入院料別'], ['necessity', '必要病床数'], ['route', '入退棟経路'], ['table', '表']].map(([id, l]) => (
                 <button key={id} onClick={() => setTab(id)}
                         style={{ padding: '5px 12px', borderRadius: 7, border: '1px solid ' + (tab === id ? '#2563EB' : '#e2e8f0'),
                                  background: tab === id ? '#eff6ff' : '#fff', color: tab === id ? '#2563EB' : '#64748b',
@@ -184,6 +204,43 @@ export default function HsaBedDetailPanel({ code, mob }) {
                 </ResponsiveContainer>
               </>
             ) : <div style={{ padding: 16, fontSize: 12, color: '#94a3b8' }}>入院料の届出データがありません。</div>)}
+
+            {tab === 'necessity' && (nec ? (
+              <>
+                <div style={{ fontSize: 11.5, color: '#94a3b8', marginBottom: 6 }}>病床機能別 病床数の推移（病床機能報告実績）と2025年必要病床数（地域医療構想）</div>
+                <ResponsiveContainer width="100%" height={280}>
+                  <BarChart data={necRows} margin={{ left: 8, right: 8, top: 8 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                    <XAxis dataKey="year" tick={{ fontSize: 10, fill: '#475569' }} axisLine={false} tickLine={false} interval={0} />
+                    <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} unit="床" />
+                    <Tooltip content={<StackTip />} />
+                    <Legend wrapperStyle={{ fontSize: 11 }} />
+                    {NEC_FUNCS.map(f => <Bar key={f.key} dataKey={f.key} stackId="a" fill={f.color} name={f.key} barSize={22} />)}
+                  </BarChart>
+                </ResponsiveContainer>
+                <div style={{ overflowX: 'auto', marginTop: 10 }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5, minWidth: 380 }}>
+                    <thead><tr style={{ background: '#fafbfc' }}>
+                      {['病床機能', '2024年7月時点', '2025必要数', '差分'].map((h, i) => (
+                        <th key={i} style={{ padding: '8px 10px', fontSize: 10.5, fontWeight: 600, color: '#94a3b8', textAlign: i === 0 ? 'left' : 'right', borderBottom: '1px solid #f1f5f9', whiteSpace: 'nowrap' }}>{h}</th>
+                      ))}
+                    </tr></thead>
+                    <tbody>{necDiff.map((r, i) => (
+                      <tr key={i} style={{ borderBottom: '1px solid #f8f9fa' }}>
+                        <td style={{ padding: '7px 10px', fontWeight: 600, color: r.color }}>{r.key}</td>
+                        <td style={{ padding: '7px 10px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{fmt(r.cur)}</td>
+                        <td style={{ padding: '7px 10px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{fmt(r.need)}</td>
+                        <td style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: r.diff < 0 ? '#dc2626' : '#0f6e5d' }}>{r.diff > 0 ? '+' : r.diff < 0 ? '▲' : ''}{fmt(Math.abs(r.diff))}</td>
+                      </tr>
+                    ))}</tbody>
+                  </table>
+                </div>
+                <div style={{ fontSize: 10.5, color: '#94a3b8', lineHeight: 1.7, marginTop: 8 }}>
+                  差分＝2024実績−2025必要数。<span style={{ color: '#dc2626' }}>▲（不足）</span>は機能の確保、<span style={{ color: '#0f6e5d' }}>＋（過剰）</span>は機能分化が課題。回復期の不足は機能分化の遅れを示唆。<br />
+                  出典: {data.necessitySource}｜カルテ #19 と<b style={{ color: '#0f6e5d' }}>数値一致</b>を検証済み（必要数は構想区域単位の固定値）。
+                </div>
+              </>
+            ) : (tab === 'necessity' && <div style={{ padding: 16, fontSize: 12, color: '#94a3b8' }}>この圏域は構想区域と二次医療圏が一致せず、必要病床数を単独表示できません。</div>))}
 
             {tab === 'route' && (area.routes && Object.keys(area.routes).length ? (
               <>
