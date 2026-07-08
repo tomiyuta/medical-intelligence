@@ -174,9 +174,10 @@ def load_demand():
 
 
 def load_trend():
-    """通番 → {年度: 退院患者数}。在院日数ファイル(2019-2023件数)＋dpc_enrichment_v2(2018)。真の総数・マスクなし。"""
+    """通番 → {年度: 退院患者数} と 通番→令和5年度平均在院日数(#66,67)。在院日数ファイル＋dpc_enrichment_v2(2018)。"""
     trend = defaultdict(dict)
-    # 在院日数: 令和元(col3)=2019 … 令和5(col35)=2023, 各年度8列間隔
+    los = {}
+    # 在院日数: 令和元(col3)=2019 … 令和5(col35)=2023, 各年度8列間隔。平均値は件数列+1
     year_cols = {2019: 3, 2020: 11, 2021: 19, 2022: 27, 2023: 35}
     wb = openpyxl.load_workbook(F_LOS, read_only=True, data_only=True)
     ws = wb['在院日数の状況']
@@ -189,6 +190,10 @@ def load_trend():
             v = to_int(row[c] if len(row) > c else 0)
             if v > 0:
                 trend[t][y] = v
+        # 令和5年度(2023)平均在院日数 = col36
+        avg = row[36] if len(row) > 36 else None
+        if isinstance(avg, (int, float)) and avg > 0:
+            los[t] = round(float(avg), 1)
     wb.close()
     # 2018(平成30年度) は dpc_enrichment_v2 (dpc_id=通番)
     import sqlite3
@@ -198,7 +203,7 @@ def load_trend():
         if v:
             trend[t][2018] = int(v)
     con.close()
-    return trend
+    return trend, los
 
 
 def resolve_hsa(tsuban, facmaster, muni2hsa, name2hsa, name_hint=''):
@@ -217,7 +222,7 @@ def main():
     name2hsa = build_name2hsa()
     facmaster = load_facility_master()
     demand = load_demand()
-    trend = load_trend()
+    trend, los = load_trend()
     print(f"[etl] muni2hsa={len(muni2hsa)} 施設概要={len(facmaster)} 需要圏={len(demand)}", flush=True)
 
     # 施設別MDC別（手術無/有を合算。手術有り件数も別途集計）
@@ -275,6 +280,7 @@ def main():
             'name': fm['name'], 'ruikei': meta['ruikei'], 'isDpc': is_dpc,
             'total': total, 'mdc': {k: fm['mdc'][k] for k in MDC_KEYS if fm['mdc'][k] > 0},
             'surgery': fm.get('surgery', 0), 'ambulance': amb.get(tsuban, 0),
+            'los': los.get(tsuban),   # 令和5年度 平均在院日数(#66,67)
         })
         a['total'] += total
         if is_dpc:

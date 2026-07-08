@@ -13,6 +13,15 @@ function load() {
   return cache;
 }
 
+// 構想区域別 病床機能推移・2025必要病床数（カルテ #19）
+let necCache = null;
+function loadNecessity() {
+  if (necCache !== null) return necCache;
+  const path = join(process.cwd(), 'data', 'static', 'bed_necessity_r6.json');
+  necCache = existsSync(path) ? JSON.parse(readFileSync(path, 'utf-8')) : {};
+  return necCache;
+}
+
 export async function GET(request) {
   const data = load();
   if (!data) return NextResponse.json({ ready: false, area: null });
@@ -33,5 +42,7 @@ export async function GET(request) {
     }
     admFees = Object.entries(agg).map(([fee, beds]) => ({ fee, beds })).sort((a, b) => b.beds - a.beds);
   }
-  return NextResponse.json({ ready: true, source: data.source, published: data.published, note: data.note, code, area, admFees });
+  const nec = loadNecessity();
+  const necessity = (nec.areas && nec.areas[code]) || null;
+  return NextResponse.json({ ready: true, source: data.source, published: data.published, note: data.note, code, area, admFees, necessity, necessitySource: nec.source });
 }

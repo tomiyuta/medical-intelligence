@@ -12,6 +12,45 @@ const FUNC = [
   { key: '休棟', color: '#cbd5e1' },
 ];
 
+// 入退棟経路(#56)の場所カテゴリ配色
+const ADMIT_CATS = [
+  { key: '院内他病棟', color: '#64748b' },
+  { key: '家庭', color: '#16a34a' },
+  { key: '他院', color: '#f97316' },
+  { key: '介護', color: '#7c3aed' },
+  { key: '出生', color: '#ec4899' },
+  { key: 'その他', color: '#cbd5e1' },
+];
+const DISCH_CATS = [
+  { key: '院内他病棟', color: '#64748b' },
+  { key: '家庭', color: '#16a34a' },
+  { key: '他院', color: '#f97316' },
+  { key: '介護', color: '#7c3aed' },
+  { key: '死亡等', color: '#334155' },
+  { key: 'その他', color: '#cbd5e1' },
+];
+const FUNC_GROUP_COLORS = { '高度急性期・急性期': '#dc2626', '回復期': '#16a34a', '慢性期': '#2563EB' };
+
+// 100%積み上げ横バー（構成割合）。route={cat: count}, cats=[{key,color}]
+function RouteBar({ route, cats }) {
+  const total = cats.reduce((s, c) => s + (route[c.key] || 0), 0);
+  if (!total) return <div style={{ fontSize: 11, color: '#cbd5e1' }}>該当なし</div>;
+  return (
+    <div style={{ display: 'flex', height: 26, borderRadius: 5, overflow: 'hidden', border: '1px solid #f0f0f0' }}>
+      {cats.map(c => {
+        const v = route[c.key] || 0; if (!v) return null;
+        const pct = v / total * 100;
+        return (
+          <div key={c.key} title={`${c.key} ${fmt(v)}件 (${pct.toFixed(1)}%)`}
+               style={{ width: `${pct}%`, background: c.color, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {pct >= 9 && <span style={{ fontSize: 10, fontWeight: 700, color: '#fff' }}>{pct.toFixed(0)}%</span>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function StackTip({ active, payload, label }) {
   if (!active || !payload?.length) return null;
   const total = payload.reduce((s, p) => s + (p.value || 0), 0);
@@ -59,6 +98,26 @@ export default function HsaBedDetailPanel({ code, mob }) {
     ...FUNC.reduce((o, fn) => ({ ...o, [fn.key]: f.funcBeds[fn.key] || 0 }), {}),
   }));
   const t = area?.totals;
+
+  // 病床機能別 推移＋2025必要数（カルテ #19）
+  const NEC_FUNCS = [
+    { key: '高度急性期', color: '#dc2626' },
+    { key: '急性期', color: '#f97316' },
+    { key: '回復期', color: '#16a34a' },
+    { key: '慢性期', color: '#2563EB' },
+  ];
+  const nec = data?.necessity;
+  const NEC_YEARS = [['2015', '15'], ['2018', '18'], ['2019', '19'], ['2020', '20'], ['2021', '21'], ['2022', '22'], ['2023', '23'], ['2024', "'24"], ['見込', '25見込'], ['必要', '25必要']];
+  const necRows = nec ? NEC_YEARS.map(([y, label]) => {
+    const o = { year: label, key: y };
+    NEC_FUNCS.forEach(f => { o[f.key] = nec.series?.[f.key]?.[y] ?? 0; });
+    return o;
+  }) : [];
+  const necDiff = nec ? NEC_FUNCS.map(f => {
+    const cur = nec.series?.[f.key]?.['2024'] ?? 0;
+    const need = nec.series?.[f.key]?.['必要'] ?? 0;
+    return { ...f, cur, need, diff: cur - need };
+  }) : [];
 
   return (
     <div style={{ background: '#fff', border: '1px solid #e8ecf0', borderRadius: 12, marginBottom: 20, overflow: 'hidden' }}>
@@ -110,7 +169,7 @@ export default function HsaBedDetailPanel({ code, mob }) {
 
             {/* タブ */}
             <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
-              {[['chart', '施設別グラフ'], ['adm', '入院料別'], ['table', '表']].map(([id, l]) => (
+              {[['chart', '施設別グラフ'], ['adm', '入院料別'], ['necessity', '必要病床数'], ['route', '入退棟経路'], ['table', '表']].map(([id, l]) => (
                 <button key={id} onClick={() => setTab(id)}
                         style={{ padding: '5px 12px', borderRadius: 7, border: '1px solid ' + (tab === id ? '#2563EB' : '#e2e8f0'),
                                  background: tab === id ? '#eff6ff' : '#fff', color: tab === id ? '#2563EB' : '#64748b',
@@ -145,6 +204,73 @@ export default function HsaBedDetailPanel({ code, mob }) {
                 </ResponsiveContainer>
               </>
             ) : <div style={{ padding: 16, fontSize: 12, color: '#94a3b8' }}>入院料の届出データがありません。</div>)}
+
+            {tab === 'necessity' && (nec ? (
+              <>
+                <div style={{ fontSize: 11.5, color: '#94a3b8', marginBottom: 6 }}>病床機能別 病床数の推移（病床機能報告実績）と2025年必要病床数（地域医療構想）</div>
+                <ResponsiveContainer width="100%" height={280}>
+                  <BarChart data={necRows} margin={{ left: 8, right: 8, top: 8 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                    <XAxis dataKey="year" tick={{ fontSize: 10, fill: '#475569' }} axisLine={false} tickLine={false} interval={0} />
+                    <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} unit="床" />
+                    <Tooltip content={<StackTip />} />
+                    <Legend wrapperStyle={{ fontSize: 11 }} />
+                    {NEC_FUNCS.map(f => <Bar key={f.key} dataKey={f.key} stackId="a" fill={f.color} name={f.key} barSize={22} />)}
+                  </BarChart>
+                </ResponsiveContainer>
+                <div style={{ overflowX: 'auto', marginTop: 10 }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5, minWidth: 380 }}>
+                    <thead><tr style={{ background: '#fafbfc' }}>
+                      {['病床機能', '2024年7月時点', '2025必要数', '差分'].map((h, i) => (
+                        <th key={i} style={{ padding: '8px 10px', fontSize: 10.5, fontWeight: 600, color: '#94a3b8', textAlign: i === 0 ? 'left' : 'right', borderBottom: '1px solid #f1f5f9', whiteSpace: 'nowrap' }}>{h}</th>
+                      ))}
+                    </tr></thead>
+                    <tbody>{necDiff.map((r, i) => (
+                      <tr key={i} style={{ borderBottom: '1px solid #f8f9fa' }}>
+                        <td style={{ padding: '7px 10px', fontWeight: 600, color: r.color }}>{r.key}</td>
+                        <td style={{ padding: '7px 10px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{fmt(r.cur)}</td>
+                        <td style={{ padding: '7px 10px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{fmt(r.need)}</td>
+                        <td style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: r.diff < 0 ? '#dc2626' : '#0f6e5d' }}>{r.diff > 0 ? '+' : r.diff < 0 ? '▲' : ''}{fmt(Math.abs(r.diff))}</td>
+                      </tr>
+                    ))}</tbody>
+                  </table>
+                </div>
+                <div style={{ fontSize: 10.5, color: '#94a3b8', lineHeight: 1.7, marginTop: 8 }}>
+                  差分＝2024実績−2025必要数。<span style={{ color: '#dc2626' }}>▲（不足）</span>は機能の確保、<span style={{ color: '#0f6e5d' }}>＋（過剰）</span>は機能分化が課題。回復期の不足は機能分化の遅れを示唆。<br />
+                  出典: {data.necessitySource}｜カルテ #19 と<b style={{ color: '#0f6e5d' }}>数値一致</b>を検証済み（必要数は構想区域単位の固定値）。
+                </div>
+              </>
+            ) : (tab === 'necessity' && <div style={{ padding: 16, fontSize: 12, color: '#94a3b8' }}>この圏域は構想区域と二次医療圏が一致せず、必要病床数を単独表示できません。</div>))}
+
+            {tab === 'route' && (area.routes && Object.keys(area.routes).length ? (
+              <>
+                <div style={{ fontSize: 11.5, color: '#94a3b8', marginBottom: 10 }}>病床機能グループ別の入棟経路（入棟前の場所）・退棟先の構成割合（年間・令和6年度）</div>
+                {Object.entries(area.routes).map(([grp, r]) => (
+                  <div key={grp} style={{ marginBottom: 16 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+                      <span style={{ width: 10, height: 10, borderRadius: 3, background: FUNC_GROUP_COLORS[grp] || '#64748b' }} />
+                      <span style={{ fontSize: 12.5, fontWeight: 700, color: '#334155' }}>{grp}</span>
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: mob ? '1fr' : '46px 1fr', gap: mob ? 3 : 8, alignItems: 'center', marginBottom: 5 }}>
+                      <span style={{ fontSize: 10.5, color: '#94a3b8', fontWeight: 600 }}>入棟前</span>
+                      <RouteBar route={r.admit} cats={ADMIT_CATS} />
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: mob ? '1fr' : '46px 1fr', gap: mob ? 3 : 8, alignItems: 'center' }}>
+                      <span style={{ fontSize: 10.5, color: '#94a3b8', fontWeight: 600 }}>退棟先</span>
+                      <RouteBar route={r.discharge} cats={DISCH_CATS} />
+                    </div>
+                  </div>
+                ))}
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, fontSize: 11, marginTop: 4 }}>
+                  {[...ADMIT_CATS, { key: '死亡等', color: '#334155' }].filter((c, i, a) => a.findIndex(x => x.key === c.key) === i).map(c => (
+                    <span key={c.key} style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#475569' }}>
+                      <span style={{ width: 9, height: 9, borderRadius: 2, background: c.color }} />{c.key}
+                    </span>
+                  ))}
+                </div>
+                <div style={{ fontSize: 10.5, color: '#94a3b8', marginTop: 8 }}>介護＝入棟前は介護施設・福祉施設＋介護医療院、退棟先は介護老人保健・福祉施設＋介護医療院＋社会福祉施設・有料老人ホーム等。カルテ #56 の2024年の機能別構成割合と数値一致（検証済み）。</div>
+              </>
+            ) : (tab === 'route' && <div style={{ padding: 16, fontSize: 12, color: '#94a3b8' }}>入退棟経路データがありません。</div>))}
 
             {tab === 'table' && (
               <div style={{ overflowX: 'auto' }}>
