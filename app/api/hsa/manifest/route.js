@@ -9,8 +9,13 @@ import { join } from 'path';
 // data/hsa/ はローカル抽出物（.gitignore/.vercelignore 済み）。未抽出なら ready:false。
 let cache = null;
 function load() {
-  const path = join(process.cwd(), 'data', 'hsa', 'manifest.json');
-  if (!existsSync(path)) return null;
+  // デプロイ可能な data/static を優先、無ければローカル抽出物 data/hsa
+  const paths = [
+    join(process.cwd(), 'data', 'static', 'hsa_manifest.json'),
+    join(process.cwd(), 'data', 'hsa', 'manifest.json'),
+  ];
+  const path = paths.find(existsSync);
+  if (!path) return null;
   if (!cache) cache = JSON.parse(readFileSync(path, 'utf-8'));
   return cache;
 }

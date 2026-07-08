@@ -23,6 +23,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 PDF_ROOT = os.path.expanduser("~/Downloads/nkgr_医療圏レポート")
 OUT_ROOT = os.path.join(ROOT, "data", "hsa")
 SVG_ROOT = os.path.join(OUT_ROOT, "svg")
+# manifest/検索索引はデプロイ可能な data/static にも書き出す（SVG実体のみローカル/外部配信）
+STATIC_ROOT = os.path.join(ROOT, "data", "static")
 SITE_AREAS = os.path.join(ROOT, "data", "static", "medical_areas_national.json")
 
 HEADER_RE = re.compile(r'^\s*20\d{2}\s*[©(c)]*\s*NIHONKEIEI\s*Co\.,?\s*Ltd\.?\s*\d*', re.I)
@@ -247,12 +249,17 @@ def main():
                               key=lambda p: list(PREF_JP.values()).index(p) if p in PREF_JP.values() else 99),
         "areas": areas_meta,
     }
-    with open(os.path.join(OUT_ROOT, "manifest.json"), "w", encoding="utf-8") as f:
-        json.dump(manifest, f, ensure_ascii=False)
+    # manifest はローカル(data/hsa)とデプロイ可能(data/static)の両方へ
+    for d in (OUT_ROOT, STATIC_ROOT):
+        name = "manifest.json" if d == OUT_ROOT else "hsa_manifest.json"
+        with open(os.path.join(d, name), "w", encoding="utf-8") as f:
+            json.dump(manifest, f, ensure_ascii=False)
 
-    # 検索インデックス（全ページ本文・gzip 圧縮）
-    with gzip.open(os.path.join(OUT_ROOT, "search_index.json.gz"), "wt", encoding="utf-8") as f:
-        json.dump(index, f, ensure_ascii=False)
+    # 検索インデックス（全ページ本文・gzip）も両方へ
+    for d in (OUT_ROOT, STATIC_ROOT):
+        name = "search_index.json.gz" if d == OUT_ROOT else "hsa_search_index.json.gz"
+        with gzip.open(os.path.join(d, name), "wt", encoding="utf-8") as f:
+            json.dump(index, f, ensure_ascii=False)
 
     with open(os.path.join(OUT_ROOT, "area_master.json"), "w", encoding="utf-8") as f:
         json.dump({"count": len(master), "unmatched": unmatched, "areas": master},

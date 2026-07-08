@@ -9,8 +9,12 @@ import { gunzipSync } from 'zlib';
 let index = null;
 function loadIndex() {
   if (index) return index;
-  const path = join(process.cwd(), 'data', 'hsa', 'search_index.json.gz');
-  if (!existsSync(path)) { index = []; return index; }
+  const paths = [
+    join(process.cwd(), 'data', 'static', 'hsa_search_index.json.gz'),
+    join(process.cwd(), 'data', 'hsa', 'search_index.json.gz'),
+  ];
+  const path = paths.find(existsSync);
+  if (!path) { index = []; return index; }
   index = JSON.parse(gunzipSync(readFileSync(path)).toString('utf-8'));
   return index;
 }
