@@ -21,7 +21,7 @@ export async function GET(request) {
   if (!code || !self) return NextResponse.json({ ready: true, source: data.source });
   const pref = data.prefs[self.pref] || null;
   return NextResponse.json({
-    ready: true, source: data.source, note: data.note, facSource: data.facSource,
+    ready: true, source: data.source, note: data.note, facSource: data.facSource, staffSource: data.staffSource,
     code, pref: self.pref, self,
     prefAreas: pref?.areas || [], prefTotal: pref?.total || null,
     national: data.national,

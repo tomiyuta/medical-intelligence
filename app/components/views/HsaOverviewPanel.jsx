@@ -54,7 +54,7 @@ export default function HsaOverviewPanel({ code, mob }) {
             </div>
 
             <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
-              {[['basic', '人口・面積 (#4)'], ['medical', '医療資源 10万対 (#9)']].map(([id, l]) => (
+              {[['basic', '人口・面積 (#4)'], ['medical', '医療資源 10万対 (#9)'], ['staff', '医療従事者 10万対 (#10)']].map(([id, l]) => (
                 <button key={id} onClick={() => setTab(id)}
                         style={{ padding: '5px 12px', borderRadius: 7, border: '1px solid ' + (tab === id ? '#2563EB' : '#e2e8f0'), background: tab === id ? '#eff6ff' : '#fff', color: tab === id ? '#2563EB' : '#64748b', fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>{l}</button>
               ))}
@@ -153,6 +153,56 @@ export default function HsaOverviewPanel({ code, mob }) {
             </div>
             <div style={{ fontSize: 10.5, color: '#94a3b8', lineHeight: 1.7, marginTop: 10, paddingTop: 10, borderTop: '1px solid #f1f5f9' }}>
               {d.facSource}｜病院数・診療所数は実数がカルテ #9 と一致。全国より病床が多い＝医療資源の分散、診療所が少ない＝かかりつけ医確保が課題の目安。
+            </div>
+            </>}
+
+            {tab === 'staff' && <>
+            <div style={{ fontSize: 11.5, color: '#94a3b8', marginBottom: 6 }}>{d.pref}内の人口10万人あたり 医療従事者数（常勤換算・病院＋診療所）</div>
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5, minWidth: 420 }}>
+                <thead><tr>
+                  <th style={{ ...th, textAlign: 'left' }}>二次医療圏</th>
+                  <th style={{ ...th, textAlign: 'right' }}>医師</th>
+                  <th style={{ ...th, textAlign: 'right' }}>看護師</th>
+                  <th style={{ ...th, textAlign: 'right' }}>薬剤師</th>
+                  <th style={{ ...th, textAlign: 'right' }}>PT・OT・ST</th>
+                </tr></thead>
+                <tbody>
+                  {rows.map(r => {
+                    const cur = r.code === code; const s = r.staff || {};
+                    return (
+                      <tr key={r.code} style={{ background: cur ? '#eff6ff' : 'transparent', borderBottom: '1px solid #f8f9fa' }}>
+                        <td style={{ ...td, fontWeight: cur ? 700 : 500, color: cur ? '#2563EB' : '#334155' }}>{r.area}</td>
+                        <td style={{ ...td, textAlign: 'right' }}>{cell(s.ishiP, '')}</td>
+                        <td style={{ ...td, textAlign: 'right' }}>{cell(s.kangoP, '')}</td>
+                        <td style={{ ...td, textAlign: 'right' }}>{cell(s.yakuP, '')}</td>
+                        <td style={{ ...td, textAlign: 'right' }}>{cell(s.rehaP, '')}</td>
+                      </tr>
+                    );
+                  })}
+                  {d.prefTotal?.staff && (
+                    <tr style={{ borderTop: '2px solid #eef2f6', fontWeight: 700, color: '#475569' }}>
+                      <td style={td}>{d.pref} 計</td>
+                      <td style={{ ...td, textAlign: 'right' }}>{cell(d.prefTotal.staff.ishiP, '')}</td>
+                      <td style={{ ...td, textAlign: 'right' }}>{cell(d.prefTotal.staff.kangoP, '')}</td>
+                      <td style={{ ...td, textAlign: 'right' }}>{cell(d.prefTotal.staff.yakuP, '')}</td>
+                      <td style={{ ...td, textAlign: 'right' }}>{cell(d.prefTotal.staff.rehaP, '')}</td>
+                    </tr>
+                  )}
+                  {d.national?.staff && (
+                    <tr style={{ color: '#94a3b8' }}>
+                      <td style={td}>全国</td>
+                      <td style={{ ...td, textAlign: 'right' }}>{cell(d.national.staff.ishiP, '')}</td>
+                      <td style={{ ...td, textAlign: 'right' }}>{cell(d.national.staff.kangoP, '')}</td>
+                      <td style={{ ...td, textAlign: 'right' }}>{cell(d.national.staff.yakuP, '')}</td>
+                      <td style={{ ...td, textAlign: 'right' }}>{cell(d.national.staff.rehaP, '')}</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div style={{ fontSize: 10.5, color: '#94a3b8', lineHeight: 1.7, marginTop: 10, paddingTop: 10, borderTop: '1px solid #f1f5f9' }}>
+              {d.staffSource}｜職種別の実数はカルテ #10 と一致。全国を下回る職種は医療従事者の確保が課題の目安。
             </div>
             </>}
           </>}
