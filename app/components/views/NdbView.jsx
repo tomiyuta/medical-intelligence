@@ -10,6 +10,7 @@ import PrefStrip47 from '../ui/PrefStrip47';
 import PsIris from '../ui/PsIris';
 import PrefChoropleth from '../ui/PrefChoropleth';
 import CheckupBinsHistogram, { RISK_BIN_THRESHOLD, METRIC_TO_RISK_KEY } from '../ui/CheckupBinsHistogram';
+import RiskGauge from '../ui/RiskGauge';
 import AgePyramidGhost from '../ui/AgePyramidGhost';
 import DeathWaffle100, { buildWaffleItems, WAFFLE_CAUSE_COLORS, WAFFLE_OTHER, WAFFLE_OTHER_COLOR } from '../ui/DeathWaffle100';
 import { getSourceBadge } from '../../../lib/sourceRegistry';
@@ -579,6 +580,8 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     return () => { alive = false; };
   }, []);
 
+  // ── Layer2 リスクメーター盤: 粗率|年齢標準化 セグメントトグル（針・帯・tick・ストリップが丸ごと切替） ──
+  const [riskStdMode, setRiskStdMode] = useState(false);
   // ── Layer2 分布ドロワー（臨床閾値ヒストグラム）state — 追加型・A/Bカード非破壊 ──
   const [binsOpen, setBinsOpen] = useState(false);      // ドロワー開閉
   const [binsMetric, setBinsMetric] = useState('BMI');  // 指標タブ5種
@@ -1339,99 +1342,109 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
       <span style={{fontSize:18}}>🔬</span>
       <div>
         <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>健診リスク <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#dbeafe',color:'#1e40af',fontWeight:500}}>検査値+該当者率</span></div>
-        <div style={{fontSize:11,color:'#94a3b8'}}>特定健診（40〜74歳受診者） — A.検査値平均 + B.リスク該当者率</div>
+        <div style={{fontSize:11,color:'#94a3b8'}}>特定健診（40〜74歳受診者） — B.リスクメーター盤（5指標） + 参考:A.検査値平均</div>
       </div>
     </div>
 
-    {/* ── サブセクション A: 検査値平均 ── */}
-    {hcPref.length > 0 && <div style={{marginBottom:18}}>
-      <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:8}}>
-        <span style={{fontSize:11,fontWeight:700,color:'#475569',padding:'2px 8px',background:'#f1f5f9',borderRadius:4}}>A. 検査値平均</span>
-        <span style={{fontSize:10,color:'#94a3b8'}}>男女別の平均値（参考値）</span>
-      </div>
-      <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'repeat(3,1fr)',gap:12}}>
-        {hcPref.map((h,i)=>{
-          const meta = RISK_META[h.metric] || {};
-          // rank1: 検査値の47県分布（男女平均、判別不可除外）
-          const hcVals = (ndbHc||[]).filter(x=>x.metric===h.metric && isP47(x.pref) && x.male!=null && x.female!=null)
-            .map(x=>({pref:x.pref, value:(x.male+x.female)/2}));
-          return <div key={i} style={{background:'#f8fafc',borderRadius:10,padding:'14px 16px',...dFade('hcMetric',h.metric),...dBorder('hcMetric',h.metric)}}>
-            <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:8}}>
-              <span style={{fontSize:13,fontWeight:600}}>{meta.icon||''} {h.metric}</span>
-              <span style={{fontSize:10,color:'#94a3b8',background:'#fff',padding:'2px 6px',borderRadius:4}}>{meta.unit||''}</span>
-            </div>
-            <div style={{display:'flex',gap:20}}>
-              <div><div style={{fontSize:10,color:'#3b82f6'}}>男性</div><div style={{fontSize:22,fontWeight:700,color:'#2563EB'}}>{h.male}</div></div>
-              <div><div style={{fontSize:10,color:'#dc2626'}}>女性</div><div style={{fontSize:22,fontWeight:700,color:'#dc2626'}}>{h.female}</div></div>
-            </div>
-            <div style={{fontSize:10,color:'#94a3b8',marginTop:6}}>{meta.note||''}</div>
-            {hcVals.length >= 40 && <div style={{marginTop:8}}><PrefStrip47 {...stripCommon} values={hcVals} yearBadge={yb('ndbHc')} mode="inline" /><div style={{fontSize:9,color:'#94a3b8',marginTop:1}}>男女平均の47県分布</div></div>}
-          </div>;
-        })}
-      </div>
-      <div style={{fontSize:10,color:'#94a3b8',marginTop:8,fontStyle:'italic'}}>※男女別平均値をもとにした参考値。疾病診断率ではありません。</div>
-    </div>}
-
-    {/* ── サブセクション B: リスク該当者率 (Phase 1 + Phase 2C-1) ── */}
+    {/* ── サブセクション B: リスク該当者率 — リスクメーター盤（ヒーロー昇格・B→A順） ── */}
     {ndbCheckupRiskRates?.risk_rates && (() => {
       // RISK_CARDS はモジュールレベルへ昇格（分布ドロワーの指標タブと共用・内容不変）
+      // リスクメーター盤: 粗率/年齢標準化 両モードの per-card 統計を一括算出（47件×5リスクの軽量ソート）
+      // 値の取り出し: crude=by_pref[p].rate / std=Std側 by_pref[p].age_standardized_rate
+      const gaugeStats = (key) => {
+        const src = riskStdMode
+          ? ndbCheckupRiskRatesStd?.risk_rates?.[key]?.by_pref
+          : ndbCheckupRiskRates.risk_rates[key]?.by_pref;
+        const field = riskStdMode ? 'age_standardized_rate' : 'rate';
+        if (!src) return null;
+        const stripVals = Object.entries(src).filter(([p])=>isP47(p))
+          .map(([p,v])=>({pref:p, value:v?.[field]})).filter(d=>typeof d.value==='number');
+        if (stripVals.length < 40) return null;
+        const sorted = [...stripVals.map(d=>d.value)].sort((a,b)=>a-b);
+        const q = (t) => sorted[Math.max(0, Math.min(sorted.length-1, Math.round(t*(sorted.length-1))))];
+        const prefVal = src[ndbPref]?.[field];
+        if (prefVal == null) return null;
+        return {
+          stripVals, prefVal,
+          natAvg: sorted.reduce((s,v)=>s+v,0)/sorted.length,
+          min: sorted[0], max: sorted[sorted.length-1], p10: q(0.1), p90: q(0.9),
+          rank: 1 + stripVals.filter(d=>d.value > prefVal).length,
+        };
+      };
       return <div>
-        <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:8}}>
-          <span style={{fontSize:11,fontWeight:700,color:'#475569',padding:'2px 8px',background:'#fef3c7',borderRadius:4}}>B. リスク該当者率</span>
-          <span style={{fontSize:10,color:'#94a3b8'}}>NDB特定健診の階級分布から算出 — 粗率＋年齢標準化率</span>
+        <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:8,flexWrap:'wrap'}}>
+          <span style={{fontSize:11,fontWeight:700,color:'#475569',padding:'2px 8px',background:'#fef3c7',borderRadius:4}}>B. リスクメーター盤</span>
+          <span style={{fontSize:8.5,fontWeight:700,padding:'1px 5px',borderRadius:3,border:`1px solid ${yb('checkupRisk').color}`,color:yb('checkupRisk').color,background:'#fff'}}>{yb('checkupRisk').label}</span>
+          {!mob && <span style={{fontSize:10,color:'#94a3b8'}}>針=当県・帯=47県分布・tick=全国 — 5本の針の傾き＝県のリスク体質</span>}
+          {/* 粗率|年齢標準化 セグメントトグル（針・帯・tick・ストリップが丸ごと切替） */}
+          <div style={{marginLeft:'auto',display:'flex',border:'1px solid #e2e8f0',borderRadius:6,overflow:'hidden'}}>
+            {[[false,'粗率'],[true,'年齢標準化']].map(([m,l])=>(
+              <button key={l} onClick={()=>setRiskStdMode(m)}
+                style={{padding:'4px 10px',border:'none',fontSize:10,fontWeight:600,cursor:'pointer',
+                  background:riskStdMode===m?(m?'#7c3aed':'#475569'):'#fff',color:riskStdMode===m?'#fff':'#475569'}}>{l}</button>
+            ))}
+          </div>
         </div>
-        <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'repeat(5,1fr)',gap:10}}>
-          {RISK_CARDS.map(rc => {
-            const rates = ndbCheckupRiskRates.risk_rates[rc.key];
-            if (!rates) return null;
-            const prefEntry = rates.by_pref?.[ndbPref];
-            if (!prefEntry) return null;
-            const prefVal = prefEntry.rate;
-            // rank1修正: 「都道府県判別不可」を除外し47県のみで平均・分布化
-            const p47Entries = Object.entries(rates.by_pref).filter(([p])=>isP47(p));
-            const stripVals = p47Entries.map(([p,v])=>({pref:p, value:v.rate})).filter(d=>typeof d.value==='number');
-            const allVals = stripVals.map(d=>d.value);
-            const natAvg = allVals.length > 0 ? allVals.reduce((s,v)=>s+v,0)/allVals.length : null;
+        <div style={{display:'grid',gridTemplateColumns:mob?'1fr 1fr':'repeat(5,1fr)',gap:10}}>
+          {RISK_CARDS.map((rc, ci) => {
+            const st = gaugeStats(rc.key);
+            if (!st) return null;
+            const { stripVals, prefVal, natAvg, min, max, p10, p90, rank } = st;
             const deltaPct = natAvg ? (prefVal/natAvg - 1) * 100 : null;
-            // 自然言語化
-            let cmpLabel = '', cmpColor = '#64748b';
+            // 自然言語化（既存cmp閾値ロジック — 針色にも流用。緑=「平均より低い」であり安全宣言ではない）
+            let cmpShort = '', cmpColor = '#64748b';
             if (deltaPct != null) {
               const abs = Math.abs(deltaPct);
-              if (abs < 5) { cmpLabel = '47都道府県平均と同程度'; cmpColor = '#64748b'; }
-              else if (deltaPct > 0) {
-                cmpLabel = abs >= 15 ? '47都道府県平均より顕著に高い' : '47都道府県平均より高い';
-                cmpColor = abs >= 15 ? '#dc2626' : '#f59e0b';
-              } else {
-                cmpLabel = abs >= 15 ? '47都道府県平均より顕著に低い' : '47都道府県平均より低い';
-                cmpColor = '#059669';
-              }
+              if (abs < 5) { cmpShort = '同程度'; cmpColor = '#64748b'; }
+              else if (deltaPct > 0) { cmpShort = abs >= 15 ? '顕著に高い' : '高い'; cmpColor = abs >= 15 ? '#dc2626' : '#f59e0b'; }
+              else { cmpShort = abs >= 15 ? '顕著に低い' : '低い'; cmpColor = '#059669'; }
             }
-            // 年齢標準化率
+            // もう一方のモードの値（粗率モード=紫の標準化行 / 標準化モード=粗率の逆表示）
             const stdInfo = ndbCheckupRiskRatesStd?.risk_rates?.[rc.key]?.by_pref?.[ndbPref];
+            const crudeVal = ndbCheckupRiskRates.risk_rates[rc.key]?.by_pref?.[ndbPref]?.rate;
+            // ゴースト針: hover県（全ストリップ・全ゲージが同期して揺れる）/ ◆ピン県
+            const field = riskStdMode ? 'age_standardized_rate' : 'rate';
+            const srcAll = riskStdMode ? ndbCheckupRiskRatesStd?.risk_rates?.[rc.key]?.by_pref : ndbCheckupRiskRates.risk_rates[rc.key]?.by_pref;
+            const hoverVal = (hoverPref && hoverPref !== ndbPref) ? srcAll?.[hoverPref]?.[field] : null;
+            const pinVal = (pinnedPref && pinnedPref !== ndbPref) ? srcAll?.[pinnedPref]?.[field] : null;
             // 分布ドロワー連携: click=該当指標でドロワーへ / 網掛けhover時は該当カードをリング強調
             const binsCardActive = binsOpen && RISK_BIN_THRESHOLD[rc.key]?.metric === binsMetric;
             return <div key={rc.key}
               onClick={(e)=>{ if (e.target && e.target.closest && e.target.closest('svg,button,a')) return; binsJumpTo(rc.key); }}
-              title="クリックで下の分布ドロワーに階級分布を表示"
-              style={{background:'#f8fafc',borderRadius:10,padding:'12px 14px',cursor:'pointer',borderLeft:`3px solid ${(activeDomain&&dMatch('riskKey',rc.key))?dm.color:rc.color}`,...dFade('riskKey',rc.key),
+              title={`${rc.fullLabel} — クリックで下の分布ドロワーに階級分布を表示`}
+              style={{background:'#f8fafc',borderRadius:10,padding:'10px 12px',cursor:'pointer',borderLeft:`3px solid ${(activeDomain&&dMatch('riskKey',rc.key))?dm.color:rc.color}`,...dFade('riskKey',rc.key),
                 boxShadow: binsZoneHover && binsCardActive ? `0 0 0 2px ${rc.color}` : 'none',
-                transition:'opacity 300ms ease, box-shadow 300ms ease'}}>
-              <div style={{display:'flex',alignItems:'center',gap:4,marginBottom:6}}>
+                transition:'opacity 300ms ease, box-shadow 300ms ease',
+                ...(mob && ci === RISK_CARDS.length-1 ? {gridColumn:'span 2', maxWidth:'60%', justifySelf:'center', width:'100%'} : {})}}>
+              <div style={{display:'flex',alignItems:'center',gap:4,marginBottom:4}}>
                 <span style={{fontSize:14}}>{rc.icon}</span>
                 <span style={{fontSize:11,fontWeight:600,color:'#1e293b'}}>{rc.label}</span>
               </div>
-              <div style={{fontSize:24,fontWeight:700,color:'#1e293b',lineHeight:1.1}}>{prefVal.toFixed(1)}<span style={{fontSize:13,fontWeight:500,color:'#64748b'}}>%</span></div>
-              {stdInfo && stdInfo.age_standardized_rate != null && (
-                <div title="NDB内標準人口で直接標準化（47県合算 sex × age_group）" style={{fontSize:9,color:'#7c3aed',marginTop:3,fontWeight:500}}>
-                  年齢標準化 {stdInfo.age_standardized_rate.toFixed(1)}% ({stdInfo.delta_pp >= 0 ? '+' : ''}{stdInfo.delta_pp.toFixed(1)}pp)
-                </div>
-              )}
-              {cmpLabel && (
-                <div style={{fontSize:10,color:cmpColor,fontWeight:600,marginTop:4}}>
-                  {cmpLabel} ({deltaPct > 0 ? '+' : ''}{deltaPct.toFixed(1)}%)
-                </div>
-              )}
-              <div style={{fontSize:9,color:'#94a3b8',marginTop:3,lineHeight:1.3}}>{rc.fullLabel}</div>
+              {/* 半円アークゲージ（冠）: click=ドロワー / アークスクラブ=最近傍県→hoverPref同期 */}
+              <RiskGauge value={prefVal} natAvg={natAvg} p10={p10} p90={p90} min={min} max={max}
+                rank={rank} color={cmpColor} unit="%" prefName={ndbPref} mob={mob}
+                reduced={prefersReducedMotion()}
+                hoverValue={hoverVal} hoverName={hoverPref} pinValue={pinVal} pinName={pinnedPref}
+                values={stripVals} onScrub={setHoverPref} onJump={()=>binsJumpTo(rc.key)} />
+              {/* 値+短縮チップ（20px降格・角度でなく実値が正） */}
+              <div style={{display:'flex',alignItems:'baseline',gap:6,marginTop:2,flexWrap:'wrap'}}>
+                <span style={{fontSize:20,fontWeight:700,color:'#1e293b',lineHeight:1.1,fontVariantNumeric:'tabular-nums'}}>
+                  <CountUpNum value={prefVal} decimals={1} /><span style={{fontSize:11,fontWeight:500,color:'#64748b'}}>%</span>
+                </span>
+                {cmpShort && deltaPct != null && (
+                  <span style={{fontSize:9.5,fontWeight:700,color:cmpColor,background:cmpColor+'14',border:`1px solid ${cmpColor}33`,padding:'1px 6px',borderRadius:4,whiteSpace:'nowrap'}}>
+                    {deltaPct > 0 ? '+' : ''}{deltaPct.toFixed(1)}% {cmpShort}
+                  </span>
+                )}
+              </div>
+              <div style={{fontSize:8.5,color:'#94a3b8',marginTop:1}}>47県中{rank}位{riskStdMode ? '（年齢標準化）' : ''}</div>
+              {riskStdMode
+                ? (crudeVal != null && <div title="標準化前の粗率" style={{fontSize:9,color:'#64748b',marginTop:3,fontWeight:500}}>粗率 {crudeVal.toFixed(1)}%</div>)
+                : (stdInfo && stdInfo.age_standardized_rate != null && (
+                    <div title="NDB内標準人口で直接標準化（47県合算 sex × age_group）" style={{fontSize:9,color:'#7c3aed',marginTop:3,fontWeight:500}}>
+                      年齢標準化 {stdInfo.age_standardized_rate.toFixed(1)}% ({stdInfo.delta_pp >= 0 ? '+' : ''}{stdInfo.delta_pp.toFixed(1)}pp)
+                    </div>
+                  ))}
               {stripVals.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={stripVals} natAvg={natAvg} yearBadge={yb('checkupRisk')} mode="micro" /></div>}
             </div>;
           })}
@@ -1450,6 +1463,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
             <span style={{fontSize:11.5,fontWeight:700,color:'#1e293b'}}>分布ドロワー — 検査値階級の分布と臨床閾値</span>
             {/* yb('checkupRisk')=R4 バッジ（ドロワーヘッダ必須） */}
             <span style={{fontSize:8.5,fontWeight:700,padding:'1px 5px',borderRadius:3,border:`1px solid ${yb('checkupRisk').color}`,color:yb('checkupRisk').color,background:'#fff',flexShrink:0}}>{yb('checkupRisk').label}</span>
+            {riskStdMode && <span title="盤は年齢標準化モードですが、本図（階級分布）は粗分布のみです" style={{fontSize:9,fontWeight:600,color:'#7c3aed',background:'#f5f3ff',border:'1px solid #ddd6fe',padding:'1px 6px',borderRadius:3,flexShrink:0}}>本図は粗分布</span>}
             {!mob && <span style={{fontSize:9.5,color:'#94a3b8'}}>県=塗り / 全国=灰輪郭 / 閾値から先=網掛け</span>}
             <span style={{marginLeft:'auto',fontSize:10,color:'#64748b',fontWeight:600,flexShrink:0}}>{binsOpen?'▲ 閉じる':'▼ 分布を見る'}</span>
           </button>
@@ -1552,6 +1566,32 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
         </div>
       </div>;
     })()}
+
+    {/* ── サブセクション A: 検査値平均（参考・Bの下へ移設。計算ロジックは移設のみ無改変） ── */}
+    {hcPref.length > 0 && <div style={{marginTop:14}}>
+      <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:8}}>
+        <span style={{fontSize:11,fontWeight:700,color:'#64748b',padding:'2px 8px',background:'#f1f5f9',borderRadius:4}}>参考: A. 検査値平均</span>
+        <span style={{fontSize:10,color:'#94a3b8'}}>Hb / Cr / eGFR — 5リスク該当者率とは別系の男女別平均値</span>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'repeat(3,1fr)',gap:12}}>
+        {hcPref.map((h,i)=>{
+          const meta = RISK_META[h.metric] || {};
+          // rank1: 検査値の47県分布（男女平均、判別不可除外）
+          const hcVals = (ndbHc||[]).filter(x=>x.metric===h.metric && isP47(x.pref) && x.male!=null && x.female!=null)
+            .map(x=>({pref:x.pref, value:(x.male+x.female)/2}));
+          return <div key={i} style={{background:'#f8fafc',borderRadius:10,padding:'10px 14px',...dFade('hcMetric',h.metric),...dBorder('hcMetric',h.metric)}}>
+            <div style={{display:'flex',alignItems:'baseline',gap:10,flexWrap:'wrap'}}>
+              <span style={{fontSize:12,fontWeight:600}}>{meta.icon||''} {h.metric}</span>
+              <span style={{fontSize:11}}><span style={{color:'#3b82f6'}}>男</span> <b style={{fontSize:15,color:'#2563EB'}}>{h.male}</b></span>
+              <span style={{fontSize:11}}><span style={{color:'#dc2626'}}>女</span> <b style={{fontSize:15,color:'#dc2626'}}>{h.female}</b></span>
+              <span style={{fontSize:9,color:'#94a3b8',marginLeft:'auto'}}>{meta.unit||''}{meta.note?` ・ ${meta.note}`:''}</span>
+            </div>
+            {hcVals.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={hcVals} yearBadge={yb('ndbHc')} mode="inline" /><div style={{fontSize:9,color:'#94a3b8',marginTop:1}}>男女平均の47県分布</div></div>}
+          </div>;
+        })}
+      </div>
+      <div style={{fontSize:10,color:'#94a3b8',marginTop:6,fontStyle:'italic'}}>※男女別平均値をもとにした参考値。疾病診断率ではありません。</div>
+    </div>}
   </div>}
 
   {/* ═══ Layer 2.5: DEMAND-SIDE (受療率 — 患者調査) ═══ */}
