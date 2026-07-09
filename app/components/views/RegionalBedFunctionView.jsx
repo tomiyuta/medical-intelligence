@@ -1,6 +1,9 @@
 'use client';
+import { useState, useEffect, useMemo } from 'react';
+import { ComposedChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ReferenceArea, ReferenceLine, ReferenceDot } from 'recharts';
 import { fmt, sortPrefs } from '../shared';
 import InterpretationGuard from '../ui/InterpretationGuard';
+import { getSourceBadge } from '../../../lib/sourceRegistry';
 
 const FUNC_COLORS = {
   '高度急性期': '#dc2626',
@@ -212,6 +215,81 @@ export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegP
     homecareType = null;
   }
 
+  // ════════════════════════════════════════════════════════════════════════
+  // rank7: 病床供給 × 将来入院需要クロスオーバー
+  // ════════════════════════════════════════════════════════════════════════
+  // 供給帯 = 4機能(高度急性期/急性期/回復期/慢性期)の病床数のみ。休棟2種は除外。
+  const supplyBeds = useMemo(() => {
+    const src = bf || (isNational ? bfNat : null);
+    if (!src) return null;
+    let s = 0, any = false;
+    for (const f of ACTIVE_FUNCS) {
+      const b = src[f]?.beds;
+      if (typeof b === 'number') { s += b; any = true; }
+    }
+    return any ? s : null;
+  }, [bf, bfNat, isNational]);
+
+  // 将来入院需要(1日平均在院患者数, 2020-2050)を県集約 API から取得
+  const [demandProj, setDemandProj] = useState(null);
+  const [demandLoading, setDemandLoading] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    setDemandProj(null);
+    setDemandLoading(true);
+    // 全国(regPref=null)は pref 無指定=全圏合算 で全国相当の需要を取得
+    const q = isNational ? '' : encodeURIComponent(regPref);
+    fetch(`/api/demand-projection/pref?pref=${q}`)
+      .then(r => (r.ok ? r.json() : null))
+      .then(j => { if (alive) { setDemandProj(j); setDemandLoading(false); } })
+      .catch(() => { if (alive) { setDemandProj(null); setDemandLoading(false); } });
+    return () => { alive = false; };
+  }, [regPref, isNational]);
+
+  const demandModel = useMemo(() => {
+    if (!demandProj || !Array.isArray(demandProj.years)) return null;
+    const series = demandProj.inpatient?.['総数'];
+    if (!series) return null;
+    const rows = demandProj.years.map(y => {
+      const ys = String(y);
+      const demand = typeof series[ys] === 'number' ? series[ys] : null;
+      const ratio = (demand != null && supplyBeds) ? (demand / supplyBeds * 100) : null;
+      return { year: ys, yearNum: y, demand, ratio, projected: y >= 2025 };
+    });
+    const valid = rows.filter(r => r.demand != null);
+    if (valid.length === 0) return null;
+    // 需要ピーク年(reduce)
+    const peak = valid.reduce((a, b) => (b.demand > a.demand ? b : a), valid[0]);
+    // 供給とのクロスオーバー(需要が現在病床を最初に上回る年)
+    const cross = (supplyBeds != null) ? (valid.find(r => r.demand > supplyBeds) || null) : null;
+    const lastProjYear = rows[rows.length - 1]?.year;
+    return { rows, peak, cross, lastProjYear, source: demandProj.source, note: demandProj.note, method: demandProj.method };
+  }, [demandProj, supplyBeds]);
+
+  const bedBadge = getSourceBadge('bedFunc');
+
+  // 需要/病床比 の Y ドメイン上限(供給ラインが必ず入るよう余白確保)
+  const demandYMax = useMemo(() => {
+    if (!demandModel) return null;
+    const dmax = Math.max(...demandModel.rows.map(r => r.demand || 0));
+    const top = Math.max(dmax, supplyBeds || 0);
+    return Math.ceil(top * 1.12 / 1000) * 1000;
+  }, [demandModel, supplyBeds]);
+
+  const DemandTooltip = ({ active, payload, label }) => {
+    if (!active || !payload || !payload.length) return null;
+    const p = payload[0]?.payload;
+    if (!p || p.demand == null) return null;
+    return (
+      <div style={{ background:'#fff', border:'1px solid #e2e8f0', borderRadius:8, padding:'8px 11px', fontSize:11.5, boxShadow:'0 2px 8px rgba(0,0,0,0.08)' }}>
+        <div style={{ fontWeight:700, color:'#1e293b', marginBottom:3 }}>{label}年{p.projected && <span style={{ marginLeft:5, fontSize:9, color:'#b45309', fontWeight:600 }}>参考推計</span>}</div>
+        <div style={{ color:'#2563eb', fontWeight:600 }}>入院需要 {fmt(Math.round(p.demand))} <span style={{ color:'#94a3b8', fontWeight:500 }}>人/日</span></div>
+        {supplyBeds != null && <div style={{ color:'#166534', fontWeight:600 }}>現在病床(4機能) {fmt(supplyBeds)} <span style={{ color:'#94a3b8', fontWeight:500 }}>床</span></div>}
+        {p.ratio != null && <div style={{ marginTop:2, color:'#64748b' }}>需要/病床比 <b>{p.ratio.toFixed(0)}%</b> <span style={{ fontSize:9, color:'#94a3b8' }}>(参考値)</span></div>}
+      </div>
+    );
+  };
+
   return <>
   {/* Header */}
   <div style={{marginBottom:20}}>
@@ -302,6 +380,104 @@ export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegP
       </div>
     </div>
   )}
+
+  {/* Layer B: 病床供給 × 将来入院需要クロスオーバー (rank7) */}
+  {/* hatch pattern def (SVG global, ReferenceArea fill=url(#rbfHatch) から参照) */}
+  <svg width="0" height="0" style={{position:'absolute'}} aria-hidden="true">
+    <defs>
+      <pattern id="rbfHatch" patternUnits="userSpaceOnUse" width="7" height="7" patternTransform="rotate(45)">
+        <rect width="7" height="7" fill="#eff6ff" fillOpacity="0.5" />
+        <line x1="0" y1="0" x2="0" y2="7" stroke="#93c5fd" strokeWidth="1.4" strokeOpacity="0.6" />
+      </pattern>
+    </defs>
+  </svg>
+  <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16}}>
+    <div style={{display:'flex',alignItems:'flex-start',gap:8,marginBottom:6,flexWrap:'wrap'}}>
+      <span style={{fontSize:18}}>📈</span>
+      <div style={{flex:'1 1 240px'}}>
+        <div style={{fontSize:14,fontWeight:700,color:'#1e293b',display:'flex',alignItems:'center',gap:6,flexWrap:'wrap'}}>
+          病床供給 × 将来入院需要クロスオーバー — {isNational ? '全国' : regPref}
+          <span title={bedBadge.title} style={{fontSize:9,fontWeight:700,padding:'1px 6px',borderRadius:4,background:bedBadge.bg,color:bedBadge.color,border:`1px solid ${bedBadge.border}`}}>供給 {bedBadge.year}</span>
+          <span title="受療率法(受療率固定・人口変動のみ反映)による将来推計" style={{fontSize:9,fontWeight:700,padding:'1px 6px',borderRadius:4,background:'#fff7ed',color:'#b45309',border:'1px solid #fed7aa'}}>需要 参考推計</span>
+        </div>
+        <div style={{fontSize:11,color:'#94a3b8',marginTop:2}}>現在の病床供給(R6・静的水準)の上に、受療率法による2020–2050の入院需要(1日平均在院患者数)を重ねる</div>
+      </div>
+    </div>
+
+    {demandLoading && <div style={{padding:'28px 0',textAlign:'center',fontSize:12,color:'#94a3b8'}}>需要推計を読み込み中…</div>}
+    {!demandLoading && !demandModel && (
+      <div style={{padding:'20px 0',fontSize:12,color:'#94a3b8'}}>この{isNational?'':'県の'}将来入院需要の推計データは見つかりませんでした。</div>
+    )}
+
+    {!demandLoading && demandModel && (
+      <>
+        {/* 需要ピーク年・クロスオーバー チップ */}
+        <div style={{display:'flex',gap:8,flexWrap:'wrap',margin:'6px 0 12px'}}>
+          <div style={{background:'#eff6ff',border:'1px solid #bfdbfe',borderRadius:8,padding:'6px 12px',fontSize:11.5}}>
+            <span style={{color:'#94a3b8'}}>需要ピーク年</span>{' '}
+            <b style={{color:'#2563eb'}}>{demandModel.peak.year}年</b>{' '}
+            <span style={{color:'#64748b'}}>{fmt(Math.round(demandModel.peak.demand))} 人/日</span>
+          </div>
+          {supplyBeds != null && (
+            <div style={{background:'#f0fdf4',border:'1px solid #bbf7d0',borderRadius:8,padding:'6px 12px',fontSize:11.5}}>
+              <span style={{color:'#94a3b8'}}>現在病床(4機能)</span>{' '}
+              <b style={{color:'#166534'}}>{fmt(supplyBeds)} 床</b>{' '}
+              <span style={{fontSize:9,color:'#94a3b8'}}>2024静的</span>
+            </div>
+          )}
+          {supplyBeds != null && demandModel.cross && (
+            <div style={{background:'#fefce8',border:'1px solid #fde68a',borderRadius:8,padding:'6px 12px',fontSize:11.5}}>
+              <span style={{color:'#94a3b8'}}>需要が現在病床水準を上回る年</span>{' '}
+              <b style={{color:'#b45309'}}>{demandModel.cross.year}年</b>{' '}
+              <span style={{fontSize:9,color:'#94a3b8'}}>(参考値・断定ではありません)</span>
+            </div>
+          )}
+        </div>
+
+        <ResponsiveContainer width="100%" height={mob?240:300}>
+          <ComposedChart data={demandModel.rows} margin={{left:8,right:12,top:12,bottom:4}}>
+            <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+            {/* 供給帯: 現在病床でカバー可能な需要水準ゾーン(y=0..供給) — 静的 */}
+            {supplyBeds != null && (
+              <ReferenceArea y1={0} y2={supplyBeds} fill="#059669" fillOpacity={0.06} stroke="none" ifOverflow="extendDomain" />
+            )}
+            {/* 推計領域(2025以降)を斜線塗り */}
+            <ReferenceArea x1="2025" x2={demandModel.lastProjYear} fill="url(#rbfHatch)" fillOpacity={1} stroke="none" ifOverflow="extendDomain" />
+            <XAxis dataKey="year" tick={{fontSize:11,fill:'#475569'}} axisLine={false} tickLine={false} />
+            <YAxis tick={{fontSize:10,fill:'#94a3b8'}} axisLine={false} tickLine={false} domain={[0, demandYMax || 'auto']} width={48} />
+            <Tooltip content={<DemandTooltip />} cursor={{stroke:'#94a3b8',strokeWidth:1,strokeDasharray:'4 3'}} />
+            {/* 入院需要曲線(面) */}
+            <Area type="monotone" dataKey="demand" name="入院需要" stroke="#2563eb" strokeWidth={2.4} fill="#2563eb" fillOpacity={0.12} dot={{r:2.5,fill:'#2563eb'}} activeDot={{r:4}} connectNulls />
+            {/* 現在総病床(4機能)の水平参照ライン(帯の上端) */}
+            {supplyBeds != null && (
+              <ReferenceLine y={supplyBeds} stroke="#059669" strokeWidth={1.8} strokeDasharray="6 4"
+                label={{value:`現在総病床(4機能) ${fmt(supplyBeds)}床`, position:'insideTopLeft', fontSize:10, fill:'#166534', fontWeight:600}} />
+            )}
+            {/* 需要ピーク年ドット */}
+            {demandModel.peak && demandModel.peak.demand != null && (
+              <ReferenceDot x={demandModel.peak.year} y={demandModel.peak.demand} r={5} fill="#2563eb" stroke="#fff" strokeWidth={1.6}
+                label={{value:`ピーク ${demandModel.peak.year}`, position:'top', fontSize:9.5, fill:'#2563eb', fontWeight:700}} />
+            )}
+          </ComposedChart>
+        </ResponsiveContainer>
+
+        {/* 凡例・ガードレール */}
+        <div style={{display:'flex',gap:14,flexWrap:'wrap',fontSize:10.5,color:'#64748b',margin:'8px 0 0'}}>
+          <span><span style={{display:'inline-block',width:20,height:3,background:'#2563eb',borderRadius:2,verticalAlign:'middle',marginRight:5}} />入院需要(1日平均在院患者数・受療率法)</span>
+          <span><span style={{display:'inline-block',width:20,height:0,borderTop:'2px dashed #059669',verticalAlign:'middle',marginRight:5}} />現在総病床(4機能・R6静的水準)</span>
+          <span><span style={{display:'inline-block',width:14,height:10,backgroundColor:'#eff6ff',backgroundImage:'repeating-linear-gradient(45deg, #93c5fd 0, #93c5fd 1.4px, transparent 1.4px, transparent 5px)',border:'1px solid #bfdbfe',verticalAlign:'middle',marginRight:5}} />推計領域(2025–)</span>
+        </div>
+
+        <div style={{fontSize:10,color:'#94a3b8',marginTop:10,paddingTop:10,borderTop:'1px solid #f1f5f9',lineHeight:1.7}}>
+          <b style={{color:'#b45309'}}>⚠️ 参考推計として</b>: 病床数は<b>2024年時点の静的水準</b>で、将来の病床再編・機能転換は反映しません。需要は受療率法(受療率固定・人口変動のみ反映・患者住所地ベース)による参考推計です。<br/>
+          <b>需要/病床比</b>は稼働率・平均在院日数の変化・二次医療圏を跨ぐ患者の流出入を考慮しない<b>参考値</b>であり、病床の「不足」「過剰」を断定するものではありません。<br/>
+          <b>1日平均在院患者数(人/日)と病床数(床)は同一次元(在院日数ベースの延べ規模)ですが、稼働率・回転を挟むため同一物ではありません。</b><br/>
+          ※供給帯・水平ラインの病床数は<b>休棟・休止病床を除く4機能(高度急性期/急性期/回復期/慢性期)のみ</b>を積算しています(休棟2区分は将来稼働が不確実なため除外)。<br/>
+          出典: 供給={bedBadge.source} / 需要={demandModel.source||'demand_projection R5(受療率法)'}
+        </div>
+      </>
+    )}
+  </div>
 
   {/* 地域類型 */}
   {region && (
