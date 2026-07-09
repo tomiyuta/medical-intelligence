@@ -1,11 +1,19 @@
 'use client';
 import { useState, useEffect } from 'react';
-import { fmt, sortPrefs } from '../shared';
+import { fmt, sortPrefs, PREF_ORDER } from '../shared';
 import { dispersionForCause, classifyDispersion } from '../../../lib/dispersionMetrics';
 
 import DomainSupplyDemandBridge from './DomainSupplyDemandBridge';
 import InterpretationGuard from '../ui/InterpretationGuard';
 import RegionalMismatchExplorer from '../ui/RegionalMismatchExplorer';
+import PrefStrip47 from '../ui/PrefStrip47';
+import { getSourceBadge } from '../../../lib/sourceRegistry';
+
+// rank1: 47都道府県ホワイトリスト（「都道府県判別不可」「全国」等の擬似県を分布から除外）
+const PREF47_SET = new Set(PREF_ORDER);
+const isP47 = (p) => PREF47_SET.has(p);
+// yearBadge（PrefStrip47 必須prop）: SOURCE_REGISTRY から {label:year, color}
+const yb = (k) => { const s = getSourceBadge(k); return { label: s.year, color: s.color }; };
 const CAT_LABELS = {'A_初再診料':'外来受診','B_医学管理等':'慢性疾患管理','C_在宅医療':'在宅医療'};
 const RISK_META = {
   'ヘモグロビン': {unit:'g/dL', note:'低値=貧血リスク', icon:'🩸'},
@@ -75,6 +83,19 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
   const vp = vitalStats?.prefectures?.find(p=>p.pref===ndbPref);
   const causes = vp?.causes || [];
 
+  // ── rank1: 分布ストリップ共通state（hover同期・比較ピン） ──
+  const [hoverPref, setHoverPref] = useState(null);
+  const [pinnedPref, setPinnedPref] = useState(null);
+  // 全ストリップ共通props（onJump=setNdbPref=globalPref連動）
+  const stripCommon = {
+    selected: ndbPref,
+    pinned: pinnedPref,
+    hoverPref,
+    onHover: setHoverPref,
+    onPin: (p)=>setPinnedPref(prev => prev===p ? null : p),
+    onJump: setNdbPref,
+  };
+
   // ── 人口KPI: age_pyramid (住基2025) + future_demographics (社人研2050) ──
   // age_groups 21帯: idx 13=65-69, 15=75-79, 17=85-89
   const computeAgeRates = (ap) => {
@@ -128,6 +149,30 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     }).filter(Boolean).sort((a,b)=>b.rate75-a.rate75);
     const idx = arr.findIndex(x=>x.pref===ndbPref);
     return idx >= 0 ? { rank: idx+1, total: arr.length } : null;
+  })();
+
+  // rank1: 人口KPI micro ストリップ用 47県分布（判別不可等は isP47 で除外）
+  const demoStrips = (()=>{
+    const total = [], r65 = [], r75 = [], r85 = [], chg = [];
+    if (agePyramid?.prefectures) {
+      Object.entries(agePyramid.prefectures).forEach(([p, ap])=>{
+        if (!isP47(p)) return;
+        const r = computeAgeRates(ap);
+        if (!r) return;
+        total.push({pref:p, value:r.total});
+        r65.push({pref:p, value:r.rate65});
+        r75.push({pref:p, value:r.rate75});
+        r85.push({pref:p, value:r.rate85});
+      });
+    }
+    if (futureDemo?.prefectures) {
+      futureDemo.prefectures.forEach(fp=>{
+        if (!isP47(fp.pref) || !(fp.type==='a'||fp.type===1)) return;
+        const p20 = fp.total_pop?.['2020'], p50 = fp.total_pop?.['2050'];
+        if (p20 && p50) chg.push({pref:fp.pref, value:(p50/p20-1)*100});
+      });
+    }
+    return { total, r65, r75, r85, chg };
   })();
 
   // Population for per-capita
@@ -210,6 +255,16 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     {prefPop > 0 && <span style={{fontSize:12,color:'#94a3b8'}}>人口 {fmt(prefPop)}人</span>}
   </div>
 
+  {/* rank1: 比較県ピン チップ（分布ストリップのドットclickで設定・ここで解除/移動） */}
+  {pinnedPref && pinnedPref !== ndbPref && (
+    <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:16,padding:'7px 12px',background:'#fff7ed',border:'1px solid #fed7aa',borderRadius:8,fontSize:12,flexWrap:'wrap'}}>
+      <span style={{color:'#c2410c',fontWeight:700}}>◆ 比較県: {pinnedPref}</span>
+      <span style={{color:'#9a3412',fontSize:11}}>全ストリップ上で橙◆に点灯中</span>
+      <button onClick={()=>setNdbPref(pinnedPref)} style={{marginLeft:'auto',padding:'3px 10px',border:'1px solid #fdba74',background:'#fff',color:'#c2410c',borderRadius:6,fontSize:11,fontWeight:600,cursor:'pointer'}}>この県へ移動 →</button>
+      <button onClick={()=>setPinnedPref(null)} style={{padding:'3px 10px',border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',borderRadius:6,fontSize:11,fontWeight:600,cursor:'pointer'}}>解除 ✕</button>
+    </div>
+  )}
+
   {/* ═══ DEMOGRAPHIC CONTEXT (人口KPI) ═══ */}
   {demoKpi && (
     <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'16px 24px',marginBottom:16}}>
@@ -229,6 +284,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           <div style={{fontSize:10,color:'#64748b',marginBottom:2}}>総人口</div>
           <div style={{fontSize:mob?15:18,fontWeight:700,color:'#1e293b'}}>{fmt(demoKpi.total)}</div>
           <div style={{fontSize:10,color:'#94a3b8'}}>2025年1月（人）</div>
+          {demoStrips.total.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={demoStrips.total} yearBadge={yb('agePyramid')} mode="micro" /></div>}
         </div>
         {/* 2: 65+ */}
         <div style={{background:'#f8fafc',borderRadius:8,padding:'10px 12px'}}>
@@ -237,6 +293,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           {demoNat && <div style={{fontSize:10,color:demoKpi.rate65>demoNat.rate65?'#dc2626':'#059669'}}>
             全国比 {demoKpi.rate65>demoNat.rate65?'+':''}{(demoKpi.rate65-demoNat.rate65).toFixed(1)}pt
           </div>}
+          {demoStrips.r65.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={demoStrips.r65} natAvg={demoNat?.rate65} yearBadge={yb('agePyramid')} mode="micro" /></div>}
         </div>
         {/* 3: 75+ */}
         <div style={{background:'#f8fafc',borderRadius:8,padding:'10px 12px'}}>
@@ -245,6 +302,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           {demoNat && <div style={{fontSize:10,color:demoKpi.rate75>demoNat.rate75?'#dc2626':'#059669'}}>
             全国比 {demoKpi.rate75>demoNat.rate75?'+':''}{(demoKpi.rate75-demoNat.rate75).toFixed(1)}pt
           </div>}
+          {demoStrips.r75.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={demoStrips.r75} natAvg={demoNat?.rate75} yearBadge={yb('agePyramid')} mode="micro" /></div>}
         </div>
         {/* 4: 85+ */}
         <div style={{background:'#f8fafc',borderRadius:8,padding:'10px 12px'}}>
@@ -253,6 +311,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           {demoNat && <div style={{fontSize:10,color:demoKpi.rate85>demoNat.rate85?'#dc2626':'#059669'}}>
             全国比 {demoKpi.rate85>demoNat.rate85?'+':''}{(demoKpi.rate85-demoNat.rate85).toFixed(1)}pt
           </div>}
+          {demoStrips.r85.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={demoStrips.r85} natAvg={demoNat?.rate85} yearBadge={yb('agePyramid')} mode="micro" /></div>}
         </div>
         {/* 5: 2050 */}
         <div style={{background:'#fef3c7',borderRadius:8,padding:'10px 12px'}}>
@@ -263,6 +322,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           <div style={{fontSize:10,color:'#92400e'}}>
             {demoKpi.rate75_2050!=null ? `75+→${demoKpi.rate75_2050.toFixed(1)}%` : '人口変化(2020比)'}
           </div>
+          {demoStrips.chg.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={demoStrips.chg} yearBadge={yb('futureDemo')} mode="micro" /></div>}
         </div>
       </div>
       {/* 解釈文（自動生成） */}
@@ -304,13 +364,16 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     // 服薬・既往歴は色判定対象外（リスク方向性が中立）
     const NEUTRAL_KEYS = new Set(['hypertension_med', 'diabetes_medication', 'lipid_medication',
                                   'heart_disease', 'stroke_history', 'ckd_history']);
-    // Compute national averages
-    const allPrefs = Object.values(ndbQ.prefectures);
+    // Compute national averages（rank1修正: 「都道府県判別不可」を除外し47県のみで平均）
+    const prefEntries47 = Object.entries(ndbQ.prefectures).filter(([p])=>isP47(p));
+    const allPrefs = prefEntries47.map(([,v])=>v);
     const natAvg = {};
     for (const key of Object.keys(qd)) {
       const vals = allPrefs.map(p=>p[key]).filter(v=>v!=null);
       natAvg[key] = vals.length > 0 ? vals.reduce((s,v)=>s+v,0)/vals.length : 0;
     }
+    // rank1: 各項目の47県分布ストリップ用 values
+    const stripVals = (key) => prefEntries47.map(([p,v])=>({pref:p, value:v[key]})).filter(d=>d.value!=null);
     const items = Object.entries(qd).sort((a,b)=>b[1]-a[1]);
     return (
     <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16}}>
@@ -329,14 +392,19 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           // neutral: 服薬・既往は方向性中立（医療負荷の事実）→ 色判定なし
           const isNeutral = NEUTRAL_KEYS.has(key);
           const isHigherRisk = isNeutral ? null : (INVERSE_KEYS.has(key) ? delta < 0 : delta > 0);
-          return <div key={key} style={{display:'flex',alignItems:'center',gap:10}}>
-            <span style={{fontSize:16,width:24}}>{RISK_ICONS[key]||'📋'}</span>
-            <span style={{width:mob?70:90,fontSize:12,fontWeight:600,color:'#475569',flexShrink:0}}>{q.risk_label||key}</span>
-            <div style={{flex:1,height:22,background:'#f1f5f9',borderRadius:4,overflow:'hidden',position:'relative'}}>
-              <div style={{height:'100%',borderRadius:4,background:RISK_COLORS[key]||'#94a3b8',width:`${Math.min(rate,100)}%`,opacity:0.75}}/>
-              <span style={{position:'absolute',right:6,top:3,fontSize:10,color:'#475569',fontWeight:600}}>{rate}%</span>
+          return <div key={key}>
+            <div style={{display:'flex',alignItems:'center',gap:10}}>
+              <span style={{fontSize:16,width:24}}>{RISK_ICONS[key]||'📋'}</span>
+              <span style={{width:mob?70:90,fontSize:12,fontWeight:600,color:'#475569',flexShrink:0}}>{q.risk_label||key}</span>
+              <div style={{flex:1,height:22,background:'#f1f5f9',borderRadius:4,overflow:'hidden',position:'relative'}}>
+                <div style={{height:'100%',borderRadius:4,background:RISK_COLORS[key]||'#94a3b8',width:`${Math.min(rate,100)}%`,opacity:0.75}}/>
+                <span style={{position:'absolute',right:6,top:3,fontSize:10,color:'#475569',fontWeight:600}}>{rate}%</span>
+              </div>
+              <span style={{fontSize:10,fontWeight:600,color:isNeutral?'#64748b':(isHigherRisk?'#dc2626':'#059669'),width:60,textAlign:'right',flexShrink:0}}>{delta>0?'↑':'↓'}{Math.abs(delta).toFixed(1)}pt</span>
             </div>
-            <span style={{fontSize:10,fontWeight:600,color:isNeutral?'#64748b':(isHigherRisk?'#dc2626':'#059669'),width:60,textAlign:'right',flexShrink:0}}>{delta>0?'↑':'↓'}{Math.abs(delta).toFixed(1)}pt</span>
+            <div style={{margin:'2px 0 2px 34px'}}>
+              <PrefStrip47 {...stripCommon} values={stripVals(key)} natAvg={natAvg[key]} inverse={INVERSE_KEYS.has(key)} yearBadge={yb('ndbQ')} mode="inline" />
+            </div>
           </div>;
         })}
       </div>
@@ -363,6 +431,9 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
       <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'repeat(3,1fr)',gap:12}}>
         {hcPref.map((h,i)=>{
           const meta = RISK_META[h.metric] || {};
+          // rank1: 検査値の47県分布（男女平均、判別不可除外）
+          const hcVals = (ndbHc||[]).filter(x=>x.metric===h.metric && isP47(x.pref) && x.male!=null && x.female!=null)
+            .map(x=>({pref:x.pref, value:(x.male+x.female)/2}));
           return <div key={i} style={{background:'#f8fafc',borderRadius:10,padding:'14px 16px'}}>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:8}}>
               <span style={{fontSize:13,fontWeight:600}}>{meta.icon||''} {h.metric}</span>
@@ -373,6 +444,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
               <div><div style={{fontSize:10,color:'#dc2626'}}>女性</div><div style={{fontSize:22,fontWeight:700,color:'#dc2626'}}>{h.female}</div></div>
             </div>
             <div style={{fontSize:10,color:'#94a3b8',marginTop:6}}>{meta.note||''}</div>
+            {hcVals.length >= 40 && <div style={{marginTop:8}}><PrefStrip47 {...stripCommon} values={hcVals} yearBadge={yb('ndbHc')} mode="inline" /><div style={{fontSize:9,color:'#94a3b8',marginTop:1}}>男女平均の47県分布</div></div>}
           </div>;
         })}
       </div>
@@ -400,7 +472,10 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
             const prefEntry = rates.by_pref?.[ndbPref];
             if (!prefEntry) return null;
             const prefVal = prefEntry.rate;
-            const allVals = Object.values(rates.by_pref).map(v => v.rate).filter(v => typeof v === 'number');
+            // rank1修正: 「都道府県判別不可」を除外し47県のみで平均・分布化
+            const p47Entries = Object.entries(rates.by_pref).filter(([p])=>isP47(p));
+            const stripVals = p47Entries.map(([p,v])=>({pref:p, value:v.rate})).filter(d=>typeof d.value==='number');
+            const allVals = stripVals.map(d=>d.value);
             const natAvg = allVals.length > 0 ? allVals.reduce((s,v)=>s+v,0)/allVals.length : null;
             const deltaPct = natAvg ? (prefVal/natAvg - 1) * 100 : null;
             // 自然言語化
@@ -435,6 +510,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
                 </div>
               )}
               <div style={{fontSize:9,color:'#94a3b8',marginTop:3,lineHeight:1.3}}>{rc.fullLabel}</div>
+              {stripVals.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={stripVals} natAvg={natAvg} yearBadge={yb('checkupRisk')} mode="micro" /></div>}
             </div>;
           })}
         </div>
@@ -462,6 +538,9 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
       .sort((a,b)=>b.val-a.val)
       .slice(0, 7);
     const maxVal = items[0]?.val || 1;
+    // rank1: 受療率の47県分布（「全国」「都道府県判別不可」を除外）
+    const psPrefs47 = Object.entries(patientSurvey.prefectures).filter(([p])=>isP47(p));
+    const stripValsPS = (k) => psPrefs47.map(([p,v])=>({pref:p, value:v.categories?.[k]?.[metricKey]})).filter(d=>d.value!=null && d.value>0);
     return (
     <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16}}>
       <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14,flexWrap:'wrap'}}>
@@ -505,14 +584,18 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
         {items.map(it => {
           const delta = it.natVal != null ? ((it.val/it.natVal - 1) * 100) : null;
           const chapterShort = it.chapter; // ローマ数字
-          return <div key={it.key} style={{display:'flex',alignItems:'center',gap:8}}>
-            <span style={{width:mob?20:30,fontSize:10,fontWeight:600,color:'#9f1239',flexShrink:0}}>{chapterShort}</span>
-            <span style={{width:mob?100:160,fontSize:12,color:'#475569',flexShrink:0,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{it.name}</span>
-            <div style={{flex:1,height:18,background:'#fef3f5',borderRadius:3,overflow:'hidden'}}>
-              <div style={{height:'100%',borderRadius:3,background:'#9f1239',width:`${it.val/maxVal*100}%`,opacity:0.75}}/>
+          const psStrip = stripValsPS(it.key);
+          return <div key={it.key}>
+            <div style={{display:'flex',alignItems:'center',gap:8}}>
+              <span style={{width:mob?20:30,fontSize:10,fontWeight:600,color:'#9f1239',flexShrink:0}}>{chapterShort}</span>
+              <span style={{width:mob?100:160,fontSize:12,color:'#475569',flexShrink:0,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{it.name}</span>
+              <div style={{flex:1,height:18,background:'#fef3f5',borderRadius:3,overflow:'hidden'}}>
+                <div style={{height:'100%',borderRadius:3,background:'#9f1239',width:`${it.val/maxVal*100}%`,opacity:0.75}}/>
+              </div>
+              <span style={{fontSize:11,fontWeight:600,color:'#9f1239',fontVariantNumeric:'tabular-nums',width:42,textAlign:'right',flexShrink:0}}>{it.val}</span>
+              {delta != null && <span style={{fontSize:10,fontWeight:600,color:delta>0?'#dc2626':'#059669',width:48,textAlign:'right',flexShrink:0}}>{delta>0?'+':''}{delta.toFixed(0)}%</span>}
             </div>
-            <span style={{fontSize:11,fontWeight:600,color:'#9f1239',fontVariantNumeric:'tabular-nums',width:42,textAlign:'right',flexShrink:0}}>{it.val}</span>
-            {delta != null && <span style={{fontSize:10,fontWeight:600,color:delta>0?'#dc2626':'#059669',width:48,textAlign:'right',flexShrink:0}}>{delta>0?'+':''}{delta.toFixed(0)}%</span>}
+            {psStrip.length >= 40 && <div style={{margin:`2px 0 4px ${mob?28:38}px`}}><PrefStrip47 {...stripCommon} values={psStrip} yearBadge={yb('patientSurvey')} mode="inline" /></div>}
           </div>;
         })}
       </div>
@@ -533,13 +616,19 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
       </div>
     </div>
     <div style={{display:'grid',gridTemplateColumns:mob?'1fr 1fr':'repeat(3,1fr)',gap:10}}>
-      {diagByPref.sort((a,b)=>b.total_claims-a.total_claims).map((d,i)=>(
+      {diagByPref.sort((a,b)=>b.total_claims-a.total_claims).map((d,i)=>{
+        // rank1: 人口10万対の47県分布（判別不可除外・prefMaps.diag は既に人口正規化済）
+        const diagStrip = Object.entries(prefMaps.diag).filter(([p])=>isP47(p))
+          .map(([p,m])=>({pref:p, value:m[d.category]})).filter(x=>x.value!=null);
+        return (
         <div key={i} style={{background:'#f0f7ff',borderRadius:10,padding:'12px 16px'}}>
           <div style={{fontSize:11,color:'#64748b',marginBottom:2}}>{CAT_LABELS[d.category]||d.category}</div>
           <div style={{fontSize:mob?16:20,fontWeight:700,color:'#2563EB'}}>{fmt(d.total_claims)}</div>
           <div style={{fontSize:10,color:'#94a3b8'}}>人口10万対 {perCap(d.total_claims)}</div>
+          {diagStrip.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={diagStrip} yearBadge={yb('ndbDiag')} mode="micro" /></div>}
         </div>
-      ))}
+        );
+      })}
     </div>
   </div>}
 
@@ -670,20 +759,33 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
         }
         const dispLabel = classifyDispersion(disp);
         const levelColor = dispLabel?.level === 'high' ? '#dc2626' : dispLabel?.level === 'medium' ? '#d97706' : '#64748b';
-        return <div key={i} style={{display:'flex',alignItems:'center',gap:8}}>
-          <span style={{width:mob?90:120,fontSize:12,fontWeight:500,color:'#475569',flexShrink:0}}>{c.cause.replace(/\(.+\)/,'')}</span>
-          <div style={{flex:1,height:16,background:'#f1f5f9',borderRadius:3,overflow:'hidden'}}>
-            <div style={{height:'100%',borderRadius:3,background:i<3?'#7c3aed':'#a78bfa',width:`${c.rate/maxRate*100}%`,opacity:0.85}}/>
+        // rank1: 死因の47県分布（mode に応じ source 切替・判別不可除外）
+        let causeStrip = [];
+        if (mortalityMode === 'crude') {
+          causeStrip = (vitalStats?.prefectures||[]).filter(p=>isP47(p.pref))
+            .map(p=>({pref:p.pref, value:p.causes?.find(x=>x.cause===c.cause)?.rate})).filter(x=>x.value!=null);
+        } else {
+          const moPrefs = mortalityOutcome2020?.prefectures || {};
+          causeStrip = Object.entries(moPrefs).filter(([p])=>isP47(p))
+            .map(([p,d])=>({pref:p, value:d?.[c.cause]?.age_adjusted?.[mortalitySex]?.rate})).filter(x=>x.value!=null);
+        }
+        return <div key={i}>
+          <div style={{display:'flex',alignItems:'center',gap:8}}>
+            <span style={{width:mob?90:120,fontSize:12,fontWeight:500,color:'#475569',flexShrink:0}}>{c.cause.replace(/\(.+\)/,'')}</span>
+            <div style={{flex:1,height:16,background:'#f1f5f9',borderRadius:3,overflow:'hidden'}}>
+              <div style={{height:'100%',borderRadius:3,background:i<3?'#7c3aed':'#a78bfa',width:`${c.rate/maxRate*100}%`,opacity:0.85}}/>
+            </div>
+            <span style={{fontSize:12,fontWeight:600,color:'#7c3aed',fontVariantNumeric:'tabular-nums',width:60,textAlign:'right',flexShrink:0}}>{c.rate}</span>
+            {dispLabel && (
+              <span
+                title={dispLabel.label_full}
+                style={{fontSize:9,color:levelColor,fontVariantNumeric:'tabular-nums',width:mob?75:100,textAlign:'right',flexShrink:0,cursor:'help',background:dispLabel.level==='high'?'#fef2f2':dispLabel.level==='medium'?'#fffbeb':'#f1f5f9',padding:'2px 5px',borderRadius:3,fontWeight:600}}
+              >
+                CV {disp.cv_pct.toFixed(1)}% / 比{disp.max_min_ratio?.toFixed(1) || '-'}
+              </span>
+            )}
           </div>
-          <span style={{fontSize:12,fontWeight:600,color:'#7c3aed',fontVariantNumeric:'tabular-nums',width:60,textAlign:'right',flexShrink:0}}>{c.rate}</span>
-          {dispLabel && (
-            <span
-              title={dispLabel.label_full}
-              style={{fontSize:9,color:levelColor,fontVariantNumeric:'tabular-nums',width:mob?75:100,textAlign:'right',flexShrink:0,cursor:'help',background:dispLabel.level==='high'?'#fef2f2':dispLabel.level==='medium'?'#fffbeb':'#f1f5f9',padding:'2px 5px',borderRadius:3,fontWeight:600}}
-            >
-              CV {disp.cv_pct.toFixed(1)}% / 比{disp.max_min_ratio?.toFixed(1) || '-'}
-            </span>
-          )}
+          {causeStrip.length >= 40 && <div style={{margin:`2px 0 4px ${mob?18:24}px`}}><PrefStrip47 {...stripCommon} values={causeStrip} yearBadge={mortalityMode==='crude'?yb('vitalStats'):yb('mortalityAdj')} mode="inline" /></div>}
         </div>;
       })}
     </div>
