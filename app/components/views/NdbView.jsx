@@ -10,6 +10,7 @@ import PrefStrip47 from '../ui/PrefStrip47';
 import PsIris from '../ui/PsIris';
 import PrefChoropleth from '../ui/PrefChoropleth';
 import CheckupBinsHistogram, { RISK_BIN_THRESHOLD, METRIC_TO_RISK_KEY } from '../ui/CheckupBinsHistogram';
+import AgePyramidGhost from '../ui/AgePyramidGhost';
 import DeathWaffle100, { buildWaffleItems, WAFFLE_CAUSE_COLORS, WAFFLE_OTHER, WAFFLE_OTHER_COLOR } from '../ui/DeathWaffle100';
 import { getSourceBadge } from '../../../lib/sourceRegistry';
 import { DOMAIN_MAPPING, DOMAIN_ORDER, rowInDomain, domainSectionStatus, DOMAIN_TO_RX_LABEL, FP_TIERS, tierOf } from '../../../lib/domainMapping';
@@ -892,62 +893,90 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           <div style={{fontSize:11,color:'#94a3b8'}}>NDB指標を解釈する基盤として — 住基2025 + 社人研2050</div>
         </div>
       </div>
-      <div style={{display:'grid',gridTemplateColumns:mob?'repeat(2,1fr)':'repeat(5,1fr)',gap:8}}>
-        {/* 1: 総人口 */}
-        <div style={{background:'#f8fafc',borderRadius:8,padding:'10px 12px'}}>
-          <div style={{fontSize:10,color:'#64748b',marginBottom:2}}>総人口</div>
-          <div style={{fontSize:mob?15:18,fontWeight:700,color:'#1e293b'}}>{fmt(demoKpi.total)}</div>
-          <div style={{fontSize:10,color:'#94a3b8'}}>2025年1月（人）</div>
-          {demoStrips.total.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={demoStrips.total} yearBadge={yb('agePyramid')} mode="micro" /></div>}
+      {/* ヒーロー2/3（ゴースト・ミラーピラミッド）+ KPIレール1/3 — mob=縦積み（ピラミッド上） */}
+      <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'minmax(0,2fr) minmax(0,1fr)',gap:mob?12:18,alignItems:'start'}}>
+        <div style={{minWidth:0}}>
+          <AgePyramidGhost
+            ap={agePyramid?.prefectures?.[ndbPref]}
+            natAp={agePyramid?.national}
+            pinnedAp={pinnedPref && pinnedPref!==ndbPref && isP47(pinnedPref) ? (agePyramid?.prefectures?.[pinnedPref] || null) : null}
+            pinnedName={pinnedPref && pinnedPref!==ndbPref && isP47(pinnedPref) && agePyramid?.prefectures?.[pinnedPref] ? pinnedPref : null}
+            ageGroups={agePyramid?.age_groups || []}
+            prefName={ndbPref}
+            tlBands={tlBands}
+            tlYear={tlYear}
+            mob={mob}
+            onZoneClick={()=>setDumbbellOpen(o=>!o)}
+            yearBadges={{pyramid: yb('agePyramid'), ribbon: yb('futureDemo')}}
+          />
+          {/* 解釈文（自動生成・ピラミッド直下 — 形状言及を追記） */}
+          {demoNat && (()=>{
+            const d75 = demoKpi.rate75 - demoNat.rate75;
+            let msg, shape;
+            if (d75 > 1.5) { msg = `${ndbPref}は75歳以上割合が全国平均より${d75.toFixed(1)}pt高く、在宅医療・処方薬・慢性期医療の需要が大きく見えやすい構造です。`; shape = 'ピラミッド上部（75+帯）が全国輪郭からはみ出す「頭でっかち」の形状です。'; }
+            else if (d75 < -1.5) { msg = `${ndbPref}は75歳以上割合が全国平均より${Math.abs(d75).toFixed(1)}pt低く、NDB算定回数の多さは人口規模の影響を受けている可能性があります。`; shape = 'ピラミッド上部は全国輪郭より薄く、生産年齢帯が厚い形状です。'; }
+            else { msg = `${ndbPref}の75歳以上割合は全国平均水準。NDB指標は人口構造補正の影響を受けにくい解釈となります。`; shape = 'ピラミッドの形状はほぼ全国輪郭と重なります。'; }
+            return <div style={{fontSize:11,color:'#475569',marginTop:10,padding:'8px 12px',background:'#f8fafc',borderRadius:6,lineHeight:1.5,borderLeft:'3px solid #2563EB'}}>💡 {msg} {shape}</div>;
+          })()}
         </div>
-        {/* 2: 65+ */}
-        <div style={{background:'#f8fafc',borderRadius:8,padding:'10px 12px'}}>
-          <div style={{fontSize:10,color:'#64748b',marginBottom:2}}>65歳以上</div>
-          <div style={{fontSize:mob?15:18,fontWeight:700,color:'#1e293b'}}>{demoKpi.rate65.toFixed(1)}%</div>
-          {demoNat && <div style={{fontSize:10,color:demoKpi.rate65>demoNat.rate65?'#dc2626':'#059669'}}>
-            全国比 {demoKpi.rate65>demoNat.rate65?'+':''}{(demoKpi.rate65-demoNat.rate65).toFixed(1)}pt
-          </div>}
-          {demoStrips.r65.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={demoStrips.r65} natAvg={demoNat?.rate65} yearBadge={yb('agePyramid')} mode="micro" /></div>}
-        </div>
-        {/* 3: 75+ */}
-        <div style={{background:'#f8fafc',borderRadius:8,padding:'10px 12px'}}>
-          <div style={{fontSize:10,color:'#64748b',marginBottom:2}}>75歳以上 {rank75 && <span style={{fontSize:9,color:'#94a3b8'}}>#{rank75.rank}/{rank75.total}</span>}</div>
-          <div style={{fontSize:mob?15:18,fontWeight:700,color:'#1e293b'}}>{demoKpi.rate75.toFixed(1)}%</div>
-          {demoNat && <div style={{fontSize:10,color:demoKpi.rate75>demoNat.rate75?'#dc2626':'#059669'}}>
-            全国比 {demoKpi.rate75>demoNat.rate75?'+':''}{(demoKpi.rate75-demoNat.rate75).toFixed(1)}pt
-          </div>}
-          {demoStrips.r75.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={demoStrips.r75} natAvg={demoNat?.rate75} yearBadge={yb('agePyramid')} mode="micro" /></div>}
-        </div>
-        {/* 4: 85+ */}
-        <div style={{background:'#f8fafc',borderRadius:8,padding:'10px 12px'}}>
-          <div style={{fontSize:10,color:'#64748b',marginBottom:2}}>85歳以上</div>
-          <div style={{fontSize:mob?15:18,fontWeight:700,color:'#1e293b'}}>{demoKpi.rate85.toFixed(1)}%</div>
-          {demoNat && <div style={{fontSize:10,color:demoKpi.rate85>demoNat.rate85?'#dc2626':'#059669'}}>
-            全国比 {demoKpi.rate85>demoNat.rate85?'+':''}{(demoKpi.rate85-demoNat.rate85).toFixed(1)}pt
-          </div>}
-          {demoStrips.r85.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={demoStrips.r85} natAvg={demoNat?.rate85} yearBadge={yb('agePyramid')} mode="micro" /></div>}
-        </div>
-        {/* 5: 2050 */}
-        <div style={{background:'#fef3c7',borderRadius:8,padding:'10px 12px'}}>
-          <div style={{fontSize:10,color:'#92400e',marginBottom:2}}>2050年予測</div>
-          <div style={{fontSize:mob?15:18,fontWeight:700,color:'#92400e'}}>
-            {demoKpi.change2050!=null ? `${demoKpi.change2050>0?'+':''}${demoKpi.change2050.toFixed(1)}%` : '—'}
+        {/* KPIレール（既存5カード移設・縦積み密度減 padding 10→7px。demoStrips/stripCommon/yb 呼び出しは無変更） */}
+        <div style={{display:'grid',gridTemplateColumns:mob?'repeat(2,1fr)':'1fr',gap:8,minWidth:0}}>
+          {/* 1: 総人口 */}
+          <div style={{background:'#f8fafc',borderRadius:8,padding:'7px 12px'}}>
+            <div style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',gap:6,flexWrap:'wrap'}}>
+              <div style={{fontSize:10,color:'#64748b'}}>総人口 <span style={{fontSize:9,color:'#94a3b8'}}>2025年1月（人）</span></div>
+              <div style={{fontSize:mob?15:16,fontWeight:700,color:'#1e293b'}}>{fmt(demoKpi.total)}</div>
+            </div>
+            {demoStrips.total.length >= 40 && <div style={{marginTop:5}}><PrefStrip47 {...stripCommon} values={demoStrips.total} yearBadge={yb('agePyramid')} mode="micro" /></div>}
           </div>
-          <div style={{fontSize:10,color:'#92400e'}}>
-            {demoKpi.rate75_2050!=null ? `75+→${demoKpi.rate75_2050.toFixed(1)}%` : '人口変化(2020比)'}
+          {/* 2: 65+ */}
+          <div style={{background:'#f8fafc',borderRadius:8,padding:'7px 12px'}}>
+            <div style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',gap:6,flexWrap:'wrap'}}>
+              <div style={{fontSize:10,color:'#64748b'}}>65歳以上</div>
+              <div style={{fontSize:mob?15:16,fontWeight:700,color:'#1e293b'}}><CountUpNum value={demoKpi.rate65} decimals={1} suffix="%" /></div>
+            </div>
+            {demoNat && <div style={{fontSize:10,color:demoKpi.rate65>demoNat.rate65?'#dc2626':'#059669'}}>
+              全国比 {demoKpi.rate65>demoNat.rate65?'+':''}{(demoKpi.rate65-demoNat.rate65).toFixed(1)}pt
+            </div>}
+            {demoStrips.r65.length >= 40 && <div style={{marginTop:5}}><PrefStrip47 {...stripCommon} values={demoStrips.r65} natAvg={demoNat?.rate65} yearBadge={yb('agePyramid')} mode="micro" /></div>}
           </div>
-          {demoStrips.chg.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={demoStrips.chg} yearBadge={yb('futureDemo')} mode="micro" /></div>}
+          {/* 3: 75+ */}
+          <div style={{background:'#f8fafc',borderRadius:8,padding:'7px 12px'}}>
+            <div style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',gap:6,flexWrap:'wrap'}}>
+              <div style={{fontSize:10,color:'#64748b'}}>75歳以上 {rank75 && <span style={{fontSize:9,color:'#94a3b8'}}>#{rank75.rank}/{rank75.total}</span>}</div>
+              <div style={{fontSize:mob?15:16,fontWeight:700,color:'#1e293b'}}><CountUpNum value={demoKpi.rate75} decimals={1} suffix="%" /></div>
+            </div>
+            {demoNat && <div style={{fontSize:10,color:demoKpi.rate75>demoNat.rate75?'#dc2626':'#059669'}}>
+              全国比 {demoKpi.rate75>demoNat.rate75?'+':''}{(demoKpi.rate75-demoNat.rate75).toFixed(1)}pt
+            </div>}
+            {demoStrips.r75.length >= 40 && <div style={{marginTop:5}}><PrefStrip47 {...stripCommon} values={demoStrips.r75} natAvg={demoNat?.rate75} yearBadge={yb('agePyramid')} mode="micro" /></div>}
+          </div>
+          {/* 4: 85+ */}
+          <div style={{background:'#f8fafc',borderRadius:8,padding:'7px 12px'}}>
+            <div style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',gap:6,flexWrap:'wrap'}}>
+              <div style={{fontSize:10,color:'#64748b'}}>85歳以上</div>
+              <div style={{fontSize:mob?15:16,fontWeight:700,color:'#1e293b'}}><CountUpNum value={demoKpi.rate85} decimals={1} suffix="%" /></div>
+            </div>
+            {demoNat && <div style={{fontSize:10,color:demoKpi.rate85>demoNat.rate85?'#dc2626':'#059669'}}>
+              全国比 {demoKpi.rate85>demoNat.rate85?'+':''}{(demoKpi.rate85-demoNat.rate85).toFixed(1)}pt
+            </div>}
+            {demoStrips.r85.length >= 40 && <div style={{marginTop:5}}><PrefStrip47 {...stripCommon} values={demoStrips.r85} natAvg={demoNat?.rate85} yearBadge={yb('agePyramid')} mode="micro" /></div>}
+          </div>
+          {/* 5: 2050（推計 — CountUpNumは使わない: 実測と推計を同じ運動文法で混ぜない） */}
+          <div style={{background:'#fef3c7',borderRadius:8,padding:'7px 12px'}}>
+            <div style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',gap:6,flexWrap:'wrap'}}>
+              <div style={{fontSize:10,color:'#92400e'}}>2050年予測</div>
+              <div style={{fontSize:mob?15:16,fontWeight:700,color:'#92400e'}}>
+                {demoKpi.change2050!=null ? `${demoKpi.change2050>0?'+':''}${demoKpi.change2050.toFixed(1)}%` : '—'}
+              </div>
+            </div>
+            <div style={{fontSize:10,color:'#92400e'}}>
+              {demoKpi.rate75_2050!=null ? `75+→${demoKpi.rate75_2050.toFixed(1)}%` : '人口変化(2020比)'}
+            </div>
+            {demoStrips.chg.length >= 40 && <div style={{marginTop:5}}><PrefStrip47 {...stripCommon} values={demoStrips.chg} yearBadge={yb('futureDemo')} mode="micro" /></div>}
+          </div>
         </div>
       </div>
-      {/* 解釈文（自動生成） */}
-      {demoNat && (()=>{
-        const d75 = demoKpi.rate75 - demoNat.rate75;
-        let msg;
-        if (d75 > 1.5) msg = `${ndbPref}は75歳以上割合が全国平均より${d75.toFixed(1)}pt高く、在宅医療・処方薬・慢性期医療の需要が大きく見えやすい構造です。`;
-        else if (d75 < -1.5) msg = `${ndbPref}は75歳以上割合が全国平均より${Math.abs(d75).toFixed(1)}pt低く、NDB算定回数の多さは人口規模の影響を受けている可能性があります。`;
-        else msg = `${ndbPref}の75歳以上割合は全国平均水準。NDB指標は人口構造補正の影響を受けにくい解釈となります。`;
-        return <div style={{fontSize:11,color:'#475569',marginTop:10,padding:'8px 12px',background:'#f8fafc',borderRadius:6,lineHeight:1.5,borderLeft:'3px solid #2563EB'}}>💡 {msg}</div>;
-      })()}
 
       {/* ══ rank9: 人口タイムレンズ（2020-2050スクラバー・3帯モーフィング・47県ダンベル） ══ */}
       {tlBands && (()=>{
