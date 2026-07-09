@@ -14,6 +14,17 @@ import HsaHomecarePanel from './HsaHomecarePanel';
 import HsaSurgeryPanel from './HsaSurgeryPanel';
 import HsaInpatientPanel from './HsaInpatientPanel';
 import HsaDesignationPanel from './HsaDesignationPanel';
+import { HsaAreaProvider } from '../hsa/useHsaArea';
+import HsaSummaryCards from '../hsa/HsaSummaryCards';
+
+function ChapterHead({ idx, name }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '20px 2px 10px' }}>
+      <span style={{ width: 4, height: 18, borderRadius: 2, background: CH_COLOR[idx] || '#64748b' }} />
+      <span style={{ fontSize: 15, fontWeight: 700, color: '#334155', letterSpacing: '-0.01em' }}>{name}</span>
+    </div>
+  );
+}
 
 // PDF由来フォント名 → ローカル日本語フォントへのエイリアス。
 // SVGテキストは各グリフ絶対座標配置のため、字幅差があってもレイアウトは崩れない。
@@ -314,20 +325,29 @@ export default function AreaReportView({ mob, globalPref, setGlobalPref }) {
           </div>
         )}
 
-        {/* ネイティブ再構築パネル（カルテと数値一致） */}
-        {meta && <HsaOverviewPanel code={meta.code} mob={mob} />}
-        {meta && <HsaPopulationPanel code={meta.code} mob={mob} />}
-        {meta && <HsaDemandPanel code={meta.code} mob={mob} />}
-        {meta && <HsaCarePanel code={meta.code} mob={mob} />}
-        {meta && <HsaHomecarePanel code={meta.code} mob={mob} />}
-        {meta && <HsaPhysicianPanel code={meta.code} mob={mob} />}
-        {meta && <HsaSpecialtyPanel code={meta.code} mob={mob} />}
-        {meta && <HsaBedDetailPanel code={meta.code} mob={mob} />}
-        {meta && <HsaInpatientPanel code={meta.code} mob={mob} />}
-        {meta && <HsaDesignationPanel code={meta.code} mob={mob} />}
-        {meta && <HsaEmergencyPanel code={meta.code} mob={mob} />}
-        {meta && <HsaSurgeryPanel code={meta.code} mob={mob} />}
-        {meta && <HsaDpcPanel code={meta.code} mob={mob} />}
+        {/* ネイティブ再構築パネル（1リクエストで全パネル取得・章別グルーピング） */}
+        {meta && (
+          <HsaAreaProvider code={meta.code}>
+            <HsaSummaryCards mob={mob} />
+            <ChapterHead idx={1} name="1. 地域の概況" />
+            <HsaOverviewPanel mob={mob} />
+            <HsaPopulationPanel mob={mob} />
+            <HsaPhysicianPanel mob={mob} />
+            <HsaSpecialtyPanel mob={mob} />
+            <HsaDesignationPanel mob={mob} />
+            <ChapterHead idx={2} name="2. 医療提供体制" />
+            <HsaBedDetailPanel mob={mob} />
+            <HsaInpatientPanel mob={mob} />
+            <HsaEmergencyPanel mob={mob} />
+            <ChapterHead idx={3} name="3. 医療需要の将来推計" />
+            <HsaDemandPanel mob={mob} />
+            <HsaCarePanel mob={mob} />
+            <HsaHomecarePanel mob={mob} />
+            <HsaSurgeryPanel mob={mob} />
+            <ChapterHead idx={4} name="4. パフォーマンス・連携" />
+            <HsaDpcPanel mob={mob} />
+          </HsaAreaProvider>
+        )}
 
         {meta ? meta.slides.map(s => (
           <Slide key={s.n} code={meta.code} page={s.n} title={s.title} chapterIdx={s.chapterIdx}

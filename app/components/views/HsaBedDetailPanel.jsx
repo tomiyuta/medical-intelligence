@@ -1,7 +1,9 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
 import { fmt } from '../shared';
+import { useHsaPanel } from '../hsa/useHsaArea';
+import HsaPanel from '../hsa/HsaPanel';
 
 // 病床機能区分の配色（医療需給総覧の凡例に準拠）
 const FUNC = [
@@ -69,19 +71,9 @@ function StackTip({ active, payload, label }) {
   );
 }
 
-export default function HsaBedDetailPanel({ code, mob }) {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(true);
+export default function HsaBedDetailPanel({ mob }) {
+  const { code, data, loading } = useHsaPanel('bed');
   const [tab, setTab] = useState('chart'); // chart | table
-
-  useEffect(() => {
-    if (!code) return;
-    setLoading(true); setData(null);
-    fetch(`/api/hsa/bed-detail?code=${code}`).then(r => r.json()).then(d => {
-      setData(d); setLoading(false);
-    }).catch(() => setLoading(false));
-  }, [code]);
 
   const area = data?.area;
   if (!code) return null;
@@ -120,186 +112,176 @@ export default function HsaBedDetailPanel({ code, mob }) {
   }) : [];
 
   return (
-    <div style={{ background: '#fff', border: '1px solid #e8ecf0', borderRadius: 12, marginBottom: 20, overflow: 'hidden' }}>
-      <button onClick={() => setOpen(o => !o)}
-              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-                       padding: '13px 18px', border: 'none', background: 'linear-gradient(180deg,#f8fafc,#fff)', cursor: 'pointer', textAlign: 'left' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 9 }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: '#0f6e5d', background: '#e3f0ed', padding: '2px 8px', borderRadius: 10 }}>ネイティブ再構築</span>
-          <span style={{ fontSize: 14, fontWeight: 700 }}>圏域内 医療機関別 病床機能構成</span>
-          <span style={{ fontSize: 11, color: '#94a3b8' }}>令和6年度病床機能報告</span>
-        </div>
-        <span style={{ fontSize: 12, color: '#94a3b8' }}>{open ? '▲ 閉じる' : '▼ 開く'}</span>
-      </button>
+    <HsaPanel title="圏域内 医療機関別 病床機能構成"
+              badges={[{ label: 'ネイティブ再構築', kind: 'reconstructed' }, { label: '令和6年度病床機能報告', kind: 'muted' }]}
+              defaultOpen={true}
+              loading={loading}
+              empty={!area}
+              emptyText="この圏域の病床機能データは見つかりませんでした。">
+      {() => (
+        <>
+          {/* サマリー */}
+          <div style={{ display: 'grid', gridTemplateColumns: mob ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap: 8, margin: '10px 0 14px' }}>
+            {[
+              { l: '医療機関数', v: t.hospitals, u: '施設', c: '#0f172a' },
+              { l: '許可病床 計', v: t.beds, u: '床', c: '#2563EB' },
+              { l: '病棟数', v: t.wards, u: '', c: '#0891b2' },
+              { l: '急性期系比率', v: Math.round((t.funcBeds['高度急性期'] + t.funcBeds['急性期']) / Math.max(1, t.beds) * 100), u: '%', c: '#f97316' },
+            ].map((k, i) => (
+              <div key={i} style={{ background: '#fafbfc', border: '1px solid #f0f0f0', borderRadius: 8, padding: '10px 14px' }}>
+                <div style={{ fontSize: 10.5, color: '#94a3b8', fontWeight: 500 }}>{k.l}</div>
+                <div style={{ fontSize: 20, fontWeight: 700, color: k.c }}>{fmt(k.v)}<span style={{ fontSize: 11, color: '#94a3b8', fontWeight: 500, marginLeft: 2 }}>{k.u}</span></div>
+              </div>
+            ))}
+          </div>
 
-      {open && (
-        <div style={{ padding: '4px 18px 18px' }}>
-          {loading && <div style={{ padding: 24, color: '#cbd5e1', fontSize: 13 }}>読み込み中…</div>}
-          {!loading && area && <>
-            {/* サマリー */}
-            <div style={{ display: 'grid', gridTemplateColumns: mob ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap: 8, margin: '10px 0 14px' }}>
-              {[
-                { l: '医療機関数', v: t.hospitals, u: '施設', c: '#0f172a' },
-                { l: '許可病床 計', v: t.beds, u: '床', c: '#2563EB' },
-                { l: '病棟数', v: t.wards, u: '', c: '#0891b2' },
-                { l: '急性期系比率', v: Math.round((t.funcBeds['高度急性期'] + t.funcBeds['急性期']) / Math.max(1, t.beds) * 100), u: '%', c: '#f97316' },
-              ].map((k, i) => (
-                <div key={i} style={{ background: '#fafbfc', border: '1px solid #f0f0f0', borderRadius: 8, padding: '10px 14px' }}>
-                  <div style={{ fontSize: 10.5, color: '#94a3b8', fontWeight: 500 }}>{k.l}</div>
-                  <div style={{ fontSize: 20, fontWeight: 700, color: k.c }}>{fmt(k.v)}<span style={{ fontSize: 11, color: '#94a3b8', fontWeight: 500, marginLeft: 2 }}>{k.u}</span></div>
-                </div>
-              ))}
-            </div>
+          {/* 機能別 内訳バー（圏域計） */}
+          <div style={{ display: 'flex', height: 22, borderRadius: 5, overflow: 'hidden', marginBottom: 4, border: '1px solid #f0f0f0' }}>
+            {FUNC.map(fn => {
+              const v = t.funcBeds[fn.key]; if (!v) return null;
+              const pct = v / Math.max(1, t.beds) * 100;
+              return <div key={fn.key} title={`${fn.key} ${v}床`} style={{ width: `${pct}%`, background: fn.color }} />;
+            })}
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 14, fontSize: 11 }}>
+            {FUNC.map(fn => t.funcBeds[fn.key] > 0 && (
+              <span key={fn.key} style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#475569' }}>
+                <span style={{ width: 9, height: 9, borderRadius: 2, background: fn.color }} />{fn.key} {fmt(t.funcBeds[fn.key])}床
+              </span>
+            ))}
+          </div>
 
-            {/* 機能別 内訳バー（圏域計） */}
-            <div style={{ display: 'flex', height: 22, borderRadius: 5, overflow: 'hidden', marginBottom: 4, border: '1px solid #f0f0f0' }}>
-              {FUNC.map(fn => {
-                const v = t.funcBeds[fn.key]; if (!v) return null;
-                const pct = v / Math.max(1, t.beds) * 100;
-                return <div key={fn.key} title={`${fn.key} ${v}床`} style={{ width: `${pct}%`, background: fn.color }} />;
-              })}
-            </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 14, fontSize: 11 }}>
-              {FUNC.map(fn => t.funcBeds[fn.key] > 0 && (
-                <span key={fn.key} style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#475569' }}>
-                  <span style={{ width: 9, height: 9, borderRadius: 2, background: fn.color }} />{fn.key} {fmt(t.funcBeds[fn.key])}床
-                </span>
-              ))}
-            </div>
+          {/* タブ */}
+          <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
+            {[['chart', '施設別グラフ'], ['adm', '入院料別'], ['necessity', '必要病床数'], ['route', '入退棟経路'], ['table', '表']].map(([id, l]) => (
+              <button key={id} onClick={() => setTab(id)}
+                      style={{ padding: '5px 12px', borderRadius: 7, border: '1px solid ' + (tab === id ? '#2563EB' : '#e2e8f0'),
+                               background: tab === id ? '#eff6ff' : '#fff', color: tab === id ? '#2563EB' : '#64748b',
+                               fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>{l}</button>
+            ))}
+          </div>
 
-            {/* タブ */}
-            <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
-              {[['chart', '施設別グラフ'], ['adm', '入院料別'], ['necessity', '必要病床数'], ['route', '入退棟経路'], ['table', '表']].map(([id, l]) => (
-                <button key={id} onClick={() => setTab(id)}
-                        style={{ padding: '5px 12px', borderRadius: 7, border: '1px solid ' + (tab === id ? '#2563EB' : '#e2e8f0'),
-                                 background: tab === id ? '#eff6ff' : '#fff', color: tab === id ? '#2563EB' : '#64748b',
-                                 fontSize: 12, fontWeight: 600, cursor: 'pointer' }}>{l}</button>
-              ))}
-            </div>
+          {tab === 'chart' && (
+            <ResponsiveContainer width="100%" height={Math.max(160, rows.length * 30 + 40)}>
+              <BarChart data={rows} layout="vertical" margin={{ left: 8, right: 16 }}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
+                <XAxis type="number" tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
+                <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#475569' }} axisLine={false} tickLine={false} width={mob ? 90 : 130} />
+                <Tooltip content={<StackTip />} />
+                <Legend wrapperStyle={{ fontSize: 11 }} />
+                {FUNC.map(fn => <Bar key={fn.key} dataKey={fn.key} stackId="a" fill={fn.color} name={fn.key} barSize={16} />)}
+              </BarChart>
+            </ResponsiveContainer>
+          )}
 
-            {tab === 'chart' && (
-              <ResponsiveContainer width="100%" height={Math.max(160, rows.length * 30 + 40)}>
-                <BarChart data={rows} layout="vertical" margin={{ left: 8, right: 16 }}>
+          {tab === 'adm' && (admFees.length ? (
+            <>
+              <div style={{ fontSize: 11.5, color: '#94a3b8', marginBottom: 6 }}>入院基本料・特定入院料別の届出病床数（病院のみ）</div>
+              <ResponsiveContainer width="100%" height={Math.max(150, admFees.length * 30 + 30)}>
+                <BarChart data={admFees} layout="vertical" margin={{ left: 8, right: 24 }}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
                   <XAxis type="number" tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                  <YAxis type="category" dataKey="name" tick={{ fontSize: 11, fill: '#475569' }} axisLine={false} tickLine={false} width={mob ? 90 : 130} />
-                  <Tooltip content={<StackTip />} />
-                  <Legend wrapperStyle={{ fontSize: 11 }} />
-                  {FUNC.map(fn => <Bar key={fn.key} dataKey={fn.key} stackId="a" fill={fn.color} name={fn.key} barSize={16} />)}
+                  <YAxis type="category" dataKey="fee" tick={{ fontSize: 10.5, fill: '#475569' }} axisLine={false} tickLine={false} width={mob ? 120 : 200} />
+                  <Tooltip formatter={(v) => [`${v}床`, '届出病床数']} labelFormatter={(l, p) => p?.[0]?.payload?.fullFee || l} contentStyle={{ fontSize: 12, borderRadius: 8 }} />
+                  <Bar dataKey="beds" fill="#0891b2" name="届出病床数" barSize={16} radius={[0, 3, 3, 0]} label={{ position: 'right', fontSize: 10, fill: '#64748b' }} />
                 </BarChart>
               </ResponsiveContainer>
-            )}
+            </>
+          ) : <div style={{ padding: 16, fontSize: 12, color: '#94a3b8' }}>入院料の届出データがありません。</div>)}
 
-            {tab === 'adm' && (admFees.length ? (
-              <>
-                <div style={{ fontSize: 11.5, color: '#94a3b8', marginBottom: 6 }}>入院基本料・特定入院料別の届出病床数（病院のみ）</div>
-                <ResponsiveContainer width="100%" height={Math.max(150, admFees.length * 30 + 30)}>
-                  <BarChart data={admFees} layout="vertical" margin={{ left: 8, right: 24 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" horizontal={false} />
-                    <XAxis type="number" tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} />
-                    <YAxis type="category" dataKey="fee" tick={{ fontSize: 10.5, fill: '#475569' }} axisLine={false} tickLine={false} width={mob ? 120 : 200} />
-                    <Tooltip formatter={(v) => [`${v}床`, '届出病床数']} labelFormatter={(l, p) => p?.[0]?.payload?.fullFee || l} contentStyle={{ fontSize: 12, borderRadius: 8 }} />
-                    <Bar dataKey="beds" fill="#0891b2" name="届出病床数" barSize={16} radius={[0, 3, 3, 0]} label={{ position: 'right', fontSize: 10, fill: '#64748b' }} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </>
-            ) : <div style={{ padding: 16, fontSize: 12, color: '#94a3b8' }}>入院料の届出データがありません。</div>)}
-
-            {tab === 'necessity' && (nec ? (
-              <>
-                <div style={{ fontSize: 11.5, color: '#94a3b8', marginBottom: 6 }}>病床機能別 病床数の推移（病床機能報告実績）と2025年必要病床数（地域医療構想）</div>
-                <ResponsiveContainer width="100%" height={280}>
-                  <BarChart data={necRows} margin={{ left: 8, right: 8, top: 8 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                    <XAxis dataKey="year" tick={{ fontSize: 10, fill: '#475569' }} axisLine={false} tickLine={false} interval={0} />
-                    <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} unit="床" />
-                    <Tooltip content={<StackTip />} />
-                    <Legend wrapperStyle={{ fontSize: 11 }} />
-                    {NEC_FUNCS.map(f => <Bar key={f.key} dataKey={f.key} stackId="a" fill={f.color} name={f.key} barSize={22} />)}
-                  </BarChart>
-                </ResponsiveContainer>
-                <div style={{ overflowX: 'auto', marginTop: 10 }}>
-                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5, minWidth: 380 }}>
-                    <thead><tr style={{ background: '#fafbfc' }}>
-                      {['病床機能', '2024年7月時点', '2025必要数', '差分'].map((h, i) => (
-                        <th key={i} style={{ padding: '8px 10px', fontSize: 10.5, fontWeight: 600, color: '#94a3b8', textAlign: i === 0 ? 'left' : 'right', borderBottom: '1px solid #f1f5f9', whiteSpace: 'nowrap' }}>{h}</th>
-                      ))}
-                    </tr></thead>
-                    <tbody>{necDiff.map((r, i) => (
-                      <tr key={i} style={{ borderBottom: '1px solid #f8f9fa' }}>
-                        <td style={{ padding: '7px 10px', fontWeight: 600, color: r.color }}>{r.key}</td>
-                        <td style={{ padding: '7px 10px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{fmt(r.cur)}</td>
-                        <td style={{ padding: '7px 10px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{fmt(r.need)}</td>
-                        <td style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: r.diff < 0 ? '#dc2626' : '#0f6e5d' }}>{r.diff > 0 ? '+' : r.diff < 0 ? '▲' : ''}{fmt(Math.abs(r.diff))}</td>
-                      </tr>
-                    ))}</tbody>
-                  </table>
-                </div>
-                <div style={{ fontSize: 10.5, color: '#94a3b8', lineHeight: 1.7, marginTop: 8 }}>
-                  差分＝2024実績−2025必要数。<span style={{ color: '#dc2626' }}>▲（不足）</span>は機能の確保、<span style={{ color: '#0f6e5d' }}>＋（過剰）</span>は機能分化が課題。回復期の不足は機能分化の遅れを示唆。<br />
-                  出典: {data.necessitySource}｜カルテ #19 と<b style={{ color: '#0f6e5d' }}>数値一致</b>を検証済み（必要数は構想区域単位の固定値）。
-                </div>
-              </>
-            ) : (tab === 'necessity' && <div style={{ padding: 16, fontSize: 12, color: '#94a3b8' }}>この圏域は構想区域と二次医療圏が一致せず、必要病床数を単独表示できません。</div>))}
-
-            {tab === 'route' && (area.routes && Object.keys(area.routes).length ? (
-              <>
-                <div style={{ fontSize: 11.5, color: '#94a3b8', marginBottom: 10 }}>病床機能グループ別の入棟経路（入棟前の場所）・退棟先の構成割合（年間・令和6年度）</div>
-                {Object.entries(area.routes).map(([grp, r]) => (
-                  <div key={grp} style={{ marginBottom: 16 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-                      <span style={{ width: 10, height: 10, borderRadius: 3, background: FUNC_GROUP_COLORS[grp] || '#64748b' }} />
-                      <span style={{ fontSize: 12.5, fontWeight: 700, color: '#334155' }}>{grp}</span>
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: mob ? '1fr' : '46px 1fr', gap: mob ? 3 : 8, alignItems: 'center', marginBottom: 5 }}>
-                      <span style={{ fontSize: 10.5, color: '#94a3b8', fontWeight: 600 }}>入棟前</span>
-                      <RouteBar route={r.admit} cats={ADMIT_CATS} />
-                    </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: mob ? '1fr' : '46px 1fr', gap: mob ? 3 : 8, alignItems: 'center' }}>
-                      <span style={{ fontSize: 10.5, color: '#94a3b8', fontWeight: 600 }}>退棟先</span>
-                      <RouteBar route={r.discharge} cats={DISCH_CATS} />
-                    </div>
-                  </div>
-                ))}
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, fontSize: 11, marginTop: 4 }}>
-                  {[...ADMIT_CATS, { key: '死亡等', color: '#334155' }].filter((c, i, a) => a.findIndex(x => x.key === c.key) === i).map(c => (
-                    <span key={c.key} style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#475569' }}>
-                      <span style={{ width: 9, height: 9, borderRadius: 2, background: c.color }} />{c.key}
-                    </span>
-                  ))}
-                </div>
-                <div style={{ fontSize: 10.5, color: '#94a3b8', marginTop: 8 }}>介護＝入棟前は介護施設・福祉施設＋介護医療院、退棟先は介護老人保健・福祉施設＋介護医療院＋社会福祉施設・有料老人ホーム等。カルテ #56 の2024年の機能別構成割合と数値一致（検証済み）。</div>
-              </>
-            ) : (tab === 'route' && <div style={{ padding: 16, fontSize: 12, color: '#94a3b8' }}>入退棟経路データがありません。</div>))}
-
-            {tab === 'table' && (
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5, minWidth: 560 }}>
+          {tab === 'necessity' && (nec ? (
+            <>
+              <div style={{ fontSize: 11.5, color: '#94a3b8', marginBottom: 6 }}>病床機能別 病床数の推移（病床機能報告実績）と2025年必要病床数（地域医療構想）</div>
+              <ResponsiveContainer width="100%" height={280}>
+                <BarChart data={necRows} margin={{ left: 8, right: 8, top: 8 }}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                  <XAxis dataKey="year" tick={{ fontSize: 10, fill: '#475569' }} axisLine={false} tickLine={false} interval={0} />
+                  <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} unit="床" />
+                  <Tooltip content={<StackTip />} />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                  {NEC_FUNCS.map(f => <Bar key={f.key} dataKey={f.key} stackId="a" fill={f.color} name={f.key} barSize={22} />)}
+                </BarChart>
+              </ResponsiveContainer>
+              <div style={{ overflowX: 'auto', marginTop: 10 }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5, minWidth: 380 }}>
                   <thead><tr style={{ background: '#fafbfc' }}>
-                    {['医療機関名', ...FUNC.map(f => f.key), '計', '病棟'].map((h, i) => (
+                    {['病床機能', '2024年7月時点', '2025必要数', '差分'].map((h, i) => (
                       <th key={i} style={{ padding: '8px 10px', fontSize: 10.5, fontWeight: 600, color: '#94a3b8', textAlign: i === 0 ? 'left' : 'right', borderBottom: '1px solid #f1f5f9', whiteSpace: 'nowrap' }}>{h}</th>
                     ))}
                   </tr></thead>
-                  <tbody>{area.facilities.map((f, i) => (
+                  <tbody>{necDiff.map((r, i) => (
                     <tr key={i} style={{ borderBottom: '1px solid #f8f9fa' }}>
-                      <td style={{ padding: '7px 10px', fontWeight: 500 }}>{f.name}</td>
-                      {FUNC.map(fn => <td key={fn.key} style={{ padding: '7px 10px', textAlign: 'right', color: f.funcBeds[fn.key] ? fn.color : '#e2e8f0', fontVariantNumeric: 'tabular-nums' }}>{f.funcBeds[fn.key] || '–'}</td>)}
-                      <td style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>{fmt(f.beds)}</td>
-                      <td style={{ padding: '7px 10px', textAlign: 'right', color: '#94a3b8', fontVariantNumeric: 'tabular-nums' }}>{f.wards}</td>
+                      <td style={{ padding: '7px 10px', fontWeight: 600, color: r.color }}>{r.key}</td>
+                      <td style={{ padding: '7px 10px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{fmt(r.cur)}</td>
+                      <td style={{ padding: '7px 10px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{fmt(r.need)}</td>
+                      <td style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: r.diff < 0 ? '#dc2626' : '#0f6e5d' }}>{r.diff > 0 ? '+' : r.diff < 0 ? '▲' : ''}{fmt(Math.abs(r.diff))}</td>
                     </tr>
                   ))}</tbody>
                 </table>
               </div>
-            )}
+              <div style={{ fontSize: 10.5, color: '#94a3b8', lineHeight: 1.7, marginTop: 8 }}>
+                差分＝2024実績−2025必要数。<span style={{ color: '#dc2626' }}>▲（不足）</span>は機能の確保、<span style={{ color: '#0f6e5d' }}>＋（過剰）</span>は機能分化が課題。回復期の不足は機能分化の遅れを示唆。<br />
+                出典: {data.necessitySource}｜カルテ #19 と<b style={{ color: '#0f6e5d' }}>数値一致</b>を検証済み（必要数は構想区域単位の固定値）。
+              </div>
+            </>
+          ) : (tab === 'necessity' && <div style={{ padding: 16, fontSize: 12, color: '#94a3b8' }}>この圏域は構想区域と二次医療圏が一致せず、必要病床数を単独表示できません。</div>))}
 
-            <div style={{ fontSize: 10.5, color: '#94a3b8', lineHeight: 1.7, marginTop: 12, paddingTop: 10, borderTop: '1px solid #f1f5f9' }}>
-              出典: {data.source}｜許可病床数=一般+療養。機能は施設の自己申告（2024/7/1時点）。<br />
-              医療需給総覧の当該圏スライド（医療機関別の許可病床数）と<b style={{ color: '#0f6e5d' }}>同一データ・数値一致</b>を検証済み。カルテのPDFと相互参照できます。
+          {tab === 'route' && (area.routes && Object.keys(area.routes).length ? (
+            <>
+              <div style={{ fontSize: 11.5, color: '#94a3b8', marginBottom: 10 }}>病床機能グループ別の入棟経路（入棟前の場所）・退棟先の構成割合（年間・令和6年度）</div>
+              {Object.entries(area.routes).map(([grp, r]) => (
+                <div key={grp} style={{ marginBottom: 16 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+                    <span style={{ width: 10, height: 10, borderRadius: 3, background: FUNC_GROUP_COLORS[grp] || '#64748b' }} />
+                    <span style={{ fontSize: 12.5, fontWeight: 700, color: '#334155' }}>{grp}</span>
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: mob ? '1fr' : '46px 1fr', gap: mob ? 3 : 8, alignItems: 'center', marginBottom: 5 }}>
+                    <span style={{ fontSize: 10.5, color: '#94a3b8', fontWeight: 600 }}>入棟前</span>
+                    <RouteBar route={r.admit} cats={ADMIT_CATS} />
+                  </div>
+                  <div style={{ display: 'grid', gridTemplateColumns: mob ? '1fr' : '46px 1fr', gap: mob ? 3 : 8, alignItems: 'center' }}>
+                    <span style={{ fontSize: 10.5, color: '#94a3b8', fontWeight: 600 }}>退棟先</span>
+                    <RouteBar route={r.discharge} cats={DISCH_CATS} />
+                  </div>
+                </div>
+              ))}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, fontSize: 11, marginTop: 4 }}>
+                {[...ADMIT_CATS, { key: '死亡等', color: '#334155' }].filter((c, i, a) => a.findIndex(x => x.key === c.key) === i).map(c => (
+                  <span key={c.key} style={{ display: 'flex', alignItems: 'center', gap: 4, color: '#475569' }}>
+                    <span style={{ width: 9, height: 9, borderRadius: 2, background: c.color }} />{c.key}
+                  </span>
+                ))}
+              </div>
+              <div style={{ fontSize: 10.5, color: '#94a3b8', marginTop: 8 }}>介護＝入棟前は介護施設・福祉施設＋介護医療院、退棟先は介護老人保健・福祉施設＋介護医療院＋社会福祉施設・有料老人ホーム等。カルテ #56 の2024年の機能別構成割合と数値一致（検証済み）。</div>
+            </>
+          ) : (tab === 'route' && <div style={{ padding: 16, fontSize: 12, color: '#94a3b8' }}>入退棟経路データがありません。</div>))}
+
+          {tab === 'table' && (
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5, minWidth: 560 }}>
+                <thead><tr style={{ background: '#fafbfc' }}>
+                  {['医療機関名', ...FUNC.map(f => f.key), '計', '病棟'].map((h, i) => (
+                    <th key={i} style={{ padding: '8px 10px', fontSize: 10.5, fontWeight: 600, color: '#94a3b8', textAlign: i === 0 ? 'left' : 'right', borderBottom: '1px solid #f1f5f9', whiteSpace: 'nowrap' }}>{h}</th>
+                  ))}
+                </tr></thead>
+                <tbody>{area.facilities.map((f, i) => (
+                  <tr key={i} style={{ borderBottom: '1px solid #f8f9fa' }}>
+                    <td style={{ padding: '7px 10px', fontWeight: 500 }}>{f.name}</td>
+                    {FUNC.map(fn => <td key={fn.key} style={{ padding: '7px 10px', textAlign: 'right', color: f.funcBeds[fn.key] ? fn.color : '#e2e8f0', fontVariantNumeric: 'tabular-nums' }}>{f.funcBeds[fn.key] || '–'}</td>)}
+                    <td style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, fontVariantNumeric: 'tabular-nums' }}>{fmt(f.beds)}</td>
+                    <td style={{ padding: '7px 10px', textAlign: 'right', color: '#94a3b8', fontVariantNumeric: 'tabular-nums' }}>{f.wards}</td>
+                  </tr>
+                ))}</tbody>
+              </table>
             </div>
-          </>}
-          {!loading && !area && <div style={{ padding: 20, fontSize: 12.5, color: '#94a3b8' }}>この圏域の病床機能データは見つかりませんでした。</div>}
-        </div>
+          )}
+
+          <div style={{ fontSize: 10.5, color: '#94a3b8', lineHeight: 1.7, marginTop: 12, paddingTop: 10, borderTop: '1px solid #f1f5f9' }}>
+            出典: {data.source}｜許可病床数=一般+療養。機能は施設の自己申告（2024/7/1時点）。<br />
+            医療需給総覧の当該圏スライド（医療機関別の許可病床数）と<b style={{ color: '#0f6e5d' }}>同一データ・数値一致</b>を検証済み。カルテのPDFと相互参照できます。
+          </div>
+        </>
       )}
-    </div>
+    </HsaPanel>
   );
 }

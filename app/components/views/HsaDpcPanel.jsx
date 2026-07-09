@@ -1,25 +1,17 @@
 'use client';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell, ScatterChart, Scatter, ZAxis } from 'recharts';
 import { fmt } from '../shared';
+import { useHsaPanel } from '../hsa/useHsaArea';
+import HsaPanel from '../hsa/HsaPanel';
 
 const MDC_KEYS = Array.from({ length: 18 }, (_, i) => String(i + 1).padStart(2, '0'));
 // 施設スタック用の配色（先頭施設ほど濃色）
 const FAC_COLORS = ['#2563EB', '#0891b2', '#7c3aed', '#059669', '#f97316', '#eab308', '#dc2626', '#64748b'];
 
-export default function HsaDpcPanel({ code, mob }) {
-  const [d, setD] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
+export default function HsaDpcPanel({ mob }) {
+  const { code, data: d, loading } = useHsaPanel('dpc');
   const [tab, setTab] = useState('mdc');
-
-  useEffect(() => {
-    if (!code || !open) return;
-    if (d && d.code === code) return;
-    setLoading(true); setD(null);
-    fetch(`/api/hsa/dpc?code=${code}`).then(r => r.json()).then(x => { setD({ ...x, code }); setLoading(false); })
-      .catch(() => setLoading(false));
-  }, [code, open]);
 
   const area = d?.area;
   const labels = d?.mdcLabels || {};
@@ -83,22 +75,16 @@ export default function HsaDpcPanel({ code, mob }) {
 
   if (!code) return null;
 
+  if (!code) return null;
   return (
-    <div style={{ background: '#fff', border: '1px solid #e8ecf0', borderRadius: 12, marginBottom: 20, overflow: 'hidden' }}>
-      <button onClick={() => setOpen(o => !o)}
-              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '13px 18px', border: 'none', background: 'linear-gradient(180deg,#f8fafc,#fff)', cursor: 'pointer', textAlign: 'left' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 9, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: '#0f6e5d', background: '#e3f0ed', padding: '2px 8px', borderRadius: 10 }}>ネイティブ再構築</span>
-          <span style={{ fontSize: 14, fontWeight: 700 }}>DPC退院患者数・MDC別／医療機関シェア</span>
-          <span style={{ fontSize: 11, color: '#94a3b8' }}>令和5年度DPC退院患者調査</span>
-        </div>
-        <span style={{ fontSize: 12, color: '#94a3b8' }}>{open ? '▲ 閉じる' : '▼ 開く'}</span>
-      </button>
-
-      {open && (
-        <div style={{ padding: '4px 18px 18px' }}>
-          {loading && <div style={{ padding: 24, color: '#cbd5e1', fontSize: 13 }}>読み込み中…</div>}
-          {!loading && area && <>
+    <HsaPanel title="DPC退院患者数・MDC別／医療機関シェア"
+              badges={[{ label: 'ネイティブ再構築', kind: 'reconstructed' }, { label: '令和5年度DPC退院患者調査', kind: 'muted' }]}
+              defaultOpen={false}
+              loading={loading}
+              empty={!area}
+              emptyText="この圏域のDPCデータは見つかりませんでした。">
+      {() => (
+        <>
             <div style={{ display: 'grid', gridTemplateColumns: mob ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap: 8, margin: '10px 0 14px' }}>
               {[
                 { l: 'DPC退院患者数 圏計', v: fmt(area.totals.total), u: '件', c: '#2563EB' },
@@ -272,10 +258,8 @@ export default function HsaDpcPanel({ code, mob }) {
               出典: {d.source}｜{d.note}<br />
               医療機関シェアはカルテ #68 と<b style={{ color: '#0f6e5d' }}>整合を検証</b>（MDC別シェアが一致）。<span style={{ color: '#b45309' }}>※厚労省の秘匿処理（小値非公開）により退院患者数の実数は数%過小の場合あり。構成比・シェアは信頼可能。</span>
             </div>
-          </>}
-          {!loading && !area && <div style={{ padding: 20, fontSize: 12.5, color: '#94a3b8' }}>この圏域のDPCデータは見つかりませんでした。</div>}
-        </div>
+        </>
       )}
-    </div>
+    </HsaPanel>
   );
 }

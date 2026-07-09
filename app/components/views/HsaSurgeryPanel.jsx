@@ -1,25 +1,17 @@
 'use client';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { ComposedChart, Area, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend, Cell } from 'recharts';
 import { fmt } from '../shared';
+import { useHsaPanel } from '../hsa/useHsaArea';
+import HsaPanel from '../hsa/HsaPanel';
 
 // #44/#45 手術件数の将来推計（発生率法）
 const AGE_COLORS = { '年少人口': '#cbd5e1', '生産年齢人口': '#38bdf8', '前期高齢者': '#f97316', '後期高齢者': '#dc2626' };
 const AGE_KEYS = ['後期高齢者', '前期高齢者', '生産年齢人口', '年少人口'];
 
-export default function HsaSurgeryPanel({ code, mob }) {
-  const [d, setD] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
+export default function HsaSurgeryPanel({ mob }) {
+  const { code, data: d, loading } = useHsaPanel('surgery');
   const [tab, setTab] = useState('inpatient');
-
-  useEffect(() => {
-    if (!code || !open) return;
-    if (d && d.code === code) return;
-    setLoading(true); setD(null);
-    fetch(`/api/hsa/surgery?code=${code}`).then(r => r.json()).then(x => { setD({ ...x, code }); setLoading(false); })
-      .catch(() => setLoading(false));
-  }, [code, open]);
 
   const series = d?.series || [];
   const trendRows = useMemo(() => series.map(s => ({ year: `${s.year}`, 入院: s.nyuin, 外来: s.gairai, ...s.byAge })), [series]);
@@ -28,21 +20,14 @@ export default function HsaSurgeryPanel({ code, mob }) {
   if (!code) return null;
 
   return (
-    <div style={{ background: '#fff', border: '1px solid #e8ecf0', borderRadius: 12, marginBottom: 20, overflow: 'hidden' }}>
-      <button onClick={() => setOpen(o => !o)}
-              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '13px 18px', border: 'none', background: 'linear-gradient(180deg,#f8fafc,#fff)', cursor: 'pointer', textAlign: 'left' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 9, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: '#0f6e5d', background: '#e3f0ed', padding: '2px 8px', borderRadius: 10 }}>ネイティブ再構築</span>
-          <span style={{ fontSize: 14, fontWeight: 700 }}>手術件数の将来推計</span>
-          <span style={{ fontSize: 11, fontWeight: 700, color: '#b45309', background: '#fdf1e4', padding: '2px 8px', borderRadius: 10 }}>参考推計</span>
-        </div>
-        <span style={{ fontSize: 12, color: '#94a3b8' }}>{open ? '▲ 閉じる' : '▼ 開く'}</span>
-      </button>
-
-      {open && (
-        <div style={{ padding: '4px 18px 18px' }}>
-          {loading && <div style={{ padding: 24, color: '#cbd5e1', fontSize: 13 }}>読み込み中…</div>}
-          {!loading && series.length > 0 && <>
+    <HsaPanel title="手術件数の将来推計"
+              badges={[{ label: 'ネイティブ再構築', kind: 'reconstructed' }, { label: '参考推計', kind: 'reference' }]}
+              defaultOpen={false}
+              loading={loading}
+              empty={series.length === 0}
+              emptyText="この圏域の手術推計データは見つかりませんでした。">
+      {() => (
+        <>
             <div style={{ display: 'grid', gridTemplateColumns: mob ? 'repeat(2,1fr)' : 'repeat(3,1fr)', gap: 8, margin: '10px 0 12px' }}>
               {[
                 { l: '入院手術 2020', v: series[0]?.nyuin, u: '件/年', c: '#2563EB' },
@@ -109,10 +94,8 @@ export default function HsaSurgeryPanel({ code, mob }) {
               出典: {d.source}｜全国の年齢別発生率×圏将来人口による年間手術件数。
               <span style={{ color: '#b45309' }}>※参考推計。ただし手術は年齢分散が大きく、<b>絶対水準もカルテ #44 とほぼ一致（±3%程度）</b>します。NDB秘匿処理で希少術式は一部欠測。</span>
             </div>
-          </>}
-          {!loading && series.length === 0 && <div style={{ padding: 20, fontSize: 12.5, color: '#94a3b8' }}>この圏域の手術推計データは見つかりませんでした。</div>}
-        </div>
+        </>
       )}
-    </div>
+    </HsaPanel>
   );
 }

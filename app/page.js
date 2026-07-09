@@ -24,6 +24,19 @@ const Nav = ({icon,label,active,onClick}) => (
 
 // Medical Area data: loaded dynamically from /api/medical-areas
 
+// 2階層ナビ: 4グループ × サブビュー（地理粒度・テーマで整理）
+const NAV_GROUPS = [
+  { id: 'social', label: '社会・人口', icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z',
+    views: [['map', '高齢社会 概況'], ['muni', '人口動態・将来推計']] },
+  { id: 'disease', label: '医療・疾病', icon: 'M22 12h-4l-3 9L9 3l-3 9H2',
+    views: [['area', '医療圏・疾病構造'], ['ndb', '医療プロファイル'], ['bedfunc', '地域医療構想・病床機能']] },
+  { id: 'karte', label: '医療圏カルテ', icon: 'M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8',
+    views: [['report', '医療圏カルテ']] },
+  { id: 'facility', label: '施設', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
+    views: [['explorer', '施設エクスプローラ']] },
+];
+const groupOfView = (v) => NAV_GROUPS.find(g => g.views.some(([id]) => id === v)) || NAV_GROUPS[0];
+
 export default function Home() {
   const mob = useIsMobile();
   const [view, setView] = useState('map');
@@ -69,6 +82,18 @@ export default function Home() {
   const [bedFunc, setBedFunc] = useState(null);
   const [mortalityOutcome2020, setMortalityOutcome2020] = useState(null);
   const [cancerSites2024, setCancerSites2024] = useState(null);
+
+  // URL状態同期: ?v=<view>&pref=<都道府県> を復元・反映（code は AreaReportView が管理）
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    const v = p.get('v'); if (v) setView(v);
+    const pr = p.get('pref'); if (pr) setGlobalPref(pr);
+  }, []);
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    p.set('v', view); p.set('pref', globalPref);
+    window.history.replaceState(null, '', '?' + p.toString());
+  }, [view, globalPref]);
 
   useEffect(() => {
     Promise.all([
@@ -139,30 +164,23 @@ export default function Home() {
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
       {/* Desktop Sidebar / Mobile Bottom Nav */}
       {mob ? (
-        <nav style={{position:'fixed',bottom:0,left:0,right:0,background:'#fff',borderTop:'1px solid #e2e8f0',display:'flex',zIndex:50,padding:'6px 0 env(safe-area-inset-bottom)',boxShadow:'0 -2px 8px rgba(0,0,0,0.06)',overflowX:'auto'}}>
-          {[['map','概況','M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z'],['muni','人口推計','M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z'],['area','医療圏','M22 12h-4l-3 9L9 3l-3 9H2'],['report','カルテ','M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8'],['ndb','処方・診療','M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'],['bedfunc','病床機能','M18 20V10M12 20V4M6 20v-6'],['explorer','施設','M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z']].map(([id,l,ic])=>(
-            <button key={id} onClick={()=>setView(id)} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:2,padding:'6px 0',border:'none',background:'transparent',cursor:'pointer',color:view===id?'#2563EB':'#94a3b8',fontSize:10,fontWeight:view===id?700:400}}>
-              <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke={view===id?'#2563EB':'#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={ic}/></svg>
-              {l}
+        <nav style={{position:'fixed',bottom:0,left:0,right:0,background:'#fff',borderTop:'1px solid #e2e8f0',display:'flex',zIndex:50,padding:'6px 0 env(safe-area-inset-bottom)',boxShadow:'0 -2px 8px rgba(0,0,0,0.06)'}}>
+          {NAV_GROUPS.map(g=>{const on=groupOfView(view).id===g.id;return(
+            <button key={g.id} onClick={()=>setView(g.views[0][0])} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:3,padding:'6px 0',border:'none',background:'transparent',cursor:'pointer',color:on?'#2563EB':'#94a3b8',fontSize:10.5,fontWeight:on?700:400}}>
+              <svg width={19} height={19} viewBox="0 0 24 24" fill="none" stroke={on?'#2563EB':'#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={g.icon}/></svg>
+              {g.label}
             </button>
-          ))}
+          )})}
         </nav>
       ) : (
-      <aside style={{width:230,background:'#fff',borderRight:'1px solid #f0f0f0',padding:'20px 12px',flexShrink:0,position:'sticky',top:0,height:'100vh',boxSizing:'border-box',display:'flex',flexDirection:'column',gap:2}}>
+      <aside style={{width:214,background:'#fff',borderRight:'1px solid #f0f0f0',padding:'20px 12px',flexShrink:0,position:'sticky',top:0,height:'100vh',boxSizing:'border-box',display:'flex',flexDirection:'column',gap:3}}>
         <div style={{padding:'0 14px 16px',borderBottom:'1px solid #f0f0f0',marginBottom:8}}>
           <div style={{fontSize:18,fontWeight:700,letterSpacing:'-0.03em'}}>MedIntel</div>
           <div style={{fontSize:11,color:'#94a3b8',marginTop:2}}>日本の医療と高齢社会</div>
         </div>
-        <div style={{padding:'6px 14px 4px',fontSize:10,fontWeight:600,color:'#cbd5e1',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:4}}>社会構造</div>
-        <Nav icon="M1 6v16l7-4 8 4 7-4V2l-7 4-8-4-7 4z" label="高齢社会 概況" active={view==='map'} onClick={()=>setView('map')}/>
-        <Nav icon="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z" label="人口動態・将来推計" active={view==='muni'} onClick={()=>setView('muni')}/>
-        <div style={{padding:'6px 14px 4px',fontSize:10,fontWeight:600,color:'#cbd5e1',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:8,borderTop:'1px solid #f0f0f0',paddingTop:12}}>疾患・診療</div>
-        <Nav icon="M22 12h-4l-3 9L9 3l-3 9H2" label="医療圏・疾病構造" active={view==='area'} onClick={()=>setView('area')}/>
-        <Nav icon="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8" label="医療圏カルテ" active={view==='report'} onClick={()=>setView('report')}/>
-        <Nav icon="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" label="医療プロファイル" active={view==='ndb'} onClick={()=>setView('ndb')}/>
-        <div style={{padding:'6px 14px 4px',fontSize:10,fontWeight:600,color:'#cbd5e1',letterSpacing:'0.1em',textTransform:'uppercase',marginTop:8,borderTop:'1px solid #f0f0f0',paddingTop:12}}>医療インフラ</div>
-        <Nav icon="M18 20V10M12 20V4M6 20v-6" label="地域医療構想・病床機能" active={view==='bedfunc'} onClick={()=>setView('bedfunc')}/>
-        <Nav icon="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" label="施設エクスプローラ" active={view==='explorer'} onClick={()=>setView('explorer')}/>
+        {NAV_GROUPS.map(g=>(
+          <Nav key={g.id} icon={g.icon} label={g.label} active={groupOfView(view).id===g.id} onClick={()=>setView(g.views[0][0])}/>
+        ))}
         <div style={{flex:1}}/>
         <div style={{padding:'12px 14px',borderTop:'1px solid #f0f0f0',fontSize:11,color:'#cbd5e1'}}>
           出典: 厚労省/総務省/社人研<br/>97,024施設 × 976,149届出 × 住基2025
@@ -170,6 +188,14 @@ export default function Home() {
       </aside>
       )}
       <main style={{flex:1,padding:mob?'16px 16px 80px':'28px 32px',maxWidth:1100,overflow:'auto'}}>
+        {/* サブタブ（グループ内に複数ビューがある場合） */}
+        {groupOfView(view).views.length>1 && (
+          <div style={{display:'flex',gap:6,marginBottom:20,flexWrap:'wrap',borderBottom:'1px solid #f0f0f0',paddingBottom:12}}>
+            {groupOfView(view).views.map(([id,l])=>(
+              <button key={id} onClick={()=>setView(id)} style={{padding:'7px 14px',borderRadius:8,border:'1px solid '+(view===id?'#2563EB':'#e2e8f0'),background:view===id?'#eff6ff':'#fff',color:view===id?'#2563EB':'#64748b',fontSize:13,fontWeight:600,cursor:'pointer'}}>{l}</button>
+            ))}
+          </div>
+        )}
 
         {/* ═══ MAP VIEW ═══ */}
         {view==='map' && <MapView mob={mob} prefs={prefs} metric={metric} setMetric={setMetric} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} setGlobalPref={setGlobalPref} setView={setView} vitalStats={vitalStats} globalPref={globalPref} />}

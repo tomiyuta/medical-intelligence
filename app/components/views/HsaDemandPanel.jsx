@@ -1,21 +1,13 @@
 'use client';
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useMemo } from 'react';
 import { ComposedChart, Line, BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Cell, Legend } from 'recharts';
 import { fmt } from '../shared';
+import { useHsaPanel } from '../hsa/useHsaArea';
+import HsaPanel from '../hsa/HsaPanel';
 
-export default function HsaDemandPanel({ code, mob }) {
-  const [d, setD] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
+export default function HsaDemandPanel({ mob }) {
+  const { code, data: d, loading } = useHsaPanel('demand');
   const [tab, setTab] = useState('trend');
-
-  useEffect(() => {
-    if (!code || !open) return;
-    if (d && d.code === code) return;
-    setLoading(true); setD(null);
-    fetch(`/api/hsa/demand?code=${code}`).then(r => r.json()).then(x => { setD({ ...x, code }); setLoading(false); })
-      .catch(() => setLoading(false));
-  }, [code, open]);
 
   const area = d?.area;
   const years = d?.years || [];
@@ -68,21 +60,14 @@ export default function HsaDemandPanel({ code, mob }) {
   if (!code) return null;
 
   return (
-    <div style={{ background: '#fff', border: '1px solid #e8ecf0', borderRadius: 12, marginBottom: 20, overflow: 'hidden' }}>
-      <button onClick={() => setOpen(o => !o)}
-              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '13px 18px', border: 'none', background: 'linear-gradient(180deg,#f8fafc,#fff)', cursor: 'pointer', textAlign: 'left' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 9, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: '#0f6e5d', background: '#e3f0ed', padding: '2px 8px', borderRadius: 10 }}>ネイティブ再構築</span>
-          <span style={{ fontSize: 14, fontWeight: 700 }}>将来医療需要の推計（受療率法）</span>
-          <span style={{ fontSize: 11, fontWeight: 700, color: '#b45309', background: '#fdf1e4', padding: '2px 8px', borderRadius: 10 }}>参考推計</span>
-        </div>
-        <span style={{ fontSize: 12, color: '#94a3b8' }}>{open ? '▲ 閉じる' : '▼ 開く'}</span>
-      </button>
-
-      {open && (
-        <div style={{ padding: '4px 18px 18px' }}>
-          {loading && <div style={{ padding: 24, color: '#cbd5e1', fontSize: 13 }}>読み込み中…</div>}
-          {!loading && area && trendRows.length > 0 && <>
+    <HsaPanel title="将来医療需要の推計（受療率法）"
+              badges={[{ label: 'ネイティブ再構築', kind: 'reconstructed' }, { label: '参考推計', kind: 'reference' }]}
+              defaultOpen={false}
+              loading={loading}
+              empty={!area || trendRows.length === 0}
+              emptyText="この圏域の需要推計データは見つかりませんでした。">
+      {() => (
+        <>
             <div style={{ display: 'grid', gridTemplateColumns: mob ? 'repeat(2,1fr)' : 'repeat(4,1fr)', gap: 8, margin: '10px 0 12px' }}>
               {[
                 { l: '入院需要 2020', v: fmt(Math.round(base.入院)), u: '人/日', c: '#2563EB' },
@@ -168,10 +153,8 @@ export default function HsaDemandPanel({ code, mob }) {
               手法: {d.note}<br />
               <span style={{ color: '#b45309' }}>※参考推計。受療率は都道府県値、人口は社人研推計。患者調査総数に含まれる年齢不詳分や医療機関所在地への流出入調整は本推計に含めないため、カルテ #30-36 の絶対値とは差が生じます。人口構成の変化に伴う<b>需要トレンド（増減）</b>を把握する目的でご利用ください。</span>
             </div>
-          </>}
-          {!loading && !area && <div style={{ padding: 20, fontSize: 12.5, color: '#94a3b8' }}>この圏域の需要推計データは見つかりませんでした。</div>}
-        </div>
+        </>
       )}
-    </div>
+    </HsaPanel>
   );
 }
