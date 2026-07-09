@@ -197,18 +197,15 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
   const tlRef = useRef(null);
   const tlDrag = useRef(false);
   // 再生: 700ms/step で末尾まで進んで停止（1周）
+  // 1ステップずつ setTimeout でスケジュール（tlIdx 依存で毎ステップ再実行）。
+  // 停止は「更新関数の外」= エフェクト本体で行う（setFutureYear の updater 内で
+  // setTlPlaying を呼ぶと Home のレンダー中に NdbView を更新する setState-in-render になるため）。
   useEffect(() => {
     if (!tlPlaying) return;
-    const id = setInterval(() => {
-      setFutureYear(prev => {
-        const i = DEMO_YEARS.indexOf(prev);
-        if (i < 0) return '2025';
-        if (i >= DEMO_YEARS.length - 1) { setTlPlaying(false); return prev; }
-        return DEMO_YEARS[i + 1];
-      });
-    }, 700);
-    return () => clearInterval(id);
-  }, [tlPlaying, setFutureYear]);
+    if (tlIdx >= DEMO_YEARS.length - 1) { setTlPlaying(false); return; }
+    const id = setTimeout(() => setFutureYear(DEMO_YEARS[tlIdx + 1]), 700);
+    return () => clearTimeout(id);
+  }, [tlPlaying, tlIdx, setFutureYear]);
   // 選択県の社人研系列（type=a）
   const fpSel = useMemo(
     () => futureDemo?.prefectures?.find(p => p.pref === ndbPref) || null,
