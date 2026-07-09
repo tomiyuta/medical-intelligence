@@ -40,7 +40,6 @@ export default function HsaEmergencyPanel({ mob }) {
   return (
     <HsaPanel title="救急・職員体制"
               badges={[
-                { label: 'ネイティブ再構築', kind: 'reconstructed' },
                 { label: '令和6年度病床機能報告', kind: 'muted' },
               ]}
               defaultOpen={true}

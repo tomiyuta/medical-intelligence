@@ -78,7 +78,7 @@ export default function HsaDpcPanel({ mob }) {
   if (!code) return null;
   return (
     <HsaPanel title="DPC退院患者数・MDC別／医療機関シェア"
-              badges={[{ label: 'ネイティブ再構築', kind: 'reconstructed' }, { label: '令和5年度DPC退院患者調査', kind: 'muted' }]}
+              badges={[{ label: '令和5年度DPC退院患者調査', kind: 'muted' }]}
               defaultOpen={false}
               loading={loading}
               empty={!area}

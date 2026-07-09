@@ -39,7 +39,7 @@ export default function HsaHospTrendPanel({ mob }) {
 
   return (
     <HsaPanel title="病床数及び診療実績の推移"
-              badges={[{ label: 'ネイティブ再構築', kind: 'reconstructed' }]}
+              badges={[]}
               defaultOpen={false}
               loading={loading}
               empty={!d?.kinds}

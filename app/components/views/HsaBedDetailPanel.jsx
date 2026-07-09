@@ -113,7 +113,7 @@ export default function HsaBedDetailPanel({ mob }) {
 
   return (
     <HsaPanel title="圏域内 医療機関別 病床機能構成"
-              badges={[{ label: 'ネイティブ再構築', kind: 'reconstructed' }, { label: '令和6年度病床機能報告', kind: 'muted' }]}
+              badges={[{ label: '令和6年度病床機能報告', kind: 'muted' }]}
               defaultOpen={true}
               loading={loading}
               empty={!area}

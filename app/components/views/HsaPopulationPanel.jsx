@@ -39,7 +39,6 @@ export default function HsaPopulationPanel({ mob }) {
   return (
     <HsaPanel title="人口推計・高齢化（2020〜2050）"
               badges={[
-                { label: 'ネイティブ再構築', kind: 'reconstructed' },
                 { label: '社人研 令和5年推計', kind: 'muted' },
               ]}
               defaultOpen={true}

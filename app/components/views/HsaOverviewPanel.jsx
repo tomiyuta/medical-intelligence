@@ -19,7 +19,7 @@ export default function HsaOverviewPanel({ mob }) {
 
   return (
     <HsaPanel title="二次医療圏の概況（人口・面積・人口密度）"
-              badges={[{ label: 'ネイティブ再構築', kind: 'reconstructed' }]}
+              badges={[]}
               defaultOpen={true}
               loading={loading}
               empty={!self}

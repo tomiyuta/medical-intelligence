@@ -21,7 +21,7 @@ export default function HsaSurgeryPanel({ mob }) {
 
   return (
     <HsaPanel title="手術件数の将来推計"
-              badges={[{ label: 'ネイティブ再構築', kind: 'reconstructed' }, { label: '参考推計', kind: 'reference' }]}
+              badges={[{ label: '参考推計', kind: 'reference' }]}
               defaultOpen={false}
               loading={loading}
               empty={series.length === 0}

@@ -36,7 +36,7 @@ export default function HsaInpatientPanel({ mob }) {
 
   return (
     <HsaPanel title="入院患者数と平均在院日数の推移"
-              badges={[{ label: 'ネイティブ再構築', kind: 'reconstructed' }]}
+              badges={[]}
               defaultOpen={false}
               loading={loading}
               empty={!self}
