@@ -20,6 +20,11 @@ import { useRef, useState, useEffect, useMemo } from 'react';
  *   onPin     : (pref)=>void
  *   onJump    : (pref)=>void
  *   mode      : 'micro'(14px高・レンジバー縮退) | 'inline'(28px) | 'full'(64pxビースウォーム)
+ *   domain    : [min,max]|undefined 固定軸域。未指定=行内min/max自動スケール（従来挙動）。
+ *               域外値は端にクランプし ▸/◂ マーカーで「振り切れ」を明示（値は捏造しない・
+ *               ツールチップは常に実値を表示）。
+ *   scale     : 'linear'(既定) | 'log2' x写像。log2 は x=(log2(v)-log2(min))/(log2(max)-log2(min))。
+ *               min<=0 の域では log2 不能のため linear に縮退。
  *
  * hover同期は単一 onMouseMove で最近傍x探索（circle個別リスナー回避）。
  * ツールチップは内部 absolute div（親の onHover でも制御可能）。
@@ -68,8 +73,16 @@ export default function PrefStrip47({
   onPin,
   onJump,
   mode = 'inline',
+  domain = null,
+  scale = 'linear',
 }) {
   const cfg = MODE_CFG[mode] || MODE_CFG.inline;
+
+  // domain は配列 identity が毎render変わっても再計算しないよう要素で安定化
+  const hasDomain = Array.isArray(domain) && domain.length === 2
+    && isFinite(domain[0]) && isFinite(domain[1]) && domain[0] < domain[1];
+  const d0 = hasDomain ? domain[0] : null;
+  const d1 = hasDomain ? domain[1] : null;
 
   // ── hooks（順序固定のため yearBadge ガードより前に全て宣言） ──
   const holderRef = useRef(null);
@@ -102,12 +115,20 @@ export default function PrefStrip47({
   const layout = useMemo(() => {
     if (clean.length === 0) return null;
     const vals = clean.map((d) => d.value);
-    let min = Math.min(...vals);
-    let max = Math.max(...vals);
+    // 固定 domain 指定時は行内 min/max 自動スケールを上書き（共有軸）
+    let min = d0 != null ? d0 : Math.min(...vals);
+    let max = d1 != null ? d1 : Math.max(...vals);
     if (min === max) { min -= 1; max += 1; }
+    // log2 写像は正の域でのみ有効（min<=0 は linear へ縮退）
+    const useLog = scale === 'log2' && min > 0;
     const padX = cfg.padX;
     const innerW = Math.max(1, w - padX * 2);
-    const xOf = (v) => padX + ((v - min) / (max - min)) * innerW;
+    // 域外値は端にクランプ（表示位置のみ端寄せ・値は捏造しない）
+    const clampV = (v) => Math.max(min, Math.min(max, v));
+    const norm = useLog
+      ? (v) => (Math.log2(v) - Math.log2(min)) / (Math.log2(max) - Math.log2(min))
+      : (v) => (v - min) / (max - min);
+    const xOf = (v) => padX + norm(clampV(v)) * innerW;
 
     const cy = cfg.top + cfg.band / 2;
     const r = cfg.r;
@@ -126,7 +147,11 @@ export default function PrefStrip47({
     const avgX = xOf(Math.max(min, Math.min(max, avg)));
 
     // 貪欲スタッキング（ビースウォーム）— x昇順に中央から交互配置
-    const pts = clean.map((d, i) => ({ pref: d.pref, value: d.value, i, x: xOf(d.value), y: cy }));
+    // clamped: 固定 domain の域外値（'low'|'high'|null）→ 端マーカーで振り切れ明示
+    const pts = clean.map((d, i) => ({
+      pref: d.pref, value: d.value, i, x: xOf(d.value), y: cy,
+      clamped: d.value < min ? 'low' : d.value > max ? 'high' : null,
+    }));
     const byX = [...pts].sort((a, b) => a.x - b.x);
     const minGap = r * 2 + 0.4;
     const placed = [];
@@ -166,7 +191,7 @@ export default function PrefStrip47({
 
     return { pts, xOf, min, max, median, medianX: xOf(median), avg, avgX,
              cy, bandTop, bandBottom, r, rankMap, n: clean.length, high3, low3, padX };
-  }, [clean, w, mode, natAvg]);
+  }, [clean, w, mode, natAvg, d0, d1, scale]);
 
   // ── yearBadge ガード（全 hook 宣言後に return） ──
   if (!yearBadge || !yearBadge.label) {
@@ -207,7 +232,7 @@ export default function PrefStrip47({
   const handleMove = (e) => {
     const p = nearestPt(e.clientX);
     if (!p) return;
-    setHover({ pref: p.pref, value: p.value, x: p.x, y: p.y, rank: layout.rankMap[p.pref] });
+    setHover({ pref: p.pref, value: p.value, x: p.x, y: p.y, rank: layout.rankMap[p.pref], clamped: p.clamped });
     emitHover(p.pref);
   };
 
@@ -220,7 +245,7 @@ export default function PrefStrip47({
     const p = nearestPt(e.clientX);
     if (!p) return;
     // 1タップ目相当: 情報表示
-    setHover({ pref: p.pref, value: p.value, x: p.x, y: p.y, rank: layout.rankMap[p.pref] });
+    setHover({ pref: p.pref, value: p.value, x: p.x, y: p.y, rank: layout.rankMap[p.pref], clamped: p.clamped });
     emitHover(p.pref);
     // 既ピン県ドットの再クリック = 移動（呼び出し側で確認）
     if (pinned && p.pref === pinned) {
@@ -324,6 +349,18 @@ export default function PrefStrip47({
           />
         );
       })}
+      {/* 域外クランプ ▸/◂ マーカー（固定 domain の振り切れ明示・全ドット種の上に重ねる） */}
+      {layout.pts.filter((p) => p.clamped).map((p) => {
+        const r = layout.r;
+        const d = p.clamped === 'high'
+          ? `M ${p.x + r - 0.5} ${p.y - r} L ${p.x + r + 3} ${p.y} L ${p.x + r - 0.5} ${p.y + r} Z`
+          : `M ${p.x - r + 0.5} ${p.y - r} L ${p.x - r - 3} ${p.y} L ${p.x - r + 0.5} ${p.y + r} Z`;
+        return (
+          <path key={`clamp-${p.pref}`} d={d} fill={C.hi} opacity={0.85}>
+            <title>{`${p.pref} ${fmtVal(p.value)}（軸域外→端に表示）`}</title>
+          </path>
+        );
+      })}
       {/* full mode: 上位/下位3県ラベル */}
       {cfg.labels && (
         <g>
@@ -369,6 +406,11 @@ export default function PrefStrip47({
     >
       <span style={{ fontWeight: 700 }}>{hover.pref}</span>{' '}
       <span style={{ color: '#93c5fd', fontWeight: 700 }}>{fmtVal(hover.value)}</span>
+      {hover.clamped && (
+        <span style={{ color: '#fbbf24', fontWeight: 700, marginLeft: 4 }}>
+          {hover.clamped === 'high' ? '▸' : '◂'}軸域外
+        </span>
+      )}
       <span style={{ color: '#cbd5e1' }}>　{layout.n}県中 {hover.rank}位</span>
       <span style={{ color: '#64748b', marginLeft: 6 }}>{yearBadge.label}</span>
     </div>
