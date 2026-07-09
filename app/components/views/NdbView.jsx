@@ -10,7 +10,7 @@ import PrefStrip47 from '../ui/PrefStrip47';
 import PsIris from '../ui/PsIris';
 import PrefChoropleth from '../ui/PrefChoropleth';
 import { getSourceBadge } from '../../../lib/sourceRegistry';
-import { DOMAIN_MAPPING, DOMAIN_ORDER, rowInDomain, domainSectionStatus, DOMAIN_TO_RX_LABEL } from '../../../lib/domainMapping';
+import { DOMAIN_MAPPING, DOMAIN_ORDER, rowInDomain, domainSectionStatus, DOMAIN_TO_RX_LABEL, FP_TIERS, tierOf } from '../../../lib/domainMapping';
 
 // rank1: 47都道府県ホワイトリスト（「都道府県判別不可」「全国」等の擬似県を分布から除外）
 const PREF47_SET = new Set(PREF_ORDER);
@@ -53,24 +53,37 @@ const CountUpNum = ({ value, decimals = 0, signed = false, suffix = '' }) => {
   if (v == null || !isFinite(v)) return null;
   return <>{signed && v > 0 ? '+' : ''}{v.toFixed(decimals)}{suffix}</>;
 };
-// 受療率フィンガープリント色意味論: rose(高)/indigo(低)の中立発散色。
-// 赤=悪・緑=良の価値判断を輸入しない（受療率の高低は受療行動・供給・疾病構造の複合であり良し悪しではない）。
-const FP_TIERS = [
-  { label: '突出高', short: '突高', color: '#9f1239' },
-  { label: 'やや高', short: 'や高', color: '#e05c7a' },
-  { label: '標準域', short: '標準', color: '#64748b' },
-  { label: 'やや低', short: 'や低', color: '#6366f1' },
-  { label: '突出低', short: '突低', color: '#4338ca' },
-];
-// tierOf(delta=対全国比−100): ±5/±15 閾値のことばスケール（純関数）
-const tierOf = (delta) => {
-  if (delta == null || !isFinite(delta)) return null;
-  if (delta >= 15) return FP_TIERS[0];
-  if (delta >= 5) return FP_TIERS[1];
-  if (delta > -5) return FP_TIERS[2];
-  if (delta > -15) return FP_TIERS[3];
-  return FP_TIERS[4];
+// FLIP行アニメ共通ヘルパ(手順1共有基盤: psRowRefs方式の一般化・挙動不変)。
+// refsMap=useRefの{key→行DOM}。deps変更時に行がtranslateYのみで滑走(reflowゼロ)。
+// 初回マウントはアニメなし・prefers-reduced-motionは無効。毎レンダ後に現在位置を記録(次のFirst)。
+// 受療率フォレスト / Layer1ソート / Layer4ソートで共用する。
+const useFlipRows = (refsMap, deps, mob = false) => {
+  const posRef = useRef({});   // key→前レンダの getBoundingClientRect().top（First）
+  const armed = useRef(false); // 初回マウントはアニメなし
+  useIsoLayoutEffect(() => {
+    if (armed.current && !prefersReducedMotion()) {
+      Object.entries(refsMap.current).forEach(([key, el]) => {
+        if (!el || typeof el.animate !== 'function') return;
+        const oldTop = posRef.current[key];
+        if (oldTop == null) return;
+        const dy = oldTop - el.getBoundingClientRect().top; // Invert
+        if (Math.abs(dy) < 1) return;
+        el.animate(                                          // Play: transformのみ
+          [{ transform: `translateY(${dy}px)` }, { transform: 'translateY(0)' }],
+          { duration: mob ? 280 : 350, easing: 'cubic-bezier(0.22,1,0.36,1)' }
+        );
+      });
+    }
+    armed.current = true;
+  }, deps); // eslint-disable-line react-hooks/exhaustive-deps
+  useIsoLayoutEffect(() => {   // 毎レンダ後に現在位置を記録（次のFLIPのFirst）
+    const snap = {};
+    Object.entries(refsMap.current).forEach(([key, el]) => { if (el) snap[key] = el.getBoundingClientRect().top; });
+    posRef.current = snap;
+  });
 };
+// 受療率フィンガープリント色意味論(FP_TIERS/tierOf)は lib/domainMapping.js へ移設
+// (手順1共有基盤: Bridge・新部品とことばチップ単一ソース化・循環import回避) — import参照。
 const CAT_LABELS = {'A_初再診料':'外来受診','B_医学管理等':'慢性疾患管理','C_在宅医療':'在宅医療'};
 const RISK_META = {
   'ヘモグロビン': {unit:'g/dL', note:'低値=貧血リスク', icon:'🩸'},
@@ -105,15 +118,15 @@ const GAP_TEMPLATES = [
   {id:'aging_homecare', label:'高齢化×在宅医療', xLabel:'65歳以上 (%)', yLabel:'在宅医療/10万人',
     xType:'aging', yType:'diag', yKey:'C_在宅医療', xInverse:false,
     note:'高齢化進行に対し在宅医療供給が追いつくか。左上(高齢×低算定)が供給不足候補。'},
-  {id:'exercise_heart', label:'運動不足×心疾患死亡', xLabel:'運動習慣あり (%)', yLabel:'心疾患死亡率',
-    xType:'q', xKey:'exercise', yType:'cause', yKey:'心疾患', xInverse:true,
-    note:'X軸は運動習慣保有率（高=低リスク）。色は反転処理済み。'},
+  {id:'exercise_heart', label:'運動不足×心疾患死亡', xLabel:'運動不足率 (%)', yLabel:'心疾患死亡率',
+    xType:'q', xKey:'exercise', yType:'cause', yKey:'心疾患', xInverse:false,
+    note:'X軸は運動不足率（30分以上の運動が週2日未満の割合・高=リスク方向）。'},
   {id:'weight_diabetes', label:'体重増加×糖尿病死亡', xLabel:'体重増加歴 (%)', yLabel:'糖尿病死亡率',
     xType:'q', xKey:'weight_gain', yType:'cause', yKey:'糖尿病', xInverse:false,
     note:'20歳比10kg以上の増加は2型糖尿病の独立リスク因子。'},
-  {id:'walking_senility', label:'歩行不足×老衰', xLabel:'1日60分歩行 (%)', yLabel:'老衰死亡率',
-    xType:'q', xKey:'walking', yType:'cause', yKey:'老衰', xInverse:true,
-    note:'X軸は歩行習慣保有率（高=低リスク）。地域の身体活動量と老衰の関連を可視化。'},
+  {id:'walking_senility', label:'歩行不足×老衰', xLabel:'歩行不足率 (%)', yLabel:'老衰死亡率',
+    xType:'q', xKey:'walking', yType:'cause', yKey:'老衰', xInverse:false,
+    note:'X軸は歩行不足率（1日1時間以上の歩行なしの割合・高=リスク方向）。地域の身体活動量と老衰の関連を可視化。'},
   {id:'late_dinner_htn', label:'夕食遅×高血圧死亡', xLabel:'就寝前夕食 (%)', yLabel:'高血圧性疾患死亡率',
     xType:'q', xKey:'late_dinner', yType:'cause', yKey:'高血圧性疾患', xInverse:false,
     note:'夜間摂食と血圧の関連は近年注目。代理指標として扱う。'},
@@ -146,7 +159,24 @@ const DOMAIN_GAP_TEMPLATE = {
 // rank9: 人口タイムレンズ — 社人研推計7年（2020国調ベース・2020-2050）
 const DEMO_YEARS = ['2020','2025','2030','2035','2040','2045','2050'];
 
-export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ, agePyramid, futureDemo, patientSurvey, bedFunc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd, mortalityOutcome2020, cancerSites2024, homecareCapability, japanMap, futureYear, setFutureYear }) {
+// ── 人口KPI: age_pyramid (住基2025) の年齢帯集計（純関数・モジュールレベル）──
+// age_groups 21帯: idx 13=65-69, 15=75-79, 17=85-89
+// 手順1共有基盤: prefPops useMemo（deps安定化）と demoKpi 等で共用するため部品外へ移設。
+const computeAgeRates = (ap) => {
+  if (!ap || !ap.male || !ap.female) return null;
+  const sum = arr => arr.reduce((s,v)=>s+(v||0),0);
+  const m = ap.male, f = ap.female;
+  const total = sum(m) + sum(f);
+  if (total <= 0) return null;
+  return {
+    total,
+    rate65: (sum(m.slice(13)) + sum(f.slice(13))) / total * 100,
+    rate75: (sum(m.slice(15)) + sum(f.slice(15))) / total * 100,
+    rate85: (sum(m.slice(17)) + sum(f.slice(17))) / total * 100,
+  };
+};
+
+export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, ndbQ, agePyramid, futureDemo, patientSurvey, bedFunc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd, mortalityOutcome2020, cancerSites2024, homecareCapability, japanMap, futureYear, setFutureYear }) {
   const diagByPref = ndbDiag.filter(d=>d.prefecture===ndbPref);
   const hcPref = ndbHc.filter(d=>d.pref===ndbPref);
   const vp = vitalStats?.prefectures?.find(p=>p.pref===ndbPref);
@@ -166,20 +196,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
   };
 
   // ── 人口KPI: age_pyramid (住基2025) + future_demographics (社人研2050) ──
-  // age_groups 21帯: idx 13=65-69, 15=75-79, 17=85-89
-  const computeAgeRates = (ap) => {
-    if (!ap || !ap.male || !ap.female) return null;
-    const sum = arr => arr.reduce((s,v)=>s+(v||0),0);
-    const m = ap.male, f = ap.female;
-    const total = sum(m) + sum(f);
-    if (total <= 0) return null;
-    return {
-      total,
-      rate65: (sum(m.slice(13)) + sum(f.slice(13))) / total * 100,
-      rate75: (sum(m.slice(15)) + sum(f.slice(15))) / total * 100,
-      rate85: (sum(m.slice(17)) + sum(f.slice(17))) / total * 100,
-    };
-  };
+  // computeAgeRates はモジュールレベルへ移設（手順1共有基盤）
   const demoKpi = (()=>{
     if (!agePyramid?.prefectures?.[ndbPref]) return null;
     const r = computeAgeRates(agePyramid.prefectures[ndbPref]);
@@ -302,13 +319,10 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     return { rows, vmin: Math.floor(vmin), vmax: Math.ceil(vmax) };
   }, [futureDemo, agePyramid, tlYear]);
 
-  // Population for per-capita
-  const prefPop = (()=>{
-    if (!areaDemoData) return 0;
-    let pop = 0;
-    areaDemoData.filter(a=>a.pref===ndbPref).forEach(a=>(a.munis||[]).forEach(m=>pop+=m.pop||0));
-    return pop;
-  })();
+  // Population for per-capita — 住基2025(agePyramid)の完全な県人口(=demoKpi.total)。
+  // area_demographics の munis 合算は政令指定都市を含まず(全国96.9M vs 実際124.3M)、
+  // 分母に使うと政令市を持つ県の10万対が過大化する(例: 京都府 1.10M vs 実際 2.47M で約2.2倍)
+  const prefPop = demoKpi?.total || 0;
   const perCap = (v) => prefPop > 0 ? (v / prefPop * 100000).toFixed(0) : '—';
 
   // Drug domain aggregation
@@ -341,30 +355,9 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     psFlashTimer.current = setTimeout(() => setPsFlashKey(null), 1200);
   };
   useEffect(() => () => { if (psFlashTimer.current) clearTimeout(psFlashTimer.current); }, []);
-  // FLIPソート: psSort/psMode(/◆ピン)変更時に行がtranslateYのみで滑走（reflowゼロ・reduced-motionは無効）
-  const psPosRef = useRef({});         // 章key→前レンダの getBoundingClientRect().top（First）
-  const psFlipArmed = useRef(false);   // 初回マウントはアニメなし
-  useIsoLayoutEffect(() => {
-    if (psFlipArmed.current && !prefersReducedMotion()) {
-      Object.entries(psRowRefs.current).forEach(([key, el]) => {
-        if (!el || typeof el.animate !== 'function') return;
-        const oldTop = psPosRef.current[key];
-        if (oldTop == null) return;
-        const dy = oldTop - el.getBoundingClientRect().top; // Invert
-        if (Math.abs(dy) < 1) return;
-        el.animate(                                          // Play: transformのみ
-          [{ transform: `translateY(${dy}px)` }, { transform: 'translateY(0)' }],
-          { duration: mob ? 280 : 350, easing: 'cubic-bezier(0.22,1,0.36,1)' }
-        );
-      });
-    }
-    psFlipArmed.current = true;
-  }, [psSort, psMode, pinnedPref]); // eslint-disable-line react-hooks/exhaustive-deps
-  useIsoLayoutEffect(() => {         // 毎レンダ後に現在位置を記録（次のFLIPのFirst）
-    const snap = {};
-    Object.entries(psRowRefs.current).forEach(([key, el]) => { if (el) snap[key] = el.getBoundingClientRect().top; });
-    psPosRef.current = snap;
-  });
+  // FLIPソート: psSort/psMode(/◆ピン)変更時に行がtranslateYのみで滑走
+  // （実装は共通ヘルパ useFlipRows へ集約 — 手順1共有基盤・挙動不変）
+  useFlipRows(psRowRefs, [psSort, psMode, pinnedPref], mob);
   // ◆差分モード: ピン解除(またはピン=自県)時は「対◆差順」から乖離順へ復帰
   useEffect(() => {
     if ((!pinnedPref || pinnedPref === ndbPref) && psSort === 'pindiff') setPsSort('divergence');
@@ -405,6 +398,20 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
   }, []);
   useEffect(() => { setTrendSite(null); setTrendHoverIdx(null); }, [ndbPref]);
 
+  // ── 手順1共有基盤: 処方 全県版 rxAll（1回fetch・cancerTrendパターン） ──
+  // Layer4 処方個性ダイアグラム本体と Bridge(ndbRxAll prop) で共用。
+  // 既存Bridgeの compute47Avg が選択県のみの ndbRx で縮退する
+  // 「utilization delta 恒等+0.0%」バグの根治を兼ねる。
+  const [rxAll, setRxAll] = useState(null); // 全47県×薬効106分類=4,786行
+  useEffect(() => {
+    let alive = true;
+    fetch('/api/ndb/prescriptions')
+      .then(r => (r.ok ? r.json() : null))
+      .then(j => { if (alive) setRxAll(Array.isArray(j) ? j : null); })
+      .catch(() => { if (alive) setRxAll(null); });
+    return () => { alive = false; };
+  }, []);
+
   // ── rank2: ドメインレンズ（疾患縦串フィルタ） ──
   const [activeDomain, setActiveDomain] = useState(null);
   const dm = activeDomain ? DOMAIN_MAPPING[activeDomain] : null;
@@ -432,17 +439,30 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
       return rate != null ? { cause: name, rate } : null;
     }).filter(Boolean).sort((a, b) => b.rate - a.rate);
   })();
-  const prefMaps = (()=>{
-    const popByPref = {}, p65ByPref = {};
-    if (areaDemoData) {
-      areaDemoData.forEach(a => {
-        popByPref[a.pref] = popByPref[a.pref] || 0;
-        p65ByPref[a.pref] = p65ByPref[a.pref] || 0;
-        (a.munis||[]).forEach(m => { popByPref[a.pref] += m.pop||0; p65ByPref[a.pref] += m.p65||0; });
+  // ── 手順1共有基盤: 県別人口 prefPops（住基2025・agePyramid由来の単一分母） ──
+  // area_demographics の munis 合算は政令指定都市を欠くため使用禁止（全国96.9M vs 実際124.3M）。
+  // prefMaps(popByPref/diagNat) と rxShared(classRatio/domainAgg) で共用する。
+  const prefPops = useMemo(() => {
+    const m = {};
+    if (agePyramid?.prefectures) {
+      Object.entries(agePyramid.prefectures).forEach(([p, ap]) => {
+        const r = computeAgeRates(ap);
+        if (r) m[p] = r.total;
       });
     }
-    const aging = {};
-    Object.keys(popByPref).forEach(p => { aging[p] = popByPref[p]>0 ? p65ByPref[p]/popByPref[p]*100 : 0; });
+    return m;
+  }, [agePyramid]);
+
+  const prefMaps = (()=>{
+    // 分母人口・65+率は住基2025(agePyramid)から。area_demographics の munis 合算は
+    // 政令指定都市を欠くため、10万対(diag)と高齢化率(Gap FinderのX軸)が政令市を持つ県で歪む
+    const popByPref = prefPops, aging = {};
+    if (agePyramid?.prefectures) {
+      Object.entries(agePyramid.prefectures).forEach(([p, ap]) => {
+        const r = computeAgeRates(ap);
+        if (r) aging[p] = r.rate65;
+      });
+    }
     const diag = {};
     if (ndbDiag) {
       ndbDiag.forEach(d => {
@@ -453,12 +473,78 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
         }
       });
     }
+    // 手順1共有基盤: diagNat — カテゴリ別の人口加重全国値 Σ_isP47(total_claims)/Σ_isP47(pop)×100000。
+    // 47県単純平均でなく人口加重（Layer3のtier判定/全国tick・strip natAvgズレ修正に使用）。
+    // データに全国行は無い（isP47で擬似県「都道府県判別不可」等を防御）。
+    const diagNat = {};
+    if (ndbDiag) {
+      const num = {}, den = {};
+      ndbDiag.forEach(d => {
+        if (!isP47(d.prefecture)) return;
+        const pop = popByPref[d.prefecture] || 0;
+        if (pop <= 0) return;
+        num[d.category] = (num[d.category] || 0) + d.total_claims;
+        den[d.category] = (den[d.category] || 0) + pop;
+      });
+      Object.keys(num).forEach(c => { if (den[c] > 0) diagNat[c] = num[c] / den[c] * 100000; });
+    }
     const egfr = {};
     if (ndbHc) {
       ndbHc.filter(h=>h.metric==='eGFR').forEach(h => { egfr[h.pref] = (h.male+h.female)/2; });
     }
-    return { aging, diag, egfr };
+    return { aging, diag, diagNat, egfr };
   })();
+
+  // ── 手順1共有基盤: rxAll 由来の処方集計（Layer4本体とBridgeで共用） ──
+  // natTotals: 薬効分類name→全国qty合算（データは47県のみだが擬似県混入にisP47で防御）
+  // classRatio(pref,name) = (qty/prefPop)/(natQty/natPop) — 人口当たり数量の対全国比。
+  //   数量の単位(錠/g/mL)は分子分母で相殺されるため同一分類内の県間比較のみ有効。
+  // domainAgg: 疾患領域→{pref→対全国比}。構成分類の qty/natQty を各々合算した比
+  //   （=各分類比の全国数量加重平均と数学的に等価）。
+  const rxShared = useMemo(() => {
+    if (!rxAll || !rxAll.length) return null;
+    let natPop = 0;
+    Object.entries(prefPops).forEach(([p, v]) => { if (isP47(p)) natPop += v; });
+    const natTotals = {}, byPref = {};
+    rxAll.forEach(r => {
+      if (!isP47(r.pref)) return;
+      const qty = r.qty || 0;
+      natTotals[r.name] = (natTotals[r.name] || 0) + qty;
+      const m = byPref[r.pref] || (byPref[r.pref] = {});
+      m[r.name] = (m[r.name] || 0) + qty;
+    });
+    const classRatio = (pref, name) => {
+      const pop = prefPops[pref], qty = byPref[pref]?.[name], natQty = natTotals[name];
+      if (!pop || !natPop || qty == null || !natQty) return null;
+      return (qty / pop) / (natQty / natPop);
+    };
+    // 領域別合算（DRUG_DOMAIN構成分類のみ。マッピング外分類は領域集計対象外）
+    const domSums = {};
+    Object.entries(byPref).forEach(([pref, m]) => {
+      Object.entries(m).forEach(([name, qty]) => {
+        const dom = DRUG_DOMAIN[name];
+        if (!dom) return;
+        const d = domSums[dom] || (domSums[dom] = { nat: 0, byPref: {} });
+        d.byPref[pref] = (d.byPref[pref] || 0) + qty;
+      });
+    });
+    Object.entries(natTotals).forEach(([name, qty]) => {
+      const dom = DRUG_DOMAIN[name];
+      if (dom && domSums[dom]) domSums[dom].nat += qty;
+    });
+    const domainAgg = {};
+    Object.entries(domSums).forEach(([dom, d]) => {
+      const perPref = {};
+      if (d.nat > 0 && natPop > 0) {
+        Object.entries(d.byPref).forEach(([pref, qty]) => {
+          const pop = prefPops[pref];
+          if (pop > 0) perPref[pref] = (qty / pop) / (d.nat / natPop);
+        });
+      }
+      domainAgg[dom] = perPref;
+    });
+    return { natPop, natTotals, byPref, classRatio, domainAgg };
+  }, [rxAll, prefPops]);
 
   return <>
 
@@ -784,8 +870,10 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
       // 既往歴 (グレー系: 既往の事実)
       heart_disease:'#64748b', stroke_history:'#475569', ckd_history:'#334155',
     };
-    // 高い値=低リスクの項目（運動/歩行/睡眠充足）— delta色判定を反転
-    const INVERSE_KEYS = new Set(['exercise', 'walking', 'sleep_ok']);
+    // 高い値=低リスクの項目 — delta色判定を反転。
+    // ★sleep_okのみ: exercise/walkingの格納値は「いいえ」率=運動不足率/歩行不足率
+    // （risk_labelもデータ側で「◯◯不足率」・原典xlsx検証済）で高=リスク方向のため反転しない。
+    const INVERSE_KEYS = new Set(['sleep_ok']);
     // 服薬・既往歴は色判定対象外（リスク方向性が中立）
     const NEUTRAL_KEYS = new Set(['hypertension_med', 'diabetes_medication', 'lipid_medication',
                                   'heart_disease', 'stroke_history', 'ckd_history']);
@@ -813,7 +901,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
         {items.map(([key, rate]) => {
           const q = qs[key] || {};
           const delta = rate - (natAvg[key]||0);
-          // inverse: 値が低い方が高リスク（運動/歩行/睡眠充足）
+          // inverse: 値が低い方が高リスク（睡眠充足のみ。運動不足率・歩行不足率は高=リスク）
           // neutral: 服薬・既往は方向性中立（医療負荷の事実）→ 色判定なし
           const isNeutral = NEUTRAL_KEYS.has(key);
           const isHigherRisk = isNeutral ? null : (INVERSE_KEYS.has(key) ? delta < 0 : delta > 0);
@@ -833,7 +921,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           </div>;
         })}
       </div>
-      <div style={{fontSize:10,color:'#94a3b8',marginTop:10}}>※Δは全国平均との差。色は<b style={{color:'#dc2626'}}>赤=高リスク方向</b>/<b style={{color:'#059669'}}>緑=低リスク方向</b>/<b style={{color:'#64748b'}}>灰=方向中立(服薬💊・既往🏥)</b>。運動・歩行・睡眠充足は値が高いほど低リスク（色判定を反転）。服薬・既往歴は治療負荷・既往の事実であり高低判定の対象外。40-74歳特定健診受診者が対象。</div>
+      <div style={{fontSize:10,color:'#94a3b8',marginTop:10}}>※Δは全国平均との差。色は<b style={{color:'#dc2626'}}>赤=高リスク方向</b>/<b style={{color:'#059669'}}>緑=低リスク方向</b>/<b style={{color:'#64748b'}}>灰=方向中立(服薬💊・既往🏥)</b>。睡眠充足のみ値が高いほど低リスク方向（色判定を反転）。運動不足率・歩行不足率は値が高いほどリスク方向。服薬・既往歴は治療負荷・既往の事実であり高低判定の対象外。40-74歳特定健診受診者が対象。</div>
     </div>);
   })()}
 
@@ -1398,7 +1486,8 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           {['#','薬効分類','疾患領域','処方数量'].map((h,i)=>(
             <th key={i} style={{padding:'8px 10px',fontSize:11,fontWeight:600,color:'#94a3b8',textAlign:i>=3?'right':'left',borderBottom:'1px solid #f1f5f9'}}>{h}</th>))}
         </tr></thead>
-        <tbody>{ndbRx.sort((a,b)=>b.qty-a.qty).slice(0,10).map((r,i)=>{
+        {/* コピーしてsort: prop配列ndbRxのin-place破壊を回避（手順0(b)） */}
+        <tbody>{[...ndbRx].sort((a,b)=>b.qty-a.qty).slice(0,10).map((r,i)=>{
           const domain = DRUG_DOMAIN[r.name]||'';
           return <tr key={i} style={{borderBottom:'1px solid #f8f9fa',...rxFade(domain)}}>
             <td style={{padding:'7px 10px',color:'#94a3b8',fontSize:11}}>{i+1}</td>
@@ -1421,7 +1510,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           <div style={{fontSize:11,color:'#94a3b8'}}>
             {mortalityMode === 'crude'
               ? '厚労省人口動態統計 2024年確定数（粗死亡率 人口10万対、年齢調整前）'
-              : `令和5年度人口動態統計特殊報告 2020年都道府県別年齢調整死亡率（1985年モデル人口、${mortalitySex === 'male' ? '男' : '女'}）`}
+              : `令和5年度人口動態統計特殊報告 2020年都道府県別年齢調整死亡率（2015年(平成27年)モデル人口、${mortalitySex === 'male' ? '男' : '女'}）`}
           </div>
         </div>
       </div>
@@ -1436,7 +1525,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           <button
             onClick={() => setMortalityMode('age_adjusted')}
             style={{padding:'4px 10px',fontSize:10,fontWeight:600,border:'none',borderRadius:3,cursor:'pointer',background:mortalityMode==='age_adjusted'?'#fff':'transparent',color:mortalityMode==='age_adjusted'?'#0f172a':'#64748b',boxShadow:mortalityMode==='age_adjusted'?'0 1px 2px rgba(0,0,0,0.05)':'none'}}
-            title="2020年 6死因 (1985年モデル人口で年齢調整)"
+            title="2020年 6死因 (2015年(平成27年)モデル人口で年齢調整)"
           >年齢調整 2020</button>
         </div>
         {mortalityMode === 'age_adjusted' && (
@@ -1505,7 +1594,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           : null;
         const mapTitle = mortalityMode === 'crude'
           ? `${c.cause.replace(/\(.+\)/,'')}・粗死亡率 2024（年齢調整前）`
-          : `${c.cause.replace(/\(.+\)/,'')}・年齢調整死亡率 2020（1985年モデル人口・${mortalitySex==='male'?'男':'女'}）`;
+          : `${c.cause.replace(/\(.+\)/,'')}・年齢調整死亡率 2020（2015年(平成27年)モデル人口・${mortalitySex==='male'?'男':'女'}）`;
         return <div key={i} style={{...dFade('vitalCause',c.cause),...dBorder('vitalCause',c.cause)}}>
           <div
             onClick={mapEnabled ? (()=>setSelectedCause(prev=>prev===c.cause?null:c.cause)) : undefined}
@@ -1948,6 +2037,8 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     vitalStats={vitalStats}
     bedFunc={bedFunc}
     ndbRx={ndbRx}
+    ndbRxAll={rxAll}
+    pinnedPref={pinnedPref}
     agePyramid={agePyramid}
     ndbHc={ndbHc}
     ndbCheckupRiskRates={ndbCheckupRiskRates}

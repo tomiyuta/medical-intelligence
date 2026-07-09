@@ -7,7 +7,11 @@ const MAX_RISKS_COLLAPSED = 3;
 
 const ACTIVE_FUNCS = ['高度急性期', '急性期', '回復期', '慢性期'];
 
-export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ, vitalStats, bedFunc, ndbRx, agePyramid, mob, ndbHc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd, mortalityOutcome2020 }) {
+// ndbRxAll: 全47県の処方rows（NdbViewのrxAll state・手順1共有基盤）。
+//   compute47Avg はこれが無いと「選択県のみのndbRx」で自県以外全null→47県平均=自県値に
+//   縮退し utilization delta が恒等+0.0%になる（既存バグ）。ndbRxAll で根治。
+// pinnedPref: ◆比較ピン県（パイプライン v1 の橙ノード重畳で使用予定・現段では受領のみ）。
+export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ, vitalStats, bedFunc, ndbRx, ndbRxAll, pinnedPref, agePyramid, mob, ndbHc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd, mortalityOutcome2020 }) {
   // Phase 2A: risks[] が4件以上の領域は3件で折りたたみ表示
   const [expandedRisks, setExpandedRisks] = useState({});
   const toggleExpand = (id) => setExpandedRisks(prev => ({ ...prev, [id]: !prev[id] }));
@@ -68,10 +72,14 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
     return sum;
   };
 
+  // 処方rows: 全県版 ndbRxAll があればそれを使用（未着ロード中は選択県のみの ndbRx にフォールバック）。
+  // ndbRx 単独では compute47Avg が自県以外 null → 47県平均=自県値に縮退する（恒等+0.0%バグ）。
+  const rxRows = (ndbRxAll && ndbRxAll.length) ? ndbRxAll : ndbRx;
+
   // 処方proxy: 都道府県別 対象code合計qty / 人口 × 100000
   const computeRxProxy = (prefName, codes) => {
-    if (!ndbRx || !prefName || !codes?.length) return null;
-    const sum = ndbRx
+    if (!rxRows || !prefName || !codes?.length) return null;
+    const sum = rxRows
       .filter(d => d.pref === prefName && codes.includes(d.code))
       .reduce((s, d) => s + (d.qty || 0), 0);
     const pop = computePop(prefName);
@@ -81,7 +89,7 @@ export default function DomainSupplyDemandBridge({ ndbPref, patientSurvey, ndbQ,
 
   // 47都道府県の単純平均 proxy (人口加重なし)
   const compute47Avg = (codes) => {
-    if (!ndbRx || !agePyramid?.prefectures) return null;
+    if (!rxRows || !agePyramid?.prefectures) return null;
     const proxies = Object.keys(agePyramid.prefectures)
       .map(p => computeRxProxy(p, codes))
       .filter(v => v != null);
