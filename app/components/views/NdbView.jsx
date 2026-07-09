@@ -10,6 +10,8 @@ import PrefStrip47 from '../ui/PrefStrip47';
 import PsIris from '../ui/PsIris';
 import PrefChoropleth from '../ui/PrefChoropleth';
 import CheckupBinsHistogram, { RISK_BIN_THRESHOLD, METRIC_TO_RISK_KEY } from '../ui/CheckupBinsHistogram';
+import RiskGauge from '../ui/RiskGauge';
+import AgePyramidGhost from '../ui/AgePyramidGhost';
 import DeathWaffle100, { buildWaffleItems, WAFFLE_CAUSE_COLORS, WAFFLE_OTHER, WAFFLE_OTHER_COLOR } from '../ui/DeathWaffle100';
 import { getSourceBadge } from '../../../lib/sourceRegistry';
 import { DOMAIN_MAPPING, DOMAIN_ORDER, rowInDomain, domainSectionStatus, DOMAIN_TO_RX_LABEL, FP_TIERS, tierOf } from '../../../lib/domainMapping';
@@ -205,6 +207,149 @@ const UnitDotLane = ({ value, natValue, pinnedValue = null, perRow = 12, natLabe
           )}
         </div>
       )}
+    </div>
+  );
+};
+// ── Layer3 受診リズム・イヤートラック「県民の1年」 ──
+// 年間総数の均等割り換算で12ヶ月時間軸にドットを配置する模式図。月次・季節分布は
+// データに存在しない — 『均等割り模式』マイクロバッジ+脚注で明示（guardrail①）。
+// 値の正は常にツールチップ小数1桁実値・端数はclipPath部分塗り（UnitDotLane技法移植・捏造しない）。
+// hoverPref同期: 他ストリップで県をなぞるとトラックがその県の値へ400msモーフ（useCountUp転用）。
+// ドット本体は中立色のみ（rose/indigoは差分数値ラベル限定 — 時間的アーティファクト回避・guardrail⑤）。
+const RHYTHM_X0 = 8, RHYTHM_X1 = 592, RHYTHM_W = 600;
+const rhythmX = (tMonth) => RHYTHM_X0 + (Math.max(0, Math.min(12, tMonth)) / 12) * (RHYTHM_X1 - RHYTHM_X0);
+// 会計年度の月ラベル（4月始まり）: index 0=4月 … 11=3月
+const RHYTHM_MONTHS = [['0','4月'],['3','7月'],['6','10月'],['9','1月'],['11','3月']];
+const RhythmLane = ({ lane, mob, prefName, hoverPrefName, pinnedName }) => {
+  const dispTarget = lane.hoverValue ?? lane.value;
+  const anim = useCountUp(dispTarget);
+  const uid = useId().replace(/[^a-zA-Z0-9_-]/g, '');
+  const [tip, setTip] = useState(false);
+  if (lane.value == null || !isFinite(lane.value) || lane.natValue == null) return null;
+  const v = Math.max(0.001, anim != null && isFinite(anim) ? anim : dispTarget);
+  const n = Math.max(0.001, lane.natValue);
+  const R = mob ? 3.4 : 4.2;
+  const hasPin = lane.pinnedValue != null && isFinite(lane.pinnedValue) && lane.pinnedValue > 0;
+  const H = hasPin ? 58 : 46;
+  const yMain = 15, yGhost = 33, yPin = 49;
+  // 等間隔リズム配置: t_i=(i+0.5)×12/v ヶ月。端数ドットはclipPath部分塗り（右端クランプ）
+  const dotsOf = (val) => {
+    const full = Math.floor(val + 1e-9);
+    const frac = val - full;
+    const out = [];
+    for (let i = 0; i < Math.min(full, 400); i++) out.push({ t: (i + 0.5) * 12 / val, frac: 1 });
+    if (frac > 0.01 && full < 400) out.push({ t: Math.min(11.85, (full + 0.5) * 12 / val), frac });
+    return out;
+  };
+  const mainDots = dotsOf(v);
+  const ghostDots = dotsOf(n);
+  const pinDots = hasPin ? dotsOf(lane.pinnedValue) : [];
+  const weeks = 52 / (lane.hoverValue ?? lane.value);
+  const natWeeks = 52 / n;
+  const fmt1 = (x) => (x != null && isFinite(x) ? x.toFixed(1) : '—');
+  const diff = (lane.hoverValue ?? lane.value) - n;
+  const t = tierOf(((lane.hoverValue ?? lane.value) / n - 1) * 100);
+  const partial = (arr) => arr.filter(d => d.frac < 0.999);
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: mob ? '1fr' : '158px 1fr 128px', gap: mob ? 2 : 10, alignItems: 'center',
+      padding: '7px 0', borderTop: lane.sep ? '1px dashed #e2e8f0' : 'none', background: lane.sep ? '#fafbff' : 'transparent', borderRadius: lane.sep ? 8 : 0 }}>
+      {/* 左: レーンラベル + 週数（mobはインライン化） */}
+      <div style={{ paddingLeft: lane.sep ? 8 : 0 }}>
+        <div style={{ fontSize: 11.5, fontWeight: 700, color: '#1e293b' }}>
+          {lane.label}
+          <span style={{ marginLeft: 5, fontSize: 8.5, fontWeight: 600, color: '#64748b', background: '#f1f5f9', padding: '1px 5px', borderRadius: 3 }}>{lane.denomBadge}</span>
+        </div>
+        <div style={{ fontSize: mob ? 11 : 10, color: '#475569', marginTop: 1 }}>
+          <b style={{ fontSize: mob ? 13 : 12, color: weeks < natWeeks ? '#9f1239' : weeks > natWeeks ? '#4338ca' : '#475569', fontVariantNumeric: 'tabular-nums' }}>
+            <CountUpNum value={weeks} decimals={1} />週</b>に1回
+          <span style={{ color: '#94a3b8' }}>（全国 {fmt1(natWeeks)}週）</span>
+        </div>
+      </div>
+      {/* 中央: リズムトラックSVG（県ドット行 + 全国ゴースト行 + ◆ピン行） */}
+      <div style={{ position: 'relative' }}
+        onMouseEnter={() => setTip(true)} onMouseLeave={() => setTip(false)} onClick={() => setTip(x => !x)}>
+        <svg viewBox={`0 0 ${RHYTHM_W} ${H}`} width="100%" height="auto"
+          style={{ display: 'block', touchAction: 'manipulation', cursor: 'default' }}
+          role="img" aria-label={`${prefName} ${lane.label} 年${fmt1(lane.value)}${lane.unit}（全国 ${fmt1(n)}）の受診リズム`}>
+          <defs>
+            {partial(mainDots).map((d, i) => (
+              <clipPath key={i} id={`${uid}m${i}`}>
+                <rect x={rhythmX(d.t) - R} y={yMain - R} width={2 * R * d.frac} height={2 * R} />
+              </clipPath>
+            ))}
+          </defs>
+          {/* 月グリッド */}
+          {Array.from({ length: 13 }, (_, m) => (
+            <line key={m} x1={rhythmX(m)} x2={rhythmX(m)} y1={4} y2={H - 4} stroke="#eef2f7" strokeWidth={m === 0 || m === 12 ? 1.4 : 1} />
+          ))}
+          {/* 県ドット行（中立slate） */}
+          {mainDots.map((d, i) => d.frac >= 0.999
+            ? <circle key={`m${i}`} cx={rhythmX(d.t)} cy={yMain} r={R} fill="#64748b" />
+            : <g key={`m${i}`} clipPath={`url(#${uid}m${partial(mainDots).indexOf(d)})`}><circle cx={rhythmX(d.t)} cy={yMain} r={R} fill="#64748b" /></g>)}
+          {/* 全国ゴースト行（青アウトライン破線 = PrefStrip47のavg語彙拡張） */}
+          {ghostDots.map((d, i) => (
+            <circle key={`g${i}`} cx={rhythmX(d.t)} cy={yGhost} r={R - 0.6} fill="none" stroke="#2563EB"
+              strokeWidth={1.2} strokeDasharray="2 1.6" opacity={0.75 * Math.max(0.35, d.frac)} />
+          ))}
+          {/* ◆ピン県行（橙ダイヤ） */}
+          {pinDots.map((d, i) => {
+            const x = rhythmX(d.t);
+            return <path key={`p${i}`} d={`M ${x} ${yPin - 3.6} L ${x + 3.6} ${yPin} L ${x} ${yPin + 3.6} L ${x - 3.6} ${yPin} Z`}
+              fill="#f97316" stroke="#c2410c" strokeWidth={0.8} opacity={Math.max(0.4, d.frac)} />;
+          })}
+          {/* 行ラベル（svg内左端・8px） */}
+          <text x={RHYTHM_X0} y={yMain - R - 2.5} fontSize={8} fill="#94a3b8">{hoverPrefName && lane.hoverValue != null ? hoverPrefName : prefName}</text>
+          <text x={RHYTHM_X0} y={yGhost - R - 2} fontSize={8} fill="#2563EB" opacity={0.8}>全国</text>
+          {hasPin && <text x={RHYTHM_X0} y={yPin - 6} fontSize={8} fill="#c2410c">◆{pinnedName}</text>}
+        </svg>
+        {tip && (
+          <div style={{ position: 'absolute', left: '50%', top: -6, transform: 'translate(-50%,-100%)',
+            background: '#1e293b', color: '#fff', fontSize: 10, lineHeight: 1.5, padding: '5px 9px',
+            borderRadius: 4, whiteSpace: 'nowrap', pointerEvents: 'none', zIndex: 20 }}>
+            <div><b>{hoverPrefName && lane.hoverValue != null ? hoverPrefName : prefName}</b>{' '}
+              <span style={{ color: '#93c5fd', fontWeight: 700 }}>{fmt1(lane.hoverValue ?? lane.value)}{lane.unit}</span>
+              <span style={{ color: '#cbd5e1' }}>（全国 {fmt1(n)}・差 {diff > 0 ? '+' : ''}{fmt1(diff)}回{lane.rank != null && lane.hoverValue == null ? `・47県中${lane.rank}位` : ''}）</span></div>
+            <div style={{ color: '#cbd5e1' }}>≒ {fmt1(weeks)}週に1回（全国 {fmt1(natWeeks)}週に1回）</div>
+            {hasPin && <div style={{ color: '#fdba74' }}>◆{pinnedName} {fmt1(lane.pinnedValue)}{lane.unit}</div>}
+          </div>
+        )}
+      </div>
+      {/* 右: tierことばチップ + 年差分（mobは非表示 — 左列にインライン済） */}
+      {!mob && (
+        <div style={{ textAlign: 'right' }}>
+          {t && <div><span style={{ fontSize: 9.5, fontWeight: 700, color: t.color, background: t.color + '14', border: `1px solid ${t.color}33`, padding: '1px 6px', borderRadius: 4 }}>{t.label}</span></div>}
+          <div style={{ fontSize: 10, color: '#64748b', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
+            年{diff > 0 ? '+' : ''}{fmt1(diff)}回 <span style={{ color: '#94a3b8' }}>vs全国</span>
+          </div>
+          {lane.reframe && <div style={{ fontSize: 9, color: '#94a3b8', marginTop: 2 }}>{lane.reframe}</div>}
+        </div>
+      )}
+    </div>
+  );
+};
+const YearRhythmTrack = ({ lanes, mob, prefName, hoverPrefName, pinnedName, yearBadge }) => {
+  if (!lanes || !lanes.length) return null;
+  return (
+    <div style={{ background: '#fbfdff', border: '1px solid #e8eef6', borderRadius: 10, padding: mob ? '10px 10px 6px' : '12px 16px 8px', marginBottom: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginBottom: 4 }}>
+        <span style={{ fontSize: 12, fontWeight: 700, color: '#1e293b' }}>🗓 県民の1年 — 受診リズム</span>
+        <span title="年間総数を12ヶ月に均等割りした模式図です。実際の月次・季節分布はデータに存在しません"
+          style={{ fontSize: 8.5, fontWeight: 600, color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', padding: '1px 6px', borderRadius: 3 }}>均等割り模式</span>
+        {yearBadge && <span style={{ fontSize: 8.5, fontWeight: 700, padding: '1px 5px', borderRadius: 3, border: `1px solid ${yearBadge.color}`, color: yearBadge.color, background: '#fff' }}>{yearBadge.label}</span>}
+        {hoverPrefName && <span style={{ fontSize: 9.5, fontWeight: 700, color: '#fff', background: '#334155', padding: '1px 8px', borderRadius: 8 }}>→ {hoverPrefName} を表示中</span>}
+        <span style={{ marginLeft: 'auto', fontSize: 9, color: '#94a3b8' }}>●{prefName} ・ ◌全国 ・ 1ドット=1回</span>
+      </div>
+      {/* 月軸ヘッダ（会計年度4月→3月） */}
+      <div style={{ display: 'grid', gridTemplateColumns: mob ? '1fr' : '158px 1fr 128px', gap: mob ? 2 : 10 }}>
+        {!mob && <div />}
+        <svg viewBox={`0 0 ${RHYTHM_W} 14`} width="100%" height="auto" style={{ display: 'block' }} aria-hidden="true">
+          {(mob ? [RHYTHM_MONTHS[0], RHYTHM_MONTHS[2], RHYTHM_MONTHS[4]] : RHYTHM_MONTHS).map(([m, l]) => (
+            <text key={m} x={rhythmX(+m + 0.5)} y={10} fontSize={9} fill="#94a3b8" textAnchor="middle">{l}</text>
+          ))}
+        </svg>
+        {!mob && <div />}
+      </div>
+      {lanes.map(l => <RhythmLane key={l.key} lane={l} mob={mob} prefName={prefName} hoverPrefName={hoverPrefName} pinnedName={pinnedName} />)}
     </div>
   );
 };
@@ -578,6 +723,8 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     return () => { alive = false; };
   }, []);
 
+  // ── Layer2 リスクメーター盤: 粗率|年齢標準化 セグメントトグル（針・帯・tick・ストリップが丸ごと切替） ──
+  const [riskStdMode, setRiskStdMode] = useState(false);
   // ── Layer2 分布ドロワー（臨床閾値ヒストグラム）state — 追加型・A/Bカード非破壊 ──
   const [binsOpen, setBinsOpen] = useState(false);      // ドロワー開閉
   const [binsMetric, setBinsMetric] = useState('BMI');  // 指標タブ5種
@@ -892,62 +1039,90 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           <div style={{fontSize:11,color:'#94a3b8'}}>NDB指標を解釈する基盤として — 住基2025 + 社人研2050</div>
         </div>
       </div>
-      <div style={{display:'grid',gridTemplateColumns:mob?'repeat(2,1fr)':'repeat(5,1fr)',gap:8}}>
-        {/* 1: 総人口 */}
-        <div style={{background:'#f8fafc',borderRadius:8,padding:'10px 12px'}}>
-          <div style={{fontSize:10,color:'#64748b',marginBottom:2}}>総人口</div>
-          <div style={{fontSize:mob?15:18,fontWeight:700,color:'#1e293b'}}>{fmt(demoKpi.total)}</div>
-          <div style={{fontSize:10,color:'#94a3b8'}}>2025年1月（人）</div>
-          {demoStrips.total.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={demoStrips.total} yearBadge={yb('agePyramid')} mode="micro" /></div>}
+      {/* ヒーロー2/3（ゴースト・ミラーピラミッド）+ KPIレール1/3 — mob=縦積み（ピラミッド上） */}
+      <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'minmax(0,2fr) minmax(0,1fr)',gap:mob?12:18,alignItems:'start'}}>
+        <div style={{minWidth:0}}>
+          <AgePyramidGhost
+            ap={agePyramid?.prefectures?.[ndbPref]}
+            natAp={agePyramid?.national}
+            pinnedAp={pinnedPref && pinnedPref!==ndbPref && isP47(pinnedPref) ? (agePyramid?.prefectures?.[pinnedPref] || null) : null}
+            pinnedName={pinnedPref && pinnedPref!==ndbPref && isP47(pinnedPref) && agePyramid?.prefectures?.[pinnedPref] ? pinnedPref : null}
+            ageGroups={agePyramid?.age_groups || []}
+            prefName={ndbPref}
+            tlBands={tlBands}
+            tlYear={tlYear}
+            mob={mob}
+            onZoneClick={()=>setDumbbellOpen(o=>!o)}
+            yearBadges={{pyramid: yb('agePyramid'), ribbon: yb('futureDemo')}}
+          />
+          {/* 解釈文（自動生成・ピラミッド直下 — 形状言及を追記） */}
+          {demoNat && (()=>{
+            const d75 = demoKpi.rate75 - demoNat.rate75;
+            let msg, shape;
+            if (d75 > 1.5) { msg = `${ndbPref}は75歳以上割合が全国平均より${d75.toFixed(1)}pt高く、在宅医療・処方薬・慢性期医療の需要が大きく見えやすい構造です。`; shape = 'ピラミッド上部（75+帯）が全国輪郭からはみ出す「頭でっかち」の形状です。'; }
+            else if (d75 < -1.5) { msg = `${ndbPref}は75歳以上割合が全国平均より${Math.abs(d75).toFixed(1)}pt低く、NDB算定回数の多さは人口規模の影響を受けている可能性があります。`; shape = 'ピラミッド上部は全国輪郭より薄く、生産年齢帯が厚い形状です。'; }
+            else { msg = `${ndbPref}の75歳以上割合は全国平均水準。NDB指標は人口構造補正の影響を受けにくい解釈となります。`; shape = 'ピラミッドの形状はほぼ全国輪郭と重なります。'; }
+            return <div style={{fontSize:11,color:'#475569',marginTop:10,padding:'8px 12px',background:'#f8fafc',borderRadius:6,lineHeight:1.5,borderLeft:'3px solid #2563EB'}}>💡 {msg} {shape}</div>;
+          })()}
         </div>
-        {/* 2: 65+ */}
-        <div style={{background:'#f8fafc',borderRadius:8,padding:'10px 12px'}}>
-          <div style={{fontSize:10,color:'#64748b',marginBottom:2}}>65歳以上</div>
-          <div style={{fontSize:mob?15:18,fontWeight:700,color:'#1e293b'}}>{demoKpi.rate65.toFixed(1)}%</div>
-          {demoNat && <div style={{fontSize:10,color:demoKpi.rate65>demoNat.rate65?'#dc2626':'#059669'}}>
-            全国比 {demoKpi.rate65>demoNat.rate65?'+':''}{(demoKpi.rate65-demoNat.rate65).toFixed(1)}pt
-          </div>}
-          {demoStrips.r65.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={demoStrips.r65} natAvg={demoNat?.rate65} yearBadge={yb('agePyramid')} mode="micro" /></div>}
-        </div>
-        {/* 3: 75+ */}
-        <div style={{background:'#f8fafc',borderRadius:8,padding:'10px 12px'}}>
-          <div style={{fontSize:10,color:'#64748b',marginBottom:2}}>75歳以上 {rank75 && <span style={{fontSize:9,color:'#94a3b8'}}>#{rank75.rank}/{rank75.total}</span>}</div>
-          <div style={{fontSize:mob?15:18,fontWeight:700,color:'#1e293b'}}>{demoKpi.rate75.toFixed(1)}%</div>
-          {demoNat && <div style={{fontSize:10,color:demoKpi.rate75>demoNat.rate75?'#dc2626':'#059669'}}>
-            全国比 {demoKpi.rate75>demoNat.rate75?'+':''}{(demoKpi.rate75-demoNat.rate75).toFixed(1)}pt
-          </div>}
-          {demoStrips.r75.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={demoStrips.r75} natAvg={demoNat?.rate75} yearBadge={yb('agePyramid')} mode="micro" /></div>}
-        </div>
-        {/* 4: 85+ */}
-        <div style={{background:'#f8fafc',borderRadius:8,padding:'10px 12px'}}>
-          <div style={{fontSize:10,color:'#64748b',marginBottom:2}}>85歳以上</div>
-          <div style={{fontSize:mob?15:18,fontWeight:700,color:'#1e293b'}}>{demoKpi.rate85.toFixed(1)}%</div>
-          {demoNat && <div style={{fontSize:10,color:demoKpi.rate85>demoNat.rate85?'#dc2626':'#059669'}}>
-            全国比 {demoKpi.rate85>demoNat.rate85?'+':''}{(demoKpi.rate85-demoNat.rate85).toFixed(1)}pt
-          </div>}
-          {demoStrips.r85.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={demoStrips.r85} natAvg={demoNat?.rate85} yearBadge={yb('agePyramid')} mode="micro" /></div>}
-        </div>
-        {/* 5: 2050 */}
-        <div style={{background:'#fef3c7',borderRadius:8,padding:'10px 12px'}}>
-          <div style={{fontSize:10,color:'#92400e',marginBottom:2}}>2050年予測</div>
-          <div style={{fontSize:mob?15:18,fontWeight:700,color:'#92400e'}}>
-            {demoKpi.change2050!=null ? `${demoKpi.change2050>0?'+':''}${demoKpi.change2050.toFixed(1)}%` : '—'}
+        {/* KPIレール（既存5カード移設・縦積み密度減 padding 10→7px。demoStrips/stripCommon/yb 呼び出しは無変更） */}
+        <div style={{display:'grid',gridTemplateColumns:mob?'repeat(2,1fr)':'1fr',gap:8,minWidth:0}}>
+          {/* 1: 総人口 */}
+          <div style={{background:'#f8fafc',borderRadius:8,padding:'7px 12px'}}>
+            <div style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',gap:6,flexWrap:'wrap'}}>
+              <div style={{fontSize:10,color:'#64748b'}}>総人口 <span style={{fontSize:9,color:'#94a3b8'}}>2025年1月（人）</span></div>
+              <div style={{fontSize:mob?15:16,fontWeight:700,color:'#1e293b'}}>{fmt(demoKpi.total)}</div>
+            </div>
+            {demoStrips.total.length >= 40 && <div style={{marginTop:5}}><PrefStrip47 {...stripCommon} values={demoStrips.total} yearBadge={yb('agePyramid')} mode="micro" /></div>}
           </div>
-          <div style={{fontSize:10,color:'#92400e'}}>
-            {demoKpi.rate75_2050!=null ? `75+→${demoKpi.rate75_2050.toFixed(1)}%` : '人口変化(2020比)'}
+          {/* 2: 65+ */}
+          <div style={{background:'#f8fafc',borderRadius:8,padding:'7px 12px'}}>
+            <div style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',gap:6,flexWrap:'wrap'}}>
+              <div style={{fontSize:10,color:'#64748b'}}>65歳以上</div>
+              <div style={{fontSize:mob?15:16,fontWeight:700,color:'#1e293b'}}><CountUpNum value={demoKpi.rate65} decimals={1} suffix="%" /></div>
+            </div>
+            {demoNat && <div style={{fontSize:10,color:demoKpi.rate65>demoNat.rate65?'#dc2626':'#059669'}}>
+              全国比 {demoKpi.rate65>demoNat.rate65?'+':''}{(demoKpi.rate65-demoNat.rate65).toFixed(1)}pt
+            </div>}
+            {demoStrips.r65.length >= 40 && <div style={{marginTop:5}}><PrefStrip47 {...stripCommon} values={demoStrips.r65} natAvg={demoNat?.rate65} yearBadge={yb('agePyramid')} mode="micro" /></div>}
           </div>
-          {demoStrips.chg.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={demoStrips.chg} yearBadge={yb('futureDemo')} mode="micro" /></div>}
+          {/* 3: 75+ */}
+          <div style={{background:'#f8fafc',borderRadius:8,padding:'7px 12px'}}>
+            <div style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',gap:6,flexWrap:'wrap'}}>
+              <div style={{fontSize:10,color:'#64748b'}}>75歳以上 {rank75 && <span style={{fontSize:9,color:'#94a3b8'}}>#{rank75.rank}/{rank75.total}</span>}</div>
+              <div style={{fontSize:mob?15:16,fontWeight:700,color:'#1e293b'}}><CountUpNum value={demoKpi.rate75} decimals={1} suffix="%" /></div>
+            </div>
+            {demoNat && <div style={{fontSize:10,color:demoKpi.rate75>demoNat.rate75?'#dc2626':'#059669'}}>
+              全国比 {demoKpi.rate75>demoNat.rate75?'+':''}{(demoKpi.rate75-demoNat.rate75).toFixed(1)}pt
+            </div>}
+            {demoStrips.r75.length >= 40 && <div style={{marginTop:5}}><PrefStrip47 {...stripCommon} values={demoStrips.r75} natAvg={demoNat?.rate75} yearBadge={yb('agePyramid')} mode="micro" /></div>}
+          </div>
+          {/* 4: 85+ */}
+          <div style={{background:'#f8fafc',borderRadius:8,padding:'7px 12px'}}>
+            <div style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',gap:6,flexWrap:'wrap'}}>
+              <div style={{fontSize:10,color:'#64748b'}}>85歳以上</div>
+              <div style={{fontSize:mob?15:16,fontWeight:700,color:'#1e293b'}}><CountUpNum value={demoKpi.rate85} decimals={1} suffix="%" /></div>
+            </div>
+            {demoNat && <div style={{fontSize:10,color:demoKpi.rate85>demoNat.rate85?'#dc2626':'#059669'}}>
+              全国比 {demoKpi.rate85>demoNat.rate85?'+':''}{(demoKpi.rate85-demoNat.rate85).toFixed(1)}pt
+            </div>}
+            {demoStrips.r85.length >= 40 && <div style={{marginTop:5}}><PrefStrip47 {...stripCommon} values={demoStrips.r85} natAvg={demoNat?.rate85} yearBadge={yb('agePyramid')} mode="micro" /></div>}
+          </div>
+          {/* 5: 2050（推計 — CountUpNumは使わない: 実測と推計を同じ運動文法で混ぜない） */}
+          <div style={{background:'#fef3c7',borderRadius:8,padding:'7px 12px'}}>
+            <div style={{display:'flex',alignItems:'baseline',justifyContent:'space-between',gap:6,flexWrap:'wrap'}}>
+              <div style={{fontSize:10,color:'#92400e'}}>2050年予測</div>
+              <div style={{fontSize:mob?15:16,fontWeight:700,color:'#92400e'}}>
+                {demoKpi.change2050!=null ? `${demoKpi.change2050>0?'+':''}${demoKpi.change2050.toFixed(1)}%` : '—'}
+              </div>
+            </div>
+            <div style={{fontSize:10,color:'#92400e'}}>
+              {demoKpi.rate75_2050!=null ? `75+→${demoKpi.rate75_2050.toFixed(1)}%` : '人口変化(2020比)'}
+            </div>
+            {demoStrips.chg.length >= 40 && <div style={{marginTop:5}}><PrefStrip47 {...stripCommon} values={demoStrips.chg} yearBadge={yb('futureDemo')} mode="micro" /></div>}
+          </div>
         </div>
       </div>
-      {/* 解釈文（自動生成） */}
-      {demoNat && (()=>{
-        const d75 = demoKpi.rate75 - demoNat.rate75;
-        let msg;
-        if (d75 > 1.5) msg = `${ndbPref}は75歳以上割合が全国平均より${d75.toFixed(1)}pt高く、在宅医療・処方薬・慢性期医療の需要が大きく見えやすい構造です。`;
-        else if (d75 < -1.5) msg = `${ndbPref}は75歳以上割合が全国平均より${Math.abs(d75).toFixed(1)}pt低く、NDB算定回数の多さは人口規模の影響を受けている可能性があります。`;
-        else msg = `${ndbPref}の75歳以上割合は全国平均水準。NDB指標は人口構造補正の影響を受けにくい解釈となります。`;
-        return <div style={{fontSize:11,color:'#475569',marginTop:10,padding:'8px 12px',background:'#f8fafc',borderRadius:6,lineHeight:1.5,borderLeft:'3px solid #2563EB'}}>💡 {msg}</div>;
-      })()}
 
       {/* ══ rank9: 人口タイムレンズ（2020-2050スクラバー・3帯モーフィング・47県ダンベル） ══ */}
       {tlBands && (()=>{
@@ -1310,99 +1485,109 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
       <span style={{fontSize:18}}>🔬</span>
       <div>
         <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>健診リスク <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#dbeafe',color:'#1e40af',fontWeight:500}}>検査値+該当者率</span></div>
-        <div style={{fontSize:11,color:'#94a3b8'}}>特定健診（40〜74歳受診者） — A.検査値平均 + B.リスク該当者率</div>
+        <div style={{fontSize:11,color:'#94a3b8'}}>特定健診（40〜74歳受診者） — B.リスクメーター盤（5指標） + 参考:A.検査値平均</div>
       </div>
     </div>
 
-    {/* ── サブセクション A: 検査値平均 ── */}
-    {hcPref.length > 0 && <div style={{marginBottom:18}}>
-      <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:8}}>
-        <span style={{fontSize:11,fontWeight:700,color:'#475569',padding:'2px 8px',background:'#f1f5f9',borderRadius:4}}>A. 検査値平均</span>
-        <span style={{fontSize:10,color:'#94a3b8'}}>男女別の平均値（参考値）</span>
-      </div>
-      <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'repeat(3,1fr)',gap:12}}>
-        {hcPref.map((h,i)=>{
-          const meta = RISK_META[h.metric] || {};
-          // rank1: 検査値の47県分布（男女平均、判別不可除外）
-          const hcVals = (ndbHc||[]).filter(x=>x.metric===h.metric && isP47(x.pref) && x.male!=null && x.female!=null)
-            .map(x=>({pref:x.pref, value:(x.male+x.female)/2}));
-          return <div key={i} style={{background:'#f8fafc',borderRadius:10,padding:'14px 16px',...dFade('hcMetric',h.metric),...dBorder('hcMetric',h.metric)}}>
-            <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:8}}>
-              <span style={{fontSize:13,fontWeight:600}}>{meta.icon||''} {h.metric}</span>
-              <span style={{fontSize:10,color:'#94a3b8',background:'#fff',padding:'2px 6px',borderRadius:4}}>{meta.unit||''}</span>
-            </div>
-            <div style={{display:'flex',gap:20}}>
-              <div><div style={{fontSize:10,color:'#3b82f6'}}>男性</div><div style={{fontSize:22,fontWeight:700,color:'#2563EB'}}>{h.male}</div></div>
-              <div><div style={{fontSize:10,color:'#dc2626'}}>女性</div><div style={{fontSize:22,fontWeight:700,color:'#dc2626'}}>{h.female}</div></div>
-            </div>
-            <div style={{fontSize:10,color:'#94a3b8',marginTop:6}}>{meta.note||''}</div>
-            {hcVals.length >= 40 && <div style={{marginTop:8}}><PrefStrip47 {...stripCommon} values={hcVals} yearBadge={yb('ndbHc')} mode="inline" /><div style={{fontSize:9,color:'#94a3b8',marginTop:1}}>男女平均の47県分布</div></div>}
-          </div>;
-        })}
-      </div>
-      <div style={{fontSize:10,color:'#94a3b8',marginTop:8,fontStyle:'italic'}}>※男女別平均値をもとにした参考値。疾病診断率ではありません。</div>
-    </div>}
-
-    {/* ── サブセクション B: リスク該当者率 (Phase 1 + Phase 2C-1) ── */}
+    {/* ── サブセクション B: リスク該当者率 — リスクメーター盤（ヒーロー昇格・B→A順） ── */}
     {ndbCheckupRiskRates?.risk_rates && (() => {
       // RISK_CARDS はモジュールレベルへ昇格（分布ドロワーの指標タブと共用・内容不変）
+      // リスクメーター盤: 粗率/年齢標準化 両モードの per-card 統計を一括算出（47件×5リスクの軽量ソート）
+      // 値の取り出し: crude=by_pref[p].rate / std=Std側 by_pref[p].age_standardized_rate
+      const gaugeStats = (key) => {
+        const src = riskStdMode
+          ? ndbCheckupRiskRatesStd?.risk_rates?.[key]?.by_pref
+          : ndbCheckupRiskRates.risk_rates[key]?.by_pref;
+        const field = riskStdMode ? 'age_standardized_rate' : 'rate';
+        if (!src) return null;
+        const stripVals = Object.entries(src).filter(([p])=>isP47(p))
+          .map(([p,v])=>({pref:p, value:v?.[field]})).filter(d=>typeof d.value==='number');
+        if (stripVals.length < 40) return null;
+        const sorted = [...stripVals.map(d=>d.value)].sort((a,b)=>a-b);
+        const q = (t) => sorted[Math.max(0, Math.min(sorted.length-1, Math.round(t*(sorted.length-1))))];
+        const prefVal = src[ndbPref]?.[field];
+        if (prefVal == null) return null;
+        return {
+          stripVals, prefVal,
+          natAvg: sorted.reduce((s,v)=>s+v,0)/sorted.length,
+          min: sorted[0], max: sorted[sorted.length-1], p10: q(0.1), p90: q(0.9),
+          rank: 1 + stripVals.filter(d=>d.value > prefVal).length,
+        };
+      };
       return <div>
-        <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:8}}>
-          <span style={{fontSize:11,fontWeight:700,color:'#475569',padding:'2px 8px',background:'#fef3c7',borderRadius:4}}>B. リスク該当者率</span>
-          <span style={{fontSize:10,color:'#94a3b8'}}>NDB特定健診の階級分布から算出 — 粗率＋年齢標準化率</span>
+        <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:8,flexWrap:'wrap'}}>
+          <span style={{fontSize:11,fontWeight:700,color:'#475569',padding:'2px 8px',background:'#fef3c7',borderRadius:4}}>B. リスクメーター盤</span>
+          <span style={{fontSize:8.5,fontWeight:700,padding:'1px 5px',borderRadius:3,border:`1px solid ${yb('checkupRisk').color}`,color:yb('checkupRisk').color,background:'#fff'}}>{yb('checkupRisk').label}</span>
+          {!mob && <span style={{fontSize:10,color:'#94a3b8'}}>針=当県・帯=47県分布・tick=全国 — 5本の針の傾き＝県のリスク体質</span>}
+          {/* 粗率|年齢標準化 セグメントトグル（針・帯・tick・ストリップが丸ごと切替） */}
+          <div style={{marginLeft:'auto',display:'flex',border:'1px solid #e2e8f0',borderRadius:6,overflow:'hidden'}}>
+            {[[false,'粗率'],[true,'年齢標準化']].map(([m,l])=>(
+              <button key={l} onClick={()=>setRiskStdMode(m)}
+                style={{padding:'4px 10px',border:'none',fontSize:10,fontWeight:600,cursor:'pointer',
+                  background:riskStdMode===m?(m?'#7c3aed':'#475569'):'#fff',color:riskStdMode===m?'#fff':'#475569'}}>{l}</button>
+            ))}
+          </div>
         </div>
-        <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'repeat(5,1fr)',gap:10}}>
-          {RISK_CARDS.map(rc => {
-            const rates = ndbCheckupRiskRates.risk_rates[rc.key];
-            if (!rates) return null;
-            const prefEntry = rates.by_pref?.[ndbPref];
-            if (!prefEntry) return null;
-            const prefVal = prefEntry.rate;
-            // rank1修正: 「都道府県判別不可」を除外し47県のみで平均・分布化
-            const p47Entries = Object.entries(rates.by_pref).filter(([p])=>isP47(p));
-            const stripVals = p47Entries.map(([p,v])=>({pref:p, value:v.rate})).filter(d=>typeof d.value==='number');
-            const allVals = stripVals.map(d=>d.value);
-            const natAvg = allVals.length > 0 ? allVals.reduce((s,v)=>s+v,0)/allVals.length : null;
+        <div style={{display:'grid',gridTemplateColumns:mob?'1fr 1fr':'repeat(5,1fr)',gap:10}}>
+          {RISK_CARDS.map((rc, ci) => {
+            const st = gaugeStats(rc.key);
+            if (!st) return null;
+            const { stripVals, prefVal, natAvg, min, max, p10, p90, rank } = st;
             const deltaPct = natAvg ? (prefVal/natAvg - 1) * 100 : null;
-            // 自然言語化
-            let cmpLabel = '', cmpColor = '#64748b';
+            // 自然言語化（既存cmp閾値ロジック — 針色にも流用。緑=「平均より低い」であり安全宣言ではない）
+            let cmpShort = '', cmpColor = '#64748b';
             if (deltaPct != null) {
               const abs = Math.abs(deltaPct);
-              if (abs < 5) { cmpLabel = '47都道府県平均と同程度'; cmpColor = '#64748b'; }
-              else if (deltaPct > 0) {
-                cmpLabel = abs >= 15 ? '47都道府県平均より顕著に高い' : '47都道府県平均より高い';
-                cmpColor = abs >= 15 ? '#dc2626' : '#f59e0b';
-              } else {
-                cmpLabel = abs >= 15 ? '47都道府県平均より顕著に低い' : '47都道府県平均より低い';
-                cmpColor = '#059669';
-              }
+              if (abs < 5) { cmpShort = '同程度'; cmpColor = '#64748b'; }
+              else if (deltaPct > 0) { cmpShort = abs >= 15 ? '顕著に高い' : '高い'; cmpColor = abs >= 15 ? '#dc2626' : '#f59e0b'; }
+              else { cmpShort = abs >= 15 ? '顕著に低い' : '低い'; cmpColor = '#059669'; }
             }
-            // 年齢標準化率
+            // もう一方のモードの値（粗率モード=紫の標準化行 / 標準化モード=粗率の逆表示）
             const stdInfo = ndbCheckupRiskRatesStd?.risk_rates?.[rc.key]?.by_pref?.[ndbPref];
+            const crudeVal = ndbCheckupRiskRates.risk_rates[rc.key]?.by_pref?.[ndbPref]?.rate;
+            // ゴースト針: hover県（全ストリップ・全ゲージが同期して揺れる）/ ◆ピン県
+            const field = riskStdMode ? 'age_standardized_rate' : 'rate';
+            const srcAll = riskStdMode ? ndbCheckupRiskRatesStd?.risk_rates?.[rc.key]?.by_pref : ndbCheckupRiskRates.risk_rates[rc.key]?.by_pref;
+            const hoverVal = (hoverPref && hoverPref !== ndbPref) ? srcAll?.[hoverPref]?.[field] : null;
+            const pinVal = (pinnedPref && pinnedPref !== ndbPref) ? srcAll?.[pinnedPref]?.[field] : null;
             // 分布ドロワー連携: click=該当指標でドロワーへ / 網掛けhover時は該当カードをリング強調
             const binsCardActive = binsOpen && RISK_BIN_THRESHOLD[rc.key]?.metric === binsMetric;
             return <div key={rc.key}
               onClick={(e)=>{ if (e.target && e.target.closest && e.target.closest('svg,button,a')) return; binsJumpTo(rc.key); }}
-              title="クリックで下の分布ドロワーに階級分布を表示"
-              style={{background:'#f8fafc',borderRadius:10,padding:'12px 14px',cursor:'pointer',borderLeft:`3px solid ${(activeDomain&&dMatch('riskKey',rc.key))?dm.color:rc.color}`,...dFade('riskKey',rc.key),
+              title={`${rc.fullLabel} — クリックで下の分布ドロワーに階級分布を表示`}
+              style={{background:'#f8fafc',borderRadius:10,padding:'10px 12px',cursor:'pointer',borderLeft:`3px solid ${(activeDomain&&dMatch('riskKey',rc.key))?dm.color:rc.color}`,...dFade('riskKey',rc.key),
                 boxShadow: binsZoneHover && binsCardActive ? `0 0 0 2px ${rc.color}` : 'none',
-                transition:'opacity 300ms ease, box-shadow 300ms ease'}}>
-              <div style={{display:'flex',alignItems:'center',gap:4,marginBottom:6}}>
+                transition:'opacity 300ms ease, box-shadow 300ms ease',
+                ...(mob && ci === RISK_CARDS.length-1 ? {gridColumn:'span 2', maxWidth:'60%', justifySelf:'center', width:'100%'} : {})}}>
+              <div style={{display:'flex',alignItems:'center',gap:4,marginBottom:4}}>
                 <span style={{fontSize:14}}>{rc.icon}</span>
                 <span style={{fontSize:11,fontWeight:600,color:'#1e293b'}}>{rc.label}</span>
               </div>
-              <div style={{fontSize:24,fontWeight:700,color:'#1e293b',lineHeight:1.1}}>{prefVal.toFixed(1)}<span style={{fontSize:13,fontWeight:500,color:'#64748b'}}>%</span></div>
-              {stdInfo && stdInfo.age_standardized_rate != null && (
-                <div title="NDB内標準人口で直接標準化（47県合算 sex × age_group）" style={{fontSize:9,color:'#7c3aed',marginTop:3,fontWeight:500}}>
-                  年齢標準化 {stdInfo.age_standardized_rate.toFixed(1)}% ({stdInfo.delta_pp >= 0 ? '+' : ''}{stdInfo.delta_pp.toFixed(1)}pp)
-                </div>
-              )}
-              {cmpLabel && (
-                <div style={{fontSize:10,color:cmpColor,fontWeight:600,marginTop:4}}>
-                  {cmpLabel} ({deltaPct > 0 ? '+' : ''}{deltaPct.toFixed(1)}%)
-                </div>
-              )}
-              <div style={{fontSize:9,color:'#94a3b8',marginTop:3,lineHeight:1.3}}>{rc.fullLabel}</div>
+              {/* 半円アークゲージ（冠）: click=ドロワー / アークスクラブ=最近傍県→hoverPref同期 */}
+              <RiskGauge value={prefVal} natAvg={natAvg} p10={p10} p90={p90} min={min} max={max}
+                rank={rank} color={cmpColor} unit="%" prefName={ndbPref} mob={mob}
+                reduced={prefersReducedMotion()}
+                hoverValue={hoverVal} hoverName={hoverPref} pinValue={pinVal} pinName={pinnedPref}
+                values={stripVals} onScrub={setHoverPref} onJump={()=>binsJumpTo(rc.key)} />
+              {/* 値+短縮チップ（20px降格・角度でなく実値が正） */}
+              <div style={{display:'flex',alignItems:'baseline',gap:6,marginTop:2,flexWrap:'wrap'}}>
+                <span style={{fontSize:20,fontWeight:700,color:'#1e293b',lineHeight:1.1,fontVariantNumeric:'tabular-nums'}}>
+                  <CountUpNum value={prefVal} decimals={1} /><span style={{fontSize:11,fontWeight:500,color:'#64748b'}}>%</span>
+                </span>
+                {cmpShort && deltaPct != null && (
+                  <span style={{fontSize:9.5,fontWeight:700,color:cmpColor,background:cmpColor+'14',border:`1px solid ${cmpColor}33`,padding:'1px 6px',borderRadius:4,whiteSpace:'nowrap'}}>
+                    {deltaPct > 0 ? '+' : ''}{deltaPct.toFixed(1)}% {cmpShort}
+                  </span>
+                )}
+              </div>
+              <div style={{fontSize:8.5,color:'#94a3b8',marginTop:1}}>47県中{rank}位{riskStdMode ? '（年齢標準化）' : ''}</div>
+              {riskStdMode
+                ? (crudeVal != null && <div title="標準化前の粗率" style={{fontSize:9,color:'#64748b',marginTop:3,fontWeight:500}}>粗率 {crudeVal.toFixed(1)}%</div>)
+                : (stdInfo && stdInfo.age_standardized_rate != null && (
+                    <div title="NDB内標準人口で直接標準化（47県合算 sex × age_group）" style={{fontSize:9,color:'#7c3aed',marginTop:3,fontWeight:500}}>
+                      年齢標準化 {stdInfo.age_standardized_rate.toFixed(1)}% ({stdInfo.delta_pp >= 0 ? '+' : ''}{stdInfo.delta_pp.toFixed(1)}pp)
+                    </div>
+                  ))}
               {stripVals.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={stripVals} natAvg={natAvg} yearBadge={yb('checkupRisk')} mode="micro" /></div>}
             </div>;
           })}
@@ -1421,6 +1606,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
             <span style={{fontSize:11.5,fontWeight:700,color:'#1e293b'}}>分布ドロワー — 検査値階級の分布と臨床閾値</span>
             {/* yb('checkupRisk')=R4 バッジ（ドロワーヘッダ必須） */}
             <span style={{fontSize:8.5,fontWeight:700,padding:'1px 5px',borderRadius:3,border:`1px solid ${yb('checkupRisk').color}`,color:yb('checkupRisk').color,background:'#fff',flexShrink:0}}>{yb('checkupRisk').label}</span>
+            {riskStdMode && <span title="盤は年齢標準化モードですが、本図（階級分布）は粗分布のみです" style={{fontSize:9,fontWeight:600,color:'#7c3aed',background:'#f5f3ff',border:'1px solid #ddd6fe',padding:'1px 6px',borderRadius:3,flexShrink:0}}>本図は粗分布</span>}
             {!mob && <span style={{fontSize:9.5,color:'#94a3b8'}}>県=塗り / 全国=灰輪郭 / 閾値から先=網掛け</span>}
             <span style={{marginLeft:'auto',fontSize:10,color:'#64748b',fontWeight:600,flexShrink:0}}>{binsOpen?'▲ 閉じる':'▼ 分布を見る'}</span>
           </button>
@@ -1523,6 +1709,32 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
         </div>
       </div>;
     })()}
+
+    {/* ── サブセクション A: 検査値平均（参考・Bの下へ移設。計算ロジックは移設のみ無改変） ── */}
+    {hcPref.length > 0 && <div style={{marginTop:14}}>
+      <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:8}}>
+        <span style={{fontSize:11,fontWeight:700,color:'#64748b',padding:'2px 8px',background:'#f1f5f9',borderRadius:4}}>参考: A. 検査値平均</span>
+        <span style={{fontSize:10,color:'#94a3b8'}}>Hb / Cr / eGFR — 5リスク該当者率とは別系の男女別平均値</span>
+      </div>
+      <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'repeat(3,1fr)',gap:12}}>
+        {hcPref.map((h,i)=>{
+          const meta = RISK_META[h.metric] || {};
+          // rank1: 検査値の47県分布（男女平均、判別不可除外）
+          const hcVals = (ndbHc||[]).filter(x=>x.metric===h.metric && isP47(x.pref) && x.male!=null && x.female!=null)
+            .map(x=>({pref:x.pref, value:(x.male+x.female)/2}));
+          return <div key={i} style={{background:'#f8fafc',borderRadius:10,padding:'10px 14px',...dFade('hcMetric',h.metric),...dBorder('hcMetric',h.metric)}}>
+            <div style={{display:'flex',alignItems:'baseline',gap:10,flexWrap:'wrap'}}>
+              <span style={{fontSize:12,fontWeight:600}}>{meta.icon||''} {h.metric}</span>
+              <span style={{fontSize:11}}><span style={{color:'#3b82f6'}}>男</span> <b style={{fontSize:15,color:'#2563EB'}}>{h.male}</b></span>
+              <span style={{fontSize:11}}><span style={{color:'#dc2626'}}>女</span> <b style={{fontSize:15,color:'#dc2626'}}>{h.female}</b></span>
+              <span style={{fontSize:9,color:'#94a3b8',marginLeft:'auto'}}>{meta.unit||''}{meta.note?` ・ ${meta.note}`:''}</span>
+            </div>
+            {hcVals.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={hcVals} yearBadge={yb('ndbHc')} mode="inline" /><div style={{fontSize:9,color:'#94a3b8',marginTop:1}}>男女平均の47県分布</div></div>}
+          </div>;
+        })}
+      </div>
+      <div style={{fontSize:10,color:'#94a3b8',marginTop:6,fontStyle:'italic'}}>※男女別平均値をもとにした参考値。疾病診断率ではありません。</div>
+    </div>}
   </div>}
 
   {/* ═══ Layer 2.5: DEMAND-SIDE (受療率 — 患者調査) ═══ */}
@@ -1907,8 +2119,31 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     </div>);
   })()}
 
-  {/* ═══ Layer 3: DEMAND (医療利用) ═══ */}
-  {diagByPref.length > 0 && <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16,...sectionFade}}>
+  {/* ═══ Layer 3: DEMAND (医療利用) — ヒーロー=受診リズム・イヤートラック「県民の1年」 ═══ */}
+  {diagByPref.length > 0 && (()=>{
+    // レーン順=A→B→Cのカテゴリ固定順（従来のtotal_claims降順は県により入替わり
+    // ヒーローのレーン順と不一致を起こすため廃止。in-place sortも回避）
+    const RHYTHM_CATS = ['A_初再診料','B_医学管理等','C_在宅医療'];
+    const diagOrdered = RHYTHM_CATS.map(c=>diagByPref.find(x=>x.category===c)).filter(Boolean);
+    const rhythmLanes = diagOrdered.map(d => {
+      const cat = d.category;
+      const u = DIAG_UNIT[cat] || { div: 100000, denom: '県民1人あたり・年', unit: '回/人・年', dec: 1 };
+      const per100k = prefMaps.diag[ndbPref]?.[cat] ?? null;
+      const nat100k = prefMaps.diagNat?.[cat] ?? null;
+      if (per100k == null || nat100k == null || nat100k <= 0) return null;
+      const hv = (hoverPref && hoverPref !== ndbPref) ? (prefMaps.diag[hoverPref]?.[cat] ?? null) : null;
+      const pv = (pinnedPref && pinnedPref !== ndbPref) ? (prefMaps.diag[pinnedPref]?.[cat] ?? null) : null;
+      const rank = 1 + Object.entries(prefMaps.diag).filter(([p])=>isP47(p)).filter(([,m])=>m[cat]!=null && m[cat]>per100k).length;
+      return {
+        key: cat, label: CAT_LABELS[cat]||cat,
+        value: per100k/u.div, natValue: nat100k/u.div,
+        hoverValue: hv != null ? hv/u.div : null, pinnedValue: pv != null ? pv/u.div : null,
+        unit: u.unit, denomBadge: u.denom, rank,
+        sep: cat === 'C_在宅医療', // 分母が違う（10人あたり）→区切り+淡色帯でA/Bと別群を明示
+        reframe: cat === 'C_在宅医療' ? `県内で1日${fmt(Math.round(d.total_claims/365))}件` : null,
+      };
+    }).filter(Boolean);
+    return <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16,...sectionFade}}>
     <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
       <span style={{fontSize:18}}>🏥</span>
       <div>
@@ -1916,8 +2151,14 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
         <div style={{fontSize:11,color:'#94a3b8'}}>医科診療行為 算定回数（令和5年度レセプト）</div>
       </div>
     </div>
+    {/* ヒーロー: 県民の1年 — 受診リズム（hoverPref同期モーフ・◆ピン行・均等割り模式バッジ常設） */}
+    {rhythmLanes.length > 0 && (
+      <YearRhythmTrack lanes={rhythmLanes} mob={mob} prefName={ndbPref}
+        hoverPrefName={hoverPref && hoverPref !== ndbPref ? hoverPref : null}
+        pinnedName={pinnedPref} yearBadge={yb('ndbDiag')} />
+    )}
     <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'repeat(3,1fr)',gap:10}}>
-      {diagByPref.sort((a,b)=>b.total_claims-a.total_claims).map((d)=>{
+      {diagOrdered.map((d)=>{
         // rank1: 人口10万対の47県分布（判別不可除外・prefMaps.diag は既に人口正規化済）
         const diagStrip = Object.entries(prefMaps.diag).filter(([p])=>isP47(p))
           .map(([p,m])=>({pref:p, value:m[d.category]})).filter(x=>x.value!=null);
@@ -1958,12 +2199,9 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
             <span style={{fontSize:10,color:'#94a3b8'}}>{u.denom}</span>
           </div>}
           {reframe && <div style={{fontSize:10,color:'#64748b',marginTop:1}}>{reframe}</div>}
-          {/* ユニットドット・レーン（充填はジャンボ数字と同一アニメ値で同期） */}
-          {disp != null && dispNat != null && <div style={{marginTop:6}}>
-            <UnitDotLane value={disp} natValue={dispNat} pinnedValue={dispPin}
-              natLabel={`全国 ${dispNat.toFixed(1)}`} mob={mob} prefName={ndbPref}
-              pinnedName={pinnedPref} rank={rank} unitLabel={u.unit} />
-          </div>}
+          {/* カードは「数値正+分布」に純化 — 1ドット=1回の語彙はヒーロー(イヤートラック)が
+              時間軸付きで上位互換継承（同一値のドット表現が2箇所並ぶと一目性が希釈されるため
+              カード内UnitDotLaneは撤去。UnitDotLane部品コード自体は他区画流用可能な確立部品として残置） */}
           {/* 従来値（生値残置 — 換算値の独り歩き防止・10px二次情報） */}
           <div style={{fontSize:10,color:'#94a3b8',marginTop:6}}>総算定 {fmt(d.total_claims)}回 ・ 人口10万対 {perCap(d.total_claims)}</div>
           {diagStrip.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={diagStrip} natAvg={nat100k} yearBadge={yb('ndbDiag')} mode="inline" /></div>}
@@ -1973,10 +2211,12 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     </div>
     <div style={{fontSize:9,color:'#94a3b8',marginTop:10,lineHeight:1.7}}>
       ※ NDBは<b>医療機関所在地ベースの供給側集計</b>です。人口10万対・人間換算は住民人口（住基2025-01-01）で除した<b>参考値</b>で、受診流出入・審査集計仕様の影響を含みます（分子=令和5年度レセプト・分母人口の年次は一致しません）。
-      換算の分母はカテゴリで異なります（外来受診・慢性疾患管理=<b>県民1人あたり</b>／在宅医療=<b>県民10人あたり</b>）。<b>高低は良し悪しではありません</b>。
-      ドット1個=1回（端数は部分塗り・実値はツールチップ）: <span style={{color:'#64748b'}}>●基準部（県と全国の重なり）</span>・<span style={{color:'#9f1239'}}>●全国超過</span>・<span style={{color:'#4338ca'}}>◯全国比不足（輪郭）</span>・<span style={{color:'#2563EB'}}>▽全国基準</span>。
+      換算の分母はカテゴリで異なります（外来受診・慢性疾患管理=<b>県民1人あたり</b>／在宅医療=<b>県民10人あたり</b> — リズムのドット密度をレーン間で比較しないでください）。<b>高低は良し悪しではありません</b>。
+      リズム凡例: <span style={{color:'#64748b'}}>●=受診1回（年間総数の<b>均等割り模式</b>・端数は部分塗り）</span>・<span style={{color:'#2563EB'}}>◌破線=全国ゴースト行</span>・<span style={{color:'#c2410c'}}>◆=ピン県</span>。実際の月次・季節分布はデータに存在しません。実値は常にツールチップ（小数1桁）。
+      週数の色は<span style={{color:'#9f1239'}}>rose=全国より間隔が短い（多い）</span>／<span style={{color:'#4338ca'}}>indigo=長い（少ない）</span>の中立発散です。
     </div>
-  </div>}
+  </div>;
+  })()}
 
   {/* ═══ Layer 4: TREATMENT (治療パターン — 処方個性ダイアグラム) ═══
        ★単位非統一問題の解決: 絶対数量の棒比較を廃し、同一薬効分類内の
