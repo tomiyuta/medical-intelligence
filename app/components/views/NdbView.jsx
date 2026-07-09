@@ -210,6 +210,149 @@ const UnitDotLane = ({ value, natValue, pinnedValue = null, perRow = 12, natLabe
     </div>
   );
 };
+// ── Layer3 受診リズム・イヤートラック「県民の1年」 ──
+// 年間総数の均等割り換算で12ヶ月時間軸にドットを配置する模式図。月次・季節分布は
+// データに存在しない — 『均等割り模式』マイクロバッジ+脚注で明示（guardrail①）。
+// 値の正は常にツールチップ小数1桁実値・端数はclipPath部分塗り（UnitDotLane技法移植・捏造しない）。
+// hoverPref同期: 他ストリップで県をなぞるとトラックがその県の値へ400msモーフ（useCountUp転用）。
+// ドット本体は中立色のみ（rose/indigoは差分数値ラベル限定 — 時間的アーティファクト回避・guardrail⑤）。
+const RHYTHM_X0 = 8, RHYTHM_X1 = 592, RHYTHM_W = 600;
+const rhythmX = (tMonth) => RHYTHM_X0 + (Math.max(0, Math.min(12, tMonth)) / 12) * (RHYTHM_X1 - RHYTHM_X0);
+// 会計年度の月ラベル（4月始まり）: index 0=4月 … 11=3月
+const RHYTHM_MONTHS = [['0','4月'],['3','7月'],['6','10月'],['9','1月'],['11','3月']];
+const RhythmLane = ({ lane, mob, prefName, hoverPrefName, pinnedName }) => {
+  const dispTarget = lane.hoverValue ?? lane.value;
+  const anim = useCountUp(dispTarget);
+  const uid = useId().replace(/[^a-zA-Z0-9_-]/g, '');
+  const [tip, setTip] = useState(false);
+  if (lane.value == null || !isFinite(lane.value) || lane.natValue == null) return null;
+  const v = Math.max(0.001, anim != null && isFinite(anim) ? anim : dispTarget);
+  const n = Math.max(0.001, lane.natValue);
+  const R = mob ? 3.4 : 4.2;
+  const hasPin = lane.pinnedValue != null && isFinite(lane.pinnedValue) && lane.pinnedValue > 0;
+  const H = hasPin ? 58 : 46;
+  const yMain = 15, yGhost = 33, yPin = 49;
+  // 等間隔リズム配置: t_i=(i+0.5)×12/v ヶ月。端数ドットはclipPath部分塗り（右端クランプ）
+  const dotsOf = (val) => {
+    const full = Math.floor(val + 1e-9);
+    const frac = val - full;
+    const out = [];
+    for (let i = 0; i < Math.min(full, 400); i++) out.push({ t: (i + 0.5) * 12 / val, frac: 1 });
+    if (frac > 0.01 && full < 400) out.push({ t: Math.min(11.85, (full + 0.5) * 12 / val), frac });
+    return out;
+  };
+  const mainDots = dotsOf(v);
+  const ghostDots = dotsOf(n);
+  const pinDots = hasPin ? dotsOf(lane.pinnedValue) : [];
+  const weeks = 52 / (lane.hoverValue ?? lane.value);
+  const natWeeks = 52 / n;
+  const fmt1 = (x) => (x != null && isFinite(x) ? x.toFixed(1) : '—');
+  const diff = (lane.hoverValue ?? lane.value) - n;
+  const t = tierOf(((lane.hoverValue ?? lane.value) / n - 1) * 100);
+  const partial = (arr) => arr.filter(d => d.frac < 0.999);
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: mob ? '1fr' : '158px 1fr 128px', gap: mob ? 2 : 10, alignItems: 'center',
+      padding: '7px 0', borderTop: lane.sep ? '1px dashed #e2e8f0' : 'none', background: lane.sep ? '#fafbff' : 'transparent', borderRadius: lane.sep ? 8 : 0 }}>
+      {/* 左: レーンラベル + 週数（mobはインライン化） */}
+      <div style={{ paddingLeft: lane.sep ? 8 : 0 }}>
+        <div style={{ fontSize: 11.5, fontWeight: 700, color: '#1e293b' }}>
+          {lane.label}
+          <span style={{ marginLeft: 5, fontSize: 8.5, fontWeight: 600, color: '#64748b', background: '#f1f5f9', padding: '1px 5px', borderRadius: 3 }}>{lane.denomBadge}</span>
+        </div>
+        <div style={{ fontSize: mob ? 11 : 10, color: '#475569', marginTop: 1 }}>
+          <b style={{ fontSize: mob ? 13 : 12, color: weeks < natWeeks ? '#9f1239' : weeks > natWeeks ? '#4338ca' : '#475569', fontVariantNumeric: 'tabular-nums' }}>
+            <CountUpNum value={weeks} decimals={1} />週</b>に1回
+          <span style={{ color: '#94a3b8' }}>（全国 {fmt1(natWeeks)}週）</span>
+        </div>
+      </div>
+      {/* 中央: リズムトラックSVG（県ドット行 + 全国ゴースト行 + ◆ピン行） */}
+      <div style={{ position: 'relative' }}
+        onMouseEnter={() => setTip(true)} onMouseLeave={() => setTip(false)} onClick={() => setTip(x => !x)}>
+        <svg viewBox={`0 0 ${RHYTHM_W} ${H}`} width="100%" height="auto"
+          style={{ display: 'block', touchAction: 'manipulation', cursor: 'default' }}
+          role="img" aria-label={`${prefName} ${lane.label} 年${fmt1(lane.value)}${lane.unit}（全国 ${fmt1(n)}）の受診リズム`}>
+          <defs>
+            {partial(mainDots).map((d, i) => (
+              <clipPath key={i} id={`${uid}m${i}`}>
+                <rect x={rhythmX(d.t) - R} y={yMain - R} width={2 * R * d.frac} height={2 * R} />
+              </clipPath>
+            ))}
+          </defs>
+          {/* 月グリッド */}
+          {Array.from({ length: 13 }, (_, m) => (
+            <line key={m} x1={rhythmX(m)} x2={rhythmX(m)} y1={4} y2={H - 4} stroke="#eef2f7" strokeWidth={m === 0 || m === 12 ? 1.4 : 1} />
+          ))}
+          {/* 県ドット行（中立slate） */}
+          {mainDots.map((d, i) => d.frac >= 0.999
+            ? <circle key={`m${i}`} cx={rhythmX(d.t)} cy={yMain} r={R} fill="#64748b" />
+            : <g key={`m${i}`} clipPath={`url(#${uid}m${partial(mainDots).indexOf(d)})`}><circle cx={rhythmX(d.t)} cy={yMain} r={R} fill="#64748b" /></g>)}
+          {/* 全国ゴースト行（青アウトライン破線 = PrefStrip47のavg語彙拡張） */}
+          {ghostDots.map((d, i) => (
+            <circle key={`g${i}`} cx={rhythmX(d.t)} cy={yGhost} r={R - 0.6} fill="none" stroke="#2563EB"
+              strokeWidth={1.2} strokeDasharray="2 1.6" opacity={0.75 * Math.max(0.35, d.frac)} />
+          ))}
+          {/* ◆ピン県行（橙ダイヤ） */}
+          {pinDots.map((d, i) => {
+            const x = rhythmX(d.t);
+            return <path key={`p${i}`} d={`M ${x} ${yPin - 3.6} L ${x + 3.6} ${yPin} L ${x} ${yPin + 3.6} L ${x - 3.6} ${yPin} Z`}
+              fill="#f97316" stroke="#c2410c" strokeWidth={0.8} opacity={Math.max(0.4, d.frac)} />;
+          })}
+          {/* 行ラベル（svg内左端・8px） */}
+          <text x={RHYTHM_X0} y={yMain - R - 2.5} fontSize={8} fill="#94a3b8">{hoverPrefName && lane.hoverValue != null ? hoverPrefName : prefName}</text>
+          <text x={RHYTHM_X0} y={yGhost - R - 2} fontSize={8} fill="#2563EB" opacity={0.8}>全国</text>
+          {hasPin && <text x={RHYTHM_X0} y={yPin - 6} fontSize={8} fill="#c2410c">◆{pinnedName}</text>}
+        </svg>
+        {tip && (
+          <div style={{ position: 'absolute', left: '50%', top: -6, transform: 'translate(-50%,-100%)',
+            background: '#1e293b', color: '#fff', fontSize: 10, lineHeight: 1.5, padding: '5px 9px',
+            borderRadius: 4, whiteSpace: 'nowrap', pointerEvents: 'none', zIndex: 20 }}>
+            <div><b>{hoverPrefName && lane.hoverValue != null ? hoverPrefName : prefName}</b>{' '}
+              <span style={{ color: '#93c5fd', fontWeight: 700 }}>{fmt1(lane.hoverValue ?? lane.value)}{lane.unit}</span>
+              <span style={{ color: '#cbd5e1' }}>（全国 {fmt1(n)}・差 {diff > 0 ? '+' : ''}{fmt1(diff)}回{lane.rank != null && lane.hoverValue == null ? `・47県中${lane.rank}位` : ''}）</span></div>
+            <div style={{ color: '#cbd5e1' }}>≒ {fmt1(weeks)}週に1回（全国 {fmt1(natWeeks)}週に1回）</div>
+            {hasPin && <div style={{ color: '#fdba74' }}>◆{pinnedName} {fmt1(lane.pinnedValue)}{lane.unit}</div>}
+          </div>
+        )}
+      </div>
+      {/* 右: tierことばチップ + 年差分（mobは非表示 — 左列にインライン済） */}
+      {!mob && (
+        <div style={{ textAlign: 'right' }}>
+          {t && <div><span style={{ fontSize: 9.5, fontWeight: 700, color: t.color, background: t.color + '14', border: `1px solid ${t.color}33`, padding: '1px 6px', borderRadius: 4 }}>{t.label}</span></div>}
+          <div style={{ fontSize: 10, color: '#64748b', marginTop: 3, fontVariantNumeric: 'tabular-nums' }}>
+            年{diff > 0 ? '+' : ''}{fmt1(diff)}回 <span style={{ color: '#94a3b8' }}>vs全国</span>
+          </div>
+          {lane.reframe && <div style={{ fontSize: 9, color: '#94a3b8', marginTop: 2 }}>{lane.reframe}</div>}
+        </div>
+      )}
+    </div>
+  );
+};
+const YearRhythmTrack = ({ lanes, mob, prefName, hoverPrefName, pinnedName, yearBadge }) => {
+  if (!lanes || !lanes.length) return null;
+  return (
+    <div style={{ background: '#fbfdff', border: '1px solid #e8eef6', borderRadius: 10, padding: mob ? '10px 10px 6px' : '12px 16px 8px', marginBottom: 12 }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap', marginBottom: 4 }}>
+        <span style={{ fontSize: 12, fontWeight: 700, color: '#1e293b' }}>🗓 県民の1年 — 受診リズム</span>
+        <span title="年間総数を12ヶ月に均等割りした模式図です。実際の月次・季節分布はデータに存在しません"
+          style={{ fontSize: 8.5, fontWeight: 600, color: '#92400e', background: '#fffbeb', border: '1px solid #fde68a', padding: '1px 6px', borderRadius: 3 }}>均等割り模式</span>
+        {yearBadge && <span style={{ fontSize: 8.5, fontWeight: 700, padding: '1px 5px', borderRadius: 3, border: `1px solid ${yearBadge.color}`, color: yearBadge.color, background: '#fff' }}>{yearBadge.label}</span>}
+        {hoverPrefName && <span style={{ fontSize: 9.5, fontWeight: 700, color: '#fff', background: '#334155', padding: '1px 8px', borderRadius: 8 }}>→ {hoverPrefName} を表示中</span>}
+        <span style={{ marginLeft: 'auto', fontSize: 9, color: '#94a3b8' }}>●{prefName} ・ ◌全国 ・ 1ドット=1回</span>
+      </div>
+      {/* 月軸ヘッダ（会計年度4月→3月） */}
+      <div style={{ display: 'grid', gridTemplateColumns: mob ? '1fr' : '158px 1fr 128px', gap: mob ? 2 : 10 }}>
+        {!mob && <div />}
+        <svg viewBox={`0 0 ${RHYTHM_W} 14`} width="100%" height="auto" style={{ display: 'block' }} aria-hidden="true">
+          {(mob ? [RHYTHM_MONTHS[0], RHYTHM_MONTHS[2], RHYTHM_MONTHS[4]] : RHYTHM_MONTHS).map(([m, l]) => (
+            <text key={m} x={rhythmX(+m + 0.5)} y={10} fontSize={9} fill="#94a3b8" textAnchor="middle">{l}</text>
+          ))}
+        </svg>
+        {!mob && <div />}
+      </div>
+      {lanes.map(l => <RhythmLane key={l.key} lane={l} mob={mob} prefName={prefName} hoverPrefName={hoverPrefName} pinnedName={pinnedName} />)}
+    </div>
+  );
+};
 // 受療率フィンガープリント色意味論(FP_TIERS/tierOf)は lib/domainMapping.js へ移設
 // (手順1共有基盤: Bridge・新部品とことばチップ単一ソース化・循環import回避) — import参照。
 const CAT_LABELS = {'A_初再診料':'外来受診','B_医学管理等':'慢性疾患管理','C_在宅医療':'在宅医療'};
@@ -1976,8 +2119,31 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     </div>);
   })()}
 
-  {/* ═══ Layer 3: DEMAND (医療利用) ═══ */}
-  {diagByPref.length > 0 && <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16,...sectionFade}}>
+  {/* ═══ Layer 3: DEMAND (医療利用) — ヒーロー=受診リズム・イヤートラック「県民の1年」 ═══ */}
+  {diagByPref.length > 0 && (()=>{
+    // レーン順=A→B→Cのカテゴリ固定順（従来のtotal_claims降順は県により入替わり
+    // ヒーローのレーン順と不一致を起こすため廃止。in-place sortも回避）
+    const RHYTHM_CATS = ['A_初再診料','B_医学管理等','C_在宅医療'];
+    const diagOrdered = RHYTHM_CATS.map(c=>diagByPref.find(x=>x.category===c)).filter(Boolean);
+    const rhythmLanes = diagOrdered.map(d => {
+      const cat = d.category;
+      const u = DIAG_UNIT[cat] || { div: 100000, denom: '県民1人あたり・年', unit: '回/人・年', dec: 1 };
+      const per100k = prefMaps.diag[ndbPref]?.[cat] ?? null;
+      const nat100k = prefMaps.diagNat?.[cat] ?? null;
+      if (per100k == null || nat100k == null || nat100k <= 0) return null;
+      const hv = (hoverPref && hoverPref !== ndbPref) ? (prefMaps.diag[hoverPref]?.[cat] ?? null) : null;
+      const pv = (pinnedPref && pinnedPref !== ndbPref) ? (prefMaps.diag[pinnedPref]?.[cat] ?? null) : null;
+      const rank = 1 + Object.entries(prefMaps.diag).filter(([p])=>isP47(p)).filter(([,m])=>m[cat]!=null && m[cat]>per100k).length;
+      return {
+        key: cat, label: CAT_LABELS[cat]||cat,
+        value: per100k/u.div, natValue: nat100k/u.div,
+        hoverValue: hv != null ? hv/u.div : null, pinnedValue: pv != null ? pv/u.div : null,
+        unit: u.unit, denomBadge: u.denom, rank,
+        sep: cat === 'C_在宅医療', // 分母が違う（10人あたり）→区切り+淡色帯でA/Bと別群を明示
+        reframe: cat === 'C_在宅医療' ? `県内で1日${fmt(Math.round(d.total_claims/365))}件` : null,
+      };
+    }).filter(Boolean);
+    return <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16,...sectionFade}}>
     <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
       <span style={{fontSize:18}}>🏥</span>
       <div>
@@ -1985,8 +2151,14 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
         <div style={{fontSize:11,color:'#94a3b8'}}>医科診療行為 算定回数（令和5年度レセプト）</div>
       </div>
     </div>
+    {/* ヒーロー: 県民の1年 — 受診リズム（hoverPref同期モーフ・◆ピン行・均等割り模式バッジ常設） */}
+    {rhythmLanes.length > 0 && (
+      <YearRhythmTrack lanes={rhythmLanes} mob={mob} prefName={ndbPref}
+        hoverPrefName={hoverPref && hoverPref !== ndbPref ? hoverPref : null}
+        pinnedName={pinnedPref} yearBadge={yb('ndbDiag')} />
+    )}
     <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'repeat(3,1fr)',gap:10}}>
-      {diagByPref.sort((a,b)=>b.total_claims-a.total_claims).map((d)=>{
+      {diagOrdered.map((d)=>{
         // rank1: 人口10万対の47県分布（判別不可除外・prefMaps.diag は既に人口正規化済）
         const diagStrip = Object.entries(prefMaps.diag).filter(([p])=>isP47(p))
           .map(([p,m])=>({pref:p, value:m[d.category]})).filter(x=>x.value!=null);
@@ -2027,12 +2199,9 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
             <span style={{fontSize:10,color:'#94a3b8'}}>{u.denom}</span>
           </div>}
           {reframe && <div style={{fontSize:10,color:'#64748b',marginTop:1}}>{reframe}</div>}
-          {/* ユニットドット・レーン（充填はジャンボ数字と同一アニメ値で同期） */}
-          {disp != null && dispNat != null && <div style={{marginTop:6}}>
-            <UnitDotLane value={disp} natValue={dispNat} pinnedValue={dispPin}
-              natLabel={`全国 ${dispNat.toFixed(1)}`} mob={mob} prefName={ndbPref}
-              pinnedName={pinnedPref} rank={rank} unitLabel={u.unit} />
-          </div>}
+          {/* カードは「数値正+分布」に純化 — 1ドット=1回の語彙はヒーロー(イヤートラック)が
+              時間軸付きで上位互換継承（同一値のドット表現が2箇所並ぶと一目性が希釈されるため
+              カード内UnitDotLaneは撤去。UnitDotLane部品コード自体は他区画流用可能な確立部品として残置） */}
           {/* 従来値（生値残置 — 換算値の独り歩き防止・10px二次情報） */}
           <div style={{fontSize:10,color:'#94a3b8',marginTop:6}}>総算定 {fmt(d.total_claims)}回 ・ 人口10万対 {perCap(d.total_claims)}</div>
           {diagStrip.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={diagStrip} natAvg={nat100k} yearBadge={yb('ndbDiag')} mode="inline" /></div>}
@@ -2042,10 +2211,12 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     </div>
     <div style={{fontSize:9,color:'#94a3b8',marginTop:10,lineHeight:1.7}}>
       ※ NDBは<b>医療機関所在地ベースの供給側集計</b>です。人口10万対・人間換算は住民人口（住基2025-01-01）で除した<b>参考値</b>で、受診流出入・審査集計仕様の影響を含みます（分子=令和5年度レセプト・分母人口の年次は一致しません）。
-      換算の分母はカテゴリで異なります（外来受診・慢性疾患管理=<b>県民1人あたり</b>／在宅医療=<b>県民10人あたり</b>）。<b>高低は良し悪しではありません</b>。
-      ドット1個=1回（端数は部分塗り・実値はツールチップ）: <span style={{color:'#64748b'}}>●基準部（県と全国の重なり）</span>・<span style={{color:'#9f1239'}}>●全国超過</span>・<span style={{color:'#4338ca'}}>◯全国比不足（輪郭）</span>・<span style={{color:'#2563EB'}}>▽全国基準</span>。
+      換算の分母はカテゴリで異なります（外来受診・慢性疾患管理=<b>県民1人あたり</b>／在宅医療=<b>県民10人あたり</b> — リズムのドット密度をレーン間で比較しないでください）。<b>高低は良し悪しではありません</b>。
+      リズム凡例: <span style={{color:'#64748b'}}>●=受診1回（年間総数の<b>均等割り模式</b>・端数は部分塗り）</span>・<span style={{color:'#2563EB'}}>◌破線=全国ゴースト行</span>・<span style={{color:'#c2410c'}}>◆=ピン県</span>。実際の月次・季節分布はデータに存在しません。実値は常にツールチップ（小数1桁）。
+      週数の色は<span style={{color:'#9f1239'}}>rose=全国より間隔が短い（多い）</span>／<span style={{color:'#4338ca'}}>indigo=長い（少ない）</span>の中立発散です。
     </div>
-  </div>}
+  </div>;
+  })()}
 
   {/* ═══ Layer 4: TREATMENT (治療パターン — 処方個性ダイアグラム) ═══
        ★単位非統一問題の解決: 絶対数量の棒比較を廃し、同一薬効分類内の
