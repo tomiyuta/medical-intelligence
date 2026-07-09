@@ -9,6 +9,7 @@ import RegionalMismatchExplorer from '../ui/RegionalMismatchExplorer';
 import PrefStrip47 from '../ui/PrefStrip47';
 import PrefChoropleth from '../ui/PrefChoropleth';
 import { getSourceBadge } from '../../../lib/sourceRegistry';
+import { DOMAIN_MAPPING, DOMAIN_ORDER, rowInDomain, domainSectionStatus, DOMAIN_TO_RX_LABEL } from '../../../lib/domainMapping';
 
 // rank1: 47都道府県ホワイトリスト（「都道府県判別不可」「全国」等の擬似県を分布から除外）
 const PREF47_SET = new Set(PREF_ORDER);
@@ -77,6 +78,15 @@ const GAP_TEMPLATES = [
     xType:'q', xKey:'sleep_ok', yType:'cause', yKey:'心疾患', xInverse:true,
     note:'X軸は睡眠で休養がとれている人の割合（高=低リスク）。睡眠不足と循環器の関連は確立。'},
 ];
+
+// rank2: ドメインレンズ選択時に Gap Finder テンプレを該当ドメインへ自動切替（対応があるドメインのみ）
+const DOMAIN_GAP_TEMPLATE = {
+  cardiovascular: 'exercise_heart',
+  diabetes_metabolic: 'weight_diabetes',
+  cancer: 'smoke_cancer',
+  renal: 'egfr_kidney',
+  // cerebrovascular / respiratory は対応テンプレ無し → 自動切替しない
+};
 
 export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ, agePyramid, futureDemo, patientSurvey, bedFunc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd, mortalityOutcome2020, cancerSites2024, homecareCapability, japanMap }) {
   const diagByPref = ndbDiag.filter(d=>d.prefecture===ndbPref);
@@ -220,6 +230,22 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
   // rank5: マップ・エコー — click した死因の 47 県コロプレスを行下に展開
   const [selectedCause, setSelectedCause] = useState(null);
 
+  // ── rank2: ドメインレンズ（疾患縦串フィルタ） ──
+  const [activeDomain, setActiveDomain] = useState(null);
+  const dm = activeDomain ? DOMAIN_MAPPING[activeDomain] : null;
+  // chip選択で Gap Finder テンプレを該当ドメインへ自動切替（可能なら）
+  useEffect(() => {
+    if (activeDomain && DOMAIN_GAP_TEMPLATE[activeDomain]) setGapTemplate(DOMAIN_GAP_TEMPLATE[activeDomain]);
+  }, [activeDomain]);
+  // 行の該当判定 / 退色 / ドメイン色左ボーダー（300msトランジション）
+  const dMatch = (group, key) => !activeDomain || rowInDomain(activeDomain, group, key);
+  const dFade = (group, key) => (activeDomain ? { opacity: dMatch(group, key) ? 1 : 0.25, transition: 'opacity 300ms ease' } : { transition: 'opacity 300ms ease' });
+  const dBorder = (group, key) => (activeDomain && dMatch(group, key) ? { borderLeft: `3px solid ${dm.color}`, paddingLeft: 8 } : {});
+  // Layer4 処方薬（DRUG_DOMAIN 日本語ラベル軸）の退色（utilization未整備ドメインは全行退色）
+  const rxFade = (jpDomain) => (activeDomain ? { opacity: DOMAIN_TO_RX_LABEL[activeDomain] === jpDomain ? 1 : 0.25, transition: 'opacity 300ms ease' } : { transition: 'opacity 300ms ease' });
+  // ドメイン非該当セクション全体の退色（診療行為カテゴリ等・疾患軸を持たない断面）
+  const sectionFade = activeDomain ? { opacity: 0.32, transition: 'opacity 300ms ease' } : { transition: 'opacity 300ms ease' };
+
   // Phase 4-3 R3: mode に応じて表示する causes を切り替える
   const displayCauses = (() => {
     if (mortalityMode === 'crude') return causes;
@@ -273,6 +299,63 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     </select>
     {prefPop > 0 && <span style={{fontSize:12,color:'#94a3b8'}}>人口 {fmt(prefPop)}人</span>}
   </div>
+
+  {/* rank2: ドメインレンズ 疾患chipバー（sticky・ヘッダー付近に同居） */}
+  <div style={{position:'sticky',top:0,zIndex:20,background:'#fff',padding:'8px 0 6px',marginBottom:12,borderBottom:'1px solid #f1f5f9'}}>
+    <div style={{display:'flex',alignItems:'center',gap:6,overflowX:'auto',paddingBottom:2}}>
+      <span style={{fontSize:10,color:'#94a3b8',fontWeight:700,flexShrink:0,letterSpacing:'0.04em'}}>疾患縦串</span>
+      {DOMAIN_ORDER.map(id=>{
+        const d = DOMAIN_MAPPING[id]; const on = activeDomain===id;
+        return <button key={id} onClick={()=>setActiveDomain(on?null:id)}
+          title={`${d.label} 縦串でフィルタ`}
+          style={{display:'inline-flex',alignItems:'center',gap:5,flexShrink:0,padding:'5px 11px',borderRadius:16,cursor:'pointer',
+            border:'1px solid '+(on?d.color:'#e2e8f0'), background:on?d.color:'#fff', color:on?'#fff':'#475569',
+            fontSize:12,fontWeight:600,transition:'all 200ms',whiteSpace:'nowrap'}}>
+          <span style={{width:8,height:8,borderRadius:'50%',background:on?'#fff':d.color,flexShrink:0}}/>
+          <span>{d.icon} {d.label}</span>
+          {d.isExperimental && <span style={{fontSize:8,padding:'0 4px',borderRadius:4,background:on?'rgba(255,255,255,0.25)':'#f1f5f9',color:on?'#fff':'#94a3b8',fontWeight:600}}>試験的</span>}
+        </button>;
+      })}
+      {activeDomain && <button onClick={()=>setActiveDomain(null)} style={{marginLeft:'auto',flexShrink:0,padding:'5px 10px',borderRadius:16,border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',fontSize:11,fontWeight:600,cursor:'pointer',whiteSpace:'nowrap'}}>解除 ✕</button>}
+    </div>
+  </div>
+
+  {/* rank2: ドメインレンズ 固定ガードバナー（選択中のみ・5断面の整備状況+年度併記） */}
+  {dm && (()=>{
+    const st = domainSectionStatus(activeDomain);
+    const dims = [
+      {k:'risks',       label:'リスク',            ok: st.risks>0,      badge:'checkupRisk',   extra: st.risks>0?`${st.risks}指標(質問票+健診)`:null, note:null},
+      {k:'demand',      label:'疾病負荷(受療率)',  ok: st.demand,       badge:'patientSurvey', extra:null, note: st.demandNote},
+      {k:'utilization', label:'医療利用(処方proxy)',ok: st.utilization,  badge:'ndbRx',         extra:null, note: st.utilizationNote},
+      {k:'supply',      label:'供給proxy(病床)',   ok: st.supply,       badge:'bedFunc',       extra:null, note: st.supplyNote},
+      {k:'outcome',     label:'結果(死亡率)',       ok: st.outcome,      badge:'vitalStats',    extra:null, note:null},
+    ];
+    return (
+    <div style={{background:dm.bg,border:`1px solid ${dm.color}44`,borderLeft:`4px solid ${dm.color}`,borderRadius:10,padding:'12px 16px',marginBottom:16}}>
+      <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap',marginBottom:8}}>
+        <span style={{fontSize:16}}>{dm.icon}</span>
+        <span style={{fontSize:14,fontWeight:700,color:dm.color}}>{dm.label} 縦串フィルタ 適用中</span>
+        {st.isExperimental && <span title={st.experimentalNote||''} style={{fontSize:9,padding:'2px 7px',borderRadius:4,background:'#fff',color:'#b45309',border:'1px solid #fde68a',fontWeight:600,cursor:'help'}}>試験的マッピング</span>}
+      </div>
+      <div style={{fontSize:11,color:'#7f1d1d',background:'#fff',border:'1px solid #fecaca',borderRadius:6,padding:'7px 10px',marginBottom:10,lineHeight:1.55,fontWeight:600}}>
+        ⚠ 縦串は薬効分類・ICD章の定義対応であり、因果連鎖の実証ではありません。各断面は異なる調査・年度に由来します（下のバッジで年度混在を明示）。
+      </div>
+      <div style={{display:'flex',gap:8,flexWrap:'wrap'}}>
+        {dims.map(di=>{
+          const b = getSourceBadge(di.badge);
+          return <div key={di.k} title={di.note||b.title} style={{flex:'1 1 150px',minWidth:130,background:'#fff',borderRadius:6,padding:'7px 10px',border:'1px solid #f1f5f9'}}>
+            <div style={{fontSize:10,color:'#64748b',fontWeight:700,marginBottom:4}}>{di.label}</div>
+            {di.ok
+              ? <div style={{display:'flex',alignItems:'center',gap:5,flexWrap:'wrap'}}>
+                  <span style={{fontSize:9,fontWeight:700,padding:'1px 6px',borderRadius:4,background:b.bg,color:b.color,border:`1px solid ${b.border}`}}>{b.year}</span>
+                  {di.extra && <span style={{fontSize:9,color:'#94a3b8'}}>{di.extra}</span>}
+                </div>
+              : <div style={{fontSize:10,color:'#b45309',fontWeight:700}}>この断面は未整備</div>}
+          </div>;
+        })}
+      </div>
+    </div>);
+  })()}
 
   {/* rank1: 比較県ピン チップ（分布ストリップのドットclickで設定・ここで解除/移動） */}
   {pinnedPref && pinnedPref !== ndbPref && (
@@ -411,7 +494,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           // neutral: 服薬・既往は方向性中立（医療負荷の事実）→ 色判定なし
           const isNeutral = NEUTRAL_KEYS.has(key);
           const isHigherRisk = isNeutral ? null : (INVERSE_KEYS.has(key) ? delta < 0 : delta > 0);
-          return <div key={key}>
+          return <div key={key} style={{...dFade('ndbQKey',key), ...dBorder('ndbQKey',key)}}>
             <div style={{display:'flex',alignItems:'center',gap:10}}>
               <span style={{fontSize:16,width:24}}>{RISK_ICONS[key]||'📋'}</span>
               <span style={{width:mob?70:90,fontSize:12,fontWeight:600,color:'#475569',flexShrink:0}}>{q.risk_label||key}</span>
@@ -453,7 +536,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           // rank1: 検査値の47県分布（男女平均、判別不可除外）
           const hcVals = (ndbHc||[]).filter(x=>x.metric===h.metric && isP47(x.pref) && x.male!=null && x.female!=null)
             .map(x=>({pref:x.pref, value:(x.male+x.female)/2}));
-          return <div key={i} style={{background:'#f8fafc',borderRadius:10,padding:'14px 16px'}}>
+          return <div key={i} style={{background:'#f8fafc',borderRadius:10,padding:'14px 16px',...dFade('hcMetric',h.metric),...dBorder('hcMetric',h.metric)}}>
             <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',marginBottom:8}}>
               <span style={{fontSize:13,fontWeight:600}}>{meta.icon||''} {h.metric}</span>
               <span style={{fontSize:10,color:'#94a3b8',background:'#fff',padding:'2px 6px',borderRadius:4}}>{meta.unit||''}</span>
@@ -512,7 +595,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
             }
             // 年齢標準化率
             const stdInfo = ndbCheckupRiskRatesStd?.risk_rates?.[rc.key]?.by_pref?.[ndbPref];
-            return <div key={rc.key} style={{background:'#f8fafc',borderRadius:10,padding:'12px 14px',borderLeft:`3px solid ${rc.color}`}}>
+            return <div key={rc.key} style={{background:'#f8fafc',borderRadius:10,padding:'12px 14px',borderLeft:`3px solid ${(activeDomain&&dMatch('riskKey',rc.key))?dm.color:rc.color}`,...dFade('riskKey',rc.key)}}>
               <div style={{display:'flex',alignItems:'center',gap:4,marginBottom:6}}>
                 <span style={{fontSize:14}}>{rc.icon}</span>
                 <span style={{fontSize:11,fontWeight:600,color:'#1e293b'}}>{rc.label}</span>
@@ -624,6 +707,11 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           </div>
           <div style={{fontSize:11,color:'#94a3b8'}}>厚労省 令和5年患者調査(2023) 第39表 — 全21傷病大分類 × 対全国比（患者住所地ベース）</div>
           <div style={{fontSize:10,color:'#b45309',marginTop:2}}>※乖離は受療行動・供給・疾病構造の複合であり単一要因の証明ではない。</div>
+          {activeDomain && dm && !dm.demand && (
+            <div style={{fontSize:10,color:'#b45309',marginTop:4,padding:'5px 8px',background:'#fffbeb',border:'1px solid #fde68a',borderRadius:5,lineHeight:1.5}}>
+              ⚠ <b>{dm.label}</b> の受療率（疾病負荷）断面は<b>未整備</b>です{dm.demandNote?`: ${dm.demandNote}`:''}。この縦串では該当章がありません（下の全章は退色表示）。
+            </div>
+          )}
         </div>
         {/* 入院/外来 トグル */}
         <div style={{display:'flex',gap:0,border:'1px solid #e2e8f0',borderRadius:6,overflow:'hidden'}}>
@@ -673,7 +761,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           const small = it.val < SMALL_RATE; // 小受療率 → 標本誤差で乖離%抑制
           const ratioStrip = ratioStripPS(it.key);
           const expanded = psExpanded === it.key;
-          return <div key={it.key} style={{padding:'2px 0',borderRadius:6,background:expanded?'#fef3f5':'transparent'}}>
+          return <div key={it.key} style={{padding:'2px 0',borderRadius:6,background:expanded?'#fef3f5':'transparent',...dFade('patientSurveyKey',it.key),...dBorder('patientSurveyKey',it.key)}}>
             <div style={{display:'flex',alignItems:'center',gap:mob?4:8}}>
               <span style={{width:mob?18:28,fontSize:9,fontWeight:600,color:'#9f1239',flexShrink:0,textAlign:'right'}}>{it.chapter}</span>
               <span onClick={()=>setPsExpanded(expanded?null:it.key)} title={it.name}
@@ -741,11 +829,11 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
   })()}
 
   {/* ═══ Layer 3: DEMAND (医療利用) ═══ */}
-  {diagByPref.length > 0 && <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16}}>
+  {diagByPref.length > 0 && <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16,...sectionFade}}>
     <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14}}>
       <span style={{fontSize:18}}>🏥</span>
       <div>
-        <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>医療利用 <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#cffafe',color:'#155e75',fontWeight:500}}>医療利用量</span></div>
+        <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>医療利用 <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#cffafe',color:'#155e75',fontWeight:500}}>医療利用量</span>{activeDomain && <span style={{marginLeft:6,fontSize:9,color:'#94a3b8',fontWeight:500}}>（診療行為カテゴリ・疾患縦串の対象外）</span>}</div>
         <div style={{fontSize:11,color:'#94a3b8'}}>医科診療行為 算定回数（令和5年度レセプト）</div>
       </div>
     </div>
@@ -775,9 +863,14 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
         <div style={{fontSize:11,color:'#94a3b8'}}>処方薬を疾患領域にマッピング（薬効分類ベース）</div>
       </div>
     </div>
+    {activeDomain && dm && !DOMAIN_TO_RX_LABEL[activeDomain] && (
+      <div style={{fontSize:10,color:'#b45309',marginBottom:8,padding:'5px 8px',background:'#fffbeb',border:'1px solid #fde68a',borderRadius:5,lineHeight:1.5}}>
+        ⚠ <b>{dm.label}</b> の医療利用（処方proxy）断面は<b>未整備</b>です{dm.utilizationNote?`: ${dm.utilizationNote}`:''}。この縦串に対応する薬効領域行がありません（全行を退色表示）。
+      </div>
+    )}
     <div style={{display:'flex',flexDirection:'column',gap:6}}>
       {sortedDomains.slice(0,8).map(([domain, qty], i) => (
-        <div key={i} style={{display:'flex',alignItems:'center',gap:10}}>
+        <div key={i} style={{display:'flex',alignItems:'center',gap:10,...rxFade(domain)}}>
           <span style={{width:mob?80:100,fontSize:12,fontWeight:600,color:DOMAIN_COLORS[domain]||'#64748b',flexShrink:0}}>{domain}</span>
           <div style={{flex:1,height:20,background:'#f1f5f9',borderRadius:4,overflow:'hidden'}}>
             <div style={{height:'100%',borderRadius:4,background:DOMAIN_COLORS[domain]||'#94a3b8',width:`${qty/maxDomainQty*100}%`,opacity:0.8}}/>
@@ -806,7 +899,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
         </tr></thead>
         <tbody>{ndbRx.sort((a,b)=>b.qty-a.qty).slice(0,10).map((r,i)=>{
           const domain = DRUG_DOMAIN[r.name]||'';
-          return <tr key={i} style={{borderBottom:'1px solid #f8f9fa'}}>
+          return <tr key={i} style={{borderBottom:'1px solid #f8f9fa',...rxFade(domain)}}>
             <td style={{padding:'7px 10px',color:'#94a3b8',fontSize:11}}>{i+1}</td>
             <td style={{padding:'7px 10px',fontWeight:500}}>{r.name}</td>
             <td style={{padding:'7px 10px'}}>{domain && <span style={{fontSize:10,padding:'2px 8px',borderRadius:10,background:(DOMAIN_COLORS[domain]||'#94a3b8')+'18',color:DOMAIN_COLORS[domain]||'#94a3b8',fontWeight:600}}>{domain}</span>}</td>
@@ -912,7 +1005,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
         const mapTitle = mortalityMode === 'crude'
           ? `${c.cause.replace(/\(.+\)/,'')}・粗死亡率 2024（年齢調整前）`
           : `${c.cause.replace(/\(.+\)/,'')}・年齢調整死亡率 2020（1985年モデル人口・${mortalitySex==='male'?'男':'女'}）`;
-        return <div key={i}>
+        return <div key={i} style={{...dFade('vitalCause',c.cause),...dBorder('vitalCause',c.cause)}}>
           <div
             onClick={mapEnabled ? (()=>setSelectedCause(prev=>prev===c.cause?null:c.cause)) : undefined}
             title={mapEnabled ? (isMapOpen?'地図を閉じる':'クリックで 47 県地図を展開') : undefined}
@@ -1020,7 +1113,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
       if (rows.length === 0) return null;
       const maxV = Math.max(...rows.map(r => r.v));
       return (
-        <div style={{marginTop:16,padding:'14px 16px',background:'#fafaf9',borderRadius:8,border:'1px solid #e7e5e4'}}>
+        <div style={{marginTop:16,padding:'14px 16px',background:'#fafaf9',borderRadius:8,border:'1px solid #e7e5e4',transition:'opacity 300ms ease',...(activeDomain?(activeDomain==='cancer'?{opacity:1,borderLeft:`3px solid ${DOMAIN_MAPPING.cancer.color}`}:{opacity:0.32}):{})}}>
           <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8}}>
             <span style={{fontSize:14}}>🎯</span>
             <div>
