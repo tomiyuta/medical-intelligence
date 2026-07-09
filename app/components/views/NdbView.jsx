@@ -9,6 +9,7 @@ import RegionalMismatchExplorer from '../ui/RegionalMismatchExplorer';
 import PrefStrip47 from '../ui/PrefStrip47';
 import PsIris from '../ui/PsIris';
 import PrefChoropleth from '../ui/PrefChoropleth';
+import CheckupBinsHistogram, { RISK_BIN_THRESHOLD, METRIC_TO_RISK_KEY } from '../ui/CheckupBinsHistogram';
 import { getSourceBadge } from '../../../lib/sourceRegistry';
 import { DOMAIN_MAPPING, DOMAIN_ORDER, rowInDomain, domainSectionStatus, DOMAIN_TO_RX_LABEL, FP_TIERS, tierOf } from '../../../lib/domainMapping';
 
@@ -220,6 +221,21 @@ const RISK_META = {
   'ヘモグロビン': {unit:'g/dL', note:'低値=貧血リスク', icon:'🩸'},
   '血清クレアチニン': {unit:'mg/dL', note:'高値=腎機能低下', icon:'🫘'},
   'eGFR': {unit:'mL/min', note:'60未満でCKD疑い', icon:'💧'},
+};
+// ── Layer2 B. リスク該当者率カード定義 — 分布ドロワーの指標タブと共用するため
+//    Bセクション内IIFEからモジュールへ昇格（内容不変・非破壊） ──
+const RISK_CARDS = [
+  { key: 'bmi_ge_25',              icon: '⚖️', label: 'BMI ≥25',          fullLabel: 'BMI ≥25 (肥満)',          color: '#f59e0b' },
+  { key: 'hba1c_ge_6_5',           icon: '🍰', label: 'HbA1c ≥6.5',       fullLabel: 'HbA1c ≥6.5% (糖尿病型)',  color: '#dc2626' },
+  { key: 'sbp_ge_140',             icon: '❤️', label: 'SBP ≥140',         fullLabel: '収縮期血圧 ≥140 mmHg',     color: '#ef4444' },
+  { key: 'ldl_ge_140',             icon: '🩸', label: 'LDL ≥140',         fullLabel: 'LDL ≥140 mg/dL',           color: '#ec4899' },
+  { key: 'urine_protein_ge_1plus', icon: '🫘', label: '尿蛋白 1+以上',   fullLabel: '尿蛋白 1+以上',            color: '#8b5cf6' },
+];
+// 分布ドロワー: 閾値超えバー用の一段濃い色（Bカード色の濃色版 — 二層色制の閾値層。
+// 分布本体=slate中立・閾値以上のみリスク色 — BMI≥25等は臨床的に確立した「高=悪い」断面）
+const RISK_COLOR_DEEP = {
+  bmi_ge_25: '#d97706', hba1c_ge_6_5: '#b91c1c', sbp_ge_140: '#dc2626',
+  ldl_ge_140: '#db2777', urine_protein_ge_1plus: '#7c3aed',
 };
 // 薬効分類→疾患領域マッピング
 const DRUG_DOMAIN = {
@@ -542,6 +558,60 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
       .catch(() => { if (alive) setRxAll(null); });
     return () => { alive = false; };
   }, []);
+
+  // ── Layer2 分布ドロワー（臨床閾値ヒストグラム）state — 追加型・A/Bカード非破壊 ──
+  const [binsOpen, setBinsOpen] = useState(false);      // ドロワー開閉
+  const [binsMetric, setBinsMetric] = useState('BMI');  // 指標タブ5種
+  const [binsSex, setBinsSex] = useState('all');        // 'all'=男女クライアント合算 | 'male' | 'female'
+  const [binsAge, setBinsAge] = useState('all');        // 年齢帯セグメント（7帯+全年齢）
+  const [binsMirror, setBinsMirror] = useState(false);  // 男女ミラーモード（男左女右鏡像・mobは縦積み）
+  const [binsCdf, setBinsCdf] = useState(false);        // 副トグル: 累積%表示
+  const [binsData, setBinsData] = useState(null);       // 選択県レスポンス
+  const [binsPinData, setBinsPinData] = useState(null); // ◆ピン県レスポンス（第2輪郭）
+  const [binsPulse, setBinsPulse] = useState(false);    // Bカードclick→閾値ゾーンパルス
+  const [binsZoneHover, setBinsZoneHover] = useState(false); // 網掛けhover↔Bカード相互ハイライト
+  const binsBoxRef = useRef(null);
+  const binsPulseTimer = useRef(null);
+  // 取得（demandProjパターン・開時のみ）。sexパラメータは常に省略= male/female両行を取得し
+  // クライアント側でフィルタ/合算する（「全体」合算とミラーの双方が両性行を要するため・数KB）。
+  useEffect(() => {
+    if (!binsOpen) return;
+    let alive = true;
+    setBinsData(null);
+    fetch(`/api/ndb/checkup-bins?pref=${encodeURIComponent(ndbPref)}&metric=${encodeURIComponent(binsMetric)}`)
+      .then(r => (r.ok ? r.json() : null))
+      .then(j => { if (alive) setBinsData(j); })
+      .catch(() => { if (alive) setBinsData(null); });
+    return () => { alive = false; };
+  }, [binsOpen, ndbPref, binsMetric]);
+  // ◆ピン県は ?pref=pinnedPref で追加fetchし橙第2輪郭に重畳
+  useEffect(() => {
+    setBinsPinData(null);
+    if (!binsOpen || !pinnedPref || pinnedPref === ndbPref) return;
+    let alive = true;
+    fetch(`/api/ndb/checkup-bins?pref=${encodeURIComponent(pinnedPref)}&metric=${encodeURIComponent(binsMetric)}`)
+      .then(r => (r.ok ? r.json() : null))
+      .then(j => { if (alive) setBinsPinData(j && j.prefResolved ? j : null); })
+      .catch(() => { if (alive) setBinsPinData(null); });
+    return () => { alive = false; };
+  }, [binsOpen, pinnedPref, ndbPref, binsMetric]);
+  // Bカードclick → ドロワーを該当指標で開き scrollIntoView + 閾値ゾーンパルス
+  const binsJumpTo = (riskKey) => {
+    const t = RISK_BIN_THRESHOLD[riskKey];
+    if (!t) return;
+    setBinsMetric(t.metric);
+    setBinsOpen(true);
+    setTimeout(() => {
+      const el = binsBoxRef.current;
+      if (el && typeof el.scrollIntoView === 'function')
+        el.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'center' });
+    }, 80);
+    setBinsPulse(false); // 連打時も <animate> を再挿入させる
+    requestAnimationFrame(() => setBinsPulse(true));
+    if (binsPulseTimer.current) clearTimeout(binsPulseTimer.current);
+    binsPulseTimer.current = setTimeout(() => setBinsPulse(false), 1500);
+  };
+  useEffect(() => () => { if (binsPulseTimer.current) clearTimeout(binsPulseTimer.current); }, []);
 
   // ── rank2: ドメインレンズ（疾患縦串フィルタ） ──
   const [activeDomain, setActiveDomain] = useState(null);
@@ -1096,13 +1166,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
 
     {/* ── サブセクション B: リスク該当者率 (Phase 1 + Phase 2C-1) ── */}
     {ndbCheckupRiskRates?.risk_rates && (() => {
-      const RISK_CARDS = [
-        { key: 'bmi_ge_25',              icon: '⚖️', label: 'BMI ≥25',          fullLabel: 'BMI ≥25 (肥満)',          color: '#f59e0b' },
-        { key: 'hba1c_ge_6_5',           icon: '🍰', label: 'HbA1c ≥6.5',       fullLabel: 'HbA1c ≥6.5% (糖尿病型)',  color: '#dc2626' },
-        { key: 'sbp_ge_140',             icon: '❤️', label: 'SBP ≥140',         fullLabel: '収縮期血圧 ≥140 mmHg',     color: '#ef4444' },
-        { key: 'ldl_ge_140',             icon: '🩸', label: 'LDL ≥140',         fullLabel: 'LDL ≥140 mg/dL',           color: '#ec4899' },
-        { key: 'urine_protein_ge_1plus', icon: '🫘', label: '尿蛋白 1+以上',   fullLabel: '尿蛋白 1+以上',            color: '#8b5cf6' },
-      ];
+      // RISK_CARDS はモジュールレベルへ昇格（分布ドロワーの指標タブと共用・内容不変）
       return <div>
         <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:8}}>
           <span style={{fontSize:11,fontWeight:700,color:'#475569',padding:'2px 8px',background:'#fef3c7',borderRadius:4}}>B. リスク該当者率</span>
@@ -1136,7 +1200,14 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
             }
             // 年齢標準化率
             const stdInfo = ndbCheckupRiskRatesStd?.risk_rates?.[rc.key]?.by_pref?.[ndbPref];
-            return <div key={rc.key} style={{background:'#f8fafc',borderRadius:10,padding:'12px 14px',borderLeft:`3px solid ${(activeDomain&&dMatch('riskKey',rc.key))?dm.color:rc.color}`,...dFade('riskKey',rc.key)}}>
+            // 分布ドロワー連携: click=該当指標でドロワーへ / 網掛けhover時は該当カードをリング強調
+            const binsCardActive = binsOpen && RISK_BIN_THRESHOLD[rc.key]?.metric === binsMetric;
+            return <div key={rc.key}
+              onClick={(e)=>{ if (e.target && e.target.closest && e.target.closest('svg,button,a')) return; binsJumpTo(rc.key); }}
+              title="クリックで下の分布ドロワーに階級分布を表示"
+              style={{background:'#f8fafc',borderRadius:10,padding:'12px 14px',cursor:'pointer',borderLeft:`3px solid ${(activeDomain&&dMatch('riskKey',rc.key))?dm.color:rc.color}`,...dFade('riskKey',rc.key),
+                boxShadow: binsZoneHover && binsCardActive ? `0 0 0 2px ${rc.color}` : 'none',
+                transition:'opacity 300ms ease, box-shadow 300ms ease'}}>
               <div style={{display:'flex',alignItems:'center',gap:4,marginBottom:6}}>
                 <span style={{fontSize:14}}>{rc.icon}</span>
                 <span style={{fontSize:11,fontWeight:600,color:'#1e293b'}}>{rc.label}</span>
@@ -1160,6 +1231,116 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
         <div style={{fontSize:10,color:'#94a3b8',marginTop:8,fontStyle:'italic',lineHeight:1.6}}>
           ※NDB特定健診の階級分布から算出した該当者率です。40–74歳の健診受診者ベースであり、地域住民全体の有病率ではありません。<br/>
           ※<span style={{color:'#7c3aed',fontWeight:500}}>年齢標準化率</span>: NDB特定健診データ内の性・年齢階級構成を標準人口とした直接標準化率（地域住民全体の年齢調整率ではありません）。
+        </div>
+
+        {/* ── 分布ドロワー: 臨床閾値ヒストグラム（Phase 2D-Layer2 追加型・A/Bカード非破壊） ──
+            県=塗りバー / 全国=灰ゴースト輪郭 / 臨床閾値から先=リスク色網掛け（面積=Bカード該当者率と一致） */}
+        <div ref={binsBoxRef} style={{marginTop:12,border:'1px solid #e2e8f0',borderRadius:10,background:'#fff',overflow:'hidden'}}>
+          <button onClick={()=>setBinsOpen(o=>!o)} aria-expanded={binsOpen}
+            style={{width:'100%',display:'flex',alignItems:'center',gap:8,padding:mob?'9px 12px':'10px 14px',border:'none',background:binsOpen?'#f8fafc':'#fff',cursor:'pointer',textAlign:'left'}}>
+            <span style={{fontSize:13}}>📊</span>
+            <span style={{fontSize:11.5,fontWeight:700,color:'#1e293b'}}>分布ドロワー — 検査値階級の分布と臨床閾値</span>
+            {/* yb('checkupRisk')=R4 バッジ（ドロワーヘッダ必須） */}
+            <span style={{fontSize:8.5,fontWeight:700,padding:'1px 5px',borderRadius:3,border:`1px solid ${yb('checkupRisk').color}`,color:yb('checkupRisk').color,background:'#fff',flexShrink:0}}>{yb('checkupRisk').label}</span>
+            {!mob && <span style={{fontSize:9.5,color:'#94a3b8'}}>県=塗り / 全国=灰輪郭 / 閾値から先=網掛け</span>}
+            <span style={{marginLeft:'auto',fontSize:10,color:'#64748b',fontWeight:600,flexShrink:0}}>{binsOpen?'▲ 閉じる':'▼ 分布を見る'}</span>
+          </button>
+          {binsOpen && (()=>{
+            const riskKeyOfMetric = METRIC_TO_RISK_KEY[binsMetric];
+            const activeCard = RISK_CARDS.find(c=>c.key===riskKeyOfMetric) || RISK_CARDS[0];
+            // rank2: ドメインレンズ — 該当指標タブを前面化（例: 循環器→SBP/LDLが先頭）
+            const tabCards = activeDomain ? [...RISK_CARDS].sort((a,b)=>(dMatch('riskKey',b.key)?1:0)-(dMatch('riskKey',a.key)?1:0)) : RISK_CARDS;
+            const binLabels = binsData?.binOrder?.[binsMetric] || [];
+            const ageGroups = binsData?.ageGroups || [];
+            return <div style={{padding:mob?'10px 12px 12px':'12px 16px 14px'}}>
+              {/* 指標タブ5種（RISK_CARDS流用: key/色/fullLabel） */}
+              <div style={{display:'flex',gap:6,flexWrap:'wrap',marginBottom:8}}>
+                {tabCards.map(c=>{
+                  const m = RISK_BIN_THRESHOLD[c.key].metric;
+                  const on = binsMetric === m;
+                  return <button key={c.key} onClick={()=>setBinsMetric(m)} title={c.fullLabel}
+                    style={{padding:mob?'4px 8px':'4px 10px',fontSize:10,fontWeight:600,borderRadius:5,cursor:'pointer',
+                      border:`1px solid ${on?c.color:'#e2e8f0'}`,background:on?c.color:'#fff',color:on?'#fff':'#475569',
+                      opacity: activeDomain && !dMatch('riskKey',c.key) ? 0.4 : 1, transition:'opacity 300ms ease'}}>
+                    {c.icon} {c.label}
+                  </button>;
+                })}
+              </div>
+              {/* 性別トグル（全体=男女クライアント合算）+ ⇄ミラー + 累積%副トグル */}
+              <div style={{display:'flex',alignItems:'center',gap:8,flexWrap:'wrap',marginBottom:8}}>
+                <div style={{display:'flex',border:'1px solid #e2e8f0',borderRadius:6,overflow:'hidden',opacity:binsMirror?0.45:1,pointerEvents:binsMirror?'none':'auto'}}
+                  title={binsMirror?'ミラーモード中は男女両方を表示しています':''}>
+                  {[['all','全体'],['male','男'],['female','女']].map(([k,l])=>(
+                    <button key={k} onClick={()=>setBinsSex(k)}
+                      style={{padding:'4px 10px',border:'none',fontSize:10,fontWeight:600,cursor:'pointer',
+                        background:binsSex===k?(k==='male'?'#2563EB':k==='female'?'#dc2626':'#475569'):'#fff',
+                        color:binsSex===k?'#fff':'#475569'}}>{l}</button>
+                  ))}
+                </div>
+                <button onClick={()=>setBinsMirror(m=>!m)} title="男女を左右鏡像で並置（モバイルは縦積み）"
+                  style={{padding:'4px 10px',fontSize:10,fontWeight:600,borderRadius:6,cursor:'pointer',
+                    border:`1px solid ${binsMirror?'#1e293b':'#e2e8f0'}`,background:binsMirror?'#1e293b':'#fff',color:binsMirror?'#fff':'#475569'}}>
+                  ⇄ ミラー
+                </button>
+                <button onClick={()=>setBinsCdf(c=>!c)}
+                  style={{padding:'4px 6px',fontSize:10,fontWeight:600,borderRadius:6,cursor:'pointer',border:'none',
+                    background:'transparent',color:binsCdf?'#1d4ed8':'#64748b',textDecoration:'underline'}}>
+                  {binsCdf?'構成%に戻す':'累積%で見る'}
+                </button>
+              </div>
+              {/* 年齢帯セグメント（7帯+全年齢） */}
+              {ageGroups.length>0 && (
+                <div style={{display:'flex',gap:4,flexWrap:'wrap',marginBottom:10}}>
+                  {['all',...ageGroups].map(a=>(
+                    <button key={a} onClick={()=>setBinsAge(a)}
+                      style={{padding:'3px 8px',fontSize:9.5,fontWeight:600,borderRadius:10,cursor:'pointer',
+                        border:`1px solid ${binsAge===a?'#475569':'#e2e8f0'}`,
+                        background:binsAge===a?'#475569':'#fff',color:binsAge===a?'#fff':'#64748b'}}>
+                      {a==='all'?'全年齢':`${a}歳`}
+                    </button>
+                  ))}
+                </div>
+              )}
+              {/* 本体（prefResolved=false 防御 — データ未取得県では描画しない） */}
+              <div style={dFade('riskKey', riskKeyOfMetric)}>
+                {binsData == null ? (
+                  <div style={{fontSize:11,color:'#94a3b8',padding:'26px 0',textAlign:'center'}}>分布データ取得中…</div>
+                ) : !binsData.prefResolved || binLabels.length===0 ? (
+                  <div style={{fontSize:11,color:'#94a3b8',padding:'20px 0',textAlign:'center'}}>この都道府県の{binsMetric}分布データが取得できませんでした。</div>
+                ) : (
+                  <CheckupBinsHistogram
+                    rows={binsData.rows}
+                    pinRows={binsPinData?.rows || null}
+                    binLabels={binLabels}
+                    metric={binsMetric}
+                    sex={binsSex} age={binsAge} mirror={binsMirror} cdf={binsCdf}
+                    color={activeCard.color} colorDeep={RISK_COLOR_DEEP[activeCard.key] || activeCard.color}
+                    prefName={ndbPref}
+                    pinnedName={binsPinData ? pinnedPref : null}
+                    yearBadge={yb('checkupRisk')}
+                    mob={mob} pulse={binsPulse}
+                    onZoneHover={setBinsZoneHover}
+                  />
+                )}
+                {/* 凡例 */}
+                <div style={{display:'flex',gap:12,flexWrap:'wrap',alignItems:'center',fontSize:9.5,color:'#64748b',marginTop:8}}>
+                  <span><span style={{display:'inline-block',width:10,height:10,background:'#94a3b8',borderRadius:2,verticalAlign:'-1px'}}/> {ndbPref}（構成%）</span>
+                  <span><span style={{display:'inline-block',width:10,height:10,border:'1.5px solid #cbd5e1',borderRadius:2,verticalAlign:'-1px',background:'#fff'}}/> 全国（灰輪郭）</span>
+                  <span style={{color:RISK_COLOR_DEEP[activeCard.key]||activeCard.color,fontWeight:600}}>▨ 閾値{RISK_BIN_THRESHOLD[activeCard.key].thLabel}から先=リスク該当域（網掛け面積=Bカードの該当者率）</span>
+                  {binsPinData && <span style={{color:'#c2410c',fontWeight:600}}>◆ {pinnedPref}（橙点線輪郭）</span>}
+                </div>
+              </div>
+              {/* 脚注（guardrails: 分母・全国合算・閾値・マスク・年齢標準化との区別・色使い分け） */}
+              <div style={{fontSize:10,color:'#94a3b8',marginTop:6,fontStyle:'italic',lineHeight:1.6}}>
+                ※{binsData?.denominatorNote || '分母=特定健診受診者(40-74歳)。住民全体ではない。比較は同性×同年齢帯同士に限る。'}<br/>
+                ※{binsData?.nationalNote || '全国は47都道府県のcountをサーバ側で合算(擬似県「都道府県判別不可」を除外)。公式全国集計とは微差の可能性。'}<br/>
+                ※閾値（BMI25等）は集団把握のための臨床カットオフであり、個人の診断基準ではありません。<br/>
+                ※斜線ハッチのビン=集計値なし（NDBの10未満マスクによる非公開の可能性）。値ゼロとは断定しません。<br/>
+                ※本図は<b>粗分布</b>です。Bカードの<span style={{color:'#7c3aed',fontWeight:500}}>年齢標準化率</span>は本図には適用していません（年齢帯セグメントで同年齢帯比較が可能）。<br/>
+                ※色の使い分け: Bカード内47県ストリップ=中立色（県間の位置）、本図の赤系網掛け=臨床閾値超え（高=リスク方向が臨床的に確立した指標のため）。
+              </div>
+            </div>;
+          })()}
         </div>
       </div>;
     })()}
