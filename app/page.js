@@ -46,6 +46,7 @@ export default function Home() {
   const [tiers, setTiers] = useState([]);
   const [topFac, setTopFac] = useState([]);
   const [globalPref, setGlobalPref] = useState('東京都');
+  const [reportCode, setReportCode] = useState(null); // 圏一覧→カルテのディープリンク圏コード
   const [muniPref, setMuniPref] = useState(null); // 人口動態・将来推計 (null=全国)
   const [muniSearch, setMuniSearch] = useState('');
   const [muniSort, setMuniSort] = useState('pop');
@@ -88,12 +89,14 @@ export default function Home() {
     const p = new URLSearchParams(window.location.search);
     const v = p.get('v'); if (v) setView(v);
     const pr = p.get('pref'); if (pr) setGlobalPref(pr);
+    const cd = p.get('code'); if (cd) setReportCode(cd);
   }, []);
   useEffect(() => {
     const p = new URLSearchParams(window.location.search);
     p.set('v', view); p.set('pref', globalPref);
+    if (reportCode) p.set('code', reportCode); else p.delete('code');
     window.history.replaceState(null, '', '?' + p.toString());
-  }, [view, globalPref]);
+  }, [view, globalPref, reportCode]);
 
   useEffect(() => {
     Promise.all([
@@ -204,10 +207,10 @@ export default function Home() {
         {view==='muni' && <MuniView mob={mob} areaDemoData={areaDemoData} demoPref={muniPref} setDemoPref={setMuniPref} demoArea={demoArea} setDemoArea={setDemoArea} demoPrefList={demoPrefList} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} futureDemo={futureDemo} futureYear={futureYear} setFutureYear={setFutureYear} agePyramid={agePyramid} />}
 
         {/* ═══ AREA VIEW ═══ */}
-        {view==='area' && <AreaView mob={mob} areaData={areaData} areaPref={globalPref} setAreaPref={setGlobalPref} areaPrefList={areaPrefList} vitalStats={vitalStats} />}
+        {view==='area' && <AreaView mob={mob} areaData={areaData} areaPref={globalPref} setAreaPref={setGlobalPref} areaPrefList={areaPrefList} vitalStats={vitalStats} japanMap={japanMap} onOpenKarte={(code)=>{ setReportCode(code); setView('report'); }} />}
 
         {/* ═══ AREA REPORT VIEW (医療圏カルテ) ═══ */}
-        {view==='report' && <AreaReportView mob={mob} globalPref={globalPref} setGlobalPref={setGlobalPref} />}
+        {view==='report' && <AreaReportView mob={mob} globalPref={globalPref} setGlobalPref={setGlobalPref} setView={setView} initialCode={reportCode} onInitialCodeConsumed={()=>setReportCode(null)} />}
 
         {/* ═══ SCORING VIEW ═══ */}
         {view==='bedfunc' && <RegionalBedFunctionView mob={mob} bedFunc={bedFunc} regPref={globalPref} setRegPref={setGlobalPref} agePyramid={agePyramid} ndbDiag={ndbDiag} homecareCapability={homecareCapability} />}

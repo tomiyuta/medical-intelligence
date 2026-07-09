@@ -108,7 +108,7 @@ function Slide({ code, page, title, chapterIdx, slideRef, onActive }) {
   );
 }
 
-export default function AreaReportView({ mob, globalPref, setGlobalPref }) {
+export default function AreaReportView({ mob, globalPref, setGlobalPref, initialCode, onInitialCodeConsumed, setView }) {
   const [ready, setReady] = useState(null);       // null=loading, false=未抽出, true=ok
   const [areas, setAreas] = useState([]);          // 軽量一覧
   const [prefectures, setPrefectures] = useState([]);
@@ -141,8 +141,17 @@ export default function AreaReportView({ mob, globalPref, setGlobalPref }) {
     () => areas.filter(a => a.pref === globalPref),
     [areas, globalPref]);
 
-  // 県が変わったら先頭圏を選択
+  // 圏一覧(AreaView)からのディープリンク: initialCode が指定されていれば最優先で当該圏を開く
   useEffect(() => {
+    if (initialCode && areas.some(a => a.code === initialCode)) {
+      setCode(initialCode);
+      if (onInitialCodeConsumed) onInitialCodeConsumed();
+    }
+  }, [initialCode, areas]); // eslint-disable-line
+
+  // 県が変わったら先頭圏を選択(ただし initialCode 指定中はそれを尊重)
+  useEffect(() => {
+    if (initialCode && areas.some(a => a.code === initialCode)) return;
     if (!areasInPref.length) { setCode(null); return; }
     if (!areasInPref.some(a => a.code === code)) setCode(areasInPref[0].code);
   }, [areasInPref]); // eslint-disable-line
@@ -222,6 +231,18 @@ export default function AreaReportView({ mob, globalPref, setGlobalPref }) {
 
   return <>
     <style dangerouslySetInnerHTML={{ __html: FONT_ALIAS_CSS }} />
+
+    {/* ── 圏一覧へ戻る ── */}
+    {setView && (
+      <button onClick={() => setView('area')}
+              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 12, padding: '6px 12px',
+                       borderRadius: 8, border: '1px solid #e2e8f0', background: '#fff', color: '#475569',
+                       fontSize: 12.5, fontWeight: 600, cursor: 'pointer' }}
+              onMouseEnter={e => { e.currentTarget.style.background = '#f8faff'; e.currentTarget.style.borderColor = '#bfdbfe'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#e2e8f0'; }}>
+        ◀ 医療圏一覧へ戻る
+      </button>
+    )}
 
     {/* ── ヘッダ ── */}
     <div style={{ marginBottom: 16, display: 'flex', flexDirection: mob ? 'column' : 'row',
