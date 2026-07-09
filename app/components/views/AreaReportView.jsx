@@ -330,22 +330,22 @@ export default function AreaReportView({ mob, globalPref, setGlobalPref }) {
           <HsaAreaProvider code={meta.code}>
             <HsaSummaryCards mob={mob} />
             <ChapterHead idx={1} name="1. 地域の概況" />
-            <HsaOverviewPanel code={meta.code} mob={mob} />
-            <HsaPopulationPanel code={meta.code} mob={mob} />
-            <HsaPhysicianPanel code={meta.code} mob={mob} />
-            <HsaSpecialtyPanel code={meta.code} mob={mob} />
-            <HsaDesignationPanel code={meta.code} mob={mob} />
+            <HsaOverviewPanel mob={mob} />
+            <HsaPopulationPanel mob={mob} />
+            <HsaPhysicianPanel mob={mob} />
+            <HsaSpecialtyPanel mob={mob} />
+            <HsaDesignationPanel mob={mob} />
             <ChapterHead idx={2} name="2. 医療提供体制" />
-            <HsaBedDetailPanel code={meta.code} mob={mob} />
-            <HsaInpatientPanel code={meta.code} mob={mob} />
-            <HsaEmergencyPanel code={meta.code} mob={mob} />
+            <HsaBedDetailPanel mob={mob} />
+            <HsaInpatientPanel mob={mob} />
+            <HsaEmergencyPanel mob={mob} />
             <ChapterHead idx={3} name="3. 医療需要の将来推計" />
-            <HsaDemandPanel code={meta.code} mob={mob} />
-            <HsaCarePanel code={meta.code} mob={mob} />
-            <HsaHomecarePanel code={meta.code} mob={mob} />
-            <HsaSurgeryPanel code={meta.code} mob={mob} />
+            <HsaDemandPanel mob={mob} />
+            <HsaCarePanel mob={mob} />
+            <HsaHomecarePanel mob={mob} />
+            <HsaSurgeryPanel mob={mob} />
             <ChapterHead idx={4} name="4. パフォーマンス・連携" />
-            <HsaDpcPanel code={meta.code} mob={mob} />
+            <HsaDpcPanel mob={mob} />
           </HsaAreaProvider>
         )}
 

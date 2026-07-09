@@ -70,6 +70,18 @@ export default function Home() {
   const [mortalityOutcome2020, setMortalityOutcome2020] = useState(null);
   const [cancerSites2024, setCancerSites2024] = useState(null);
 
+  // URL状態同期: ?v=<view>&pref=<都道府県> を復元・反映（code は AreaReportView が管理）
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    const v = p.get('v'); if (v) setView(v);
+    const pr = p.get('pref'); if (pr) setGlobalPref(pr);
+  }, []);
+  useEffect(() => {
+    const p = new URLSearchParams(window.location.search);
+    p.set('v', view); p.set('pref', globalPref);
+    window.history.replaceState(null, '', '?' + p.toString());
+  }, [view, globalPref]);
+
   useEffect(() => {
     Promise.all([
       fetch('/api/prefectures-full').then(r=>r.json()),

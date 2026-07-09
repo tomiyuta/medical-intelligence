@@ -1,20 +1,13 @@
 'use client';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { fmt } from '../shared';
+import { useHsaPanel } from '../hsa/useHsaArea';
+import HsaPanel from '../hsa/HsaPanel';
 
 // #4 二次医療圏の概況: 都道府県内の人口・面積・人口密度の比較
-export default function HsaOverviewPanel({ code, mob }) {
-  const [d, setD] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(true);
+export default function HsaOverviewPanel({ mob }) {
+  const { code, data: d, loading } = useHsaPanel('overview');
   const [tab, setTab] = useState('basic');
-
-  useEffect(() => {
-    if (!code) return;
-    setLoading(true); setD(null);
-    fetch(`/api/hsa/overview?code=${code}`).then(r => r.json()).then(x => { setD({ ...x, code }); setLoading(false); })
-      .catch(() => setLoading(false));
-  }, [code]);
 
   if (!code) return null;
   const self = d?.self;
@@ -25,20 +18,14 @@ export default function HsaOverviewPanel({ code, mob }) {
   const td = { padding: '7px 8px', fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' };
 
   return (
-    <div style={{ background: '#fff', border: '1px solid #e8ecf0', borderRadius: 12, marginBottom: 20, overflow: 'hidden' }}>
-      <button onClick={() => setOpen(o => !o)}
-              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '13px 18px', border: 'none', background: 'linear-gradient(180deg,#f8fafc,#fff)', cursor: 'pointer', textAlign: 'left' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 9, flexWrap: 'wrap' }}>
-          <span style={{ fontSize: 11, fontWeight: 700, color: '#0f6e5d', background: '#e3f0ed', padding: '2px 8px', borderRadius: 10 }}>ネイティブ再構築</span>
-          <span style={{ fontSize: 14, fontWeight: 700 }}>二次医療圏の概況（人口・面積・人口密度）</span>
-        </div>
-        <span style={{ fontSize: 12, color: '#94a3b8' }}>{open ? '▲ 閉じる' : '▼ 開く'}</span>
-      </button>
-
-      {open && (
-        <div style={{ padding: '4px 18px 18px' }}>
-          {loading && <div style={{ padding: 24, color: '#cbd5e1', fontSize: 13 }}>読み込み中…</div>}
-          {!loading && self && <>
+    <HsaPanel title="二次医療圏の概況（人口・面積・人口密度）"
+              badges={[{ label: 'ネイティブ再構築', kind: 'reconstructed' }]}
+              defaultOpen={true}
+              loading={loading}
+              empty={!self}
+              emptyText="この圏域の概況データは見つかりませんでした。">
+      {() => (
+        <>
             {/* 当圏サマリー */}
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 8, margin: '10px 0 14px' }}>
               {[
@@ -205,10 +192,8 @@ export default function HsaOverviewPanel({ code, mob }) {
               {d.staffSource}｜職種別の実数はカルテ #10 と一致。全国を下回る職種は医療従事者の確保が課題の目安。
             </div>
             </>}
-          </>}
-          {!loading && !self && <div style={{ padding: 20, fontSize: 12.5, color: '#94a3b8' }}>この圏域の概況データは見つかりませんでした。</div>}
-        </div>
+        </>
       )}
-    </div>
+    </HsaPanel>
   );
 }
