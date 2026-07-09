@@ -7,6 +7,7 @@ import DomainSupplyDemandBridge from './DomainSupplyDemandBridge';
 import InterpretationGuard from '../ui/InterpretationGuard';
 import RegionalMismatchExplorer from '../ui/RegionalMismatchExplorer';
 import PrefStrip47 from '../ui/PrefStrip47';
+import PrefChoropleth from '../ui/PrefChoropleth';
 import { getSourceBadge } from '../../../lib/sourceRegistry';
 
 // rank1: 47都道府県ホワイトリスト（「都道府県判別不可」「全国」等の擬似県を分布から除外）
@@ -77,7 +78,7 @@ const GAP_TEMPLATES = [
     note:'X軸は睡眠で休養がとれている人の割合（高=低リスク）。睡眠不足と循環器の関連は確立。'},
 ];
 
-export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ, agePyramid, futureDemo, patientSurvey, bedFunc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd, mortalityOutcome2020, cancerSites2024, homecareCapability }) {
+export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ, agePyramid, futureDemo, patientSurvey, bedFunc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd, mortalityOutcome2020, cancerSites2024, homecareCapability, japanMap }) {
   const diagByPref = ndbDiag.filter(d=>d.prefecture===ndbPref);
   const hcPref = ndbHc.filter(d=>d.pref===ndbPref);
   const vp = vitalStats?.prefectures?.find(p=>p.pref===ndbPref);
@@ -216,6 +217,8 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
   // Phase 4-3 R3: 粗死亡率 (2024 全14) vs 年齢調整死亡率 (2020 6死因) toggle
   const [mortalityMode, setMortalityMode] = useState('crude');
   const [mortalitySex, setMortalitySex] = useState('male');
+  // rank5: マップ・エコー — click した死因の 47 県コロプレスを行下に展開
+  const [selectedCause, setSelectedCause] = useState(null);
 
   // Phase 4-3 R3: mode に応じて表示する causes を切り替える
   const displayCauses = (() => {
@@ -900,9 +903,23 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           causeStrip = Object.entries(moPrefs).filter(([p])=>isP47(p))
             .map(([p,d])=>({pref:p, value:d?.[c.cause]?.age_adjusted?.[mortalitySex]?.rate})).filter(x=>x.value!=null);
         }
+        // rank5: マップ・エコー — この行が選択中か / 地図展開可否
+        const mapEnabled = causeStrip.length >= 40 && !!japanMap?.prefs;
+        const isMapOpen = mapEnabled && selectedCause === c.cause;
+        const valueByPref = isMapOpen
+          ? causeStrip.reduce((m,x)=>{ m[x.pref]=x.value; return m; }, {})
+          : null;
+        const mapTitle = mortalityMode === 'crude'
+          ? `${c.cause.replace(/\(.+\)/,'')}・粗死亡率 2024（年齢調整前）`
+          : `${c.cause.replace(/\(.+\)/,'')}・年齢調整死亡率 2020（1985年モデル人口・${mortalitySex==='male'?'男':'女'}）`;
         return <div key={i}>
-          <div style={{display:'flex',alignItems:'center',gap:8}}>
-            <span style={{width:mob?90:120,fontSize:12,fontWeight:500,color:'#475569',flexShrink:0}}>{c.cause.replace(/\(.+\)/,'')}</span>
+          <div
+            onClick={mapEnabled ? (()=>setSelectedCause(prev=>prev===c.cause?null:c.cause)) : undefined}
+            title={mapEnabled ? (isMapOpen?'地図を閉じる':'クリックで 47 県地図を展開') : undefined}
+            style={{display:'flex',alignItems:'center',gap:8,cursor:mapEnabled?'pointer':'default',background:isMapOpen?'#faf5ff':'transparent',borderRadius:4,padding:isMapOpen?'2px 4px':'0',margin:isMapOpen?'0 -4px':'0'}}
+          >
+            {mapEnabled && <span style={{fontSize:10,color:isMapOpen?'#7c3aed':'#cbd5e1',flexShrink:0,width:10,textAlign:'center'}}>{isMapOpen?'▾':'▸'}</span>}
+            <span style={{width:mob?(mapEnabled?80:90):(mapEnabled?110:120),fontSize:12,fontWeight:500,color:'#475569',flexShrink:0}}>{c.cause.replace(/\(.+\)/,'')}</span>
             <div style={{flex:1,height:16,background:'#f1f5f9',borderRadius:3,overflow:'hidden'}}>
               <div style={{height:'100%',borderRadius:3,background:i<3?'#7c3aed':'#a78bfa',width:`${c.rate/maxRate*100}%`,opacity:0.85}}/>
             </div>
@@ -917,6 +934,29 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
             )}
           </div>
           {causeStrip.length >= 40 && <div style={{margin:`2px 0 4px ${mob?18:24}px`}}><PrefStrip47 {...stripCommon} values={causeStrip} yearBadge={mortalityMode==='crude'?yb('vitalStats'):yb('mortalityAdj')} mode="inline" /></div>}
+          {/* rank5: マップ・エコー — 選択死因の 47 県コロプレスをその場に展開 */}
+          {isMapOpen && (
+            <div style={{margin:`6px 0 12px ${mob?4:24}px`}}>
+              {mortalityMode === 'crude' && (
+                <div style={{fontSize:10,color:'#92400e',background:'#fffbeb',borderLeft:'3px solid #f59e0b',borderRadius:3,padding:'6px 10px',marginBottom:6,lineHeight:1.5}}>
+                  ⚠ <b>粗死亡率は高齢県ほど高く出ます</b>（年齢調整前）。県間の高低は年齢構成差を多分に含むため、上部の「年齢調整 2020」トグルで補正した分布と見比べてください。
+                </div>
+              )}
+              <PrefChoropleth
+                japanMap={japanMap}
+                valueByPref={valueByPref}
+                selected={ndbPref}
+                onSelect={setNdbPref}
+                title={mapTitle}
+                unit="/10万"
+                yearBadge={mortalityMode==='crude'?yb('vitalStats'):yb('mortalityAdj')}
+                mob={mob}
+              />
+              <div style={{fontSize:9,color:'#94a3b8',marginTop:5,lineHeight:1.5}}>
+                色階級は各指標ごとに独立した 5 分位です。<b>地図どうしで色の濃淡は比較できません</b>（死因・調整方式・年度が変われば基準も変わります）。ここに現れる高低は「地域差の観察」であり、原因の特定ではありません。
+              </div>
+            </div>
+          )}
         </div>;
       })}
     </div>
