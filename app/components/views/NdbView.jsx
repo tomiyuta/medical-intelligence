@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef, useMemo, useLayoutEffect } from 'react';
+import { useState, useEffect, useRef, useMemo, useLayoutEffect, useId } from 'react';
 import { fmt, sortPrefs, PREF_ORDER } from '../shared';
 import { dispersionForCause, classifyDispersion } from '../../../lib/dispersionMetrics';
 
@@ -82,9 +82,140 @@ const useFlipRows = (refsMap, deps, mob = false) => {
     posRef.current = snap;
   });
 };
+// ── Layer3 ユニットドット・レーン（人間換算 1ドット=1回 の折返しドット列） ──
+// 規約踏襲（PrefStrip47 → 新部品の規約共有）:
+//   ・端数/域外は clipPath 横幅比の部分塗りで表示し値は捏造しない — ツールチップは常に小数1桁実値
+//   ・全国tick=#2563EB破線+▽（PrefStrip47 の avg 語彙）／◆ピン=#f97316・縁#c2410c
+//   ・充填は useCountUp のアニメ値からドット数を導出 — ジャンボ数字（CountUpNum）と同一の
+//     400ms easeOutCubic で同期し、prefers-reduced-motion では瞬時
+// 色意味論: 基準部 min(県,全国)=slate#94a3b8塗り／超過(全国→県)=rose#9f1239塗り／
+//           不足(県→全国)=indigo#4338ca中抜き輪郭 — rose/indigoはFP_TIERS両端と同一の中立発散
+//           （solid/hollow の形状差併用で色覚多様性にも頑健）。良し悪しの色ではない。
+const UnitDotLane = ({ value, natValue, pinnedValue = null, perRow = 12, natLabel, mob, prefName, pinnedName, rank, unitLabel }) => {
+  const anim = useCountUp(value);               // ジャンボ数字と同一アニメ値（400ms easeOutCubic）
+  const uid = useId().replace(/[^a-zA-Z0-9_-]/g, ''); // clipPath id（SSR安全）
+  const [hover, setHover] = useState(false);
+  if (value == null || !isFinite(value) || natValue == null || !isFinite(natValue)) return null;
+  const R = 4.5, PITCH = 13, PAD = 2;
+  const a = Math.max(0, anim != null && isFinite(anim) ? anim : value);
+  const n = Math.max(0, natValue);
+  const total = Math.max(1, Math.ceil(Math.max(value, n) - 1e-9)); // 目標ベース=アニメ中もレイアウト安定
+  const rows = Math.ceil(total / perRow);
+  const topPad = 14;                            // ▽キャレット+全国ラベル帯
+  const hasPin = pinnedValue != null && isFinite(pinnedValue);
+  const W = perRow * PITCH + PAD * 2;
+  const H = topPad + rows * PITCH + (hasPin ? 12 : 2);
+  const clamp01 = (v) => Math.max(0, Math.min(1, v));
+  const deficit = value < n - 1e-9;             // 目標ベース（アニメ過渡で輪郭を明滅させない）
+  // 実数位置 → {row, x}（perRow の整数倍ちょうどは前行の右端に置く）
+  const posOf = (v) => {
+    const vv = Math.max(0, Math.min(total, v));
+    let row = Math.floor(vv / perRow), dx = vv - row * perRow;
+    if (dx === 0 && row > 0) { row -= 1; dx = perRow; }
+    if (row > rows - 1) { row = rows - 1; dx = perRow; }
+    return { row, x: PAD + dx * PITCH, yTop: topPad + row * PITCH, yBot: topPad + (row + 1) * PITCH };
+  };
+  const natPos = posOf(n);
+  const pinPos = hasPin ? posOf(Math.max(0, pinnedValue)) : null;
+  const dots = [];
+  for (let i = 0; i < total; i++) {
+    const row = Math.floor(i / perRow);
+    const cx = PAD + (i - row * perRow) * PITCH + PITCH / 2;
+    const cy = topPad + row * PITCH + PITCH / 2;
+    const slate = clamp01(Math.min(a, n) - i);                       // 基準部の充填率
+    const roseS = clamp01(n - i), roseE = a > n ? clamp01(a - i) : 0; // 超過部の区間
+    const hollow = deficit && i < Math.ceil(n - 1e-9) && (i + 1) > Math.min(value, n) - 1e-9;
+    dots.push({ i, cx, cy, slate, roseS, roseE, hollow });
+  }
+  const partialSlate = dots.filter((d) => d.slate > 0.001 && d.slate < 0.999);
+  const partialRose = dots.filter((d) => (d.roseE - d.roseS) > 0.001 && !(d.roseS <= 0.001 && d.roseE >= 0.999));
+  const natLabelX = Math.max(18, Math.min(W - 18, natPos.x));
+  const fmt1 = (v) => (v != null && isFinite(v) ? v.toFixed(1) : '—');
+  const diffNat = value - n;
+  return (
+    <div style={{ position: 'relative', display: 'inline-block' }}
+      onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
+      onClick={() => setHover((h) => !h)}>
+      <svg width={W} height={H} viewBox={`0 0 ${W} ${H}`}
+        style={{ display: 'block', maxWidth: '100%', cursor: 'pointer', touchAction: 'manipulation' }}
+        role="img" aria-label={`${prefName || ''} ${fmt1(value)}${unitLabel || ''}（全国 ${fmt1(n)}）のユニットドット表示`}>
+        <defs>
+          {partialSlate.map((d) => (
+            <clipPath key={`s${d.i}`} id={`${uid}s${d.i}`}>
+              <rect x={d.cx - R} y={d.cy - R} width={2 * R * d.slate} height={2 * R} />
+            </clipPath>
+          ))}
+          {partialRose.map((d) => (
+            <clipPath key={`r${d.i}`} id={`${uid}r${d.i}`}>
+              <rect x={d.cx - R + 2 * R * d.roseS} y={d.cy - R} width={2 * R * (d.roseE - d.roseS)} height={2 * R} />
+            </clipPath>
+          ))}
+        </defs>
+        {dots.map((d) => {
+          const roseLen = d.roseE - d.roseS;
+          const roseFull = d.roseS <= 0.001 && d.roseE >= 0.999;
+          return (
+            <g key={d.i}>
+              {d.hollow && <circle cx={d.cx} cy={d.cy} r={R - 0.75} fill="none" stroke="#4338ca" strokeWidth={1.5} opacity={0.85} />}
+              {d.slate >= 0.999
+                ? <circle cx={d.cx} cy={d.cy} r={R} fill="#94a3b8" />
+                : d.slate > 0.001 && <g clipPath={`url(#${uid}s${d.i})`}><circle cx={d.cx} cy={d.cy} r={R} fill="#94a3b8" /></g>}
+              {roseLen > 0.001 && (roseFull
+                ? <circle cx={d.cx} cy={d.cy} r={R} fill="#9f1239" />
+                : <g clipPath={`url(#${uid}r${d.i})`}><circle cx={d.cx} cy={d.cy} r={R} fill="#9f1239" /></g>)}
+            </g>
+          );
+        })}
+        {/* 全国基準tick（青破線+▽+ラベル — PrefStrip47 の avg 語彙） */}
+        <line x1={natPos.x} x2={natPos.x} y1={natPos.yTop + 0.5} y2={natPos.yBot - 0.5}
+          stroke="#2563EB" strokeWidth={1.2} strokeDasharray="2 2" opacity={0.85} />
+        <path d={`M ${natPos.x - 3.2} ${natPos.yTop - 4.5} L ${natPos.x + 3.2} ${natPos.yTop - 4.5} L ${natPos.x} ${natPos.yTop - 0.5} Z`}
+          fill="#2563EB" opacity={0.9} />
+        {natPos.row === 0 && natLabel && (
+          <text x={natLabelX} y={topPad - 6.5} fontSize={8} fontWeight={600} fill="#2563EB" textAnchor="middle">{natLabel}</text>
+        )}
+        {/* ◆ピン県tick（橙 — PrefStrip47 のピン語彙） */}
+        {pinPos && (
+          <g>
+            <line x1={pinPos.x} x2={pinPos.x} y1={pinPos.yTop + 0.5} y2={pinPos.yBot - 0.5}
+              stroke="#f97316" strokeWidth={1.2} opacity={0.85} />
+            <path d={`M ${pinPos.x} ${pinPos.yBot + 1} L ${pinPos.x + 4} ${pinPos.yBot + 5} L ${pinPos.x} ${pinPos.yBot + 9} L ${pinPos.x - 4} ${pinPos.yBot + 5} Z`}
+              fill="#f97316" stroke="#c2410c" strokeWidth={1}>
+              <title>{`◆${pinnedName || ''} ${fmt1(pinnedValue)}`}</title>
+            </path>
+          </g>
+        )}
+      </svg>
+      {/* 濃紺ツールチップ（hover / タッチ1タップ・実値は常に小数1桁） */}
+      {hover && (
+        <div style={{ position: 'absolute', left: '50%', top: -4, transform: 'translate(-50%,-100%)',
+          background: '#1e293b', color: '#fff', fontSize: 10, lineHeight: 1.5, padding: '5px 8px',
+          borderRadius: 4, whiteSpace: 'nowrap', pointerEvents: 'none', zIndex: 20,
+          boxShadow: '0 2px 6px rgba(0,0,0,0.18)' }}>
+          <div>
+            <b>{prefName}</b> <span style={{ color: '#93c5fd', fontWeight: 700 }}>{fmt1(value)}{unitLabel}</span>
+            <span style={{ color: '#cbd5e1' }}>（全国 {fmt1(n)}・差 {diffNat > 0 ? '+' : ''}{fmt1(diffNat)}回{rank != null ? `・47県中${rank}位` : ''}）</span>
+          </div>
+          {hasPin && (
+            <div style={{ color: '#fdba74' }}>
+              ◆{pinnedName} {fmt1(pinnedValue)}回（差 {(value - pinnedValue) > 0 ? '+' : ''}{fmt1(value - pinnedValue)}回）
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+};
 // 受療率フィンガープリント色意味論(FP_TIERS/tierOf)は lib/domainMapping.js へ移設
 // (手順1共有基盤: Bridge・新部品とことばチップ単一ソース化・循環import回避) — import参照。
 const CAT_LABELS = {'A_初再診料':'外来受診','B_医学管理等':'慢性疾患管理','C_在宅医療':'在宅医療'};
+// Layer3 人間換算ユニット定義: ジャンボ数字 = 人口10万対 ÷ div。
+// 分母はカテゴリで異なる（A/B=県民1人あたり・C=県民10人あたり）— フットノートに明記。
+const DIAG_UNIT = {
+  'A_初再診料':   { div: 100000, denom: '県民1人あたり・年',  unit: '回/人・年',   dec: 1 },
+  'B_医学管理等': { div: 100000, denom: '県民1人あたり・年',  unit: '回/人・年',   dec: 1 },
+  'C_在宅医療':   { div: 10000,  denom: '県民10人あたり・年', unit: '回/10人・年', dec: 1 },
+};
 const RISK_META = {
   'ヘモグロビン': {unit:'g/dL', note:'低値=貧血リスク', icon:'🩸'},
   '血清クレアチニン': {unit:'mg/dL', note:'高値=腎機能低下', icon:'🫘'},
@@ -319,9 +450,9 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     return { rows, vmin: Math.floor(vmin), vmax: Math.ceil(vmax) };
   }, [futureDemo, agePyramid, tlYear]);
 
-  // Population for per-capita — 住基2025(agePyramid)の完全な県人口(=demoKpi.total)。
-  // area_demographics の munis 合算は政令指定都市を含まず(全国96.9M vs 実際124.3M)、
-  // 分母に使うと政令市を持つ県の10万対が過大化する(例: 京都府 1.10M vs 実際 2.47M で約2.2倍)
+  // Population for per-capita — 住基2025(agePyramid)の県人口(=demoKpi.total)を単一分母とする。
+  // area_demographics の munis 合算も政令指定都市を含む完全値(2026-07 住基ETL再生成)だが、
+  // 10万対の分母は agePyramid に一本化する。
   const prefPop = demoKpi?.total || 0;
   const perCap = (v) => prefPop > 0 ? (v / prefPop * 100000).toFixed(0) : '—';
 
@@ -440,7 +571,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     }).filter(Boolean).sort((a, b) => b.rate - a.rate);
   })();
   // ── 手順1共有基盤: 県別人口 prefPops（住基2025・agePyramid由来の単一分母） ──
-  // area_demographics の munis 合算は政令指定都市を欠くため使用禁止（全国96.9M vs 実際124.3M）。
+  // area_demographics の munis 合算も政令市を含む完全値(2026-07再生成)だが、分母は agePyramid に一本化。
   // prefMaps(popByPref/diagNat) と rxShared(classRatio/domainAgg) で共用する。
   const prefPops = useMemo(() => {
     const m = {};
@@ -454,8 +585,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
   }, [agePyramid]);
 
   const prefMaps = (()=>{
-    // 分母人口・65+率は住基2025(agePyramid)から。area_demographics の munis 合算は
-    // 政令指定都市を欠くため、10万対(diag)と高齢化率(Gap FinderのX軸)が政令市を持つ県で歪む
+    // 分母人口・65+率は住基2025(agePyramid)から(単一分母ポリシー)
     const popByPref = prefPops, aging = {};
     if (agePyramid?.prefectures) {
       Object.entries(agePyramid.prefectures).forEach(([p, ap]) => {
@@ -1426,20 +1556,65 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
         <div style={{fontSize:11,color:'#94a3b8'}}>医科診療行為 算定回数（令和5年度レセプト）</div>
       </div>
     </div>
-    <div style={{display:'grid',gridTemplateColumns:mob?'1fr 1fr':'repeat(3,1fr)',gap:10}}>
-      {diagByPref.sort((a,b)=>b.total_claims-a.total_claims).map((d,i)=>{
+    <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'repeat(3,1fr)',gap:10}}>
+      {diagByPref.sort((a,b)=>b.total_claims-a.total_claims).map((d)=>{
         // rank1: 人口10万対の47県分布（判別不可除外・prefMaps.diag は既に人口正規化済）
         const diagStrip = Object.entries(prefMaps.diag).filter(([p])=>isP47(p))
           .map(([p,m])=>({pref:p, value:m[d.category]})).filter(x=>x.value!=null);
+        // 人間換算: per100k(=diag) ÷ DIAG_UNIT.div。全国値は diagNat（人口加重・isP47・
+        // 47県単純平均でない — strip natAvg ズレ修正を含む）
+        const per100k = prefMaps.diag[ndbPref]?.[d.category] ?? null;
+        const nat100k = prefMaps.diagNat?.[d.category] ?? null;
+        const u = DIAG_UNIT[d.category] || { div: 100000, denom: '県民1人あたり・年', unit: '回/人・年', dec: 1 };
+        const disp = per100k != null ? per100k / u.div : null;
+        const dispNat = (nat100k != null && nat100k > 0) ? nat100k / u.div : null;
+        const pin100k = (pinnedPref && pinnedPref !== ndbPref) ? (prefMaps.diag[pinnedPref]?.[d.category] ?? null) : null;
+        const dispPin = pin100k != null ? pin100k / u.div : null;
+        const ratioPct = (per100k != null && nat100k > 0) ? (per100k / nat100k - 1) * 100 : null;
+        const t = ratioPct != null ? tierOf(ratioPct) : null;
+        const rank = per100k != null ? 1 + diagStrip.filter((x) => x.value > per100k).length : null;
+        // 生活感覚リフレーム（人間換算の参考表現・実値はジャンボ数字とツールチップが正）
+        const reframe = disp == null ? null
+          : d.category === 'A_初再診料' ? `≒ 月${(disp / 12).toFixed(1)}回の外来受診`
+          : d.category === 'B_医学管理等' ? (disp > 0 ? `≒ ${(52 / disp).toFixed(1)}週間に1回` : null)
+          : d.category === 'C_在宅医療' ? `≒ 県内で1日${fmt(Math.round(d.total_claims / 365))}件` : null;
         return (
-        <div key={i} style={{background:'#f0f7ff',borderRadius:10,padding:'12px 16px'}}>
-          <div style={{fontSize:11,color:'#64748b',marginBottom:2}}>{CAT_LABELS[d.category]||d.category}</div>
-          <div style={{fontSize:mob?16:20,fontWeight:700,color:'#2563EB'}}>{fmt(d.total_claims)}</div>
-          <div style={{fontSize:10,color:'#94a3b8'}}>人口10万対 {perCap(d.total_claims)}</div>
-          {diagStrip.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={diagStrip} yearBadge={yb('ndbDiag')} mode="micro" /></div>}
+        <div key={d.category} style={{background:'#f0f7ff',borderRadius:10,padding:'12px 16px'}}>
+          {/* ラベル行 + tierことばチップ + 全国比%（rose/indigo中立発散 — 高低は良し悪しでない） */}
+          <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:2}}>
+            <span style={{fontSize:11,color:'#64748b'}}>{CAT_LABELS[d.category]||d.category}</span>
+            {t && <span title={`全国比${ratioPct>0?'+':''}${ratioPct.toFixed(1)}%＝${t.label}（±5/±15%のことばスケール）。高低は良し悪しではありません`}
+              style={{marginLeft:'auto',display:'inline-flex',alignItems:'center',gap:4,flexShrink:0}}>
+              <span style={{fontSize:9,fontWeight:700,color:t.color,padding:'1px 5px',borderRadius:4,background:t.color+'14',border:`1px solid ${t.color}33`}}>{t.label}</span>
+              <span style={{fontSize:9,fontWeight:600,color:'#94a3b8',fontVariantNumeric:'tabular-nums'}}><CountUpNum value={ratioPct} decimals={1} signed suffix="%" /></span>
+            </span>}
+          </div>
+          {/* ジャンボ数字（人間換算・色に価値判断を語らせない#1e293b） */}
+          {disp != null && <div style={{display:'flex',alignItems:'baseline',gap:5,flexWrap:'wrap'}}>
+            <span style={{fontSize:mob?26:32,fontWeight:800,color:'#1e293b',fontVariantNumeric:'tabular-nums',lineHeight:1.1}}>
+              <CountUpNum value={disp} decimals={u.dec} />
+            </span>
+            <span style={{fontSize:12,fontWeight:700,color:'#475569'}}>回</span>
+            <span style={{fontSize:10,color:'#94a3b8'}}>{u.denom}</span>
+          </div>}
+          {reframe && <div style={{fontSize:10,color:'#64748b',marginTop:1}}>{reframe}</div>}
+          {/* ユニットドット・レーン（充填はジャンボ数字と同一アニメ値で同期） */}
+          {disp != null && dispNat != null && <div style={{marginTop:6}}>
+            <UnitDotLane value={disp} natValue={dispNat} pinnedValue={dispPin}
+              natLabel={`全国 ${dispNat.toFixed(1)}`} mob={mob} prefName={ndbPref}
+              pinnedName={pinnedPref} rank={rank} unitLabel={u.unit} />
+          </div>}
+          {/* 従来値（生値残置 — 換算値の独り歩き防止・10px二次情報） */}
+          <div style={{fontSize:10,color:'#94a3b8',marginTop:6}}>総算定 {fmt(d.total_claims)}回 ・ 人口10万対 {perCap(d.total_claims)}</div>
+          {diagStrip.length >= 40 && <div style={{marginTop:6}}><PrefStrip47 {...stripCommon} values={diagStrip} natAvg={nat100k} yearBadge={yb('ndbDiag')} mode="inline" /></div>}
         </div>
         );
       })}
+    </div>
+    <div style={{fontSize:9,color:'#94a3b8',marginTop:10,lineHeight:1.7}}>
+      ※ NDBは<b>医療機関所在地ベースの供給側集計</b>です。人口10万対・人間換算は住民人口（住基2025-01-01）で除した<b>参考値</b>で、受診流出入・審査集計仕様の影響を含みます（分子=令和5年度レセプト・分母人口の年次は一致しません）。
+      換算の分母はカテゴリで異なります（外来受診・慢性疾患管理=<b>県民1人あたり</b>／在宅医療=<b>県民10人あたり</b>）。<b>高低は良し悪しではありません</b>。
+      ドット1個=1回（端数は部分塗り・実値はツールチップ）: <span style={{color:'#64748b'}}>●基準部（県と全国の重なり）</span>・<span style={{color:'#9f1239'}}>●全国超過</span>・<span style={{color:'#4338ca'}}>◯全国比不足（輪郭）</span>・<span style={{color:'#2563EB'}}>▽全国基準</span>。
     </div>
   </div>}
 
