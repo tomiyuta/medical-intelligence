@@ -15,6 +15,7 @@ import HsaSurgeryPanel from './HsaSurgeryPanel';
 import HsaInpatientPanel from './HsaInpatientPanel';
 import HsaDesignationPanel from './HsaDesignationPanel';
 import HsaHospTrendPanel from './HsaHospTrendPanel';
+import HsaDpcTrendPanel from './HsaDpcTrendPanel';
 import { HsaAreaProvider } from '../hsa/useHsaArea';
 import HsaSummaryCards from '../hsa/HsaSummaryCards';
 
@@ -348,6 +349,7 @@ export default function AreaReportView({ mob, globalPref, setGlobalPref }) {
             <HsaSurgeryPanel mob={mob} />
             <ChapterHead idx={4} name="4. パフォーマンス・連携" />
             <HsaDpcPanel mob={mob} />
+            <HsaDpcTrendPanel mob={mob} />
           </HsaAreaProvider>
         )}
 
