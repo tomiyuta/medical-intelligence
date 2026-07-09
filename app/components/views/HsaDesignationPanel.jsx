@@ -18,7 +18,7 @@ export default function HsaDesignationPanel({ mob }) {
 
   return (
     <HsaPanel title="医療機関の指定状況"
-              badges={[{ label: 'ネイティブ再構築', kind: 'reconstructed' }, { label: '最新公表版', kind: 'latest' }]}
+              badges={[{ label: '最新公表版', kind: 'latest' }]}
               defaultOpen={false}
               loading={loading}
               empty={facs.length === 0}

@@ -34,7 +34,6 @@ export default function HsaPhysicianPanel({ mob }) {
   return (
     <HsaPanel title="医師偏在指標"
               badges={[
-                { label: 'ネイティブ再構築', kind: 'reconstructed' },
                 { label: '令和6年1月公表版', kind: 'muted' },
               ]}
               defaultOpen={true}

@@ -61,7 +61,7 @@ export default function HsaDemandPanel({ mob }) {
 
   return (
     <HsaPanel title="将来医療需要の推計（受療率法）"
-              badges={[{ label: 'ネイティブ再構築', kind: 'reconstructed' }, { label: '参考推計', kind: 'reference' }]}
+              badges={[{ label: '参考推計', kind: 'reference' }]}
               defaultOpen={false}
               loading={loading}
               empty={!area || trendRows.length === 0}

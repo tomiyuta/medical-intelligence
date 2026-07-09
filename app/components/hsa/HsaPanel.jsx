@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 // 信頼度バッジの正規化パレット
 const BADGE = {
-  reconstructed: { c: '#0f6e5d', bg: '#e3f0ed' },  // ネイティブ再構築 / 独自集計（一次データ）
+  reconstructed: { c: '#0f6e5d', bg: '#e3f0ed' },  // 一次データからの独自集計
   reference: { c: '#b45309', bg: '#fdf1e4' },       // 参考推計
   latest: { c: '#0369a1', bg: '#e0f2fe' },          // 最新公表版
   muted: { c: '#94a3b8', bg: 'transparent' },       // 出典年など補足

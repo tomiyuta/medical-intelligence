@@ -48,7 +48,7 @@ export default function HsaDpcTrendPanel({ mob }) {
 
   return (
     <HsaPanel title="DPC症例数・平均入院期間の推移"
-              badges={[{ label: 'ネイティブ再構築', kind: 'reconstructed' }, { label: '参考', kind: 'muted' }]}
+              badges={[{ label: '参考', kind: 'muted' }]}
               defaultOpen={false}
               loading={loading}
               empty={!self && !d?.prefs}

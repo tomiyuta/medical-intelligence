@@ -39,7 +39,7 @@ export default function HsaCarePanel({ mob }) {
 
   return (
     <HsaPanel title="要介護認定者数の将来推計"
-              badges={[{ label: 'ネイティブ再構築', kind: 'reconstructed' }, { label: '介護保険事業状況報告 × 社人研推計', kind: 'muted' }]}
+              badges={[{ label: '介護保険事業状況報告 × 社人研推計', kind: 'muted' }]}
               defaultOpen={false}
               loading={loading}
               empty={!area || rows.length === 0}
