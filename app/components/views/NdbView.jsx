@@ -197,6 +197,22 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
   // ── Gap Finder: state & 全都道府県メトリック計算 ──
   const [gapTemplate, setGapTemplate] = useState('smoke_cancer');
   const [psMode, setPsMode] = useState('outpatient'); // 患者調査: 入院/外来切替
+  // rank4: 受療率フィンガープリント（21章フォレスト）用 state
+  const [psSort, setPsSort] = useState('divergence'); // 'divergence'(乖離順) | 'abs'(絶対値順) | 'chapter'(章番号順)
+  const [psShowTop7, setPsShowTop7] = useState(false); // 旧Top7表示の折りたたみ温存
+  const [psExpanded, setPsExpanded] = useState(null);  // 展開中の章key
+  // rank4: 将来傾き（受療率法・参考推計）— 選択県を圏集約した demand projection を取得
+  const [demandProj, setDemandProj] = useState(null);
+  useEffect(() => {
+    let alive = true;
+    setDemandProj(null);
+    setPsExpanded(null);
+    fetch(`/api/demand-projection/pref?pref=${encodeURIComponent(ndbPref)}`)
+      .then(r => (r.ok ? r.json() : null))
+      .then(j => { if (alive) setDemandProj(j); })
+      .catch(() => { if (alive) setDemandProj(null); });
+    return () => { alive = false; };
+  }, [ndbPref]);
   // Phase 4-3 R3: 粗死亡率 (2024 全14) vs 年齢調整死亡率 (2020 6死因) toggle
   const [mortalityMode, setMortalityMode] = useState('crude');
   const [mortalitySex, setMortalitySex] = useState('male');
@@ -531,26 +547,80 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     const totalLabel = psMode === 'inpatient' ? '入院' : '外来';
     const myTotal = ps.total?.[metricKey];
     const natTotal = nat.total?.[metricKey];
-    // Top 7 大分類 by 当該県の受療率
-    const items = Object.entries(ps.categories)
-      .map(([k, v]) => ({ key: k, name: v.name, chapter: v.chapter, val: v[metricKey], natVal: nat.categories[k]?.[metricKey] }))
-      .filter(x => x.val != null && x.val > 0)
-      .sort((a,b)=>b.val-a.val)
-      .slice(0, 7);
-    const maxVal = items[0]?.val || 1;
     // rank1: 受療率の47県分布（「全国」「都道府県判別不可」を除外）
     const psPrefs47 = Object.entries(patientSurvey.prefectures).filter(([p])=>isP47(p));
     const stripValsPS = (k) => psPrefs47.map(([p,v])=>({pref:p, value:v.categories?.[k]?.[metricKey]})).filter(d=>d.value!=null && d.value>0);
+    // rank4: 対全国比%の47県分布（x=全国比・基準線100%）— PrefStrip47のドット文法を再利用
+    const ratioStripPS = (k) => psPrefs47.map(([p,v])=>{
+      const pv = v.categories?.[k]?.[metricKey], nv = nat.categories?.[k]?.[metricKey];
+      return (pv != null && nv) ? { pref: p, value: pv/nv*100 } : null;
+    }).filter(Boolean);
+    // rank4: 入院受療率が小さい章（≲10/10万）は標本誤差で比率が不安定 → ⚠で乖離%抑制
+    const SMALL_RATE = 10;
+    // rank4: 21章フォレスト（Top7スライスを廃し全章露出）
+    const forestAll = Object.entries(ps.categories).map(([k, v], idx) => {
+      const val = v[metricKey], natVal = nat.categories[k]?.[metricKey];
+      const ratio = (val != null && natVal) ? val/natVal*100 : null;
+      return { key: k, name: v.name, chapter: v.chapter, val, natVal, ratio, idx };
+    }).filter(x => x.val != null);
+    const forestItems = [...forestAll].sort((a,b)=>{
+      if (psSort === 'chapter') return a.idx - b.idx;
+      if (psSort === 'abs') return (b.val||0) - (a.val||0);
+      // 乖離順: |対全国比−100| 降順（小受療率章は乖離が不安定なため後方へ）
+      const da = (a.ratio != null && a.val >= SMALL_RATE) ? Math.abs(a.ratio - 100) : -1;
+      const db = (b.ratio != null && b.val >= SMALL_RATE) ? Math.abs(b.ratio - 100) : -1;
+      return db - da;
+    });
+    const maxForestVal = Math.max(1, ...forestAll.map(x=>x.val||0));
+    // rank4 旧Top7（折りたたみ温存）
+    const items = [...forestAll].filter(x=>x.val>0).sort((a,b)=>b.val-a.val).slice(0,7);
+    const maxVal = items[0]?.val || 1;
+    // rank4: 将来傾き — 患者調査の章(chapter ローマ数字)を demand projection の章キーに突合
+    const PROJ_YEARS = [2020,2025,2030,2035,2040,2045,2050];
+    const projMap = demandProj ? (metricKey === 'inpatient' ? demandProj.inpatient : demandProj.outpatient) : null;
+    const demandSeriesFor = (chapterRoman) => {
+      if (!projMap) return null;
+      const kk = Object.keys(projMap).find(key => key.startsWith(chapterRoman + ' '));
+      return kk ? projMap[kk] : null;
+    };
+    // 将来傾きチップ（実測=塗り(基準年)/推計=白抜き・受療率法・参考推計）
+    const renderSlope = (chapterRoman) => {
+      const s = demandSeriesFor(chapterRoman);
+      if (!s) return <span style={{fontSize:9,color:'#cbd5e1',width:mob?54:100,textAlign:'right',flexShrink:0}}>{demandProj ? '—' : '…'}</span>;
+      const v25 = s['2025'], v50 = s['2050'];
+      if (!v25) return <span style={{fontSize:9,color:'#cbd5e1',width:mob?54:100,textAlign:'right',flexShrink:0}}>—</span>;
+      const slope = (v50/v25 - 1) * 100;
+      const dir = slope > 2 ? '↗' : slope < -2 ? '↘' : '→';
+      const col = slope > 2 ? '#b45309' : slope < -2 ? '#0e7490' : '#64748b';
+      const vals = PROJ_YEARS.map(y=>s[String(y)]).filter(v=>v!=null);
+      const mn = Math.min(...vals), mx = Math.max(...vals);
+      const W = 46, H = 14, padS = 2;
+      const xo = (i) => padS + i/(PROJ_YEARS.length-1)*(W-2*padS);
+      const yo = (v) => mx===mn ? H/2 : padS + (1-(v-mn)/(mx-mn))*(H-2*padS);
+      const pts = PROJ_YEARS.map((y,i)=>({ x: xo(i), y: yo(s[String(y)]), i }));
+      const path = pts.map((p,i)=>(i?'L':'M')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
+      return (
+        <span title={`受療率法推計 ${v25}→${v50}（2025→2050・1日平均患者数・参考推計）`}
+          style={{display:'inline-flex',alignItems:'center',gap:4,flexShrink:0,width:mob?54:100,justifyContent:'flex-end'}}>
+          {!mob && <svg width={W} height={H} style={{flexShrink:0}}>
+            <path d={path} fill="none" stroke={col} strokeWidth={1} opacity={0.55}/>
+            {pts.map(p=><circle key={p.i} cx={p.x} cy={p.y} r={1.6} fill={p.i===0?col:'#fff'} stroke={col} strokeWidth={0.8}/>)}
+          </svg>}
+          <span style={{fontSize:10,fontWeight:700,color:col,fontVariantNumeric:'tabular-nums'}}>{dir}{slope>0?'+':''}{slope.toFixed(0)}%</span>
+        </span>
+      );
+    };
     return (
     <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16}}>
       <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:14,flexWrap:'wrap'}}>
         <span style={{fontSize:18}}>📈</span>
         <div style={{flex:1,minWidth:0}}>
           <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>
-            受療率 — {totalLabel}
+            受療率フィンガープリント — {totalLabel}
             <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#fce7f3',color:'#9f1239',fontWeight:500}}>需要・標本推計</span>
           </div>
-          <div style={{fontSize:11,color:'#94a3b8'}}>厚労省 令和5年患者調査(2023) 第39表 — 人口10万対（患者住所地ベース）</div>
+          <div style={{fontSize:11,color:'#94a3b8'}}>厚労省 令和5年患者調査(2023) 第39表 — 全21傷病大分類 × 対全国比（患者住所地ベース）</div>
+          <div style={{fontSize:10,color:'#b45309',marginTop:2}}>※乖離は受療行動・供給・疾病構造の複合であり単一要因の証明ではない。</div>
         </div>
         {/* 入院/外来 トグル */}
         <div style={{display:'flex',gap:0,border:'1px solid #e2e8f0',borderRadius:6,overflow:'hidden'}}>
@@ -579,29 +649,90 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           </div>
         </div>
       )}
-      {/* 大分類 Top 7 */}
-      <div style={{display:'flex',flexDirection:'column',gap:5}}>
-        {items.map(it => {
-          const delta = it.natVal != null ? ((it.val/it.natVal - 1) * 100) : null;
-          const chapterShort = it.chapter; // ローマ数字
-          const psStrip = stripValsPS(it.key);
-          return <div key={it.key}>
-            <div style={{display:'flex',alignItems:'center',gap:8}}>
-              <span style={{width:mob?20:30,fontSize:10,fontWeight:600,color:'#9f1239',flexShrink:0}}>{chapterShort}</span>
-              <span style={{width:mob?100:160,fontSize:12,color:'#475569',flexShrink:0,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{it.name}</span>
-              <div style={{flex:1,height:18,background:'#fef3f5',borderRadius:3,overflow:'hidden'}}>
-                <div style={{height:'100%',borderRadius:3,background:'#9f1239',width:`${it.val/maxVal*100}%`,opacity:0.75}}/>
+      {/* rank4: ソート + 将来傾き凡例（参考推計バッジ常設） */}
+      <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8,flexWrap:'wrap'}}>
+        <span style={{fontSize:10,color:'#94a3b8',fontWeight:600}}>並び替え</span>
+        <div style={{display:'flex',gap:0,border:'1px solid #e2e8f0',borderRadius:6,overflow:'hidden'}}>
+          {[['divergence','乖離順'],['abs','絶対値順'],['chapter','章番号順']].map(([k,l])=>(
+            <button key={k} onClick={()=>setPsSort(k)}
+              style={{padding:'4px 10px',border:'none',background:psSort===k?'#9f1239':'#fff',color:psSort===k?'#fff':'#475569',fontSize:11,fontWeight:600,cursor:'pointer'}}>{l}</button>
+          ))}
+        </div>
+        <span style={{marginLeft:'auto',display:'inline-flex',alignItems:'center',gap:5,fontSize:9,padding:'2px 7px',borderRadius:4,background:'#fffbeb',color:'#b45309',border:'1px solid #fde68a',fontWeight:600}}>
+          <svg width={16} height={10}><circle cx={3} cy={5} r={1.8} fill="#b45309"/><circle cx={9} cy={5} r={1.8} fill="#fff" stroke="#b45309" strokeWidth={0.8}/><circle cx={13} cy={5} r={1.8} fill="#fff" stroke="#b45309" strokeWidth={0.8}/></svg>
+          →2050傾き: 参考推計(受療率法)
+        </span>
+      </div>
+      {/* rank4: 21章フォレスト — x=対全国比%（基準線100%）・各行にPrefStrip47ドット文法 */}
+      <div style={{display:'flex',flexDirection:'column',gap:2}}>
+        {forestItems.map(it => {
+          const delta = (it.ratio != null) ? (it.ratio - 100) : null;
+          const small = it.val < SMALL_RATE; // 小受療率 → 標本誤差で乖離%抑制
+          const ratioStrip = ratioStripPS(it.key);
+          const expanded = psExpanded === it.key;
+          return <div key={it.key} style={{padding:'2px 0',borderRadius:6,background:expanded?'#fef3f5':'transparent'}}>
+            <div style={{display:'flex',alignItems:'center',gap:mob?4:8}}>
+              <span style={{width:mob?18:28,fontSize:9,fontWeight:600,color:'#9f1239',flexShrink:0,textAlign:'right'}}>{it.chapter}</span>
+              <span onClick={()=>setPsExpanded(expanded?null:it.key)} title={it.name}
+                style={{width:mob?78:150,fontSize:mob?10:12,color:'#475569',flexShrink:0,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',cursor:'pointer'}}>
+                {expanded?'▾ ':''}{it.name}
+              </span>
+              <div style={{flex:1,minWidth:mob?60:120}}>
+                {ratioStrip.length >= 40
+                  ? <PrefStrip47 {...stripCommon} values={ratioStrip} natAvg={100} yearBadge={yb('patientSurvey')} mode="micro" />
+                  : <span style={{fontSize:9,color:'#cbd5e1'}}>分布データ不足</span>}
               </div>
-              <span style={{fontSize:11,fontWeight:600,color:'#9f1239',fontVariantNumeric:'tabular-nums',width:42,textAlign:'right',flexShrink:0}}>{it.val}</span>
-              {delta != null && <span style={{fontSize:10,fontWeight:600,color:delta>0?'#dc2626':'#059669',width:48,textAlign:'right',flexShrink:0}}>{delta>0?'+':''}{delta.toFixed(0)}%</span>}
+              {small
+                ? <span title="入院受療率が小さく標本誤差が大きいため乖離%を抑制" style={{fontSize:10,fontWeight:600,color:'#cbd5e1',width:mob?36:48,textAlign:'right',flexShrink:0}}>⚠ {it.val}</span>
+                : (delta != null
+                    ? <span style={{fontSize:10,fontWeight:600,color:Math.abs(delta)<5?'#64748b':(delta>0?'#dc2626':'#059669'),width:mob?36:48,textAlign:'right',flexShrink:0,fontVariantNumeric:'tabular-nums'}}>{delta>0?'+':''}{delta.toFixed(0)}%</span>
+                    : <span style={{width:mob?36:48,flexShrink:0}}/>)}
+              {renderSlope(it.chapter)}
             </div>
-            {psStrip.length >= 40 && <div style={{margin:`2px 0 4px ${mob?28:38}px`}}><PrefStrip47 {...stripCommon} values={psStrip} yearBadge={yb('patientSurvey')} mode="inline" /></div>}
+            {expanded && <div style={{margin:`4px 0 6px ${mob?24:40}px`,padding:'8px 10px',background:'#fff',borderRadius:6,border:'1px solid #fce7f3'}}>
+              <div style={{fontSize:10,color:'#64748b',marginBottom:4}}>
+                {it.name} — {ndbPref} {it.val ?? '—'}／全国 {it.natVal ?? '—'}（人口10万対）
+                {it.ratio != null && <b style={{marginLeft:6,color:it.ratio>100?'#dc2626':'#059669'}}>対全国比 {it.ratio.toFixed(0)}%</b>}
+              </div>
+              {ratioStrip.length >= 40
+                ? <PrefStrip47 {...stripCommon} values={ratioStrip} natAvg={100} yearBadge={yb('patientSurvey')} mode="full" />
+                : <span style={{fontSize:10,color:'#94a3b8'}}>47県分布データ不足</span>}
+              <div style={{fontSize:9,color:'#94a3b8',marginTop:4}}>
+                ドット=各県の対全国比（青破線=100%基準）／将来傾き {renderSlope(it.chapter)} は受療率法による参考推計。
+              </div>
+            </div>}
           </div>;
         })}
       </div>
+      {/* rank4: 旧Top7表示を折りたたみで温存 */}
+      <div style={{marginTop:12}}>
+        <button onClick={()=>setPsShowTop7(v=>!v)}
+          style={{padding:'4px 10px',border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',borderRadius:6,fontSize:10,fontWeight:600,cursor:'pointer'}}>
+          {psShowTop7?'▾ 従来のTop7バー表示を隠す':'▸ 従来のTop7バー表示'}
+        </button>
+        {psShowTop7 && <div style={{display:'flex',flexDirection:'column',gap:5,marginTop:8}}>
+          {items.map(it => {
+            const delta = it.natVal != null ? ((it.val/it.natVal - 1) * 100) : null;
+            const psStrip = stripValsPS(it.key);
+            return <div key={it.key}>
+              <div style={{display:'flex',alignItems:'center',gap:8}}>
+                <span style={{width:mob?20:30,fontSize:10,fontWeight:600,color:'#9f1239',flexShrink:0}}>{it.chapter}</span>
+                <span style={{width:mob?100:160,fontSize:12,color:'#475569',flexShrink:0,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{it.name}</span>
+                <div style={{flex:1,height:18,background:'#fef3f5',borderRadius:3,overflow:'hidden'}}>
+                  <div style={{height:'100%',borderRadius:3,background:'#9f1239',width:`${it.val/maxVal*100}%`,opacity:0.75}}/>
+                </div>
+                <span style={{fontSize:11,fontWeight:600,color:'#9f1239',fontVariantNumeric:'tabular-nums',width:42,textAlign:'right',flexShrink:0}}>{it.val}</span>
+                {delta != null && <span style={{fontSize:10,fontWeight:600,color:delta>0?'#dc2626':'#059669',width:48,textAlign:'right',flexShrink:0}}>{delta>0?'+':''}{delta.toFixed(0)}%</span>}
+              </div>
+              {psStrip.length >= 40 && <div style={{margin:`2px 0 4px ${mob?28:38}px`}}><PrefStrip47 {...stripCommon} values={psStrip} yearBadge={yb('patientSurvey')} mode="inline" /></div>}
+            </div>;
+          })}
+        </div>}
+      </div>
       <div style={{fontSize:10,color:'#94a3b8',marginTop:10,lineHeight:1.6}}>
         ※受療率は「人口10万対」で標準化済み。<b>NDB（供給）とは異なり、患者住所地ベースの標本推計</b>です。
-        標本誤差を含むため、地域差の細かな比較には注意。3年ごとの調査で、次回は令和8年調査が見込まれる（公表時期は調査実施後）。
+        標本誤差を含むため、地域差の細かな比較には注意（⚠は入院受療率が小さく比率が不安定な章）。3年ごとの調査で、次回は令和8年調査が見込まれる（公表時期は調査実施後）。<br/>
+        ※<b style={{color:'#b45309'}}>→2050傾き</b>は demand_projection（受療率法・参考推計）による1日平均患者数の 2025→2050 変化率。塗り＝基準年・白抜き＝将来推計で受療率を固定し人口変動のみを反映した参考値であり、実測受療率とは色・塗りで分離しています。
       </div>
     </div>);
   })()}
