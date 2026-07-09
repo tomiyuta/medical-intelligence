@@ -90,7 +90,6 @@ const DOMAIN_GAP_TEMPLATE = {
 
 // rank9: 人口タイムレンズ — 社人研推計7年（2020国調ベース・2020-2050）
 const DEMO_YEARS = ['2020','2025','2030','2035','2040','2045','2050'];
-const fpTypeA = (p) => (p.type === 'a' || p.type === 1);
 
 export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, areaDemoData, ndbQ, agePyramid, futureDemo, patientSurvey, bedFunc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd, mortalityOutcome2020, cancerSites2024, homecareCapability, japanMap, futureYear, setFutureYear }) {
   const diagByPref = ndbDiag.filter(d=>d.prefecture===ndbPref);
@@ -132,7 +131,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     if (!r) return null;
     let change2050 = null, rate75_2050 = null;
     if (futureDemo?.prefectures) {
-      const fp = futureDemo.prefectures.find(p => p.pref === ndbPref && (p.type === 'a' || p.type === 1));
+      const fp = futureDemo.prefectures.find(p => p.pref === ndbPref);
       if (fp) {
         const p20 = fp.total_pop?.['2020'], p50 = fp.total_pop?.['2050'];
         if (p20 && p50) change2050 = (p50/p20 - 1) * 100;
@@ -212,7 +211,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
   }, [tlPlaying, setFutureYear]);
   // 選択県の社人研系列（type=a）
   const fpSel = useMemo(
-    () => futureDemo?.prefectures?.find(p => p.pref === ndbPref && fpTypeA(p)) || null,
+    () => futureDemo?.prefectures?.find(p => p.pref === ndbPref) || null,
     [futureDemo, ndbPref]
   );
   // 選択年の3帯域（0-64 / 65-74 / 75+）と KPI — 社人研系列から厳密導出
@@ -240,7 +239,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     let vmin = Infinity, vmax = -Infinity;
     const rows = [];
     futureDemo.prefectures.forEach(fp => {
-      if (!isP47(fp.pref) || !fpTypeA(fp)) return;
+      if (!isP47(fp.pref)) return;
       const s = fp.aging_rate_75?.['2025'], e = fp.aging_rate_75?.[tlYear];
       if (s == null || e == null) return;
       DEMO_YEARS.forEach(y => { const v = fp.aging_rate_75?.[y]; if (v != null) { if (v < vmin) vmin = v; if (v > vmax) vmax = v; } });
@@ -459,10 +458,6 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           </div>
           <div style={{fontSize:11,color:'#94a3b8'}}>NDB指標を解釈する基盤として — 住基2025 + 社人研2050</div>
         </div>
-      </div>
-      <div style={{display:'flex',alignItems:'center',gap:6,marginBottom:8}}>
-        <span style={{fontSize:9,padding:'2px 7px',borderRadius:10,background:'#f1f5f9',color:'#94a3b8',fontWeight:600}}>固定断面 2025 / 2050</span>
-        <span style={{fontSize:9,padding:'2px 7px',borderRadius:10,background:'#f8fafc',color:'#cbd5e1',border:'1px solid #f1f5f9',fontWeight:500}}>年スクラバー非連動</span>
       </div>
       <div style={{display:'grid',gridTemplateColumns:mob?'repeat(2,1fr)':'repeat(5,1fr)',gap:8}}>
         {/* 1: 総人口 */}
