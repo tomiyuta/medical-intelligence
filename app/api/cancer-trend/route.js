@@ -28,6 +28,12 @@ export async function GET(request) {
     prefectures: prefList,
   };
 
+  // ?all=1: 展開ビュー用に47県全系列を同梱(部位別スモールマルチプルの背景線)。
+  // gzip後 ~30KB 程度でクライアント側の相対位置描画に必要なため opt-in で返す。
+  if (searchParams.get('all')) {
+    return NextResponse.json({ ...meta, prefecture: null, allSeries: data.prefectures });
+  }
+
   if (!pref) {
     return NextResponse.json({ ...meta, prefecture: null });
   }

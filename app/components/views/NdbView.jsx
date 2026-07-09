@@ -230,6 +230,21 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
   // rank5: マップ・エコー — click した死因の 47 県コロプレスを行下に展開
   const [selectedCause, setSelectedCause] = useState(null);
 
+  // rank6: がん部位別30年トレンド (1995-2024 ASR75 スモールマルチプル)
+  const [cancerTrend, setCancerTrend] = useState(null);   // /api/cancer-trend?all=1 全量
+  const [cancerTrendSex, setCancerTrendSex] = useState('male'); // 'male'|'female'
+  const [trendSite, setTrendSite] = useState(null);       // 展開中の部位 short key
+  const [trendHoverIdx, setTrendHoverIdx] = useState(null); // 展開チャート scrub の年 index
+  useEffect(() => {
+    let alive = true;
+    fetch('/api/cancer-trend?all=1')
+      .then(r => (r.ok ? r.json() : null))
+      .then(j => { if (alive) setCancerTrend(j); })
+      .catch(() => { if (alive) setCancerTrend(null); });
+    return () => { alive = false; };
+  }, []);
+  useEffect(() => { setTrendSite(null); setTrendHoverIdx(null); }, [ndbPref]);
+
   // ── rank2: ドメインレンズ（疾患縦串フィルタ） ──
   const [activeDomain, setActiveDomain] = useState(null);
   const dm = activeDomain ? DOMAIN_MAPPING[activeDomain] : null;
@@ -1165,6 +1180,154 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
                   全部位 CV {allBase.disp.cv.toFixed(1)}% に対し <b>{maxCv.label} CV {maxCv.disp.cv.toFixed(1)}%</b> = <b>{expansion.toFixed(1)} 倍</b>。
                   合算では打ち消されていた部位別県差が顕在化。
                 </span>
+              </div>
+            );
+          })()}
+        </div>
+      );
+    })()}
+
+    {/* rank6: がん部位別 30 年トレンド (1995-2024 ASR75 スモールマルチプル) */}
+    {cancerTrend?.allSeries?.[ndbPref] && (() => {
+      const years = cancerTrend.years;
+      const xN = years.length;
+      const nat = cancerTrend.national || {};
+      const allS = cancerTrend.allSeries;
+      const sexJp = cancerTrendSex === 'male' ? '男' : '女';
+      const sexColor = cancerTrendSex === 'male' ? '#1e40af' : '#be185d';
+      const SITES = [
+        {short:'all', label:'全部位'},
+        {short:'stomach', label:'胃'},
+        {short:'colorectal', label:'大腸'},
+        {short:'liver', label:'肝・肝内胆管'},
+        {short:'lung', label:'肺・気管'},
+        {short:'breast', label:'乳房', femaleOnly:true},
+        {short:'prostate', label:'前立腺', maleOnly:true},
+      ].filter(s => (cancerTrendSex === 'male' ? !s.femaleOnly : !s.maleOnly));
+
+      const firstLast = (arr) => {
+        if (!arr) return null;
+        let f=null,l=null;
+        for (let i=0;i<arr.length;i++){ if(arr[i]!=null){ if(f==null) f=arr[i]; l=arr[i]; } }
+        if (f==null||l==null||f===0) return null;
+        return {first:f,last:l,pct:(l-f)/f*100};
+      };
+      const linePath = (arr, sx, sy) => {
+        if (!arr) return '';
+        let d='',started=false;
+        for (let i=0;i<arr.length;i++){ const v=arr[i]; if(v==null){started=false;continue;} const X=sx(i),Y=sy(v); d+=(started?'L':'M')+X.toFixed(1)+' '+Y.toFixed(1)+' '; started=true; }
+        return d.trim();
+      };
+      const domainOf = (...arrs) => {
+        let lo=Infinity,hi=-Infinity;
+        arrs.forEach(a=>{ if(a) a.forEach(v=>{ if(v!=null){ if(v<lo)lo=v; if(v>hi)hi=v; } }); });
+        if(lo===Infinity) return null;
+        if(lo===hi){lo-=1;hi+=1;}
+        const pad=(hi-lo)*0.08; return {lo:lo-pad,hi:hi+pad};
+      };
+
+      const contStyle = {marginTop:16,padding:'14px 16px',background:'#fafaf9',borderRadius:8,border:'1px solid #e7e5e4',transition:'opacity 300ms ease',...(activeDomain?(activeDomain==='cancer'?{opacity:1,borderLeft:`3px solid ${DOMAIN_MAPPING.cancer.color}`}:{opacity:0.32}):{})};
+
+      return (
+        <div style={contStyle}>
+          <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:6,flexWrap:'wrap'}}>
+            <span style={{fontSize:14}}>📈</span>
+            <div style={{flex:1,minWidth:180}}>
+              <div style={{fontSize:12,fontWeight:700,color:'#1e293b'}}>
+                がん部位別 30 年トレンド
+                <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#e0e7ff',color:'#3730a3',fontWeight:600}}>1995–2024 ASR75</span>
+              </div>
+              <div style={{fontSize:10,color:'#94a3b8'}}>{cancerTrend.source} ／ {cancerTrend.basis}（{cancerTrend.unit}）</div>
+            </div>
+            <div style={{display:'inline-flex',background:'#f1f5f9',borderRadius:4,padding:2}}>
+              <button onClick={()=>setCancerTrendSex('male')} style={{padding:'4px 10px',fontSize:10,fontWeight:600,border:'none',borderRadius:3,cursor:'pointer',background:cancerTrendSex==='male'?'#fff':'transparent',color:cancerTrendSex==='male'?'#1e40af':'#64748b'}}>男</button>
+              <button onClick={()=>setCancerTrendSex('female')} style={{padding:'4px 10px',fontSize:10,fontWeight:600,border:'none',borderRadius:3,cursor:'pointer',background:cancerTrendSex==='female'?'#fff':'transparent',color:cancerTrendSex==='female'?'#be185d':'#64748b'}}>女</button>
+            </div>
+          </div>
+          <div style={{fontSize:9,color:'#92400e',background:'#fffbeb',padding:'5px 8px',borderRadius:3,marginBottom:10,lineHeight:1.5}}>
+            ⚠ <b>75 歳未満年齢調整死亡率（1985 年モデル人口）</b> — 高齢者死亡を含まない。上の死因構造（全年齢粗死亡率 2024）とは基準が異なり直接比較不可。<br/>
+            検診普及・診断精度・登録精度の変化を含むため <b>医療の質の直接指標ではない</b>。
+          </div>
+          <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',gap:8}}>
+            {SITES.map(s => {
+              const prefArr = allS[ndbPref]?.[s.short]?.[sexJp];
+              const natArr = nat[s.short]?.[sexJp];
+              if (!prefArr && !natArr) return null;
+              const dom = domainOf(prefArr, natArr);
+              if (!dom) return null;
+              const W=150,H=58,pL=4,pR=6,pT=6,pB=6;
+              const pw=W-pL-pR, ph=H-pT-pB;
+              const sx=i=> pL + (xN<=1?0:i/(xN-1))*pw;
+              const sy=v=> pT + (1-(v-dom.lo)/(dom.hi-dom.lo))*ph;
+              const fl = firstLast(prefArr);
+              const active = trendSite===s.short;
+              const lastIdx = prefArr ? (()=>{ for(let i=prefArr.length-1;i>=0;i--) if(prefArr[i]!=null) return i; return -1; })() : -1;
+              return (
+                <button key={s.short} onClick={()=>setTrendSite(active?null:s.short)}
+                  style={{textAlign:'left',background:'#fff',border:'1px solid '+(active?sexColor:'#e7e5e4'),borderRadius:6,padding:'6px 8px',cursor:'pointer',transition:'border-color 150ms'}}>
+                  <div style={{display:'flex',justifyContent:'space-between',alignItems:'baseline',gap:4,marginBottom:2}}>
+                    <span style={{fontSize:11,fontWeight:700,color:'#0f172a'}}>{s.label}</span>
+                    {fl && <span style={{fontSize:9,fontWeight:700,fontVariantNumeric:'tabular-nums',color:fl.pct<0?'#059669':'#dc2626'}}>{fl.pct<0?'▼':'▲'}{Math.abs(fl.pct).toFixed(0)}%</span>}
+                  </div>
+                  <svg viewBox={`0 0 ${W} ${H}`} style={{width:'100%',display:'block'}}>
+                    {natArr && <path d={linePath(natArr,sx,sy)} fill="none" stroke="#cbd5e1" strokeWidth={1.4} strokeDasharray="3,2"/>}
+                    {prefArr && <path d={linePath(prefArr,sx,sy)} fill="none" stroke={sexColor} strokeWidth={1.8}/>}
+                    {lastIdx>=0 && <circle cx={sx(lastIdx)} cy={sy(prefArr[lastIdx])} r={2.2} fill={sexColor}/>}
+                  </svg>
+                  <div style={{display:'flex',justifyContent:'space-between',fontSize:8,color:'#94a3b8',marginTop:1}}>
+                    <span>1995</span>
+                    <span style={{color:sexColor,fontWeight:600}}>{ndbPref}</span>
+                    <span>2024</span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+          <div style={{fontSize:9,color:'#94a3b8',marginTop:6,lineHeight:1.6}}>
+            <span style={{display:'inline-block',width:14,borderTop:`2px solid ${sexColor}`,verticalAlign:'middle',marginRight:3}}/> {ndbPref}
+            <span style={{display:'inline-block',width:14,borderTop:'2px dashed #cbd5e1',verticalAlign:'middle',margin:'0 3px 0 10px'}}/> 全国　·　▼/▲＝30 年変化率　·　タイル click で 47 県分布を全幅展開
+          </div>
+
+          {trendSite && (() => {
+            const site = SITES.find(s=>s.short===trendSite) || {short:trendSite,label:trendSite};
+            const natArr = nat[trendSite]?.[sexJp];
+            const prefArr = allS[ndbPref]?.[trendSite]?.[sexJp];
+            const allArrs = Object.entries(allS).map(([p,d])=>({pref:p, arr:d?.[trendSite]?.[sexJp]})).filter(x=>x.arr);
+            const dom = domainOf(...allArrs.map(x=>x.arr), natArr);
+            if (!dom) return null;
+            const EW=mob?340:660, EH=270, pL=42,pR=14,pT=14,pB=30;
+            const pw=EW-pL-pR, ph=EH-pT-pB;
+            const sx=i=> pL + (xN<=1?0:i/(xN-1))*pw;
+            const sy=v=> pT + (1-(v-dom.lo)/(dom.hi-dom.lo))*ph;
+            const ticks=[1995,2005,2015,2024];
+            const yTicks=[dom.lo,(dom.lo+dom.hi)/2,dom.hi];
+            const hi=trendHoverIdx;
+            let rankInfo=null;
+            if(hi!=null){ const vals=allArrs.map(x=>({pref:x.pref,v:x.arr[hi]})).filter(x=>x.v!=null).sort((a,b)=>b.v-a.v); const idx=vals.findIndex(x=>x.pref===ndbPref); rankInfo={n:vals.length,rank:idx>=0?idx+1:null,self:prefArr?prefArr[hi]:null,natV:natArr?natArr[hi]:null}; }
+            const onMove=(e)=>{ const r=e.currentTarget.getBoundingClientRect(); const xv=(e.clientX-r.left)/r.width*EW; let i=Math.round((xv-pL)/(pw||1)*(xN-1)); i=Math.max(0,Math.min(xN-1,i)); setTrendHoverIdx(i); };
+            return (
+              <div style={{marginTop:12,padding:'10px 12px',background:'#fff',border:`1px solid ${sexColor}33`,borderRadius:6}}>
+                <div style={{display:'flex',justifyContent:'space-between',alignItems:'center',marginBottom:4}}>
+                  <div style={{fontSize:11,fontWeight:700,color:'#0f172a'}}>{site.label} — 47 県分布の 30 年推移（{sexJp}・ASR75）</div>
+                  <button onClick={()=>{setTrendSite(null);setTrendHoverIdx(null);}} style={{fontSize:10,color:'#64748b',background:'transparent',border:'none',cursor:'pointer'}}>× 閉じる</button>
+                </div>
+                <svg viewBox={`0 0 ${EW} ${EH}`} style={{width:'100%',display:'block',touchAction:'none'}} onMouseMove={onMove} onMouseLeave={()=>setTrendHoverIdx(null)}>
+                  {yTicks.map((v,i)=>(<g key={i}><line x1={pL} y1={sy(v)} x2={EW-pR} y2={sy(v)} stroke="#f1f5f9" strokeWidth={1}/><text x={pL-4} y={sy(v)+3} textAnchor="end" fontSize={8} fill="#94a3b8">{v.toFixed(0)}</text></g>))}
+                  {ticks.map(y=>{ const i=years.indexOf(y); if(i<0) return null; return <text key={y} x={sx(i)} y={EH-pB+16} textAnchor="middle" fontSize={9} fill="#64748b">{y}</text>; })}
+                  {allArrs.map(x=> x.pref===ndbPref?null:<path key={x.pref} d={linePath(x.arr,sx,sy)} fill="none" stroke="#e2e8f0" strokeWidth={1}/>)}
+                  {natArr && <path d={linePath(natArr,sx,sy)} fill="none" stroke="#94a3b8" strokeWidth={1.6} strokeDasharray="4,3"/>}
+                  {prefArr && <path d={linePath(prefArr,sx,sy)} fill="none" stroke={sexColor} strokeWidth={2.6}/>}
+                  {hi!=null && <line x1={sx(hi)} y1={pT} x2={sx(hi)} y2={EH-pB} stroke={sexColor} strokeWidth={1} strokeDasharray="2,2" opacity={0.6}/>}
+                  {hi!=null && prefArr && prefArr[hi]!=null && <circle cx={sx(hi)} cy={sy(prefArr[hi])} r={3.5} fill={sexColor}/>}
+                  {hi!=null && natArr && natArr[hi]!=null && <circle cx={sx(hi)} cy={sy(natArr[hi])} r={2.8} fill="#94a3b8"/>}
+                </svg>
+                <div style={{minHeight:18,fontSize:10,color:'#475569',marginTop:2,lineHeight:1.5}}>
+                  {rankInfo ? (
+                    <span><b style={{color:sexColor}}>{years[hi]}年</b>　{ndbPref} {rankInfo.self!=null?rankInfo.self.toFixed(1):'—'}（全国 {rankInfo.natV!=null?rankInfo.natV.toFixed(1):'—'}）　{rankInfo.rank?`高い順 ${rankInfo.rank} / ${rankInfo.n} 位`:''}</span>
+                  ) : (
+                    <span style={{color:'#94a3b8'}}>チャートにカーソルを合わせるとその年の {ndbPref} の値・全国値・47 県順位を表示（薄灰＝他 46 県、破線＝全国）</span>
+                  )}
+                </div>
               </div>
             );
           })()}
