@@ -14,6 +14,7 @@ import HsaHomecarePanel from './HsaHomecarePanel';
 import HsaSurgeryPanel from './HsaSurgeryPanel';
 import HsaInpatientPanel from './HsaInpatientPanel';
 import HsaDesignationPanel from './HsaDesignationPanel';
+import HsaHospTrendPanel from './HsaHospTrendPanel';
 import { HsaAreaProvider } from '../hsa/useHsaArea';
 import HsaSummaryCards from '../hsa/HsaSummaryCards';
 
@@ -338,6 +339,7 @@ export default function AreaReportView({ mob, globalPref, setGlobalPref }) {
             <ChapterHead idx={2} name="2. 医療提供体制" />
             <HsaBedDetailPanel mob={mob} />
             <HsaInpatientPanel mob={mob} />
+            <HsaHospTrendPanel mob={mob} />
             <HsaEmergencyPanel mob={mob} />
             <ChapterHead idx={3} name="3. 医療需要の将来推計" />
             <HsaDemandPanel mob={mob} />
