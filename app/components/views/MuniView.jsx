@@ -2,8 +2,8 @@
 import { fmt, sortPrefs } from '../shared';
 
 // 住基2025(age_pyramid)の年齢帯合算 — 県計・全国計の人口/高齢化率はこちらを使う。
-// area_demographics の munis 合算は政令指定都市を含まず(全国96.9M vs 実際124.3M)、
-// 県・全国レベルの合算に使うと政令市を持つ県で人口過小・高齢化率過大に歪む
+// area_demographics の munis 合算も政令指定都市を含む完全値(2026-07 住基ETL再生成、
+// scripts/etl_area_demographics_juki.py)で両者は±0.01%一致するが、分母は age_pyramid に一本化。
 const sumBands = (a) => (a || []).reduce((s, v) => s + (v || 0), 0);
 const pyramidTotals = (ap) => {
   if (!ap?.male || !ap?.female) return null;
@@ -21,8 +21,8 @@ export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, dem
   // 全国合計 / 県表示の集計
   let ms, areas, areaNames, selArea, tPop, t15, t65, tW, tB, tD, tNC, r15, rW, r65;
   if (isNationalView) {
-    // 全国: 総人口・年齢構成は住基2025(agePyramid.national)から。
-    // munis 合算は政令指定都市を欠くため全国計に使わない(出生・死亡のみ munis 由来=参考値)
+    // 全国: 総人口・年齢構成は住基2025(agePyramid.national)から(単一分母ポリシー)。
+    // 出生・死亡は munis 合算(政令指定都市を含む完全値)
     ms = []; // 全国の市区町村は表示しない (47県 × 数十市区町村 = 数千件で重い)
     areas = [];
     areaNames = [];
@@ -187,14 +187,13 @@ export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, dem
                 {k.s&&<div style={{fontSize:10,color:'#94a3b8'}}>{k.s}</div>}
               </div>))}
           </div>
-          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10,marginBottom:isNationalView?4:16}}>
+          <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:10,marginBottom:16}}>
             {[{l:'出生数',v:fmt(tB),c:'#059669'},{l:'死亡数',v:fmt(tD),c:'#64748b'},{l:'自然増減',v:(tNC>=0?'+':'')+fmt(tNC),c:tNC>=0?'#059669':'#dc2626'}].map((k,i)=>(
               <div key={i} style={{background:'#fff',borderRadius:10,padding:'12px 16px',border:'1px solid #f0f0f0'}}>
                 <div style={{fontSize:11,color:'#94a3b8',marginBottom:2}}>{k.l}</div>
                 <div style={{fontSize:mob?18:22,fontWeight:700,color:k.c}}>{k.v}</div>
               </div>))}
           </div>
-          {isNationalView && <div style={{fontSize:10,color:'#b45309',margin:'0 0 16px'}}>※出生・死亡・自然増減は市区町村集計値の合算で、現行データは政令指定都市を含まないため過小です（参考値）。</div>}
           {tPop>0&&<div style={{background:'#fff',borderRadius:10,padding:'14px 16px',border:'1px solid #f0f0f0',marginBottom:16}}>
             <div style={{fontSize:13,fontWeight:600,marginBottom:8}}>年齢構成</div>
             <div style={{display:'flex',height:26,borderRadius:6,overflow:'hidden',marginBottom:6}}>

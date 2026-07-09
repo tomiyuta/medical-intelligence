@@ -10,6 +10,7 @@ import PrefStrip47 from '../ui/PrefStrip47';
 import PsIris from '../ui/PsIris';
 import PrefChoropleth from '../ui/PrefChoropleth';
 import CheckupBinsHistogram, { RISK_BIN_THRESHOLD, METRIC_TO_RISK_KEY } from '../ui/CheckupBinsHistogram';
+import DeathWaffle100, { buildWaffleItems, WAFFLE_CAUSE_COLORS, WAFFLE_OTHER, WAFFLE_OTHER_COLOR } from '../ui/DeathWaffle100';
 import { getSourceBadge } from '../../../lib/sourceRegistry';
 import { DOMAIN_MAPPING, DOMAIN_ORDER, rowInDomain, domainSectionStatus, DOMAIN_TO_RX_LABEL, FP_TIERS, tierOf } from '../../../lib/domainMapping';
 
@@ -537,6 +538,18 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
   const [mortalitySex, setMortalitySex] = useState('male');
   // rank5: マップ・エコー — click した死因の 47 県コロプレスを行下に展開
   const [selectedCause, setSelectedCause] = useState(null);
+  // Layer5 百人ワッフル: 格子⇔死因行リストの双方向 hover 同期（カテゴリ名 or WAFFLE_OTHER）
+  const [hoverCause, setHoverCause] = useState(null);
+  useEffect(() => { setHoverCause(null); }, [mortalityMode, ndbPref]);
+  // ワッフル items（粗2024モード専用 — 構成%の意味が成立する断面のみ。全国降順top7+その他を最大剰余法で100人化）
+  const waffleItems = useMemo(() => {
+    if (!vp?.causes?.length || !vitalStats?.national?.causes?.length) return null;
+    if (!vp.total_death_rate || !vitalStats.national.total_death_rate) return null;
+    return buildWaffleItems({
+      prefCauses: vp.causes, prefTotal: vp.total_death_rate,
+      natCauses: vitalStats.national.causes, natTotal: vitalStats.national.total_death_rate,
+    });
+  }, [vp, vitalStats]);
 
   // rank6: がん部位別30年トレンド (1995-2024 ASR75 スモールマルチプル)
   const [cancerTrend, setCancerTrend] = useState(null);   // /api/cancer-trend?all=1 全量
@@ -2036,6 +2049,27 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     </div>
     {/* P1-2: 解釈注意 (死亡率指標の誤読防止) */}
     <InterpretationGuard variant="mortality" compact={true} />
+    {/* 百人ワッフル並置 — 粗2024モード専用（構成%の意味が成立する断面のみ）。
+        年齢調整2020は6死因のみで全死因合計が無く構成%が定義できないため既存バー行のみ。
+        domainレンズは dMatch('vitalCause') を dim フラグで移植（その他=畳込死因のいずれか該当で残す） */}
+    {mortalityMode === 'crude' && waffleItems && (
+      <DeathWaffle100
+        items={waffleItems.map(w => ({ ...w, dim: !!activeDomain && (w.foldedList ? !w.foldedList.some(f => dMatch('vitalCause', f)) : !dMatch('vitalCause', w.cause)) }))}
+        prefName={ndbPref}
+        totalRatePref={vp?.total_death_rate}
+        totalRateNat={vitalStats?.national?.total_death_rate}
+        hoverCause={hoverCause}
+        onHoverCause={setHoverCause}
+        onSelectCause={(cat) => { if (cat !== WAFFLE_OTHER) setSelectedCause(prev => prev === cat ? null : cat); }}
+        yearBadge={yb('vitalStats')}
+        mob={mob}
+      />
+    )}
+    {mortalityMode === 'age_adjusted' && (
+      <div style={{fontSize:10,color:'#64748b',background:'#f8fafc',padding:'6px 10px',borderRadius:4,marginBottom:8,lineHeight:1.5}}>
+        年齢調整モードは公式データが6死因のみで<b>全死因合計が無い</b>ため、「100人の内訳」図は粗死亡率2024でのみ表示します。各行に公式順位（47都道府県中・1位=全国最高値）を併記。
+      </div>
+    )}
     {/* Phase 4-3 R1: 47県 dispersion KPI 凡例 */}
     <div style={{fontSize:10,color:'#64748b',background:'#f8fafc',padding:'6px 10px',borderRadius:4,marginBottom:8,lineHeight:1.5}}
          title="CV (変動係数) = SD/平均×100。47県分布のばらつきを表す相対指標。CV が大きいほど県差が大きい。base rate (絶対値) の影響を受けないため、死因間の県差を公平比較可能。詳細: docs/ANALYSIS_MORTALITY_DISPERSION.md">
@@ -2087,18 +2121,42 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
         const mapTitle = mortalityMode === 'crude'
           ? `${c.cause.replace(/\(.+\)/,'')}・粗死亡率 2024（年齢調整前）`
           : `${c.cause.replace(/\(.+\)/,'')}・年齢調整死亡率 2020（2015年(平成27年)モデル人口・${mortalitySex==='male'?'男':'女'}）`;
+        // 百人ワッフル同期（粗モードのみ）: この行のワッフル・カテゴリ（top7=死因名そのもの / 畳込=その他）
+        const wCat = mortalityMode === 'crude' && waffleItems ? (WAFFLE_CAUSE_COLORS[c.cause] ? c.cause : WAFFLE_OTHER) : null;
+        const swColor = wCat ? (WAFFLE_CAUSE_COLORS[c.cause] || WAFFLE_OTHER_COLOR) : null;
+        const rowHl = wCat != null && hoverCause === wCat;   // 格子側 hover → 行同期ハイライト
+        const sharePct = mortalityMode === 'crude' && vp?.total_death_rate ? c.rate / vp.total_death_rate * 100 : null;
+        // 年齢調整モード: 公式 rank バッジ（mortality_outcome_2020 — rank は 1位=全国最高値）
+        const aaRank = mortalityMode === 'age_adjusted'
+          ? mortalityOutcome2020?.prefectures?.[ndbPref]?.[c.cause]?.age_adjusted?.[mortalitySex]?.rank
+          : null;
         return <div key={i} style={{...dFade('vitalCause',c.cause),...dBorder('vitalCause',c.cause)}}>
           <div
             onClick={mapEnabled ? (()=>setSelectedCause(prev=>prev===c.cause?null:c.cause)) : undefined}
+            onMouseEnter={wCat ? (()=>setHoverCause(wCat)) : undefined}
+            onMouseLeave={wCat ? (()=>setHoverCause(null)) : undefined}
             title={mapEnabled ? (isMapOpen?'地図を閉じる':'クリックで 47 県地図を展開') : undefined}
-            style={{display:'flex',alignItems:'center',gap:8,cursor:mapEnabled?'pointer':'default',background:isMapOpen?'#faf5ff':'transparent',borderRadius:4,padding:isMapOpen?'2px 4px':'0',margin:isMapOpen?'0 -4px':'0'}}
+            style={{display:'flex',alignItems:'center',gap:8,cursor:mapEnabled?'pointer':'default',background:isMapOpen?'#faf5ff':(rowHl?'#f1f5f9':'transparent'),borderRadius:4,padding:isMapOpen?'2px 4px':'0',margin:isMapOpen?'0 -4px':'0',transition:'background 200ms ease'}}
           >
             {mapEnabled && <span style={{fontSize:10,color:isMapOpen?'#7c3aed':'#cbd5e1',flexShrink:0,width:10,textAlign:'center'}}>{isMapOpen?'▾':'▸'}</span>}
+            {wCat && <span title={wCat===WAFFLE_OTHER?'上のワッフルでは「その他の死因」に統合':'上のワッフル格子と同色対応'} style={{width:8,height:8,borderRadius:wCat===WAFFLE_OTHER?'50%':2,background:swColor,flexShrink:0}}/>}
             <span style={{width:mob?(mapEnabled?80:90):(mapEnabled?110:120),fontSize:12,fontWeight:500,color:'#475569',flexShrink:0}}>{c.cause.replace(/\(.+\)/,'')}</span>
             <div style={{flex:1,height:16,background:'#f1f5f9',borderRadius:3,overflow:'hidden'}}>
               <div style={{height:'100%',borderRadius:3,background:i<3?'#7c3aed':'#a78bfa',width:`${c.rate/maxRate*100}%`,opacity:0.85}}/>
             </div>
             <span style={{fontSize:12,fontWeight:600,color:'#7c3aed',fontVariantNumeric:'tabular-nums',width:60,textAlign:'right',flexShrink:0}}>{c.rate}</span>
+            {sharePct != null && (
+              <span title={`構成% = ${c.rate} ÷ ${vp.total_death_rate}（全死因粗死亡率/10万）— 上のワッフルの人数に対応`}
+                    style={{fontSize:9,color:'#94a3b8',fontVariantNumeric:'tabular-nums',width:mob?30:38,textAlign:'right',flexShrink:0}}>
+                {sharePct.toFixed(1)}%
+              </span>
+            )}
+            {aaRank != null && (
+              <span title={`公式順位（年齢調整死亡率 2020・${mortalitySex==='male'?'男':'女'}）: ${aaRank}位/47。1位=47都道府県で最も高い（全国最高値）・47位=最も低い`}
+                    style={{fontSize:9,fontWeight:700,color:'#7c3aed',background:'#f5f3ff',padding:'2px 6px',borderRadius:8,flexShrink:0,cursor:'help'}}>
+                {aaRank}位/47
+              </span>
+            )}
             {dispLabel && (
               <span
                 title={dispLabel.label_full}
@@ -2114,7 +2172,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
             <div style={{margin:`6px 0 12px ${mob?4:24}px`}}>
               {mortalityMode === 'crude' && (
                 <div style={{fontSize:10,color:'#92400e',background:'#fffbeb',borderLeft:'3px solid #f59e0b',borderRadius:3,padding:'6px 10px',marginBottom:6,lineHeight:1.5}}>
-                  ⚠ <b>粗死亡率は高齢県ほど高く出ます</b>（年齢調整前）。県間の高低は年齢構成差を多分に含むため、上部の「年齢調整 2020」トグルで補正した分布と見比べてください。
+                  ⚠ <b>粗死亡率は高齢県ほど高く出ます</b>（年齢調整前）。県間の高低は年齢構成差を多分に含むため、上部の「年齢調整 2020」トグルで補正した分布と見比べてください。構成（100人の内訳）も年齢構成の影響を受けます — 高齢県は老衰・肺炎の割合が大きく出ます。
                 </div>
               )}
               <PrefChoropleth
