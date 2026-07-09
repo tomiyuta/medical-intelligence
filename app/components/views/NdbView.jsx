@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useLayoutEffect } from 'react';
 import { fmt, sortPrefs, PREF_ORDER } from '../shared';
 import { dispersionForCause, classifyDispersion } from '../../../lib/dispersionMetrics';
 
@@ -7,6 +7,7 @@ import DomainSupplyDemandBridge from './DomainSupplyDemandBridge';
 import InterpretationGuard from '../ui/InterpretationGuard';
 import RegionalMismatchExplorer from '../ui/RegionalMismatchExplorer';
 import PrefStrip47 from '../ui/PrefStrip47';
+import PsIris from '../ui/PsIris';
 import PrefChoropleth from '../ui/PrefChoropleth';
 import { getSourceBadge } from '../../../lib/sourceRegistry';
 import { DOMAIN_MAPPING, DOMAIN_ORDER, rowInDomain, domainSectionStatus, DOMAIN_TO_RX_LABEL } from '../../../lib/domainMapping';
@@ -16,6 +17,60 @@ const PREF47_SET = new Set(PREF_ORDER);
 const isP47 = (p) => PREF47_SET.has(p);
 // yearBadge（PrefStrip47 必須prop）: SOURCE_REGISTRY から {label:year, color}
 const yb = (k) => { const s = getSourceBadge(k); return { label: s.year, color: s.color }; };
+// SSR警告回避: サーバでは useEffect にフォールバック（FLIP用）
+const useIsoLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+// prefers-reduced-motion 尊重（FLIP/カウントアップ共通）
+const prefersReducedMotion = () =>
+  typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+// カウントアップ(400ms rAF・easeOutCubic)。初回マウントはアニメなし・reduced-motionは瞬時。
+const useCountUp = (target, dur = 400) => {
+  const [val, setVal] = useState(target);
+  const firstRef = useRef(true);
+  const prevRef = useRef(target);
+  useEffect(() => {
+    if (firstRef.current) { firstRef.current = false; prevRef.current = target; return; }
+    const from = prevRef.current;
+    prevRef.current = target;
+    if (target == null || from == null || !isFinite(from) || !isFinite(target) || prefersReducedMotion()) {
+      setVal(target); return;
+    }
+    if (from === target) { setVal(target); return; }
+    let raf; const t0 = performance.now();
+    const tick = (t) => {
+      const p = Math.min(1, (t - t0) / dur);
+      const e = 1 - Math.pow(1 - p, 3);
+      setVal(from + (target - from) * e);
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => { if (raf) cancelAnimationFrame(raf); };
+  }, [target, dur]);
+  return val;
+};
+// 数値カウントアップ表示（乖離チップ・KPI全国比用。→2050傾き=推計には使わない: 実測と推計を同じ運動文法で混ぜない）
+const CountUpNum = ({ value, decimals = 0, signed = false, suffix = '' }) => {
+  const v = useCountUp(value);
+  if (v == null || !isFinite(v)) return null;
+  return <>{signed && v > 0 ? '+' : ''}{v.toFixed(decimals)}{suffix}</>;
+};
+// 受療率フィンガープリント色意味論: rose(高)/indigo(低)の中立発散色。
+// 赤=悪・緑=良の価値判断を輸入しない（受療率の高低は受療行動・供給・疾病構造の複合であり良し悪しではない）。
+const FP_TIERS = [
+  { label: '突出高', short: '突高', color: '#9f1239' },
+  { label: 'やや高', short: 'や高', color: '#e05c7a' },
+  { label: '標準域', short: '標準', color: '#64748b' },
+  { label: 'やや低', short: 'や低', color: '#6366f1' },
+  { label: '突出低', short: '突低', color: '#4338ca' },
+];
+// tierOf(delta=対全国比−100): ±5/±15 閾値のことばスケール（純関数）
+const tierOf = (delta) => {
+  if (delta == null || !isFinite(delta)) return null;
+  if (delta >= 15) return FP_TIERS[0];
+  if (delta >= 5) return FP_TIERS[1];
+  if (delta > -5) return FP_TIERS[2];
+  if (delta > -15) return FP_TIERS[3];
+  return FP_TIERS[4];
+};
 const CAT_LABELS = {'A_初再診料':'外来受診','B_医学管理等':'慢性疾患管理','C_在宅医療':'在宅医療'};
 const RISK_META = {
   'ヘモグロビン': {unit:'g/dL', note:'低値=貧血リスク', icon:'🩸'},
@@ -273,6 +328,50 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
   const [psSort, setPsSort] = useState('divergence'); // 'divergence'(乖離順) | 'abs'(絶対値順) | 'chapter'(章番号順)
   const [psShowTop7, setPsShowTop7] = useState(false); // 旧Top7表示の折りたたみ温存
   const [psExpanded, setPsExpanded] = useState(null);  // 展開中の章key
+  // 虹彩(PsIris)↔行リストの双方向hover同期・ヘッドラインチップ→行フラッシュ
+  const [hoverPSKey, setHoverPSKey] = useState(null);
+  const [psFlashKey, setPsFlashKey] = useState(null);
+  const psRowRefs = useRef({});        // 章key→行DOM（scrollIntoView用）
+  const psFlashTimer = useRef(null);
+  const psJumpToRow = (key) => {
+    const el = psRowRefs.current[key];
+    if (el && typeof el.scrollIntoView === 'function') el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setPsFlashKey(key);
+    if (psFlashTimer.current) clearTimeout(psFlashTimer.current);
+    psFlashTimer.current = setTimeout(() => setPsFlashKey(null), 1200);
+  };
+  useEffect(() => () => { if (psFlashTimer.current) clearTimeout(psFlashTimer.current); }, []);
+  // FLIPソート: psSort/psMode(/◆ピン)変更時に行がtranslateYのみで滑走（reflowゼロ・reduced-motionは無効）
+  const psPosRef = useRef({});         // 章key→前レンダの getBoundingClientRect().top（First）
+  const psFlipArmed = useRef(false);   // 初回マウントはアニメなし
+  useIsoLayoutEffect(() => {
+    if (psFlipArmed.current && !prefersReducedMotion()) {
+      Object.entries(psRowRefs.current).forEach(([key, el]) => {
+        if (!el || typeof el.animate !== 'function') return;
+        const oldTop = psPosRef.current[key];
+        if (oldTop == null) return;
+        const dy = oldTop - el.getBoundingClientRect().top; // Invert
+        if (Math.abs(dy) < 1) return;
+        el.animate(                                          // Play: transformのみ
+          [{ transform: `translateY(${dy}px)` }, { transform: 'translateY(0)' }],
+          { duration: mob ? 280 : 350, easing: 'cubic-bezier(0.22,1,0.36,1)' }
+        );
+      });
+    }
+    psFlipArmed.current = true;
+  }, [psSort, psMode, pinnedPref]); // eslint-disable-line react-hooks/exhaustive-deps
+  useIsoLayoutEffect(() => {         // 毎レンダ後に現在位置を記録（次のFLIPのFirst）
+    const snap = {};
+    Object.entries(psRowRefs.current).forEach(([key, el]) => { if (el) snap[key] = el.getBoundingClientRect().top; });
+    psPosRef.current = snap;
+  });
+  // ◆差分モード: ピン解除(またはピン=自県)時は「対◆差順」から乖離順へ復帰
+  useEffect(() => {
+    if ((!pinnedPref || pinnedPref === ndbPref) && psSort === 'pindiff') setPsSort('divergence');
+  }, [pinnedPref, ndbPref, psSort]);
+  // マップエコー: 行展開内の47県地図トグル（展開行/入院外来が変われば閉じる）
+  const [psMapOpen, setPsMapOpen] = useState(false);
+  useEffect(() => { setPsMapOpen(false); }, [psExpanded, psMode]);
   // rank4: 将来傾き（受療率法・参考推計）— 選択県を圏集約した demand projection を取得
   const [demandProj, setDemandProj] = useState(null);
   useEffect(() => {
@@ -867,6 +966,13 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     }).filter(Boolean);
     // rank4: 入院受療率が小さい章（≲10/10万）は標本誤差で比率が不安定 → ⚠で乖離%抑制
     const SMALL_RATE = 10;
+    // ◆差分モード: ピン比較県（props内で完結・API追加不要）。章key→{val,ratio}
+    const pinnedPs = (pinnedPref && pinnedPref !== ndbPref) ? patientSurvey.prefectures[pinnedPref] : null;
+    const pinnedRowOf = (k) => {
+      if (!pinnedPs?.categories) return null;
+      const pv = pinnedPs.categories[k]?.[metricKey], nv = nat.categories[k]?.[metricKey];
+      return { val: pv, ratio: (pv != null && nv) ? pv / nv * 100 : null };
+    };
     // rank4: 21章フォレスト（Top7スライスを廃し全章露出）
     const forestAll = Object.entries(ps.categories).map(([k, v], idx) => {
       const val = v[metricKey], natVal = nat.categories[k]?.[metricKey];
@@ -876,12 +982,48 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
     const forestItems = [...forestAll].sort((a,b)=>{
       if (psSort === 'chapter') return a.idx - b.idx;
       if (psSort === 'abs') return (b.val||0) - (a.val||0);
+      if (psSort === 'pindiff' && pinnedPs) {
+        // 対◆差順: |自県乖離−◆県乖離| 降順。⚠章（自県・◆県いずれかが当metricで小受療率）は後方送り
+        const dd = (x) => {
+          const pr = pinnedRowOf(x.key);
+          const okSelf = x.ratio != null && x.val >= SMALL_RATE;
+          const okPin = pr != null && pr.ratio != null && pr.val != null && pr.val >= SMALL_RATE;
+          if (!okSelf || !okPin) return -1;
+          return Math.abs((x.ratio - 100) - (pr.ratio - 100));
+        };
+        return dd(b) - dd(a);
+      }
       // 乖離順: |対全国比−100| 降順（小受療率章は乖離が不安定なため後方へ）
       const da = (a.ratio != null && a.val >= SMALL_RATE) ? Math.abs(a.ratio - 100) : -1;
       const db = (b.ratio != null && b.val >= SMALL_RATE) ? Math.abs(b.ratio - 100) : -1;
       return db - da;
     });
     const maxForestVal = Math.max(1, ...forestAll.map(x=>x.val||0));
+    // ── 指紋ヘッドライン: 母集団= val>=SMALL_RATE かつ ratio非null（⚠章は絶対に昇格させない） ──
+    const fpEligible = forestAll.filter(x => x.ratio != null && x.val >= SMALL_RATE);
+    const fpHighs = fpEligible.filter(x => x.ratio - 100 >= 5).sort((a,b) => b.ratio - a.ratio);
+    const fpLows = fpEligible.filter(x => x.ratio - 100 <= -5).sort((a,b) => a.ratio - b.ratio);
+    const fpTopHighs = fpHighs.slice(0, 3);
+    const fpTopLows = fpLows.slice(0, 2);
+    const fpStdCount = fpEligible.length - fpHighs.length - fpLows.length;
+    const fpRestDiv = (fpHighs.length - fpTopHighs.length) + (fpLows.length - fpTopLows.length); // チップ非表示の乖離章（チェリーピッキング回避の全数明示）
+    const fpChipEl = (x) => {
+      const t = tierOf(x.ratio - 100);
+      return <button key={x.key} onClick={() => psJumpToRow(x.key)}
+        title={`${x.name} 対全国比${x.ratio.toFixed(0)}% — クリックで該当行へ`}
+        style={{display:'inline-flex',alignItems:'center',gap:4,padding:'2px 8px',borderRadius:12,
+          border:`1px solid ${t.color}55`,background:`${t.color}14`,color:t.color,
+          fontSize:mob?10:11,fontWeight:700,cursor:'pointer',maxWidth:mob?140:190}}>
+        <span style={{overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{x.name}</span>
+        <span style={{fontVariantNumeric:'tabular-nums',flexShrink:0}}>{x.ratio-100>0?'+':''}{(x.ratio-100).toFixed(0)}%</span>
+      </button>;
+    };
+    // ── 虹彩(PsIris)データ: forestAll を章番号順(idx順)のまま供給 ──
+    const irisItems = forestAll.map(x => ({ key: x.key, rom: x.chapter, name: x.name, ratio: x.ratio, small: x.val < SMALL_RATE }));
+    const pinnedIrisRatios = pinnedPs?.categories ? forestAll.map(x => pinnedRowOf(x.key)?.ratio ?? null) : null;
+    const irisFaded = activeDomain ? new Set(forestAll.filter(x => !dMatch('patientSurveyKey', x.key)).map(x => x.key)) : null;
+    const chipW = mob ? 36 : 88; // ことばチップ幅（48→88、傷病名 w150→142 で吸収）
+    const pinChipW = mob ? 34 : 58; // ◆差分チップ幅（ピン比較時のみ出現・mobは縦2段積み）
     // rank4 旧Top7（折りたたみ温存）
     const items = [...forestAll].filter(x=>x.val>0).sort((a,b)=>b.val-a.val).slice(0,7);
     const maxVal = items[0]?.val || 1;
@@ -928,6 +1070,12 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           <div style={{fontSize:14,fontWeight:700,color:'#1e293b'}}>
             受療率フィンガープリント — {totalLabel}
             <span style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#fce7f3',color:'#9f1239',fontWeight:500}}>需要・標本推計</span>
+            {pinnedPs && (
+              <span title="他セクションで立てた◆ピンによる比較モードです（解除は上部の◆ピンから）"
+                style={{marginLeft:6,fontSize:9,padding:'2px 6px',borderRadius:4,background:'#fff7ed',color:'#c2410c',border:'1px solid #fdba74',fontWeight:600}}>
+                ◆ {pinnedPref}と比較中
+              </span>
+            )}
           </div>
           <div style={{fontSize:11,color:'#94a3b8'}}>厚労省 令和5年患者調査(2023) 第39表 — 全21傷病大分類 × 対全国比（患者住所地ベース）</div>
           <div style={{fontSize:10,color:'#b45309',marginTop:2}}>※乖離は受療行動・供給・疾病構造の複合であり単一要因の証明ではない。</div>
@@ -945,6 +1093,21 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           ))}
         </div>
       </div>
+      {/* 指紋ヘッドライン — 乖離上位3高(rose)+2低(indigo)チップ+全数明示（psMode切替で内容更新） */}
+      <div style={{display:'flex',alignItems:'center',gap:6,flexWrap:'wrap',fontSize:mob?13:15,fontWeight:700,color:'#1e293b',margin:'0 0 12px'}}>
+        <span style={{flexShrink:0}}>{ndbPref}の指紋 —</span>
+        {fpTopHighs.length === 0 && fpTopLows.length === 0
+          ? <span style={{color:'#64748b'}}>際立つ乖離のない全国平均型の指紋</span>
+          : <>
+              {fpTopHighs.map(fpChipEl)}
+              {fpTopLows.map(fpChipEl)}
+              <span style={{fontSize:mob?10:11,fontWeight:600,color:'#94a3b8'}}>
+                {fpRestDiv > 0
+                  ? `/ ほか乖離${fpRestDiv}章・標準域(±5%以内)は${fpStdCount}章`
+                  : `/ 残る${fpStdCount}章は標準域(±5%以内)`}
+              </span>
+            </>}
+      </div>
       {/* 県全体総数 */}
       {myTotal != null && natTotal != null && (
         <div style={{display:'flex',gap:16,marginBottom:14,padding:'10px 14px',background:'#fef3f5',borderRadius:8}}>
@@ -958,19 +1121,40 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           </div>
           <div>
             <div style={{fontSize:10,color:'#94a3b8'}}>全国比</div>
-            <div style={{fontSize:mob?16:20,fontWeight:700,color:myTotal>natTotal?'#dc2626':'#059669'}}>
-              {myTotal>natTotal?'+':''}{((myTotal/natTotal-1)*100).toFixed(1)}%
+            <div style={{fontSize:mob?16:20,fontWeight:700,color:tierOf((myTotal/natTotal-1)*100).color,fontVariantNumeric:'tabular-nums'}}>
+              <CountUpNum value={(myTotal/natTotal-1)*100} decimals={1} signed suffix="%" />
             </div>
           </div>
         </div>
       )}
+      {/* ヒーロー2カラム: 左=虹彩(像で掴む) / 右=21行フォレスト(リストで検証) — mobは虹彩上の縦積み */}
+      <div style={{display:'flex',flexDirection:mob?'column':'row',gap:mob?12:20,alignItems:mob?'stretch':'flex-start'}}>
+      <div style={{flexShrink:0,width:mob?'100%':320,maxWidth:mob?300:320,margin:mob?'0 auto':undefined}}>
+        <PsIris
+          items={irisItems}
+          prefName={ndbPref}
+          modeLabel={totalLabel}
+          pinnedRatios={pinnedIrisRatios}
+          pinnedName={pinnedPref}
+          fadedKeys={irisFaded}
+          onHoverChapter={setHoverPSKey}
+          onSelectChapter={(key)=>{ const opening = psExpanded !== key; setPsExpanded(opening ? key : null); if (opening) psJumpToRow(key); }}
+          hoveredKey={hoverPSKey}
+          yearBadge={yb('patientSurvey')}
+          mob={mob}
+        />
+      </div>
+      <div style={{flex:1,minWidth:0}}>
       {/* rank4: ソート + 将来傾き凡例（参考推計バッジ常設） */}
-      <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:8,flexWrap:'wrap'}}>
+      <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:4,flexWrap:'wrap'}}>
         <span style={{fontSize:10,color:'#94a3b8',fontWeight:600}}>並び替え</span>
         <div style={{display:'flex',gap:0,border:'1px solid #e2e8f0',borderRadius:6,overflow:'hidden'}}>
-          {[['divergence','乖離順'],['abs','絶対値順'],['chapter','章番号順']].map(([k,l])=>(
-            <button key={k} onClick={()=>setPsSort(k)}
-              style={{padding:'4px 10px',border:'none',background:psSort===k?'#9f1239':'#fff',color:psSort===k?'#fff':'#475569',fontSize:11,fontWeight:600,cursor:'pointer'}}>{l}</button>
+          {[['divergence','乖離順'],['abs','絶対値順'],['chapter','章番号順'],...(pinnedPs?[['pindiff','対◆差順']]:[])].map(([k,l])=>(
+            <button key={k} onClick={()=>{ setPsSort(k); setPsExpanded(null); /* ソート切替時は展開を閉じる(FLIP文法) */ }}
+              title={k==='pindiff'?`|${ndbPref}の乖離−◆${pinnedPref}の乖離| が大きい章の順（⚠章は後方）`:undefined}
+              style={{padding:'4px 10px',border:'none',
+                background:psSort===k?(k==='pindiff'?'#c2410c':'#9f1239'):'#fff',
+                color:psSort===k?'#fff':(k==='pindiff'?'#c2410c':'#475569'),fontSize:11,fontWeight:600,cursor:'pointer'}}>{l}</button>
           ))}
         </div>
         <span style={{marginLeft:'auto',display:'inline-flex',alignItems:'center',gap:5,fontSize:9,padding:'2px 7px',borderRadius:4,background:'#fffbeb',color:'#b45309',border:'1px solid #fde68a',fontWeight:600}}>
@@ -978,36 +1162,90 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
           →2050傾き: 参考推計(受療率法)
         </span>
       </div>
-      {/* rank4: 21章フォレスト — x=対全国比%（基準線100%）・各行にPrefStrip47ドット文法 */}
+      {/* 読み方キャプション（常設1行・フッタ注記の重複はフッタ側を整理済） */}
+      <div style={{fontSize:10,color:'#94a3b8',margin:'0 0 6px',lineHeight:1.5}}>
+        読み方: 虹彩の花弁=各章の対全国比（外=高い・内=低い・網掛け=⚠標本誤差）／行の点=47都道府県・青破線=全国100%・●={ndbPref}／右のことばチップ=全国との差・→2050は参考推計
+      </div>
+      {/* 共有log2軸ヘッダ: 全行 domain=[40,250]・natAvg=100破線が同一xに縦整列（背骨）。mobは幅不足でラベル重なるため非表示 */}
+      {!mob && <div style={{display:'flex',alignItems:'center',gap:8,marginBottom:1}}>
+        <span style={{width:28,flexShrink:0}}/>
+        <span style={{width:142,flexShrink:0,fontSize:8,color:'#cbd5e1',textAlign:'right',overflow:'hidden',whiteSpace:'nowrap'}}>対全国比(共有log2軸)</span>
+        <div style={{flex:1,minWidth:120,display:'flex',alignItems:'center',gap:6}}>
+          <span aria-hidden="true" style={{visibility:'hidden',fontSize:8,fontWeight:700,padding:'0 4px',border:'1px solid transparent',borderRadius:4,lineHeight:1.4,flexShrink:0}}>{yb('patientSurvey').label}</span>
+          <div style={{flex:1,minWidth:40,position:'relative',height:11,fontSize:8,color:'#94a3b8'}}>
+            <div style={{position:'absolute',left:6,right:6,top:0,bottom:0}}>
+              <span style={{position:'absolute',left:'12.2%',transform:'translateX(-50%)'}}>×0.5</span>
+              <span style={{position:'absolute',left:'50%',transform:'translateX(-50%)',color:'#2563EB',fontWeight:600}}>100%</span>
+              <span style={{position:'absolute',left:'87.8%',transform:'translateX(-50%)'}}>×2</span>
+            </div>
+          </div>
+        </div>
+        <span style={{width:chipW,flexShrink:0}}/>
+        {pinnedPs && <span style={{width:pinChipW,flexShrink:0,fontSize:8,color:'#fdba74',textAlign:'right'}}>◆{pinnedPref}</span>}
+        <span style={{width:100,flexShrink:0}}/>
+      </div>}
+      {/* rank4: 21章フォレスト — x=対全国比%（共有log2軸・基準線100%）・各行にPrefStrip47ドット文法 */}
       <div style={{display:'flex',flexDirection:'column',gap:2}}>
         {forestItems.map(it => {
           const delta = (it.ratio != null) ? (it.ratio - 100) : null;
           const small = it.val < SMALL_RATE; // 小受療率 → 標本誤差で乖離%抑制
           const ratioStrip = ratioStripPS(it.key);
           const expanded = psExpanded === it.key;
-          return <div key={it.key} style={{padding:'2px 0',borderRadius:6,background:expanded?'#fef3f5':'transparent',...dFade('patientSurveyKey',it.key),...dBorder('patientSurveyKey',it.key)}}>
+          const rowLit = hoverPSKey === it.key; // 虹彩↔行 双方向同期
+          return <div key={it.key} ref={el => { psRowRefs.current[it.key] = el; }}
+            onMouseEnter={mob ? undefined : () => setHoverPSKey(it.key)}
+            onMouseLeave={mob ? undefined : () => setHoverPSKey(prev => prev === it.key ? null : prev)}
+            style={{padding:'2px 0',borderRadius:6,
+              background: psFlashKey===it.key ? '#fbcfe8' : expanded ? '#fef3f5' : rowLit ? '#f1f5f9' : 'transparent',
+              transition:'background 400ms ease',
+              ...dFade('patientSurveyKey',it.key),...dBorder('patientSurveyKey',it.key)}}>
             <div style={{display:'flex',alignItems:'center',gap:mob?4:8}}>
               <span style={{width:mob?18:28,fontSize:9,fontWeight:600,color:'#9f1239',flexShrink:0,textAlign:'right'}}>{it.chapter}</span>
               <span onClick={()=>setPsExpanded(expanded?null:it.key)} title={it.name}
-                style={{width:mob?78:150,fontSize:mob?10:12,color:'#475569',flexShrink:0,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',cursor:'pointer'}}>
+                style={{width:mob?78:142,fontSize:mob?10:12,color:rowLit?'#1e293b':'#475569',fontWeight:rowLit?600:400,flexShrink:0,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap',cursor:'pointer'}}>
                 {expanded?'▾ ':''}{it.name}
               </span>
               <div style={{flex:1,minWidth:mob?60:120}}>
                 {ratioStrip.length >= 40
-                  ? <PrefStrip47 {...stripCommon} values={ratioStrip} natAvg={100} yearBadge={yb('patientSurvey')} mode="micro" />
+                  ? <PrefStrip47 {...stripCommon} values={ratioStrip} natAvg={100} domain={[40,250]} scale="log2" yearBadge={yb('patientSurvey')} mode="micro" />
                   : <span style={{fontSize:9,color:'#cbd5e1'}}>分布データ不足</span>}
               </div>
               {small
-                ? <span title="入院受療率が小さく標本誤差が大きいため乖離%を抑制" style={{fontSize:10,fontWeight:600,color:'#cbd5e1',width:mob?36:48,textAlign:'right',flexShrink:0}}>⚠ {it.val}</span>
+                ? <span title="入院受療率が小さく標本誤差が大きいため乖離%を抑制" style={{fontSize:10,fontWeight:600,color:'#cbd5e1',width:chipW,textAlign:'right',flexShrink:0}}>⚠ {it.val}</span>
                 : (delta != null
-                    ? <span style={{fontSize:10,fontWeight:600,color:Math.abs(delta)<5?'#64748b':(delta>0?'#dc2626':'#059669'),width:mob?36:48,textAlign:'right',flexShrink:0,fontVariantNumeric:'tabular-nums'}}>{delta>0?'+':''}{delta.toFixed(0)}%</span>
-                    : <span style={{width:mob?36:48,flexShrink:0}}/>)}
+                    ? (()=>{ const t = tierOf(delta); return (
+                        <span title={`対全国比 ${it.ratio.toFixed(0)}%（全国との差 ${delta>0?'+':''}${delta.toFixed(1)}%）`}
+                          style={{width:chipW,flexShrink:0,display:'flex',flexDirection:'column',alignItems:'flex-end',justifyContent:'center',lineHeight:1.15}}>
+                          <span style={{fontSize:mob?9:10,fontWeight:700,color:t.color}}>{mob?t.short:t.label}</span>
+                          {!mob && <span style={{fontSize:9,fontWeight:600,color:'#94a3b8',fontVariantNumeric:'tabular-nums'}}><CountUpNum value={delta} signed suffix="%" /></span>}
+                        </span>); })()
+                    : <span style={{width:chipW,flexShrink:0}}/>)}
+              {/* ◆差分チップ（ピン比較時のみ・枠線付きで推計amberチップと識別・mobは縦2段積み） */}
+              {pinnedPs && (()=>{
+                const pr = pinnedRowOf(it.key);
+                const pinSmall = !pr || pr.val == null || pr.val < SMALL_RATE || pr.ratio == null;
+                if (pinSmall) return (
+                  <span title={`◆${pinnedPref}: この章は${totalLabel}受療率が小さく標本誤差が大きいため乖離%を抑制`}
+                    style={{width:pinChipW,flexShrink:0,fontSize:9,fontWeight:600,color:'#fdba74',textAlign:'right'}}>◆⚠</span>
+                );
+                const pd = pr.ratio - 100;
+                const selfOk = !small && delta != null;
+                const fmtD = (v) => `${v>0?'+':''}${v.toFixed(0)}%`;
+                return (
+                  <span title={`${ndbPref} ${selfOk?fmtD(delta):'⚠抑制'} / ◆${pinnedPref} ${fmtD(pd)}${selfOk?` / 差 ${(delta-pd)>0?'+':''}${(delta-pd).toFixed(0)}pp`:''} — 受療行動・供給・疾病構造の複合差であり優劣ではありません`}
+                    style={{width:pinChipW,flexShrink:0,display:'flex',flexDirection:mob?'column':'row',alignItems:mob?'flex-end':'center',justifyContent:'flex-end',gap:mob?0:3,
+                      fontSize:9,fontWeight:700,color:'#c2410c',border:'1px solid #fdba74',borderRadius:4,padding:'1px 3px',background:'#fff',lineHeight:1.2,boxSizing:'border-box'}}>
+                    <span>◆</span>
+                    <span style={{fontVariantNumeric:'tabular-nums'}}><CountUpNum value={pd} signed suffix="%" /></span>
+                  </span>
+                );
+              })()}
               {renderSlope(it.chapter)}
             </div>
             {expanded && <div style={{margin:`4px 0 6px ${mob?24:40}px`,padding:'8px 10px',background:'#fff',borderRadius:6,border:'1px solid #fce7f3'}}>
               <div style={{fontSize:10,color:'#64748b',marginBottom:4}}>
                 {it.name} — {ndbPref} {it.val ?? '—'}／全国 {it.natVal ?? '—'}（人口10万対）
-                {it.ratio != null && <b style={{marginLeft:6,color:it.ratio>100?'#dc2626':'#059669'}}>対全国比 {it.ratio.toFixed(0)}%</b>}
+                {it.ratio != null && (()=>{ const t = tierOf(it.ratio - 100); return <b style={{marginLeft:6,color:t.color}}>対全国比 {it.ratio.toFixed(0)}%（{t.label}）</b>; })()}
               </div>
               {ratioStrip.length >= 40
                 ? <PrefStrip47 {...stripCommon} values={ratioStrip} natAvg={100} yearBadge={yb('patientSurvey')} mode="full" />
@@ -1015,9 +1253,48 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
               <div style={{fontSize:9,color:'#94a3b8',marginTop:4}}>
                 ドット=各県の対全国比（青破線=100%基準）／将来傾き {renderSlope(it.chapter)} は受療率法による参考推計。
               </div>
+              {/* マップエコー: 対全国比の47県コロプレスをその場展開（死因セクションと同一パターン） */}
+              {ratioStrip.length >= 40 && (
+                <div style={{marginTop:6}}>
+                  <button onClick={()=>setPsMapOpen(v=>!v)}
+                    style={{padding:'3px 9px',border:'1px solid #fce7f3',background:psMapOpen?'#fef3f5':'#fff',color:'#9f1239',borderRadius:6,fontSize:10,fontWeight:600,cursor:'pointer'}}>
+                    {psMapOpen?'▾ 地図を閉じる':'▸ 47県地図で見る'}
+                  </button>
+                  {psMapOpen && (
+                    <div style={{marginTop:6}}>
+                      <PrefChoropleth
+                        japanMap={japanMap}
+                        valueByPref={Object.fromEntries(ratioStrip.map(d=>[d.pref, d.value]))}
+                        selected={ndbPref}
+                        onSelect={setNdbPref}
+                        title={`${it.name}（${totalLabel}）対全国比`}
+                        unit="%"
+                        yearBadge={yb('patientSurvey')}
+                        mob={mob}
+                        height={mob?150:180}
+                      />
+                      <div style={{fontSize:9,color:'#94a3b8',marginTop:5,lineHeight:1.5}}>
+                        色階級はこの指標だけの5分位で、指標ごとに独立です。<b>地図どうしで色の濃淡は比較できません</b>。ここに現れる高低は「地域差の観察」であり、原因の特定ではありません。
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>}
           </div>;
         })}
+      </div>
+      {/* ことばスケール凡例（5スウォッチ・常設） */}
+      <div style={{display:'flex',alignItems:'center',flexWrap:'wrap',gap:mob?6:10,fontSize:9,color:'#94a3b8',marginTop:6}}>
+        {FP_TIERS.map(t => (
+          <span key={t.label} style={{display:'inline-flex',alignItems:'center',gap:3}}>
+            <svg width={10} height={10} style={{flexShrink:0}}><rect x={1} y={1} width={8} height={8} rx={2} fill={t.color}/></svg>
+            {t.label}
+          </span>
+        ))}
+        <span style={{fontWeight:600}}>※高低は良し悪しではありません</span>
+      </div>
+      </div>
       </div>
       {/* rank4: 旧Top7表示を折りたたみで温存 */}
       <div style={{marginTop:12}}>
@@ -1037,7 +1314,7 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
                   <div style={{height:'100%',borderRadius:3,background:'#9f1239',width:`${it.val/maxVal*100}%`,opacity:0.75}}/>
                 </div>
                 <span style={{fontSize:11,fontWeight:600,color:'#9f1239',fontVariantNumeric:'tabular-nums',width:42,textAlign:'right',flexShrink:0}}>{it.val}</span>
-                {delta != null && <span style={{fontSize:10,fontWeight:600,color:delta>0?'#dc2626':'#059669',width:48,textAlign:'right',flexShrink:0}}>{delta>0?'+':''}{delta.toFixed(0)}%</span>}
+                {delta != null && <span style={{fontSize:10,fontWeight:600,color:tierOf(delta).color,width:48,textAlign:'right',flexShrink:0}}>{delta>0?'+':''}{delta.toFixed(0)}%</span>}
               </div>
               {psStrip.length >= 40 && <div style={{margin:`2px 0 4px ${mob?28:38}px`}}><PrefStrip47 {...stripCommon} values={psStrip} yearBadge={yb('patientSurvey')} mode="inline" /></div>}
             </div>;
@@ -1046,8 +1323,8 @@ export default function NdbView({ mob, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPre
       </div>
       <div style={{fontSize:10,color:'#94a3b8',marginTop:10,lineHeight:1.6}}>
         ※受療率は「人口10万対」で標準化済み。<b>NDB（供給）とは異なり、患者住所地ベースの標本推計</b>です。
-        標本誤差を含むため、地域差の細かな比較には注意（⚠は入院受療率が小さく比率が不安定な章）。3年ごとの調査で、次回は令和8年調査が見込まれる（公表時期は調査実施後）。<br/>
-        ※<b style={{color:'#b45309'}}>→2050傾き</b>は demand_projection（受療率法・参考推計）による1日平均患者数の 2025→2050 変化率。塗り＝基準年・白抜き＝将来推計で受療率を固定し人口変動のみを反映した参考値であり、実測受療率とは色・塗りで分離しています。
+        標本誤差を含むため地域差の細かな比較には注意。3年ごとの調査で、次回は令和8年調査が見込まれる。<br/>
+        ※<b style={{color:'#b45309'}}>→2050傾き</b>は受療率法（demand_projection）による1日平均患者数の2025→2050変化率。受療率を固定し人口変動のみを反映した<b>参考推計</b>（塗り=基準年・白抜き=推計）。
       </div>
     </div>);
   })()}
