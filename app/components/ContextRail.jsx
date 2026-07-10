@@ -8,7 +8,7 @@
 import { useSelection } from './SelectionContext';
 
 // view → 地理階層レベル（0=全国 / 1=都道府県 / 2=医療圏 / 3=施設）
-const LEVEL_OF_VIEW = { map: 0, ndb: 1, bedfunc: 1, muni: 1, area: 2, report: 2, explorer: 3 };
+const LEVEL_OF_VIEW = { home: 0, map: 0, ndb: 1, bedfunc: 1, muni: 1, area: 2, report: 2, explorer: 3 };
 
 export default function ContextRail({ mob }) {
   const { view, pref, reportCode, navigate } = useSelection();
@@ -17,7 +17,7 @@ export default function ContextRail({ mob }) {
 
   // ── パンくず: 現在の階層位置までのパス（各祖先ノード click = その階層へ昇降）──
   const crumbs = [
-    { key: 'national', label: '全国', view: 'map', lvl: 0 },
+    { key: 'national', label: '全国', view: 'home', lvl: 0 },
     { key: 'pref', label: pref || '都道府県', view: 'ndb', lvl: 1 },
   ];
   if (isAreaLevel) crumbs.push({ key: 'area', label: view === 'report' ? '医療圏カルテ' : '医療圏', view: 'area', lvl: 2 });

@@ -10,7 +10,7 @@ import { createContext, useContext, useState, useEffect, useRef, useCallback } f
 
 // 既定値（従来 page.js の useState 初期値と一致させる＝挙動不変）
 const DEFAULTS = {
-  view: 'map',
+  view: 'home',   // 既定ランディング＝全国サマリー（旧 ?v=map 等の URL は従来通り着地＝後方互換）
   pref: '東京都',
   futureYear: '2025',
 };

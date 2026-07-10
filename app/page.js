@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { SelectionProvider, useSelection, useUrlSync } from './components/SelectionContext';
 import ContextRail from './components/ContextRail';
+import HomeView from './components/views/HomeView'; // 既定ランディング＝静的 import で初回表示を即時化
 import { useData, fetchData } from '../lib/dataClient';
 
 // ビューは next/dynamic で遅延ロード(初期チャンクからビュー本体+jspdf等を分離)。ssr:false・簡易ローディング付き。
@@ -69,10 +70,14 @@ function HomeInner() {
   useUrlSync(); // ?v&pref&code&year&pin&domain 双方向同期・popstate・後方互換
   // グループ内で最後に見たビューを記憶し、グループタップで views[0] でなくそこへ復帰する
   const [lastViewOfGroup, setLastViewOfGroup] = useState({});
+  // home はどの地理階層グループにも属さない（別名前空間）ため記憶対象から除外する
+  const inSomeGroup = NAV_GROUPS.some(g => g.views.some(([id]) => id === view));
+  const activeGroupId = inSomeGroup ? groupOfView(view).id : null;
   useEffect(() => {
+    if (!inSomeGroup) return;
     const gid = groupOfView(view).id;
     setLastViewOfGroup(m => m[gid] === view ? m : { ...m, [gid]: view });
-  }, [view]);
+  }, [view]); // eslint-disable-line react-hooks/exhaustive-deps
   const goGroup = (g) => setView(lastViewOfGroup[g.id] || g.views[0][0]);
   const [metric, setMetric] = useState('facilities');
   const [prefs, setPrefs] = useState([]);
@@ -170,7 +175,7 @@ function HomeInner() {
       {/* Desktop Sidebar / Mobile Bottom Nav */}
       {mob ? (
         <nav style={{position:'fixed',bottom:0,left:0,right:0,background:'#fff',borderTop:'1px solid #e2e8f0',display:'flex',zIndex:50,padding:'6px 0 env(safe-area-inset-bottom)',boxShadow:'0 -2px 8px rgba(0,0,0,0.06)'}}>
-          {NAV_GROUPS.map(g=>{const on=groupOfView(view).id===g.id;return(
+          {NAV_GROUPS.map(g=>{const on=activeGroupId===g.id;return(
             <button key={g.id} onClick={()=>goGroup(g)} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:3,padding:'6px 0',border:'none',background:'transparent',cursor:'pointer',color:on?'#2563EB':'#94a3b8',fontSize:10.5,fontWeight:on?700:400}}>
               <svg width={19} height={19} viewBox="0 0 24 24" fill="none" stroke={on?'#2563EB':'#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={g.icon}/></svg>
               {g.label}
@@ -179,12 +184,13 @@ function HomeInner() {
         </nav>
       ) : (
       <aside style={{width:214,background:'#fff',borderRight:'1px solid #f0f0f0',padding:'20px 12px',flexShrink:0,position:'sticky',top:0,height:'100vh',boxSizing:'border-box',display:'flex',flexDirection:'column',gap:3}}>
-        <div style={{padding:'0 14px 16px',borderBottom:'1px solid #f0f0f0',marginBottom:8}}>
-          <div style={{fontSize:18,fontWeight:700,letterSpacing:'-0.03em'}}>MedIntel</div>
+        <button onClick={()=>setView('home')} style={{padding:'0 14px 16px',borderBottom:'1px solid #f0f0f0',marginBottom:8,border:'none',background:'transparent',textAlign:'left',cursor:'pointer',width:'100%'}} title="ホーム（全国サマリー）">
+          <div style={{fontSize:18,fontWeight:700,letterSpacing:'-0.03em',color:'#0f172a'}}>MedIntel</div>
           <div style={{fontSize:11,color:'#94a3b8',marginTop:2}}>日本の医療と高齢社会</div>
-        </div>
+        </button>
+        <Nav icon="M3 12l9-8 9 8M5 10v10h5v-6h4v6h5V10" label="ホーム" active={view==='home'} onClick={()=>setView('home')}/>
         {NAV_GROUPS.map(g=>(
-          <Nav key={g.id} icon={g.icon} label={g.label} active={groupOfView(view).id===g.id} onClick={()=>goGroup(g)}/>
+          <Nav key={g.id} icon={g.icon} label={g.label} active={activeGroupId===g.id} onClick={()=>goGroup(g)}/>
         ))}
         <div style={{flex:1}}/>
         <div style={{padding:'12px 14px',borderTop:'1px solid #f0f0f0',fontSize:11,color:'#cbd5e1'}}>
@@ -192,11 +198,22 @@ function HomeInner() {
         </div>
       </aside>
       )}
+      {/* モバイル: 上部ロゴバー＝ホーム割当（下部4タブは維持）。home 上では省略（ヒーローが見出しを兼ねる）。 */}
+      {mob && view!=='home' && (
+        <div style={{flexShrink:0,display:'flex',alignItems:'center',gap:8,padding:'10px 16px',background:'#fff',borderBottom:'1px solid #f0f0f0'}}>
+          <button onClick={()=>setView('home')} style={{border:'none',background:'transparent',padding:0,cursor:'pointer',display:'flex',alignItems:'center',gap:8}}>
+            <svg width={16} height={16} viewBox="0 0 24 24" fill="none" stroke="#2563EB" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12l9-8 9 8M5 10v10h5v-6h4v6h5V10"/></svg>
+            <span style={{fontSize:15,fontWeight:700,letterSpacing:'-0.03em',color:'#0f172a'}}>MedIntel</span>
+          </button>
+        </div>
+      )}
       <main style={{flex:1,minHeight:mob?0:undefined,padding:mob?'16px 16px 80px':'28px 32px',maxWidth:1100,overflow:'auto'}}>
-        {/* 深掘りチェーン: 全ビュー共通の階層パンくず＋ジャンプチップ（navigate 経由） */}
-        <ContextRail mob={mob} />
+        {/* ═══ HOME VIEW（全国サマリー・既定ランディング） ═══ */}
+        {view==='home' && <HomeView mob={mob} prefs={prefs} vitalStats={vitalStats} agePyramid={agePyramid} bedFunc={bedFunc} futureDemo={futureDemo} />}
+        {/* 深掘りチェーン: 全ビュー共通の階層パンくず＋ジャンプチップ（navigate 経由）。home は自前の階層カードを持つため非表示。 */}
+        {view!=='home' && <ContextRail mob={mob} />}
         {/* サブタブ（グループ内に複数ビューがある場合） */}
-        {groupOfView(view).views.length>1 && (
+        {view!=='home' && groupOfView(view).views.length>1 && (
           <div style={{display:'flex',gap:6,marginBottom:20,flexWrap:mob?'nowrap':'wrap',overflowX:mob?'auto':'visible',borderBottom:'1px solid #f0f0f0',paddingBottom:12,...(mob?{position:'sticky',top:0,zIndex:45,background:'#f8f9fb'}:{})}}>
             {groupOfView(view).views.map(([id,l])=>(
               <button key={id} onClick={()=>setView(id)} style={{flexShrink:0,padding:'7px 14px',borderRadius:8,border:'1px solid '+(view===id?'#2563EB':'#e2e8f0'),background:view===id?'#eff6ff':'#fff',color:view===id?'#2563EB':'#64748b',fontSize:13,fontWeight:600,cursor:'pointer'}}>{l}</button>
