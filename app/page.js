@@ -201,7 +201,7 @@ export default function Home() {
         )}
 
         {/* ═══ MAP VIEW ═══ */}
-        {view==='map' && <MapView mob={mob} prefs={prefs} metric={metric} setMetric={setMetric} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} setGlobalPref={setGlobalPref} setView={setView} vitalStats={vitalStats} globalPref={globalPref} />}
+        {view==='map' && <MapView mob={mob} prefs={prefs} metric={metric} setMetric={setMetric} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} setGlobalPref={setGlobalPref} setView={setView} vitalStats={vitalStats} globalPref={globalPref} futureDemo={futureDemo} />}
 
         {/* ═══ MUNI VIEW ═══ */}
         {view==='muni' && <MuniView mob={mob} areaDemoData={areaDemoData} demoPref={muniPref} setDemoPref={setMuniPref} demoArea={demoArea} setDemoArea={setDemoArea} demoPrefList={demoPrefList} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} futureDemo={futureDemo} futureYear={futureYear} setFutureYear={setFutureYear} agePyramid={agePyramid} />}
@@ -213,13 +213,13 @@ export default function Home() {
         {view==='report' && <AreaReportView mob={mob} globalPref={globalPref} setGlobalPref={setGlobalPref} setView={setView} initialCode={reportCode} onInitialCodeConsumed={()=>setReportCode(null)} />}
 
         {/* ═══ SCORING VIEW ═══ */}
-        {view==='bedfunc' && <RegionalBedFunctionView mob={mob} bedFunc={bedFunc} regPref={globalPref} setRegPref={setGlobalPref} agePyramid={agePyramid} ndbDiag={ndbDiag} homecareCapability={homecareCapability} />}
+        {view==='bedfunc' && <RegionalBedFunctionView mob={mob} bedFunc={bedFunc} regPref={globalPref} setRegPref={setGlobalPref} agePyramid={agePyramid} ndbDiag={ndbDiag} homecareCapability={homecareCapability} japanMap={japanMap} />}
 
         {/* ═══ NDB VIEW ═══ */}
         {view==='ndb' && <NdbView mob={mob} ndbDiag={ndbDiag} ndbRx={ndbRx} ndbHc={ndbHc} ndbPref={globalPref} setNdbPref={setGlobalPref} setNdbRx={setNdbRx} vitalStats={vitalStats} ndbQ={ndbQ} agePyramid={agePyramid} futureDemo={futureDemo} patientSurvey={patientSurvey} bedFunc={bedFunc} ndbCheckupRiskRates={ndbCheckupRiskRates} ndbCheckupRiskRatesStd={ndbCheckupRiskRatesStd} mortalityOutcome2020={mortalityOutcome2020} cancerSites2024={cancerSites2024} homecareCapability={homecareCapability} japanMap={japanMap} futureYear={futureYear} setFutureYear={setFutureYear} />}
 
         {/* ═══ FACILITY STANDARDS VIEW ═══ */}
-        {view==='explorer' && <FacilityExplorerView mob={mob} kijunData={kijunData} setKijunData={setKijunData} kijunSummary={kijunSummary} kijunPref={globalPref} setKijunPref={setGlobalPref} kijunPage={kijunPage} setKijunPage={setKijunPage} kijunSearch={kijunSearch} setKijunSearch={setKijunSearch} kijunSort={kijunSort} setKijunSort={setKijunSort} kijunExpanded={kijunExpanded} setKijunExpanded={setKijunExpanded} topFac={topFac} facSearch={facSearch} setFacSearch={setFacSearch} searchResults={searchResults} doSearch={doSearch} geoFacilities={geoFacilities} />}
+        {view==='explorer' && <FacilityExplorerView mob={mob} kijunData={kijunData} setKijunData={setKijunData} kijunSummary={kijunSummary} kijunPref={globalPref} setKijunPref={setGlobalPref} kijunPage={kijunPage} setKijunPage={setKijunPage} kijunSearch={kijunSearch} setKijunSearch={setKijunSearch} kijunSort={kijunSort} setKijunSort={setKijunSort} kijunExpanded={kijunExpanded} setKijunExpanded={setKijunExpanded} topFac={topFac} facSearch={facSearch} setFacSearch={setFacSearch} searchResults={searchResults} doSearch={doSearch} geoFacilities={geoFacilities} japanMap={japanMap} />}
 
         {/* ═══ GEO MAP VIEW ═══ */}
 

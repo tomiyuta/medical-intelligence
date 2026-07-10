@@ -22,11 +22,42 @@ import HsaSummaryCards from '../hsa/HsaSummaryCards';
 const CH_COLOR = ['#64748b', '#2563EB', '#0891b2', '#7c3aed', '#059669'];
 const selStyle = { padding: '8px 12px', borderRadius: 8, border: '1px solid #e2e8f0', fontSize: 13, background: '#fff', cursor: 'pointer' };
 
-function ChapterHead({ idx, name }) {
+const CHAPTERS = [
+  { id: 'ch1', idx: 1, name: '1. 地域の概況' },
+  { id: 'ch2', idx: 2, name: '2. 医療提供体制' },
+  { id: 'ch3', idx: 3, name: '3. 医療需要の将来推計' },
+  { id: 'ch4', idx: 4, name: '4. パフォーマンス・連携' },
+];
+
+function ChapterHead({ id, idx, name }) {
   return (
-    <div style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '20px 2px 10px' }}>
+    <div id={id} style={{ display: 'flex', alignItems: 'center', gap: 8, margin: '20px 2px 10px', scrollMarginTop: 56 }}>
       <span style={{ width: 4, height: 18, borderRadius: 2, background: CH_COLOR[idx] || '#64748b' }} />
       <span style={{ fontSize: 15, fontWeight: 700, color: '#334155', letterSpacing: '-0.01em' }}>{name}</span>
+    </div>
+  );
+}
+
+// 章スクロールスパイ付き sticky ナビ（click=章へジャンプ）
+function ChapterNav({ active, onJump, mob }) {
+  return (
+    <div style={{ position: 'sticky', top: 0, zIndex: 6, margin: '0 -2px 14px', padding: '8px 2px',
+                  background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)',
+                  borderBottom: '1px solid #eef2f6', display: 'flex', gap: 6, overflowX: 'auto' }}>
+      {CHAPTERS.map(ch => {
+        const on = active === ch.id;
+        return (
+          <button key={ch.id} onClick={() => onJump(ch.id)}
+                  style={{ display: 'flex', alignItems: 'center', gap: 6, whiteSpace: 'nowrap', flexShrink: 0,
+                           padding: '5px 11px', borderRadius: 8, cursor: 'pointer',
+                           border: '1px solid ' + (on ? CH_COLOR[ch.idx] : '#e2e8f0'),
+                           background: on ? CH_COLOR[ch.idx] + '14' : '#fff',
+                           color: on ? CH_COLOR[ch.idx] : '#64748b', fontSize: mob ? 11 : 12, fontWeight: on ? 700 : 600 }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: on ? CH_COLOR[ch.idx] : '#cbd5e1' }} />
+            {mob ? ch.name.split('.')[0] + '. ' + ch.name.split('. ')[1].slice(0, 4) : ch.name}
+          </button>
+        );
+      })}
     </div>
   );
 }
@@ -38,6 +69,7 @@ export default function AreaReportView({ mob, globalPref, setGlobalPref, initial
   const [areas, setAreas] = useState([]);          // 軽量圏域一覧
   const [prefectures, setPrefectures] = useState([]);
   const [code, setCode] = useState(null);          // 選択圏コード
+  const [activeCh, setActiveCh] = useState('ch1');  // 章スクロールスパイ
 
   // 初期ロード（軽量一覧）
   useEffect(() => {
@@ -68,6 +100,32 @@ export default function AreaReportView({ mob, globalPref, setGlobalPref, initial
     if (!areasInPref.length) { setCode(null); return; }
     if (!areasInPref.some(a => a.code === code)) setCode(areasInPref[0].code);
   }, [areasInPref]); // eslint-disable-line
+
+  // 章スクロールスパイ: 見出しが上端付近を越えた最後の章をアクティブに
+  useEffect(() => {
+    if (!code) return;
+    const onScroll = () => {
+      let act = CHAPTERS[0].id;
+      for (const ch of CHAPTERS) {
+        const el = document.getElementById(ch.id);
+        if (el && el.getBoundingClientRect().top <= 120) act = ch.id;
+      }
+      setActiveCh(act);
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [code]);
+
+  // パネル/章へのスクロール（閉パネルは開いてから）＋ reduced-motion 尊重
+  const goTo = (id) => {
+    const el = typeof document !== 'undefined' && document.getElementById(id);
+    if (!el) return;
+    const btn = el.querySelector('button');
+    if (btn && /開く/.test(btn.textContent || '')) btn.click();
+    const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+  };
 
   const sel = areas.find(a => a.code === code) || null;
 
@@ -123,24 +181,25 @@ export default function AreaReportView({ mob, globalPref, setGlobalPref, initial
     {/* カルテパネル（1リクエストで全パネル取得・章別グルーピング） */}
     {sel ? (
       <HsaAreaProvider code={sel.code}>
-        <HsaSummaryCards mob={mob} />
-        <ChapterHead idx={1} name="1. 地域の概況" />
+        <ChapterNav active={activeCh} onJump={goTo} mob={mob} />
+        <HsaSummaryCards mob={mob} setCode={setCode} onJumpPanel={goTo} />
+        <ChapterHead id="ch1" idx={1} name="1. 地域の概況" />
         <HsaOverviewPanel mob={mob} />
-        <HsaPopulationPanel mob={mob} />
-        <HsaPhysicianPanel mob={mob} />
+        <section id="sec-population" style={{ scrollMarginTop: 56 }}><HsaPopulationPanel mob={mob} /></section>
+        <section id="sec-physician" style={{ scrollMarginTop: 56 }}><HsaPhysicianPanel mob={mob} /></section>
         <HsaSpecialtyPanel mob={mob} />
         <HsaDesignationPanel mob={mob} />
-        <ChapterHead idx={2} name="2. 医療提供体制" />
-        <HsaBedDetailPanel mob={mob} />
+        <ChapterHead id="ch2" idx={2} name="2. 医療提供体制" />
+        <section id="sec-bed" style={{ scrollMarginTop: 56 }}><HsaBedDetailPanel mob={mob} /></section>
         <HsaInpatientPanel mob={mob} />
         <HsaHospTrendPanel mob={mob} />
         <HsaEmergencyPanel mob={mob} />
-        <ChapterHead idx={3} name="3. 医療需要の将来推計" />
+        <ChapterHead id="ch3" idx={3} name="3. 医療需要の将来推計" />
         <HsaDemandPanel mob={mob} />
         <HsaCarePanel mob={mob} />
         <HsaHomecarePanel mob={mob} />
         <HsaSurgeryPanel mob={mob} />
-        <ChapterHead idx={4} name="4. パフォーマンス・連携" />
+        <ChapterHead id="ch4" idx={4} name="4. パフォーマンス・連携" />
         <HsaDpcPanel mob={mob} />
         <HsaDpcTrendPanel mob={mob} />
       </HsaAreaProvider>

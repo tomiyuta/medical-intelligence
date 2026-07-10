@@ -4,6 +4,59 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGri
 import { fmt } from '../shared';
 import { useHsaPanel } from '../hsa/useHsaArea';
 import HsaPanel from '../hsa/HsaPanel';
+import { CountUpNum } from '../ui/vizHooks';
+
+// 過不足ステータス配色: 不足=赤 / 過剰=琥珀 / 整合=緑
+function necStatus(diff) {
+  if (diff < 0) return { label: '不足', color: '#dc2626', mark: '▲' };
+  if (diff > 0) return { label: '過剰', color: '#d97706', mark: '+' };
+  return { label: '整合', color: '#0f6e5d', mark: '' };
+}
+
+// 機能別の実績推移スパークライン（時系列の別ミニ軸・ダンベル背後に温存）
+function NecSparkline({ series, color, w = 52, h = 22 }) {
+  if (!series || series.length < 2) return <svg width={w} height={h} style={{ display: 'block' }} />;
+  const min = Math.min(...series), max = Math.max(...series), rng = (max - min) || 1;
+  const px = (i) => (i / (series.length - 1)) * (w - 3) + 1.5;
+  const py = (v) => (h - 2) - ((v - min) / rng) * (h - 4);
+  const pts = series.map((v, i) => `${px(i).toFixed(1)},${py(v).toFixed(1)}`).join(' ');
+  const li = series.length - 1;
+  return (
+    <svg width={w} height={h} style={{ display: 'block' }} aria-hidden="true">
+      <polyline points={pts} fill="none" stroke={color} strokeWidth={1.3} strokeOpacity={0.5} strokeLinejoin="round" strokeLinecap="round" />
+      <circle cx={px(li)} cy={py(series[li])} r={1.9} fill={color} />
+    </svg>
+  );
+}
+
+// 機能1行のダンベル: 2024実績●が2025必要○へ届くか。連結線色=過不足方向。
+function NecDumbbellRow({ f, cur, need, diff, domainMax, series, mob }) {
+  const st = necStatus(diff);
+  const curPct = Math.min(100, cur / domainMax * 100);
+  const needPct = Math.min(100, need / domainMax * 100);
+  const lo = Math.min(curPct, needPct), span = Math.abs(curPct - needPct);
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: mob ? '52px 40px 1fr 76px' : '72px 54px 1fr 96px', alignItems: 'center', gap: mob ? 6 : 10, padding: '5px 0' }}>
+      <span style={{ fontSize: mob ? 11 : 12, fontWeight: 700, color: f.color, whiteSpace: 'nowrap' }}>{f.key}</span>
+      <NecSparkline series={series} color={f.color} w={mob ? 40 : 54} />
+      <div style={{ position: 'relative', height: 26 }}>
+        <div style={{ position: 'absolute', left: 0, right: 0, top: 12, height: 2, background: '#eef1f5', borderRadius: 1 }} />
+        {/* 過不足の発散セグメント（●→○間・不足赤/過剰琥珀/整合緑） */}
+        <div style={{ position: 'absolute', top: 11, left: `${lo}%`, width: `${Math.max(span, 0.4)}%`, height: 4, background: st.color, opacity: 0.85, borderRadius: 2 }} />
+        {/* 必要 ○（中空スレート） */}
+        <div title={`2025必要 ${fmt(need)}床`} style={{ position: 'absolute', top: 6, left: `calc(${needPct}% - 6px)`, width: 12, height: 12, borderRadius: '50%', border: '2px solid #64748b', background: '#fff', boxSizing: 'border-box' }} />
+        {/* 実績 ●（機能色） */}
+        <div title={`2024実績 ${fmt(cur)}床`} style={{ position: 'absolute', top: 6, left: `calc(${curPct}% - 6px)`, width: 12, height: 12, borderRadius: '50%', background: f.color, boxShadow: '0 0 0 1.5px #fff' }} />
+      </div>
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', lineHeight: 1.25 }}>
+        <span style={{ fontSize: mob ? 12 : 13, fontWeight: 700, color: st.color, fontVariantNumeric: 'tabular-nums', whiteSpace: 'nowrap' }}>
+          {st.mark}<CountUpNum value={Math.abs(diff)} />{diff !== 0 ? '床' : ''}
+        </span>
+        <span style={{ fontSize: 9.5, fontWeight: 600, color: st.color }}>{st.label}</span>
+      </div>
+    </div>
+  );
+}
 
 // 病床機能区分の配色（医療需給総覧の凡例に準拠）
 const FUNC = [
@@ -99,21 +152,27 @@ export default function HsaBedDetailPanel({ mob }) {
     { key: '慢性期', color: '#2563EB' },
   ];
   const nec = data?.necessity;
-  const NEC_YEARS = [['2015', '15'], ['2018', '18'], ['2019', '19'], ['2020', '20'], ['2021', '21'], ['2022', '22'], ['2023', '23'], ['2024', "'24"], ['見込', '25見込'], ['必要', '25必要']];
-  const necRows = nec ? NEC_YEARS.map(([y, label]) => {
-    const o = { year: label, key: y };
-    NEC_FUNCS.forEach(f => { o[f.key] = nec.series?.[f.key]?.[y] ?? 0; });
-    return o;
-  }) : [];
+  const NEC_HIST_YEARS = ['2015', '2018', '2019', '2020', '2021', '2022', '2023', '2024'];
   const necDiff = nec ? NEC_FUNCS.map(f => {
     const cur = nec.series?.[f.key]?.['2024'] ?? 0;
     const need = nec.series?.[f.key]?.['必要'] ?? 0;
     return { ...f, cur, need, diff: cur - need };
   }) : [];
 
+  // 閉状態でも見える結論: 総床数 + 機能比率ミニバー
+  const headline = area && t ? (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+      <span style={{ fontSize: 12.5, fontWeight: 700, color: '#2563EB', whiteSpace: 'nowrap' }}>{fmt(t.beds)}<span style={{ fontSize: 9.5, color: '#94a3b8', fontWeight: 500, marginLeft: 1 }}>床</span></span>
+      <span style={{ display: 'flex', width: 64, height: 9, borderRadius: 3, overflow: 'hidden', border: '1px solid #eef1f5' }}>
+        {FUNC.map(fn => { const v = t.funcBeds[fn.key]; if (!v) return null; const pct = v / Math.max(1, t.beds) * 100; return <span key={fn.key} title={`${fn.key} ${fmt(v)}床`} style={{ width: `${pct}%`, background: fn.color }} />; })}
+      </span>
+    </div>
+  ) : null;
+
   return (
     <HsaPanel title="圏域内 医療機関別 病床機能構成"
               badges={[{ label: '令和6年度病床機能報告', kind: 'muted' }]}
+              headline={headline}
               defaultOpen={true}
               loading={loading}
               empty={!area}
@@ -189,42 +248,32 @@ export default function HsaBedDetailPanel({ mob }) {
             </>
           ) : <div style={{ padding: 16, fontSize: 12, color: '#94a3b8' }}>入院料の届出データがありません。</div>)}
 
-          {tab === 'necessity' && (nec ? (
+          {tab === 'necessity' && (nec ? (() => {
+            const domainMax = Math.max(1, ...necDiff.flatMap(x => [x.cur, x.need])) * 1.06;
+            return (
             <>
-              <div style={{ fontSize: 11.5, color: '#94a3b8', marginBottom: 6 }}>病床機能別 病床数の推移（病床機能報告実績）と2025年必要病床数（地域医療構想）</div>
-              <ResponsiveContainer width="100%" height={280}>
-                <BarChart data={necRows} margin={{ left: 8, right: 8, top: 8 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                  <XAxis dataKey="year" tick={{ fontSize: 10, fill: '#475569' }} axisLine={false} tickLine={false} interval={0} />
-                  <YAxis tick={{ fontSize: 10, fill: '#94a3b8' }} axisLine={false} tickLine={false} unit="床" />
-                  <Tooltip content={<StackTip />} />
-                  <Legend wrapperStyle={{ fontSize: 11 }} />
-                  {NEC_FUNCS.map(f => <Bar key={f.key} dataKey={f.key} stackId="a" fill={f.color} name={f.key} barSize={22} />)}
-                </BarChart>
-              </ResponsiveContainer>
-              <div style={{ overflowX: 'auto', marginTop: 10 }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 12.5, minWidth: 380 }}>
-                  <thead><tr style={{ background: '#fafbfc' }}>
-                    {['病床機能', '2024年7月時点', '2025必要数', '差分'].map((h, i) => (
-                      <th key={i} style={{ padding: '8px 10px', fontSize: 10.5, fontWeight: 600, color: '#94a3b8', textAlign: i === 0 ? 'left' : 'right', borderBottom: '1px solid #f1f5f9', whiteSpace: 'nowrap' }}>{h}</th>
-                    ))}
-                  </tr></thead>
-                  <tbody>{necDiff.map((r, i) => (
-                    <tr key={i} style={{ borderBottom: '1px solid #f8f9fa' }}>
-                      <td style={{ padding: '7px 10px', fontWeight: 600, color: r.color }}>{r.key}</td>
-                      <td style={{ padding: '7px 10px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{fmt(r.cur)}</td>
-                      <td style={{ padding: '7px 10px', textAlign: 'right', fontVariantNumeric: 'tabular-nums' }}>{fmt(r.need)}</td>
-                      <td style={{ padding: '7px 10px', textAlign: 'right', fontWeight: 700, fontVariantNumeric: 'tabular-nums', color: r.diff < 0 ? '#dc2626' : '#0f6e5d' }}>{r.diff > 0 ? '+' : r.diff < 0 ? '▲' : ''}{fmt(Math.abs(r.diff))}</td>
-                    </tr>
-                  ))}</tbody>
-                </table>
+              <div style={{ fontSize: 11.5, color: '#94a3b8', marginBottom: 8 }}>機能別 2024実績（<b style={{ color: '#334155' }}>●</b>）が2025必要数（<span style={{ color: '#64748b' }}>○</span>）へ届くか。連結線の色＝過不足の向き。左のスパークラインは2015→2024の実績推移。</div>
+              {/* 目盛レジェンド */}
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: 14, fontSize: 10.5, color: '#64748b', marginBottom: 4 }}>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><span style={{ width: 10, height: 10, borderRadius: '50%', background: '#334155' }} />2024実績</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><span style={{ width: 10, height: 10, borderRadius: '50%', border: '2px solid #64748b', background: '#fff', boxSizing: 'border-box' }} />2025必要</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><span style={{ width: 10, height: 4, borderRadius: 2, background: '#dc2626' }} />不足</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><span style={{ width: 10, height: 4, borderRadius: 2, background: '#d97706' }} />過剰</span>
+                <span style={{ display: 'flex', alignItems: 'center', gap: 4 }}><span style={{ width: 10, height: 4, borderRadius: 2, background: '#0f6e5d' }} />整合</span>
               </div>
-              <div style={{ fontSize: 10.5, color: '#94a3b8', lineHeight: 1.7, marginTop: 8 }}>
-                差分＝2024実績−2025必要数。<span style={{ color: '#dc2626' }}>▲（不足）</span>は機能の確保、<span style={{ color: '#0f6e5d' }}>＋（過剰）</span>は機能分化が課題。回復期の不足は機能分化の遅れを示唆。<br />
+              <div style={{ marginTop: 4 }}>
+                {necDiff.map((r) => (
+                  <NecDumbbellRow key={r.key} f={r} cur={r.cur} need={r.need} diff={r.diff} domainMax={domainMax}
+                                  series={NEC_HIST_YEARS.map(y => nec.series?.[r.key]?.[y]).filter(v => v != null)} mob={mob} />
+                ))}
+              </div>
+              <div style={{ fontSize: 10.5, color: '#94a3b8', lineHeight: 1.7, marginTop: 10, paddingTop: 8, borderTop: '1px solid #f1f5f9' }}>
+                差分＝2024実績−2025必要数。<span style={{ color: '#dc2626' }}>不足（実績が必要に届かない）</span>は機能の確保、<span style={{ color: '#d97706' }}>過剰</span>は機能分化が課題。回復期の不足は機能分化の遅れを示唆。<br />
                 出典: {data.necessitySource}｜カルテ #19 と<b style={{ color: '#0f6e5d' }}>数値一致</b>を検証済み（必要数は構想区域単位の固定値）。
               </div>
             </>
-          ) : (tab === 'necessity' && <div style={{ padding: 16, fontSize: 12, color: '#94a3b8' }}>この圏域は構想区域と二次医療圏が一致せず、必要病床数を単独表示できません。</div>))}
+            );
+          })() : (tab === 'necessity' && <div style={{ padding: 16, fontSize: 12, color: '#94a3b8' }}>この圏域は構想区域と二次医療圏が一致せず、必要病床数を単独表示できません。</div>))}
 
           {tab === 'route' && (area.routes && Object.keys(area.routes).length ? (
             <>

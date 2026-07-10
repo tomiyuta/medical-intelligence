@@ -15,17 +15,21 @@ function Badge({ label, kind = 'reconstructed' }) {
 }
 
 // 全カルテパネル共通のアコーディオン外殻。children は () => JSX の描画関数。
-export default function HsaPanel({ title, badges = [], defaultOpen = false, loading, empty, emptyText = 'この圏域のデータは見つかりませんでした。', children }) {
+// headline: 開閉に依らずヘッダ右肩に常設する「結論1個」（バンドルは選択時に全取得済のため算出可）。
+export default function HsaPanel({ title, badges = [], defaultOpen = false, loading, empty, emptyText = 'この圏域のデータは見つかりませんでした。', headline = null, children }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
     <div style={{ background: '#fff', border: '1px solid #e8ecf0', borderRadius: 12, marginBottom: 20, overflow: 'hidden' }}>
       <button onClick={() => setOpen(o => !o)}
-              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '13px 18px', border: 'none', background: 'linear-gradient(180deg,#f8fafc,#fff)', cursor: 'pointer', textAlign: 'left' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 9, flexWrap: 'wrap' }}>
+              style={{ width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 12, flexWrap: 'wrap', padding: '13px 18px', border: 'none', background: 'linear-gradient(180deg,#f8fafc,#fff)', cursor: 'pointer', textAlign: 'left' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 9, flexWrap: 'wrap', minWidth: 0 }}>
           {badges.map((b, i) => <Badge key={i} label={b.label} kind={b.kind} />)}
           <span style={{ fontSize: 14, fontWeight: 700 }}>{title}</span>
         </div>
-        <span style={{ fontSize: 12, color: '#94a3b8' }}>{open ? '▲ 閉じる' : '▼ 開く'}</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginLeft: 'auto' }}>
+          {headline && <div style={{ display: 'flex', alignItems: 'center' }}>{headline}</div>}
+          <span style={{ fontSize: 12, color: '#94a3b8', flexShrink: 0 }}>{open ? '▲ 閉じる' : '▼ 開く'}</span>
+        </div>
       </button>
       {open && (
         <div style={{ padding: '4px 18px 18px' }}>

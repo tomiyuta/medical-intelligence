@@ -1,11 +1,162 @@
 'use client';
-import { useState } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { fmt, sortPrefs, downloadCSV, TC } from '../shared';
 import { generateKijunPDF } from '../pdfExport';
+import { pathCentroid } from '../ui/PrefChoropleth';
 
 const CAT_LABELS = {imaging:'画像診断',surgery:'手術',acute:'急性期',rehab:'リハビリ',homecare:'在宅',oncology:'がん',psychiatry:'精神',pediatric:'小児',infection:'感染',dx_it:'DX'};
 const CAT_COLORS = {imaging:'#2563EB',surgery:'#dc2626',acute:'#f59e0b',rehab:'#059669',homecare:'#8b5cf6',oncology:'#ec4899',psychiatry:'#6366f1',pediatric:'#14b8a6',infection:'#f97316',dx_it:'#64748b'};
 const TC2 = {S:'#dc2626',A:'#f59e0b',B:'#2563EB',C:'#64748b',D:'#cbd5e1'};
+const CAT_ORDER = Object.keys(CAT_LABELS); // 固定10スロット順(バーコード/指紋の基準)
+
+// ── (#5) capability DNAバーコード: 10カテゴリ固定順のミニ細胞列。保有カテゴリだけ点灯=施設の指紋 ──
+// hoverセル=カテゴリ名+件数(native title)/ clickセル=capFilterトグル(親と同一state・行展開はstopPropagationで抑止)
+function CapBarcode({ caps, capFilter, onToggle, mob }) {
+  const cw = mob ? 5 : 7, gap = 1, h = mob ? 13 : 15;
+  const has = caps && typeof caps === 'object';
+  const w = CAT_ORDER.length * (cw + gap) - gap;
+  return (
+    <svg width={w} height={h} viewBox={`0 0 ${w} ${h}`} style={{display:'block'}} role="img" aria-label="機能構成バーコード">
+      {CAT_ORDER.map((k, i) => {
+        const v = has ? (caps[k] || 0) : 0;
+        const on = v > 0;
+        const sel = capFilter === k;
+        // 濃度=届出数(log2スケール, 0.5〜1.0)。欠測/対応なしは薄いグレー
+        const op = on ? Math.min(1, 0.55 + Math.log2(v + 1) / 5) : 1;
+        return (
+          <rect key={k} x={i * (cw + gap)} y={0} width={cw} height={h} rx={1.5}
+            fill={on ? CAT_COLORS[k] : '#eef1f5'} fillOpacity={on ? op : 1}
+            stroke={sel ? '#0f172a' : (on ? '#ffffff' : 'none')} strokeWidth={sel ? 1.4 : (on ? 0.5 : 0)}
+            style={{cursor:'pointer'}}
+            onClick={(e) => { e.stopPropagation(); onToggle(k); }}>
+            <title>{CAT_LABELS[k]}{on ? `: 届出 ${v} 件` : ': 対応なし'}{sel ? '(絞込中・クリックで解除)' : ''}</title>
+          </rect>
+        );
+      })}
+    </svg>
+  );
+}
+
+// ── 最小二乗アフィン(lat/lng → SVG)。3x3正規方程式をガウス消去で解く ──
+function solve3(M, v) {
+  const A = M.map((r, i) => [...r, v[i]]);
+  for (let c = 0; c < 3; c++) {
+    let p = c;
+    for (let r = c + 1; r < 3; r++) if (Math.abs(A[r][c]) > Math.abs(A[p][c])) p = r;
+    [A[c], A[p]] = [A[p], A[c]];
+    const piv = A[c][c];
+    if (Math.abs(piv) < 1e-9) return null;
+    for (let cc = c; cc < 4; cc++) A[c][cc] /= piv;
+    for (let r = 0; r < 3; r++) { if (r === c) continue; const f = A[r][c]; for (let cc = c; cc < 4; cc++) A[r][cc] -= f * A[c][cc]; }
+  }
+  return [A[0][3], A[1][3], A[2][3]];
+}
+function fitAffine(anchors) {
+  let Sll=0,Sla=0,Sl=0,Saa=0,Sa=0,Sn=0,Slx=0,Sax=0,Sx=0,Sly=0,Say=0,Sy=0;
+  for (const p of anchors) {
+    const L = p.lng, A = p.lat, x = p.x, y = p.y;
+    Sll+=L*L; Sla+=L*A; Sl+=L; Saa+=A*A; Sa+=A; Sn+=1;
+    Slx+=L*x; Sax+=A*x; Sx+=x; Sly+=L*y; Say+=A*y; Sy+=y;
+  }
+  const M = [[Sll,Sla,Sl],[Sla,Saa,Sa],[Sl,Sa,Sn]];
+  const cx = solve3(M, [Slx,Sax,Sx]);
+  const cy = solve3(M, [Sly,Say,Sy]);
+  if (!cx || !cy) return null;
+  return { x:(lng,lat)=>cx[0]*lng+cx[1]*lat+cx[2], y:(lng,lat)=>cy[0]*lng+cy[1]*lat+cy[2] };
+}
+
+// ── (#14) S/A施設マップ×リスト連動パネル(302点スキャッタ) ──
+// アフィン較正: japan_map 47県pathCentroid × pref_coords 47県lat/lng。hoverドット↔行同期/S=◆A=●/tier色/◆ピン比較/県click=絞込
+function FacilityMapPanel({ japanMap, prefCoords, geoFacilities, visibleCodes, kijunPref,
+  hovFac, setHovFac, pinned, onPin, onOpenRow, onPrefClick, mob }) {
+  const affine = useMemo(() => {
+    if (!japanMap?.prefs || !prefCoords?.length) return null;
+    const coordByName = {};
+    prefCoords.forEach(p => { coordByName[p.name] = p; });
+    const anchors = [];
+    for (const pf of japanMap.prefs) {
+      const c = pathCentroid(pf.d), co = coordByName[pf.ja];
+      if (c && co) anchors.push({ lng: co.lng, lat: co.lat, x: c.x, y: c.y });
+    }
+    return anchors.length >= 3 ? fitAffine(anchors) : null;
+  }, [japanMap, prefCoords]);
+
+  const pts = useMemo(() => {
+    if (!affine) return [];
+    return (geoFacilities || []).map(g => ({ ...g, sx: affine.x(g.lng, g.lat), sy: affine.y(g.lng, g.lat) }));
+  }, [affine, geoFacilities]);
+
+  if (!japanMap?.prefs) return null;
+  const rOf = b => 2.4 + Math.sqrt(Math.max(0, b || 0) / 1400) * 3.6;
+  const pinnedSet = new Set(pinned);
+  // 描画順: 通常 → ピン → hover(最前面)
+  const ordered = [...pts].sort((a, b) => {
+    const pa = pinnedSet.has(a.code) ? 2 : 0, pb = pinnedSet.has(b.code) ? 2 : 0;
+    const ha = a.code === hovFac ? 3 : 0, hb = b.code === hovFac ? 3 : 0;
+    return (pa + ha) - (pb + hb);
+  });
+  const pinnedFacs = pinned.map(c => pts.find(p => p.code === c)).filter(Boolean);
+
+  return (
+    <div style={{background:'#fff',border:'1px solid #f0f0f0',borderRadius:12,padding:'12px 14px',marginBottom:12,display:'grid',gridTemplateColumns:mob?'1fr':'auto 1fr',gap:14,alignItems:'start'}}>
+      <div style={{position:'relative'}}>
+        <svg viewBox={japanMap.viewBox} width={mob?'100%':300} style={{maxWidth:'100%',height:'auto',display:'block'}} preserveAspectRatio="xMidYMid meet">
+          {japanMap.prefs.map(pf => {
+            const sel = kijunPref && pf.ja === kijunPref;
+            return <path key={pf.id} d={pf.d} fill={sel?'#dbeafe':'#f1f5f9'} stroke={sel?'#2563EB':'#e2e8f0'} strokeWidth={sel?0.9:0.5}
+              style={{cursor:'pointer'}} onClick={() => onPrefClick(pf.ja)}><title>{pf.ja}{sel?'(絞込中)':''}</title></path>;
+          })}
+          {ordered.map(p => {
+            const inView = !visibleCodes || visibleCodes.has(p.code);
+            const isHov = p.code === hovFac, isPin = pinnedSet.has(p.code);
+            const r = rOf(p.beds) * (isHov ? 1.5 : 1);
+            const col = TC2[p.tier] || '#64748b';
+            const common = {
+              fill: col, fillOpacity: inView ? (isHov ? 1 : 0.82) : 0.14,
+              stroke: isPin ? '#f97316' : (isHov ? '#0f172a' : '#fff'),
+              strokeWidth: isPin ? 1.8 : (isHov ? 1.3 : 0.6),
+              style: { cursor:'pointer' },
+              onMouseEnter: () => setHovFac(p.code), onMouseLeave: () => setHovFac(null),
+              onClick: () => onPin(p.code),
+            };
+            const label = <title>{p.name}(Tier {p.tier}・{fmt(p.beds)}床・症例{fmt(p.cases)})— クリックで◆ピン比較</title>;
+            return p.tier === 'S'
+              ? <path key={p.code} d={`M ${p.sx} ${p.sy - r} L ${p.sx + r} ${p.sy} L ${p.sx} ${p.sy + r} L ${p.sx - r} ${p.sy} Z`} {...common}>{label}</path>
+              : <circle key={p.code} cx={p.sx} cy={p.sy} r={r} {...common}>{label}</circle>;
+          })}
+        </svg>
+      </div>
+      <div style={{fontSize:11,color:'#64748b',lineHeight:1.7}}>
+        <div style={{display:'flex',gap:10,flexWrap:'wrap',alignItems:'center',marginBottom:8}}>
+          <span style={{display:'inline-flex',alignItems:'center',gap:4}}><svg width={12} height={12} viewBox="0 0 12 12"><path d="M 6 1 L 11 6 L 6 11 L 1 6 Z" fill={TC2.S}/></svg>Tier S(22)</span>
+          <span style={{display:'inline-flex',alignItems:'center',gap:4}}><svg width={12} height={12} viewBox="0 0 12 12"><circle cx={6} cy={6} r={5} fill={TC2.A}/></svg>Tier A(280)</span>
+          <span style={{color:'#94a3b8'}}>大きさ=病床数</span>
+          <span style={{padding:'1px 6px',borderRadius:8,background:'#eef2ff',color:'#4338ca',fontSize:10,fontWeight:600}}>DPC実績 R8</span>
+        </div>
+        <div style={{color:'#94a3b8',marginBottom:8}}>点hover=行と連動 / 点クリック=<span style={{color:'#f97316',fontWeight:600}}>◆ピン比較</span>(最大2) / 県クリック=絞込。全302点(S22/A280・39県)を実lat/lngで打点。{visibleCodes ? `現在の絞込に${fmt([...pts].filter(p=>visibleCodes.has(p.code)).length)}点該当(残りは淡色)。` : ''}</div>
+        {pinnedFacs.length > 0 ? (
+          <div style={{display:'grid',gap:6}}>
+            {pinnedFacs.map(p => (
+              <div key={p.code} style={{border:'1px solid #fed7aa',background:'#fff7ed',borderRadius:8,padding:'6px 8px'}}>
+                <div style={{display:'flex',justifyContent:'space-between',gap:6,alignItems:'baseline'}}>
+                  <span style={{fontWeight:600,color:'#0f172a',fontSize:12}}><span style={{color:'#f97316'}}>◆</span> {p.name}</span>
+                  <span style={{fontSize:10,fontWeight:700,color:TC2[p.tier]}}>Tier {p.tier}</span>
+                </div>
+                <div style={{fontSize:11,color:'#64748b',marginTop:2}}>{p.pref}・{fmt(p.beds)}床・症例{fmt(p.cases)}・スコア{p.score}</div>
+                <div style={{display:'flex',gap:8,marginTop:4}}>
+                  <button onClick={() => onOpenRow(p.code)} style={{padding:'2px 8px',borderRadius:6,border:'1px solid #e2e8f0',background:'#fff',color:'#2563EB',fontSize:11,cursor:'pointer'}}>一覧で開く →</button>
+                  <button onClick={() => onPin(p.code)} style={{padding:'2px 8px',borderRadius:6,border:'1px solid #e2e8f0',background:'#fff',color:'#94a3b8',fontSize:11,cursor:'pointer'}}>ピン解除</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div style={{color:'#cbd5e1',fontSize:11}}>点を2つクリックすると施設を並べて比較できます。</div>
+        )}
+      </div>
+    </div>
+  );
+}
 
 export default function FacilityExplorerView({
   mob,
@@ -16,7 +167,7 @@ export default function FacilityExplorerView({
   // DPC・高機能 (ScoringView Layer C継承)
   topFac, facSearch, setFacSearch, searchResults, doSearch,
   // 地理 (GeoMapView継承)
-  geoFacilities,
+  geoFacilities, japanMap,
 }) {
   const [tab, setTab] = useState('kijun'); // 'kijun' | 'dpc' | 'score'
   const [capFilter, setCapFilter] = useState('');
@@ -25,7 +176,16 @@ export default function FacilityExplorerView({
   const [dpcSearch, setDpcSearch] = useState('');
   const [dpcSort, setDpcSort] = useState('score'); // 'score' | 'beds' | 'cases' | 'los' | 'growth' | 'rank'
   const [dpcExpanded, setDpcExpanded] = useState(null);
+  // (#14) 地図×リスト連動 state
+  const [hovFac, setHovFac] = useState(null);        // hover同期中の施設code
+  const [pinnedFacs, setPinnedFacs] = useState([]);  // ◆ピン比較(最大2)
+  const [prefCoords, setPrefCoords] = useState([]);  // 47県lat/lngアンカー
+  const [showMap, setShowMap] = useState(!mob);
   const PER_PAGE = 25;
+  useEffect(() => {
+    fetch('/api/pref-coords').then(r => r.json()).then(d => setPrefCoords(Array.isArray(d) ? d : (d.data || []))).catch(() => {});
+  }, []);
+  const togglePin = (code) => setPinnedFacs(prev => prev.includes(code) ? prev.filter(c => c !== code) : (prev.length >= 2 ? [prev[1], code] : [...prev, code]));
   // capability/tier filter変化時にdpcPageを0リセット
   const resetDpcPage = () => { setDpcPage(0); setDpcExpanded(null); };
 
@@ -193,7 +353,7 @@ export default function FacilityExplorerView({
         <div style={{maxHeight:'calc(100vh - 380px)',overflowY:'auto',overflowX:'auto'}}>
           <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
             <thead><tr style={{background:'#fafbfc',position:'sticky',top:0,zIndex:1}}>
-              {(mob ? ['施設名', '届出'] : ['施設名', '住所', '病床', '届出', 'Tier']).map((h, i) => (
+              {(mob ? ['施設名', '機能', '届出'] : ['施設名', '機能', '住所', '病床', '届出', 'Tier']).map((h, i) => (
                 <th key={i} style={{padding:'8px 10px',fontSize:11,fontWeight:600,color:'#94a3b8',textAlign:['届出','病床','Tier'].includes(h)?'right':'left',borderBottom:'1px solid #f1f5f9',whiteSpace:'nowrap',background:'#fafbfc'}}>{h}</th>
               ))}
             </tr></thead>
@@ -206,12 +366,13 @@ export default function FacilityExplorerView({
               return [
                 <tr key={idx} onClick={() => setKijunExpanded(isExp ? null : idx)} style={{borderBottom:isExp?'none':'1px solid #f8f9fa',cursor:'pointer',background:isExp?'#f0f7ff':'transparent'}}>
                   <td style={{padding:'8px 10px',fontWeight:500}}><span style={{color:isExp?'#2563EB':'#1e293b'}}>{f.name}</span></td>
+                  <td style={{padding:'8px 10px'}}><CapBarcode caps={f.caps} capFilter={capFilter} onToggle={(k)=>{ setCapFilter(capFilter===k?'':k); setKijunPage(0); }} mob={mob}/></td>
                   {!mob && <td style={{padding:'8px 10px',color:'#64748b',fontSize:12,maxWidth:200,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}}>{f.addr || '—'}</td>}
                   {!mob && <td style={{padding:'8px 10px',textAlign:'right',fontSize:12,color:'#64748b'}}>{bedsD}</td>}
                   <td style={{padding:'8px 10px',textAlign:'right',fontWeight:600,color:'#2563EB'}}>{f.std_count}</td>
                   {!mob && <td style={{padding:'8px 10px',textAlign:'right'}}>{f.tier ? <span style={{padding:'2px 8px',borderRadius:10,fontSize:11,fontWeight:700,background:(TC2[f.tier]||'#ccc')+'18',color:TC2[f.tier]||'#999'}}>{f.tier}</span> : <span style={{padding:'2px 8px',borderRadius:10,fontSize:10,fontWeight:500,background:'#f1f5f9',color:'#94a3b8'}}>未評価</span>}</td>}
                 </tr>,
-                isExp && <tr key={idx + 'd'}><td colSpan={mob ? 2 : 5} style={{padding:0,background:'#f8faff',borderBottom:'1px solid #e8ecf0'}}>
+                isExp && <tr key={idx + 'd'}><td colSpan={mob ? 3 : 6} style={{padding:0,background:'#f8faff',borderBottom:'1px solid #e8ecf0'}}>
                   <div style={{padding:'12px 16px',display:'grid',gridTemplateColumns:mob?'1fr':'2fr 1fr',gap:12}}>
                     <div>
                       <div style={{fontSize:11,color:'#94a3b8',marginBottom:2}}>住所</div>
@@ -318,8 +479,29 @@ export default function FacilityExplorerView({
       const dpg = Math.min(dpcPage, dpcTotalPages - 1);
       const dpcPaged = dpcSorted.slice(dpg * PER_PAGE, (dpg + 1) * PER_PAGE);
       const totalCount = (topFac || []).length;
+      const visibleCodes = new Set(dpcFiltered.map(f => f.facility_code_10));
+      const openRow = (code) => {
+        const idx = dpcSorted.findIndex(f => f.facility_code_10 === code);
+        if (idx >= 0) { setDpcPage(Math.floor(idx / PER_PAGE)); setDpcExpanded(idx); return; }
+        // 現在の絞込(県/検索)で一覧外 → その施設の県へ移動して可視化(stale indexは張らない)
+        const full = (topFac || []).find(f => f.facility_code_10 === code);
+        if (full && full.prefecture_name && full.prefecture_name !== kijunPref) {
+          setKijunPref(full.prefecture_name); setDpcSearch(''); setDpcPage(0); setDpcExpanded(null);
+        }
+      };
       return (
         <>
+          {showMap && japanMap && (
+            <FacilityMapPanel japanMap={japanMap} prefCoords={prefCoords} geoFacilities={geoFacilities}
+              visibleCodes={visibleCodes} kijunPref={kijunPref} hovFac={hovFac} setHovFac={setHovFac}
+              pinned={pinnedFacs} onPin={togglePin} onOpenRow={openRow}
+              onPrefClick={(p) => { setKijunPref(p); resetDpcPage(); }} mob={mob} />
+          )}
+          <div style={{marginBottom:10}}>
+            <button onClick={() => setShowMap(s => !s)} style={{padding:'4px 12px',borderRadius:8,border:'1px solid #e2e8f0',background:'#fff',color:'#2563EB',fontSize:12,fontWeight:600,cursor:'pointer'}}>
+              {showMap ? '▾ 地図を隠す' : '▸ S/A施設マップを表示(302点)'}
+            </button>
+          </div>
           {dpcSorted.length === 0 ? (
             <div style={{padding:'24px',textAlign:'center',color:'#94a3b8',fontSize:13,background:'#f8fafc',borderRadius:8}}>
               該当する施設がありません ({fmt(totalCount)}施設のキャッシュから絞り込み中){kijunPref && ` / 都道府県=${kijunPref}`}{capFilter && ` / capability=${CAT_LABELS[capFilter]}`}{tierFilter && ` / Tier=${tierFilter}`}{dpcSearch && ` / 検索="${dpcSearch}"`}
@@ -330,8 +512,8 @@ export default function FacilityExplorerView({
                 <div style={{maxHeight:'calc(100vh - 420px)',overflowY:'auto',overflowX:'auto'}}>
                   <table style={{width:'100%',borderCollapse:'collapse',fontSize:13}}>
                     <thead><tr style={{background:'#fafbfc',position:'sticky',top:0,zIndex:1}}>
-                      {(mob ? ['#', 'Score', '施設名'] : ['#', '規模・実績', '施設名', '都道府県', '病床', '症例', '在院日数', '特徴']).map((h, i) => (
-                        <th key={i} style={{padding:'10px 12px',fontSize:11,fontWeight:600,color:'#94a3b8',textAlign:i<3?'left':'right',borderBottom:'1px solid #f1f5f9',background:'#fafbfc'}}>{h}</th>
+                      {(mob ? ['#', 'Score', '施設名', '機能'] : ['#', '規模・実績', '施設名', '機能', '都道府県', '病床', '症例', '在院日数', '特徴']).map((h, i) => (
+                        <th key={i} style={{padding:'10px 12px',fontSize:11,fontWeight:600,color:'#94a3b8',textAlign:h==='機能'?'left':(i<3?'left':'right'),borderBottom:'1px solid #f1f5f9',background:'#fafbfc'}}>{h}</th>
                       ))}
                     </tr></thead>
                     <tbody>{dpcPaged.map((f, i) => {
@@ -340,17 +522,20 @@ export default function FacilityExplorerView({
                       const geo = geoByCode[f.facility_code_10];
                       const mapQ = encodeURIComponent((f.facility_name || '') + ' ' + (f.address || ''));
                       return [
-                        <tr key={dIdx} onClick={() => setDpcExpanded(isExp ? null : dIdx)} style={{borderBottom:isExp?'none':'1px solid #f8f9fa',cursor:'pointer',background:isExp?'#f0f7ff':'transparent'}}>
-                          <td style={{padding:'10px 12px',color:'#94a3b8'}}>#{f.rank}</td>
+                        <tr key={dIdx} onClick={() => setDpcExpanded(isExp ? null : dIdx)}
+                          onMouseEnter={() => geo && setHovFac(f.facility_code_10)} onMouseLeave={() => geo && setHovFac(null)}
+                          style={{borderBottom:isExp?'none':'1px solid #f8f9fa',cursor:'pointer',background:isExp?'#f0f7ff':(hovFac&&hovFac===f.facility_code_10?'#fff7ed':'transparent')}}>
+                          <td style={{padding:'10px 12px',color:'#94a3b8'}}>{pinnedFacs.includes(f.facility_code_10) && <span style={{color:'#f97316',marginRight:2}}>◆</span>}#{f.rank}</td>
                           <td style={{padding:'10px 12px'}}><span style={{padding:'2px 10px',borderRadius:20,fontSize:12,fontWeight:700,background:(TC[f.tier]||'#ccc')+'18',color:TC[f.tier]||'#999'}}>{f.priority_score}</span></td>
                           <td style={{padding:'10px 12px',fontWeight:500,color:isExp?'#2563EB':'#1e293b'}}>{f.facility_name}{f.missing && f.missing.length > 0 && <span style={{fontSize:10,color:'#f59e0b',marginLeft:4}} title={f.missing.join(', ')}>⚠</span>}</td>
+                          <td style={{padding:'10px 12px'}}><CapBarcode caps={f.cap} capFilter={capFilter} onToggle={(k)=>{ setCapFilter(capFilter===k?'':k); resetDpcPage(); }} mob={mob}/></td>
                           {!mob && <td style={{padding:'10px 12px',textAlign:'right',color:'#64748b'}}>{f.prefecture_name}</td>}
                           {!mob && <td style={{padding:'10px 12px',textAlign:'right',fontVariantNumeric:'tabular-nums'}}>{fmt(f.total_beds)}</td>}
                           {!mob && <td style={{padding:'10px 12px',textAlign:'right',color:'#2563EB',fontWeight:600,fontVariantNumeric:'tabular-nums'}}>{fmt(f.annual_cases)}</td>}
                           {!mob && <td style={{padding:'10px 12px',textAlign:'right'}}>{f.avg_los || '—'}</td>}
                           {!mob && <td style={{padding:'10px 12px',fontSize:11,color:'#64748b',maxWidth:180}}>{(f.reasons || []).slice(0, 3).join(' / ') || '—'}</td>}
                         </tr>,
-                        isExp && <tr key={dIdx + 'd'}><td colSpan={mob ? 3 : 8} style={{padding:0,background:'#f8faff',borderBottom:'1px solid #e8ecf0'}}>
+                        isExp && <tr key={dIdx + 'd'}><td colSpan={mob ? 4 : 9} style={{padding:0,background:'#f8faff',borderBottom:'1px solid #e8ecf0'}}>
                           <div style={{padding:'14px 18px',display:'grid',gridTemplateColumns:mob?'1fr':'2fr 1fr',gap:14}}>
                             <div>
                               <div style={{fontSize:11,color:'#94a3b8',marginBottom:2}}>住所</div>

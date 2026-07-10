@@ -59,9 +59,15 @@ export default function HsaDemandPanel({ mob }) {
 
   if (!code) return null;
 
+  // 閉状態でも見える結論: 入院需要2050の増減
+  const headline = base && last && inpChange != null ? (
+    <span style={{ fontSize: 11.5, fontWeight: 700, color: inpChange >= 0 ? '#dc2626' : '#0891b2', whiteSpace: 'nowrap' }}>入院 2050 {inpChange > 0 ? '+' : ''}{inpChange}%</span>
+  ) : null;
+
   return (
     <HsaPanel title="将来医療需要の推計（受療率法）"
               badges={[{ label: '参考推計', kind: 'reference' }]}
+              headline={headline}
               defaultOpen={false}
               loading={loading}
               empty={!area || trendRows.length === 0}

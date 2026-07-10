@@ -75,10 +75,15 @@ export default function HsaDpcPanel({ mob }) {
 
   if (!code) return null;
 
-  if (!code) return null;
+  // 閉状態でも見える結論: 圏内完結率（供給/需要）
+  const headline = kanketsu != null ? (
+    <span style={{ fontSize: 11.5, fontWeight: 700, color: kanketsu >= 100 ? '#0891b2' : '#dc2626', whiteSpace: 'nowrap' }}>完結率 {kanketsu}%</span>
+  ) : null;
+
   return (
     <HsaPanel title="DPC退院患者数・MDC別／医療機関シェア"
               badges={[{ label: '令和5年度DPC退院患者調査', kind: 'muted' }]}
+              headline={headline}
               defaultOpen={false}
               loading={loading}
               empty={!area}

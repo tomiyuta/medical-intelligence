@@ -1,9 +1,10 @@
 'use client';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { ComposedChart, Bar, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Legend } from 'recharts';
 import { fmt } from '../shared';
 import { useHsaPanel } from '../hsa/useHsaArea';
 import HsaPanel from '../hsa/HsaPanel';
+import { useCountUp, prefersReducedMotion } from '../ui/vizHooks';
 
 // 年齢区分の配色
 const SEG = [
@@ -12,6 +13,109 @@ const SEG = [
   { key: 'y65_74', label: '前期高齢(65-74)', color: '#f97316' },
   { key: 'y75', label: '後期高齢(75+)', color: '#dc2626' },
 ];
+
+// 5歳階級ラベル（社人研 bands の18階級・0-4 … 85+）
+const AGE_LABELS = ['0-4', '5-9', '10-14', '15-19', '20-24', '25-29', '30-34', '35-39', '40-44', '45-49', '50-54', '55-59', '60-64', '65-69', '70-74', '75-79', '80-84', '85+'];
+function bandColor(i) { return i <= 2 ? '#93c5fd' : i <= 12 ? '#2563EB' : i <= 14 ? '#f97316' : '#dc2626'; }
+
+// スクラバー付き 18階級ピラミッド（性別なし片翼）。7時点をモーフし、2020輪郭をゴースト重畳。
+// 65+(index13-)/75+(index15-)帯をゾーン着色。社人研 bands の実データのみ（疑似形状なし）。
+function PopulationPyramid({ area, years, mob }) {
+  const yrs = (years && years.length) ? years : [2020, 2025, 2030, 2035, 2040, 2045, 2050];
+  const [yi, setYi] = useState(0);
+  const [hb, setHb] = useState(null);
+  const year = yrs[yi];
+  const cur = area.years[String(year)] || {};
+  const gbands = (area.years[String(yrs[0])] || {}).bands || [];
+  const bands = cur.bands || [];
+  const domainMax = useMemo(() => {
+    let m = 1;
+    for (const y of yrs) { const b = area.years[String(y)]?.bands || []; for (const v of b) if (v > m) m = v; }
+    return m;
+  }, [area, yrs]);
+  const bandSum = bands.reduce((s, v) => s + (v || 0), 0) || 1;
+  const aging = cur.total ? (cur.a65 || 0) / cur.total * 100 : 0;
+  const agingCU = useCountUp(Math.round(aging * 10) / 10);
+  const reduce = prefersReducedMotion();
+  const rowH = mob ? 13 : 15;
+
+  if (!bands.length) return null;
+
+  const info = hb != null
+    ? { lab: AGE_LABELS[hb], v: bands[hb] || 0, pct: (bands[hb] || 0) / bandSum * 100 }
+    : null;
+
+  return (
+    <div style={{ background: '#fafbfc', border: '1px solid #f0f0f0', borderRadius: 10, padding: mob ? '12px 12px' : '14px 16px', marginBottom: 16 }}>
+      <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 10, flexWrap: 'wrap', marginBottom: 8 }}>
+        <div style={{ fontSize: 12.5, fontWeight: 700, color: '#334155' }}>人口ピラミッド（5歳階級・{year}年）</div>
+        <div style={{ display: 'flex', alignItems: 'baseline', gap: 6 }}>
+          <span style={{ fontSize: 10.5, color: '#94a3b8' }}>高齢化率</span>
+          <span style={{ fontSize: 17, fontWeight: 700, color: '#f97316', fontVariantNumeric: 'tabular-nums' }}>{(agingCU ?? aging).toFixed(1)}<span style={{ fontSize: 10.5, color: '#94a3b8', fontWeight: 500 }}>%</span></span>
+        </div>
+      </div>
+
+      {/* スクラバー（7時点） */}
+      <div style={{ marginBottom: 10 }}>
+        <input type="range" min={0} max={yrs.length - 1} step={1} value={yi}
+               onChange={(e) => setYi(Number(e.target.value))}
+               aria-label="推計年の選択"
+               style={{ width: '100%', accentColor: '#2563EB', cursor: 'pointer' }} />
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: 2 }}>
+          {yrs.map((y, i) => (
+            <button key={y} onClick={() => setYi(i)}
+                    style={{ border: 'none', background: 'none', padding: 0, cursor: 'pointer',
+                             fontSize: mob ? 9 : 10, fontWeight: i === yi ? 700 : 500,
+                             color: i === yi ? '#2563EB' : '#94a3b8' }}>{y}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* ピラミッド本体（85+ を上に） */}
+      <div onMouseLeave={() => setHb(null)}>
+        {bands.map((_, k) => {
+          const i = bands.length - 1 - k;   // 上=高齢
+          const v = bands[i] || 0, g = gbands[i] || 0;
+          const pct = v / domainMax * 100, gpct = g / domainMax * 100;
+          const zoneBg = i >= 15 ? '#fef2f2' : i >= 13 ? '#fff7ed' : 'transparent';
+          const showLab = i % 2 === 0 || i === 17;
+          return (
+            <div key={i} onMouseEnter={() => setHb(i)}
+                 style={{ display: 'grid', gridTemplateColumns: mob ? '40px 1fr' : '48px 1fr', alignItems: 'center',
+                          height: rowH, background: hb === i ? '#eef2ff' : zoneBg, borderRadius: 2 }}>
+              <span style={{ fontSize: mob ? 8.5 : 9.5, color: hb === i ? '#334155' : '#94a3b8', textAlign: 'right', paddingRight: 6, whiteSpace: 'nowrap' }}>
+                {showLab ? AGE_LABELS[i] : ''}
+              </span>
+              <div style={{ position: 'relative', height: rowH - 3 }}>
+                {/* 2020ゴースト輪郭 */}
+                <div style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: `${Math.max(gpct, 0.2)}%`,
+                              border: '1px dashed #94a3b8', borderLeft: 'none', borderRadius: '0 2px 2px 0', opacity: 0.5, pointerEvents: 'none' }} />
+                {/* 当年バー */}
+                <div style={{ height: '100%', width: `${Math.max(pct, 0.2)}%`, background: bandColor(i),
+                              borderRadius: '0 2px 2px 0', opacity: hb == null || hb === i ? 1 : 0.55,
+                              transition: reduce ? 'none' : 'width 0.5s cubic-bezier(0.22,1,0.36,1)' }} />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* hover情報 + ゾーン凡例 */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 10, flexWrap: 'wrap', marginTop: 8, fontSize: 10.5 }}>
+        <span style={{ color: '#475569' }}>
+          {info
+            ? <><b style={{ color: '#334155' }}>{info.lab}歳</b>　{fmt(info.v)}人（{info.pct.toFixed(1)}%）</>
+            : <span style={{ color: '#94a3b8' }}>階級にhoverで人数・割合を表示　総人口 {fmt(cur.total)}人</span>}
+        </span>
+        <span style={{ display: 'flex', gap: 10, color: '#94a3b8' }}>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><span style={{ width: 10, height: 8, background: '#fff7ed', border: '1px solid #fed7aa' }} />65+</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><span style={{ width: 10, height: 8, background: '#fef2f2', border: '1px solid #fecaca' }} />75+</span>
+          <span style={{ display: 'flex', alignItems: 'center', gap: 3 }}><span style={{ width: 10, height: 0, borderTop: '1px dashed #94a3b8' }} />2020輪郭</span>
+        </span>
+      </div>
+    </div>
+  );
+}
 
 export default function HsaPopulationPanel({ mob }) {
   const { code, data: d, loading } = useHsaPanel('population');
@@ -60,6 +164,8 @@ export default function HsaPopulationPanel({ mob }) {
               </div>
             ))}
           </div>
+
+          <PopulationPyramid area={area} years={d.years} mob={mob} />
 
           <div style={{ fontSize: 12.5, fontWeight: 600, marginBottom: 4 }}>年齢区分別 人口と高齢化率の推移</div>
           <ResponsiveContainer width="100%" height={300}>

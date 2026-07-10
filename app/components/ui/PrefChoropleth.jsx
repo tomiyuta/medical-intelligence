@@ -10,7 +10,7 @@ const NEUTRAL = '#eef1f5'; // データなし県
 const fmtVal = v => (v == null || isNaN(v)) ? '—' : (Number.isInteger(v) ? fmt(v) : v.toFixed(1));
 
 // SVG path(相対/絶対コマンド混在)から重心近似を求める(max/min アノテーション用のラベルアンカー)
-function pathCentroid(d) {
+export function pathCentroid(d) {
   try {
     const toks = d.match(/[a-zA-Z]|-?\d*\.?\d+(?:e-?\d+)?/g);
     if (!toks) return null;
