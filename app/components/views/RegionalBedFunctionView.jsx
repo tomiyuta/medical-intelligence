@@ -3,6 +3,8 @@ import { useState, useEffect, useMemo } from 'react';
 import { ComposedChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, ReferenceArea, ReferenceLine, ReferenceDot } from 'recharts';
 import { fmt, sortPrefs } from '../shared';
 import InterpretationGuard from '../ui/InterpretationGuard';
+import PrefStrip47 from '../ui/PrefStrip47';
+import PrefChoropleth from '../ui/PrefChoropleth';
 import { getSourceBadge } from '../../../lib/sourceRegistry';
 
 const FUNC_COLORS = {
@@ -97,10 +99,14 @@ function classifyRegion(prefShares, natShares, beds_per_75plus, nat_beds_per_75p
   return { type:'標準型', color:'#64748b', desc:'機能配分は全国平均に近い。', icon:'➖' };
 }
 
-export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegPref, agePyramid, ndbDiag, homecareCapability }) {
+export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegPref, agePyramid, ndbDiag, homecareCapability, japanMap }) {
   const isNational = !regPref || regPref === '全国';
   const bf = bedFunc?.prefectures?.[regPref];
   const bfNat = bedFunc?.national;
+
+  // 47県ストリップ／地図 の hover同期・◆ピン state（確立済 PrefStrip47 文法）
+  const [hoverPref, setHoverPref] = useState(null);
+  const [pinnedPref, setPinnedPref] = useState(null);
 
   const computeShares = (d) => {
     if (!d) return null;
@@ -130,6 +136,49 @@ export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegP
   const nat_pop75 = compute75plus('全国');
   const nat_total = bfNat?.['総床数'];
   const nat_beds_per_75plus = (nat_total && nat_pop75) ? (nat_total / nat_pop75 * 100000) : null;
+
+  // ── 47県 機能別シェア分布（#3 PrefStrip47 4行帯 用） ──
+  // bedFunc.prefectures 全47県から各機能の床数シェア(%)を算出。追加取得ゼロ。
+  const funcStrips = useMemo(() => {
+    const prefs = bedFunc?.prefectures || {};
+    const out = { '高度急性期': [], '急性期': [], '回復期': [], '慢性期': [] };
+    Object.keys(prefs).forEach(pp => {
+      const d = prefs[pp];
+      const total = d?.['総床数'] || 0;
+      if (!total) return;
+      ACTIVE_FUNCS.forEach(f => {
+        out[f].push({ pref: pp, value: (d[f]?.beds || 0) / total * 100 });
+      });
+    });
+    return out;
+  }, [bedFunc]);
+
+  // ── 75+あたり病床数 の47県 valueByPref（#6 PrefChoropleth 用） ──
+  // 分子=総床数(bedFunc)／分母=75歳以上人口(agePyramid idx15-)。両者とも実在確認済。
+  const bedsPer75ByPref = useMemo(() => {
+    const prefs = bedFunc?.prefectures || {};
+    const aps = agePyramid?.prefectures || {};
+    const out = {};
+    Object.keys(prefs).forEach(pp => {
+      const total = prefs[pp]?.['総床数'] || 0;
+      const ap = aps[pp];
+      if (!total || !ap?.male || !ap?.female) return;
+      let p75 = 0;
+      for (let i = 15; i < ap.male.length; i++) p75 += (ap.male[i] || 0) + (ap.female[i] || 0);
+      if (p75 > 0) out[pp] = total / p75 * 100000;
+    });
+    return out;
+  }, [bedFunc, agePyramid]);
+
+  // 全ストリップ／地図 共通props（onJump/onSelect=setRegPref=globalPref直結）
+  const stripCommon = {
+    selected: isNational ? null : regPref,
+    pinned: pinnedPref,
+    hoverPref,
+    onHover: setHoverPref,
+    onPin: (p) => setPinnedPref(prev => prev === p ? null : p),
+    onJump: (p) => setRegPref && setRegPref(p),
+  };
 
   // 病棟数集計
   const totalWards = bf
@@ -267,6 +316,7 @@ export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegP
   }, [demandProj, supplyBeds]);
 
   const bedBadge = getSourceBadge('bedFunc');
+  const stripYb = { label: bedBadge.year, color: bedBadge.color }; // PrefStrip47/PrefChoropleth 必須 yearBadge
 
   // 需要/病床比 の Y ドメイン上限(供給ラインが必ず入るよう余白確保)
   const demandYMax = useMemo(() => {
@@ -348,7 +398,7 @@ export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegP
           <div>
             <div style={{display:'flex',height:32,borderRadius:6,overflow:'hidden',marginBottom:10}}>
               {ACTIVE_FUNCS.map(f => (
-                <div key={f} style={{width:`${target[f]}%`,background:FUNC_COLORS[f],display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontSize:11,fontWeight:700}}>
+                <div key={f} title={`${f} ${target[f].toFixed(1)}%`} style={{width:`${target[f]}%`,background:FUNC_COLORS[f],display:'flex',alignItems:'center',justifyContent:'center',color:'#fff',fontSize:11,fontWeight:700,minWidth:0,overflow:'hidden',whiteSpace:'nowrap'}}>
                   {target[f] >= 6 ? `${target[f].toFixed(1)}%` : ''}
                 </div>
               ))}
@@ -372,11 +422,67 @@ export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegP
                 );
               })}
             </div>
+
+            {/* #3: 機能別シェアの47県分布（PrefStrip47 4行帯・hoverPref横断同期） */}
+            {ACTIVE_FUNCS.every(f => funcStrips[f].length >= 40) && (
+              <div style={{marginTop:16,paddingTop:14,borderTop:'1px solid #f1f5f9'}}>
+                <div style={{display:'flex',alignItems:'center',gap:6,flexWrap:'wrap',marginBottom:8}}>
+                  <span style={{fontSize:12,fontWeight:700,color:'#1e293b'}}>機能別シェアの47県分布</span>
+                  <span style={{fontSize:10,color:'#94a3b8'}}>
+                    青リング={isNational?'—':regPref}・青破線▽=全国平均・◆=比較ピン。ドットをなぞると4行が同期点灯、クリックで県移動。
+                  </span>
+                </div>
+                {ACTIVE_FUNCS.map(f => (
+                  <div key={f} style={{display:'flex',alignItems:'center',gap:8,marginBottom:4}}>
+                    <div style={{width:mob?58:72,flexShrink:0,display:'flex',alignItems:'center',gap:5}}>
+                      <span style={{width:8,height:8,borderRadius:2,background:FUNC_COLORS[f],flexShrink:0}} />
+                      <span style={{fontSize:10.5,color:'#475569',fontWeight:600,whiteSpace:'nowrap'}}>{f}</span>
+                    </div>
+                    <div style={{flex:1,minWidth:0}}>
+                      <PrefStrip47 {...stripCommon} values={funcStrips[f]} natAvg={natShares?.[f]} yearBadge={stripYb} mode="inline" />
+                    </div>
+                  </div>
+                ))}
+                <div style={{fontSize:9.5,color:'#94a3b8',marginTop:3,lineHeight:1.5}}>
+                  各行は「その機能が県内総床数に占める割合(%)」の47県分布。行ごとに独立スケール — 行どうしのドット位置は直接比較できません。高低は良し悪しではありません。
+                </div>
+              </div>
+            )}
           </div>
         );
       })()}
       <div style={{fontSize:10,color:'#94a3b8',marginTop:10,lineHeight:1.5}}>
         ※機能区分は施設の自己申告(2024/7/1時点)。地域医療構想の評価指標として使用。
+      </div>
+    </div>
+  )}
+
+  {/* #6: 75歳以上人口あたり病床数 の47県クロロプレス地図 */}
+  {japanMap?.prefs && Object.keys(bedsPer75ByPref).length >= 40 && (
+    <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16}}>
+      <div style={{display:'flex',alignItems:'flex-start',gap:8,marginBottom:12,flexWrap:'wrap'}}>
+        <span style={{fontSize:18}}>🗺️</span>
+        <div style={{flex:'1 1 240px'}}>
+          <div style={{fontSize:14,fontWeight:700,color:'#1e293b',display:'flex',alignItems:'center',gap:6,flexWrap:'wrap'}}>
+            75歳以上人口あたり病床数 — 47県供給地図
+            <span title={bedBadge.title} style={{fontSize:9,fontWeight:700,padding:'1px 6px',borderRadius:4,background:bedBadge.bg,color:bedBadge.color,border:`1px solid ${bedBadge.border}`}}>床数 {bedBadge.year}</span>
+          </div>
+          <div style={{fontSize:11,color:'#94a3b8',marginTop:2}}>総床数(R6) ÷ 75歳以上人口(住基2025) ×10万。西高東低の慢性期偏在・供給薄県が地理として一目に。県クリックで移動。</div>
+        </div>
+      </div>
+      <PrefChoropleth
+        japanMap={japanMap}
+        valueByPref={bedsPer75ByPref}
+        selected={isNational ? null : regPref}
+        onSelect={(p) => setRegPref && setRegPref(p)}
+        title="75+あたり病床数（人口10万対）"
+        unit="床"
+        yearBadge={stripYb}
+        mob={mob}
+        height={mob?170:210}
+      />
+      <div style={{fontSize:9.5,color:'#94a3b8',marginTop:6,lineHeight:1.5}}>
+        色階級はこの指標だけの5分位です。<b>床数=2024/7/1・人口=2025/1で年次差があり</b>、厳密な同年比ではなく現況の地域差の観察です。高低は良し悪しではありません(在宅・介護など病床外の受け皿は含みません)。
       </div>
     </div>
   )}
