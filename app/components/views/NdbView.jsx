@@ -32,6 +32,7 @@ import PrescriptionSection from './ndb/PrescriptionSection';
 import PrescriptionTop10Section from './ndb/PrescriptionTop10Section';
 import OutcomeSection from './ndb/OutcomeSection';
 import GapFinderSection from './ndb/GapFinderSection';
+import DiscoveryFeed from '../DiscoveryFeed';
 
 export default function NdbView({ mob, navTitle, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, ndbQ, agePyramid, futureDemo, patientSurvey, bedFunc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd, mortalityOutcome2020, cancerSites2024, homecareCapability, japanMap, futureYear, setFutureYear, setView }) {
   const diagByPref = ndbDiag.filter(d=>d.prefecture===ndbPref);
@@ -41,7 +42,27 @@ export default function NdbView({ mob, navTitle, ndbDiag, ndbRx, ndbHc, ndbPref,
 
   // ── rank1: 分布ストリップ共通state（hover同期・比較ピン） ──
   // pinned/hover は SelectionContext を単一ソースに（◆比較ピンがビュー横断で持ち回り）。
-  const { pinnedPref, setPinnedPref, hoverPref, setHoverPref } = useSelection();
+  const { pinnedPref, setPinnedPref, hoverPref, setHoverPref, pendingPanel, setPendingPanel } = useSelection();
+  // navigate(panelId) で要求された ndb 内断面(sec-outcome/sec-checkup)へ着地後スクロール。
+  // ndb は重い断面(コロプレス/カウントアップ/ResizeObserver)が順次描画され、要素出現直後に
+  // スクロールしても直後のレイアウト伸長で位置がズレる。→ ページ高が2連続で安定してから
+  // 一度だけスクロールして pendingPanel をクリアする（過走・不足を防止）。
+  useEffect(() => {
+    if (!pendingPanel || (pendingPanel !== 'sec-outcome' && pendingPanel !== 'sec-checkup')) return;
+    let tries = 0, lastH = -1, stable = 0;
+    const timer = setInterval(() => {
+      tries++;
+      const el = document.getElementById(pendingPanel);
+      const h = document.documentElement.scrollHeight;
+      stable = (el && h === lastH) ? stable + 1 : 0;
+      lastH = h;
+      if (el && (stable >= 1 || tries >= 15)) {
+        el.scrollIntoView({ behavior: prefersReducedMotion() ? 'auto' : 'smooth', block: 'start' });
+        clearInterval(timer); setPendingPanel(null);
+      } else if (tries >= 20) { clearInterval(timer); setPendingPanel(null); }
+    }, 140);
+    return () => clearInterval(timer);
+  }, [pendingPanel]); // eslint-disable-line react-hooks/exhaustive-deps
   // 全ストリップ共通props（onJump=setNdbPref=globalPref連動）
   const stripCommon = useStripCommon({ selected: ndbPref, onJump: setNdbPref });
 
@@ -537,6 +558,9 @@ export default function NdbView({ mob, navTitle, ndbDiag, ndbRx, ndbHc, ndbPref,
       この県の医療圏一覧 →</button>}
   </div>
 
+  {/* 発見フィード: この県の突出指標 Top5（行 click で該当断面へ deep link） */}
+  <DiscoveryFeed mob={mob} pref={ndbPref} compact />
+
   {/* rank2: ドメインレンズ 疾患chipバー（sticky・ヘッダー付近に同居） */}
   <div style={{position:'sticky',top:mob?50:0,zIndex:20,background:'#fff',padding:'8px 0 6px',marginBottom:12,borderBottom:'1px solid #f1f5f9'}}>
     <div style={{display:'flex',alignItems:'center',gap:6,overflowX:'auto',paddingBottom:2}}>
@@ -611,7 +635,7 @@ export default function NdbView({ mob, navTitle, ndbDiag, ndbRx, ndbHc, ndbPref,
   <RootCauseSection {...ndbCtx} />
 
   {/* ═══ Layer 2: RISK (健診リスク) — 2セクション化 (Phase 2D-Layer2) ═══ */}
-  <CheckupRiskSection {...ndbCtx} />
+  <section id="sec-checkup" style={{scrollMarginTop:60}}><CheckupRiskSection {...ndbCtx} /></section>
 
   {/* ═══ Layer 2.5: DEMAND-SIDE (受療率 — 患者調査) ═══ */}
   <DemandForestSection {...ndbCtx} />
@@ -629,7 +653,7 @@ export default function NdbView({ mob, navTitle, ndbDiag, ndbRx, ndbHc, ndbPref,
   <PrescriptionTop10Section {...ndbCtx} />
 
   {/* ═══ Layer 5: OUTCOME (結果 — 死因構造) ═══ */}
-  <OutcomeSection {...ndbCtx} />
+  <section id="sec-outcome" style={{scrollMarginTop:60}}><OutcomeSection {...ndbCtx} /></section>
 
   {/* ═══ GAP FINDER: リスク×結果の不一致検出（テンプレ切替）═══ */}
   <GapFinderSection {...ndbCtx} />

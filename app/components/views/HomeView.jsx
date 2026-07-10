@@ -12,6 +12,7 @@ import { useMemo, useState } from 'react';
 import { useSelection } from '../SelectionContext';
 import { useData } from '../../../lib/dataClient';
 import PrefStrip47 from '../ui/PrefStrip47';
+import DiscoveryFeed from '../DiscoveryFeed';
 
 // ── 数値フォーマッタ ──
 const fmtOku = (n) => (n / 1e8).toFixed(2) + '億';
@@ -203,6 +204,9 @@ export default function HomeView({ mob, prefs, vitalStats, agePyramid, bedFunc, 
           )}
         </div>
       </div>
+
+      {/* ── 発見フィード「この県の突出指標」（県選択式・行 click で該当断面へ deep link） ── */}
+      <DiscoveryFeed mob={mob} showSelector />
 
       {/* ── (1)(2) 全国ヘッドライン KPI（問い形式・click で遷移） ── */}
       <div style={{ fontSize: 11.5, fontWeight: 700, color: '#94a3b8', letterSpacing: '0.04em', marginBottom: 10 }}>全国の「いま」と「2050年」</div>
