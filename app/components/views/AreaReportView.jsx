@@ -64,7 +64,7 @@ function ChapterNav({ active, onJump, mob }) {
 
 // 医療圏カルテ = 全国330二次医療圏を公開データから作成したパネル群。
 // （元PDFスライドの貼付け表示は removed — 圏一覧/メタは data/static/hsa_manifest.json 由来で独立）
-export default function AreaReportView({ mob, globalPref, setGlobalPref, initialCode, onInitialCodeConsumed, setView }) {
+export default function AreaReportView({ mob, navTitle, globalPref, setGlobalPref, initialCode, onInitialCodeConsumed, setView }) {
   const [ready, setReady] = useState(null);       // null=loading, false=未生成, true=ok
   const [areas, setAreas] = useState([]);          // 軽量圏域一覧
   const [prefectures, setPrefectures] = useState([]);
@@ -158,7 +158,7 @@ export default function AreaReportView({ mob, globalPref, setGlobalPref, initial
                   justifyContent: 'space-between', alignItems: mob ? 'flex-start' : 'flex-end', gap: 12 }}>
       <div>
         <div style={{ fontSize: 11, color: '#2563EB', fontWeight: 600, letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 4 }}>Medical Area Report</div>
-        <h1 style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.03em', margin: 0 }}>医療圏カルテ</h1>
+        <h1 style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.03em', margin: 0 }}>{navTitle || '医療圏カルテ'}</h1>
         <p style={{ fontSize: 13, color: '#94a3b8', margin: '4px 0 0' }}>全国330二次医療圏を、公開データから作成したカルテとして圏域単位で閲覧。</p>
       </div>
       <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>

@@ -99,7 +99,7 @@ function classifyRegion(prefShares, natShares, beds_per_75plus, nat_beds_per_75p
   return { type:'標準型', color:'#64748b', desc:'機能配分は全国平均に近い。', icon:'➖' };
 }
 
-export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegPref, agePyramid, ndbDiag, homecareCapability, japanMap }) {
+export default function RegionalBedFunctionView({ mob, navTitle, bedFunc, regPref, setRegPref, agePyramid, ndbDiag, homecareCapability, japanMap }) {
   const isNational = !regPref || regPref === '全国';
   const bf = bedFunc?.prefectures?.[regPref];
   const bfNat = bedFunc?.national;
@@ -344,7 +344,7 @@ export default function RegionalBedFunctionView({ mob, bedFunc, regPref, setRegP
   {/* Header */}
   <div style={{marginBottom:20}}>
     <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:4}}>Regional Bed Function</div>
-    <h1 style={{fontSize:mob?20:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>地域医療構想・病床機能</h1>
+    <h1 style={{fontSize:mob?20:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>{navTitle || '地域医療構想・病床機能'}</h1>
     <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>R6病床機能報告に基づく、地域の医療提供体制(機能配分・規模・75歳以上人口あたり供給)の俯瞰</p>
   </div>
 

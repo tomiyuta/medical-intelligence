@@ -1,12 +1,16 @@
 'use client';
 import { useState, useEffect, useMemo } from 'react';
-import NdbView from './components/views/NdbView';
-import RegionalBedFunctionView from './components/views/RegionalBedFunctionView';
-import FacilityExplorerView from './components/views/FacilityExplorerView';
-import AreaView from './components/views/AreaView';
-import AreaReportView from './components/views/AreaReportView';
-import MuniView from './components/views/MuniView';
-import MapView from './components/views/MapView';
+import dynamic from 'next/dynamic';
+
+// ビューは next/dynamic で遅延ロード(初期チャンクからビュー本体+jspdf等を分離)。ssr:false・簡易ローディング付き。
+const ViewLoading = () => <div style={{padding:'48px 0',textAlign:'center',color:'#94a3b8',fontSize:13}}>読み込み中…</div>;
+const NdbView = dynamic(() => import('./components/views/NdbView'), { ssr:false, loading: ViewLoading });
+const RegionalBedFunctionView = dynamic(() => import('./components/views/RegionalBedFunctionView'), { ssr:false, loading: ViewLoading });
+const FacilityExplorerView = dynamic(() => import('./components/views/FacilityExplorerView'), { ssr:false, loading: ViewLoading });
+const AreaView = dynamic(() => import('./components/views/AreaView'), { ssr:false, loading: ViewLoading });
+const AreaReportView = dynamic(() => import('./components/views/AreaReportView'), { ssr:false, loading: ViewLoading });
+const MuniView = dynamic(() => import('./components/views/MuniView'), { ssr:false, loading: ViewLoading });
+const MapView = dynamic(() => import('./components/views/MapView'), { ssr:false, loading: ViewLoading });
 
 function useIsMobile() {
   const [m, setM] = useState(false);
@@ -29,13 +33,15 @@ const NAV_GROUPS = [
   { id: 'social', label: '社会・人口', icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z',
     views: [['map', '高齢社会 概況'], ['muni', '人口動態・将来推計']] },
   { id: 'disease', label: '医療・疾病', icon: 'M22 12h-4l-3 9L9 3l-3 9H2',
-    views: [['area', '医療圏・疾病構造'], ['ndb', '医療プロファイル'], ['bedfunc', '地域医療構想・病床機能']] },
+    views: [['area', '医療圏 一覧・比較'], ['ndb', '医療プロファイル'], ['bedfunc', '地域医療構想・病床機能']] },
   { id: 'karte', label: '医療圏カルテ', icon: 'M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8',
     views: [['report', '医療圏カルテ']] },
   { id: 'facility', label: '施設', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
     views: [['explorer', '施設エクスプローラ']] },
 ];
 const groupOfView = (v) => NAV_GROUPS.find(g => g.views.some(([id]) => id === v)) || NAV_GROUPS[0];
+// NAV_GROUPS のラベルを唯一の正とし、各ビューの見出し(h1/冠)へ供給する
+const labelOfView = (v) => { for (const g of NAV_GROUPS) { const f = g.views.find(([id]) => id === v); if (f) return f[1]; } return ''; };
 
 export default function Home() {
   const mob = useIsMobile();
@@ -44,7 +50,6 @@ export default function Home() {
   const [prefs, setPrefs] = useState([]);
   const [munis, setMunis] = useState([]);
   const [tiers, setTiers] = useState([]);
-  const [topFac, setTopFac] = useState([]);
   const [globalPref, setGlobalPref] = useState('東京都');
   const [reportCode, setReportCode] = useState(null); // 圏一覧→カルテのディープリンク圏コード
   const [muniPref, setMuniPref] = useState(null); // 人口動態・将来推計 (null=全国)
@@ -54,7 +59,6 @@ export default function Home() {
   const [searchResults, setSearchResults] = useState(null);
   const [areaData, setAreaData] = useState([]);
   const [areaPrefList, setAreaPrefList] = useState([]);
-  const [geoFacilities, setGeoFacilities] = useState([]);
   const [selectedFacility, setSelectedFacility] = useState(null);
   const [japanMap, setJapanMap] = useState(null);
   const [hovPref, setHovPref] = useState(null);
@@ -68,8 +72,6 @@ export default function Home() {
   const [ndbHc, setNdbHc] = useState([]);
   const [ndbCheckupRiskRates, setNdbCheckupRiskRates] = useState(null);
   const [ndbCheckupRiskRatesStd, setNdbCheckupRiskRatesStd] = useState(null);
-  const [kijunData, setKijunData] = useState([]);
-  const [kijunSummary, setKijunSummary] = useState(null);
   const [kijunPage, setKijunPage] = useState(0);
   const [kijunSearch, setKijunSearch] = useState('');
   const [kijunSort, setKijunSort] = useState('std_count');
@@ -103,15 +105,13 @@ export default function Home() {
       fetch('/api/prefectures-full').then(r=>r.json()),
       fetch('/api/municipalities').then(r=>r.json()),
       fetch('/api/tiers').then(r=>r.json()),
-      fetch('/api/facilities?limit=3000').then(r=>r.json()),
-    ]).then(([p,m,t,f]) => {
-      setPrefs(p); setMunis(m.data||[]); setTiers(t); setTopFac(f.data||[]);
+    ]).then(([p,m,t]) => {
+      setPrefs(p); setMunis(m.data||[]); setTiers(t);
     });
     fetch('/api/medical-areas').then(r=>r.json()).then(d => {
       setAreaPrefList(d.prefectures||[]);
       setAreaData(d.data?.filter(a=>a.pref===globalPref)||[]);
     });
-    fetch('/api/facilities-geo').then(r=>r.json()).then(d => setGeoFacilities(d.data||[]));
     fetch('/api/japan-map').then(r=>r.json()).then(d => setJapanMap(d));
     fetch('/api/area-demographics').then(r=>r.json()).then(d => {
       setDemoPrefList(d.prefectures||[]);
@@ -130,7 +130,6 @@ export default function Home() {
     fetch('/api/bed-function').then(r=>r.json()).then(d=>setBedFunc(d));
     fetch('/api/mortality-outcome-2020').then(r=>r.json()).then(d=>setMortalityOutcome2020(d));
     fetch('/api/cancer-sites-2024').then(r=>r.json()).then(d=>setCancerSites2024(d));
-    fetch('/api/facility-standards?summary=true').then(r=>r.json()).then(d=>setKijunSummary(d));
   }, []);
 
   useEffect(() => {
@@ -139,8 +138,6 @@ export default function Home() {
       .then(r=>r.json()).then(d => setAreaData(d.data||[]));
     fetch('/api/ndb/prescriptions?prefecture='+encodeURIComponent(globalPref))
       .then(r=>r.json()).then(d => setNdbRx(d));
-    fetch('/api/facility-standards?prefecture='+encodeURIComponent(globalPref))
-      .then(r=>r.json()).then(d => setKijunData(d.data||[]));
   }, [globalPref]);
 
   const filteredMunis = useMemo(() => {
@@ -201,25 +198,25 @@ export default function Home() {
         )}
 
         {/* ═══ MAP VIEW ═══ */}
-        {view==='map' && <MapView mob={mob} prefs={prefs} metric={metric} setMetric={setMetric} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} setGlobalPref={setGlobalPref} setView={setView} vitalStats={vitalStats} globalPref={globalPref} futureDemo={futureDemo} />}
+        {view==='map' && <MapView navTitle={labelOfView('map')} mob={mob} prefs={prefs} metric={metric} setMetric={setMetric} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} setGlobalPref={setGlobalPref} setView={setView} vitalStats={vitalStats} globalPref={globalPref} futureDemo={futureDemo} />}
 
         {/* ═══ MUNI VIEW ═══ */}
-        {view==='muni' && <MuniView mob={mob} areaDemoData={areaDemoData} demoPref={muniPref} setDemoPref={setMuniPref} demoArea={demoArea} setDemoArea={setDemoArea} demoPrefList={demoPrefList} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} futureDemo={futureDemo} futureYear={futureYear} setFutureYear={setFutureYear} agePyramid={agePyramid} />}
+        {view==='muni' && <MuniView navTitle={labelOfView('muni')} mob={mob} areaDemoData={areaDemoData} demoPref={muniPref} setDemoPref={setMuniPref} demoArea={demoArea} setDemoArea={setDemoArea} demoPrefList={demoPrefList} japanMap={japanMap} hovPref={hovPref} setHovPref={setHovPref} tooltipPos={tooltipPos} setTooltipPos={setTooltipPos} futureDemo={futureDemo} futureYear={futureYear} setFutureYear={setFutureYear} agePyramid={agePyramid} />}
 
         {/* ═══ AREA VIEW ═══ */}
-        {view==='area' && <AreaView mob={mob} areaData={areaData} areaPref={globalPref} setAreaPref={setGlobalPref} areaPrefList={areaPrefList} vitalStats={vitalStats} japanMap={japanMap} onOpenKarte={(code)=>{ setReportCode(code); setView('report'); }} />}
+        {view==='area' && <AreaView navTitle={labelOfView('area')} mob={mob} areaData={areaData} areaDemoData={areaDemoData} areaPref={globalPref} setAreaPref={setGlobalPref} areaPrefList={areaPrefList} vitalStats={vitalStats} japanMap={japanMap} onOpenKarte={(code)=>{ setReportCode(code); setView('report'); }} />}
 
         {/* ═══ AREA REPORT VIEW (医療圏カルテ) ═══ */}
-        {view==='report' && <AreaReportView mob={mob} globalPref={globalPref} setGlobalPref={setGlobalPref} setView={setView} initialCode={reportCode} onInitialCodeConsumed={()=>setReportCode(null)} />}
+        {view==='report' && <AreaReportView navTitle={labelOfView('report')} mob={mob} globalPref={globalPref} setGlobalPref={setGlobalPref} setView={setView} initialCode={reportCode} onInitialCodeConsumed={()=>setReportCode(null)} />}
 
         {/* ═══ SCORING VIEW ═══ */}
-        {view==='bedfunc' && <RegionalBedFunctionView mob={mob} bedFunc={bedFunc} regPref={globalPref} setRegPref={setGlobalPref} agePyramid={agePyramid} ndbDiag={ndbDiag} homecareCapability={homecareCapability} japanMap={japanMap} />}
+        {view==='bedfunc' && <RegionalBedFunctionView navTitle={labelOfView('bedfunc')} mob={mob} bedFunc={bedFunc} regPref={globalPref} setRegPref={setGlobalPref} agePyramid={agePyramid} ndbDiag={ndbDiag} homecareCapability={homecareCapability} japanMap={japanMap} />}
 
         {/* ═══ NDB VIEW ═══ */}
-        {view==='ndb' && <NdbView mob={mob} ndbDiag={ndbDiag} ndbRx={ndbRx} ndbHc={ndbHc} ndbPref={globalPref} setNdbPref={setGlobalPref} setNdbRx={setNdbRx} vitalStats={vitalStats} ndbQ={ndbQ} agePyramid={agePyramid} futureDemo={futureDemo} patientSurvey={patientSurvey} bedFunc={bedFunc} ndbCheckupRiskRates={ndbCheckupRiskRates} ndbCheckupRiskRatesStd={ndbCheckupRiskRatesStd} mortalityOutcome2020={mortalityOutcome2020} cancerSites2024={cancerSites2024} homecareCapability={homecareCapability} japanMap={japanMap} futureYear={futureYear} setFutureYear={setFutureYear} />}
+        {view==='ndb' && <NdbView navTitle={labelOfView('ndb')} mob={mob} ndbDiag={ndbDiag} ndbRx={ndbRx} ndbHc={ndbHc} ndbPref={globalPref} setNdbPref={setGlobalPref} setNdbRx={setNdbRx} vitalStats={vitalStats} ndbQ={ndbQ} agePyramid={agePyramid} futureDemo={futureDemo} patientSurvey={patientSurvey} bedFunc={bedFunc} ndbCheckupRiskRates={ndbCheckupRiskRates} ndbCheckupRiskRatesStd={ndbCheckupRiskRatesStd} mortalityOutcome2020={mortalityOutcome2020} cancerSites2024={cancerSites2024} homecareCapability={homecareCapability} japanMap={japanMap} futureYear={futureYear} setFutureYear={setFutureYear} />}
 
         {/* ═══ FACILITY STANDARDS VIEW ═══ */}
-        {view==='explorer' && <FacilityExplorerView mob={mob} kijunData={kijunData} setKijunData={setKijunData} kijunSummary={kijunSummary} kijunPref={globalPref} setKijunPref={setGlobalPref} kijunPage={kijunPage} setKijunPage={setKijunPage} kijunSearch={kijunSearch} setKijunSearch={setKijunSearch} kijunSort={kijunSort} setKijunSort={setKijunSort} kijunExpanded={kijunExpanded} setKijunExpanded={setKijunExpanded} topFac={topFac} facSearch={facSearch} setFacSearch={setFacSearch} searchResults={searchResults} doSearch={doSearch} geoFacilities={geoFacilities} japanMap={japanMap} />}
+        {view==='explorer' && <FacilityExplorerView navTitle={labelOfView('explorer')} mob={mob} kijunPref={globalPref} setKijunPref={setGlobalPref} kijunPage={kijunPage} setKijunPage={setKijunPage} kijunSearch={kijunSearch} setKijunSearch={setKijunSearch} kijunSort={kijunSort} setKijunSort={setKijunSort} kijunExpanded={kijunExpanded} setKijunExpanded={setKijunExpanded} facSearch={facSearch} setFacSearch={setFacSearch} searchResults={searchResults} doSearch={doSearch} japanMap={japanMap} />}
 
         {/* ═══ GEO MAP VIEW ═══ */}
 

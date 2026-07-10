@@ -1,7 +1,6 @@
 'use client';
 import { useState, useMemo, useEffect } from 'react';
 import { fmt, sortPrefs, downloadCSV, TC } from '../shared';
-import { generateKijunPDF } from '../pdfExport';
 import { pathCentroid } from '../ui/PrefChoropleth';
 
 const CAT_LABELS = {imaging:'画像診断',surgery:'手術',acute:'急性期',rehab:'リハビリ',homecare:'在宅',oncology:'がん',psychiatry:'精神',pediatric:'小児',infection:'感染',dx_it:'DX'};
@@ -159,15 +158,15 @@ function FacilityMapPanel({ japanMap, prefCoords, geoFacilities, visibleCodes, k
 }
 
 export default function FacilityExplorerView({
-  mob,
+  mob, navTitle,
   // 届出ベース (KijunView継承)
-  kijunData, setKijunData, kijunSummary, kijunPref, setKijunPref,
+  kijunPref, setKijunPref,
   kijunPage, setKijunPage, kijunSearch, setKijunSearch, kijunSort, setKijunSort,
   kijunExpanded, setKijunExpanded,
   // DPC・高機能 (ScoringView Layer C継承)
-  topFac, facSearch, setFacSearch, searchResults, doSearch,
+  facSearch, setFacSearch, searchResults, doSearch,
   // 地理 (GeoMapView継承)
-  geoFacilities, japanMap,
+  japanMap,
 }) {
   const [tab, setTab] = useState('kijun'); // 'kijun' | 'dpc' | 'score'
   const [capFilter, setCapFilter] = useState('');
@@ -181,10 +180,24 @@ export default function FacilityExplorerView({
   const [pinnedFacs, setPinnedFacs] = useState([]);  // ◆ピン比較(最大2)
   const [prefCoords, setPrefCoords] = useState([]);  // 47県lat/lngアンカー
   const [showMap, setShowMap] = useState(!mob);
+  // explorer専用データはこのビューのマウント時+県変更時に取得(初期ロードから分離)
+  const [kijunData, setKijunData] = useState([]);        // 選択県の届出施設(facility-standards?prefecture)
+  const [kijunSummary, setKijunSummary] = useState(null); // 全国届出サマリー(facility-standards?summary)
+  const [topFac, setTopFac] = useState([]);              // DPC・高機能施設(facilities?limit=3000)
+  const [geoFacilities, setGeoFacilities] = useState([]); // 施設ジオ座標(facilities-geo)
   const PER_PAGE = 25;
   useEffect(() => {
     fetch('/api/pref-coords').then(r => r.json()).then(d => setPrefCoords(Array.isArray(d) ? d : (d.data || []))).catch(() => {});
+    fetch('/api/facilities?limit=3000').then(r => r.json()).then(d => setTopFac(d.data || [])).catch(() => {});
+    fetch('/api/facilities-geo').then(r => r.json()).then(d => setGeoFacilities(d.data || [])).catch(() => {});
+    fetch('/api/facility-standards?summary=true').then(r => r.json()).then(d => setKijunSummary(d)).catch(() => {});
   }, []);
+  // 選択県の届出施設: マウント時+kijunPref変更時に取得
+  useEffect(() => {
+    if (!kijunPref) return;
+    fetch('/api/facility-standards?prefecture=' + encodeURIComponent(kijunPref))
+      .then(r => r.json()).then(d => setKijunData(d.data || [])).catch(() => {});
+  }, [kijunPref]);
   const togglePin = (code) => setPinnedFacs(prev => prev.includes(code) ? prev.filter(c => c !== code) : (prev.length >= 2 ? [prev[1], code] : [...prev, code]));
   // capability/tier filter変化時にdpcPageを0リセット
   const resetDpcPage = () => { setDpcPage(0); setDpcExpanded(null); };
@@ -219,12 +232,11 @@ export default function FacilityExplorerView({
   const kijunPaged = kijunSorted.slice(kpg * PER_PAGE, (kpg + 1) * PER_PAGE);
 
   const changePref = (p) => {
+    // kijunData は kijunPref 変更を監視する useEffect が取得する
     setKijunPref(p);
     setKijunPage(0);
     setKijunSearch('');
     setKijunExpanded(null);
-    fetch('/api/facility-standards?prefecture=' + encodeURIComponent(p))
-      .then(r => r.json()).then(d => setKijunData(d.data || []));
   };
 
   // ==== DPC・高機能 (Tab 2) ====
@@ -252,7 +264,7 @@ export default function FacilityExplorerView({
   {/* Header */}
   <div style={{marginBottom:20}}>
     <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:4}}>Facility Explorer</div>
-    <h1 style={{fontSize:mob?20:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>施設エクスプローラ</h1>
+    <h1 style={{fontSize:mob?20:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>{navTitle || '施設エクスプローラ'}</h1>
     <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>届出基準・DPC実績・地理情報を統合した施設探索 — capability主軸で対応可能機能から探す</p>
   </div>
 
@@ -344,7 +356,7 @@ export default function FacilityExplorerView({
         const data = kijunSorted.map(f => [f.code, f.name, kijunPref, f.addr || '', f.beds || f.beds_text || '', f.std_count, f.score || '', f.tier || '', '厚生局 届出受理名簿']);
         downloadCSV([header, ...data], `medintel_explorer_kijun_${kijunPref}_${new Date().toISOString().slice(0,10)}.csv`);
       }} style={{padding:'5px 12px',borderRadius:6,border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',fontSize:12,cursor:'pointer'}}>📥 CSV</button>
-      <button onClick={() => generateKijunPDF(kijunSorted.slice(0, 200), { prefecture: kijunPref })} style={{padding:'5px 12px',borderRadius:6,border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',fontSize:12,cursor:'pointer'}}>📄 PDF</button>
+      <button onClick={async () => { const { generateKijunPDF } = await import('../pdfExport'); generateKijunPDF(kijunSorted.slice(0, 200), { prefecture: kijunPref }); }} style={{padding:'5px 12px',borderRadius:6,border:'1px solid #e2e8f0',background:'#fff',color:'#64748b',fontSize:12,cursor:'pointer'}}>📄 PDF</button>
     </div>
 
     {/* テーブル */}
