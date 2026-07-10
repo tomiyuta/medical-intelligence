@@ -6,6 +6,7 @@ import { dispersionForCause, classifyDispersion } from '../../../../lib/dispersi
 import { getSourceBadge } from '../../../../lib/sourceRegistry';
 import { DOMAIN_MAPPING, DOMAIN_ORDER, rowInDomain, domainSectionStatus, DOMAIN_TO_RX_LABEL, FP_TIERS, tierOf } from '../../../../lib/domainMapping';
 import InterpretationGuard from '../../ui/InterpretationGuard';
+import { useSelection } from '../../SelectionContext';
 import PrefStrip47 from '../../ui/PrefStrip47';
 import PsIris from '../../ui/PsIris';
 import PrefChoropleth from '../../ui/PrefChoropleth';
@@ -36,6 +37,7 @@ export default function OutcomeSection(props){
   rxFlashKey, setRxFlashKey, rx4bExpanded, setRx4bExpanded, rxRowRefs, rxFlashTimer, rxJumpToRow,
   displayCauses, prefPops, prefMaps, rxShared, rxClassStrip,
   } = props;
+  const { navigate } = useSelection();
   return (
   causes.length > 0 && <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',padding:'20px 24px',marginBottom:16}}>
     <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:14,flexWrap:'wrap',gap:8}}>
@@ -52,6 +54,15 @@ export default function OutcomeSection(props){
       </div>
       {/* Phase 4-3 R3: 粗 vs 年齢調整 toggle */}
       <div style={{display:'flex',gap:6,alignItems:'center',flexWrap:'wrap'}}>
+        {/* ジャンプ網: この県の医療圏カルテ（同一県の圏レベル断面）へ */}
+        {navigate && ndbPref && (
+          <button onClick={() => navigate('report', { pref: ndbPref })}
+            title={`${ndbPref}の二次医療圏カルテを開く`}
+            style={{padding:'5px 11px',fontSize:10.5,fontWeight:600,borderRadius:999,cursor:'pointer',
+                    border:'1px solid #bfdbfe',background:'#f8faff',color:'#2563EB'}}>
+            → この県のカルテ
+          </button>
+        )}
         <div style={{display:'flex',gap:0,background:'#f1f5f9',padding:2,borderRadius:5}}>
           <button
             onClick={() => setMortalityMode('crude')}

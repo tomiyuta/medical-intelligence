@@ -42,7 +42,7 @@ function ChapterHead({ id, idx, name }) {
 // 章スクロールスパイ付き sticky ナビ（click=章へジャンプ）
 function ChapterNav({ active, onJump, mob }) {
   return (
-    <div style={{ position: 'sticky', top: 0, zIndex: 6, margin: '0 -2px 14px', padding: '8px 2px',
+    <div style={{ position: 'sticky', top: mob ? 50 : 0, zIndex: 6, margin: '0 -2px 14px', padding: '8px 2px',
                   background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)',
                   borderBottom: '1px solid #eef2f6', display: 'flex', gap: 6, overflowX: 'auto' }}>
       {CHAPTERS.map(ch => {
@@ -71,7 +71,7 @@ export default function AreaReportView({ mob, navTitle, globalPref, setGlobalPre
   const [prefectures, setPrefectures] = useState([]);
   // 選択圏コードは SelectionContext.reportCode に永続化（URL ?code= が常時現在カルテを反映）。
   // カルテ内の圏移動・HsaSummaryCards の setCode も常時 URL に反映される。
-  const { reportCode: code, setReportCode: setCode } = useSelection();
+  const { reportCode: code, setReportCode: setCode, pendingPanel, setPendingPanel } = useSelection();
   const [activeCh, setActiveCh] = useState('ch1');  // 章スクロールスパイ
 
   // 初期ロード（軽量一覧）
@@ -126,6 +126,20 @@ export default function AreaReportView({ mob, navTitle, globalPref, setGlobalPre
 
   const sel = areas.find(a => a.code === code) || null;
 
+  // navigate({panelId}) で着地した場合、圏カルテ描画後に該当パネルへスクロール（閉パネルは自動展開）。
+  // パネル群は HsaAreaProvider の非同期ロード後に現れるため数回リトライしてから pendingPanel をクリア。
+  useEffect(() => {
+    if (!pendingPanel || !sel) return;
+    let tries = 0;
+    const timer = setInterval(() => {
+      tries += 1;
+      const el = document.getElementById(pendingPanel);
+      if (el) { goTo(pendingPanel); clearInterval(timer); setPendingPanel(null); }
+      else if (tries >= 12) { clearInterval(timer); setPendingPanel(null); }
+    }, 200);
+    return () => clearInterval(timer);
+  }, [pendingPanel, sel]); // eslint-disable-line react-hooks/exhaustive-deps
+
   // ── 未生成 / ローディング ──
   if (ready === null) return <div style={{ padding: 40, color: '#94a3b8' }}>読み込み中…</div>;
   if (ready === false) return (
@@ -138,16 +152,26 @@ export default function AreaReportView({ mob, navTitle, globalPref, setGlobalPre
   );
 
   return <>
-    {/* ── 圏一覧へ戻る ── */}
+    {/* ── 階層ナビ: 圏一覧へ戻る / 県の医療プロファイルへ昇る ── */}
     {setView && (
-      <button onClick={() => setView('area')}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 12, padding: '6px 12px',
-                       borderRadius: 8, border: '1px solid #e2e8f0', background: '#fff', color: '#475569',
-                       fontSize: 12.5, fontWeight: 600, cursor: 'pointer' }}
-              onMouseEnter={e => { e.currentTarget.style.background = '#f8faff'; e.currentTarget.style.borderColor = '#bfdbfe'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#e2e8f0'; }}>
-        ◀ 医療圏一覧へ戻る
-      </button>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+        <button onClick={() => setView('area')}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 12px',
+                         borderRadius: 8, border: '1px solid #e2e8f0', background: '#fff', color: '#475569',
+                         fontSize: 12.5, fontWeight: 600, cursor: 'pointer' }}
+                onMouseEnter={e => { e.currentTarget.style.background = '#f8faff'; e.currentTarget.style.borderColor = '#bfdbfe'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#e2e8f0'; }}>
+          ◀ 医療圏一覧へ戻る
+        </button>
+        <button onClick={() => setView('ndb')} title="この県の医療プロファイル（NDB統合）へ"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 12px',
+                         borderRadius: 8, border: '1px solid #e2e8f0', background: '#fff', color: '#475569',
+                         fontSize: 12.5, fontWeight: 600, cursor: 'pointer' }}
+                onMouseEnter={e => { e.currentTarget.style.background = '#f8faff'; e.currentTarget.style.borderColor = '#bfdbfe'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#e2e8f0'; }}>
+          この県の医療プロファイル →
+        </button>
+      </div>
     )}
 
     {/* ── ヘッダ ── */}

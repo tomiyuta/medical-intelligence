@@ -165,7 +165,7 @@ export default function MapView({ mob, navTitle, prefs, metric, setMetric, japan
   // ── FLIP(指標/単位/年切替で行が滑走) ───────────────────────────
   useFlipRows(rowRefs, [metric, unitMode, mode, sweepYear], mob);
 
-  const goProfile = pref => { cancelHide(); setGlobalPref(pref); setView('area'); };
+  const goProfile = pref => { cancelHide(); setGlobalPref(pref); setView('ndb'); };
 
   const pill = (active, activeBg, activeFg, activeBorder) => ({
     padding: mob ? '4px 8px' : '5px 12px', borderRadius: 18,

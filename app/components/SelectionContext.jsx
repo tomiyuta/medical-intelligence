@@ -6,11 +6,11 @@
 //   URL 同期は useUrlSync() が担当（?v&pref&pin&year&code&domain / popstate）。
 //   ★旧 ?v=&pref=&code= リンクは新パラメータ追加後も同一画面に着地（後方互換）。
 // ══════════════════════════════════════════════════════════════════
-import { createContext, useContext, useState, useEffect, useRef } from 'react';
+import { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
 
 // 既定値（従来 page.js の useState 初期値と一致させる＝挙動不変）
 const DEFAULTS = {
-  view: 'map',
+  view: 'home',   // 既定ランディング＝全国サマリー（旧 ?v=map 等の URL は従来通り着地＝後方互換）
   pref: '東京都',
   futureYear: '2025',
 };
@@ -26,6 +26,21 @@ export function SelectionProvider({ children }) {
   const [futureYear, setFutureYear] = useState(DEFAULTS.futureYear); // 将来推計の単一年軸
   const [domain, setDomain] = useState(null);              // 疾患ドメインレンズ（NdbView）
   const [hoverPref, setHoverPref] = useState(null);        // ストリップ hover 同期（transient）
+  const [pendingPanel, setPendingPanel] = useState(null);  // navigate() が要求した着地後スクロール先パネルid（transient・消費側でクリア）
+
+  // ── ジャンプ網の共通口 navigate(view, {pref,code,panelId,domain,pin}) ──
+  // 指定 state をまとめてセットし最後に setView（＝pushState 履歴に 1 回計上）。
+  // panelId を渡すと着地ビュー（カルテ等）が pendingPanel を拾い goTo(sec-*アンカー
+  // ＋閉パネル自動展開）でその断面へスクロールする。reportCode/goTo の一般化。
+  const navigate = useCallback((nextView, opts = {}) => {
+    const { pref: p, code, panelId, domain: dm, pin } = opts;
+    if (p !== undefined) setPref(p);
+    if (code !== undefined) setReportCode(code);
+    if (dm !== undefined) setDomain(dm);
+    if (pin !== undefined) setPinnedPref(pin);
+    setPendingPanel(panelId || null);
+    if (nextView) setView(nextView);
+  }, []);
 
   const value = {
     view, setView,
@@ -36,6 +51,8 @@ export function SelectionProvider({ children }) {
     futureYear, setFutureYear,
     domain, setDomain,
     hoverPref, setHoverPref,
+    pendingPanel, setPendingPanel,
+    navigate,
   };
   return <SelectionContext.Provider value={value}>{children}</SelectionContext.Provider>;
 }
