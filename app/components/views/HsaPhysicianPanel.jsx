@@ -31,11 +31,17 @@ export default function HsaPhysicianPanel({ mob }) {
   const cls = area ? CLS[area.classification] : null;
   const rows = (d?.siblings || []).map(s => ({ ...s, self: s.code === code }));
 
+  // 閉状態でも見える結論: 偏在分類チップ
+  const headline = area ? (
+    <span style={{ fontSize: 11.5, fontWeight: 700, color: cls?.color || '#64748b', background: cls?.bg || '#f1f5f9', padding: '2px 9px', borderRadius: 999, whiteSpace: 'nowrap' }}>{area.classification}</span>
+  ) : null;
+
   return (
     <HsaPanel title="医師偏在指標"
               badges={[
                 { label: '令和6年1月公表版', kind: 'muted' },
               ]}
+              headline={headline}
               defaultOpen={true}
               loading={loading}
               empty={!area}
