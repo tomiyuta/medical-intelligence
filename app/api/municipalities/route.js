@@ -1,6 +1,7 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 86400;
 import { NextResponse } from 'next/server';
 import { getMunicipalities } from '../../../lib/data.js';
+const CACHE_HEADERS = { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800' };
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const pref = searchParams.get('prefecture');
@@ -11,5 +12,5 @@ export async function GET(request) {
   if (pref) data = data.filter(m => m.pref === pref);
   if (q) data = data.filter(m => m.name.includes(q) || m.pref.includes(q));
   data.sort((a,b) => (b[sort]||0) - (a[sort]||0));
-  return NextResponse.json({ total: data.length, data: data.slice(0, limit) });
+  return NextResponse.json({ total: data.length, data: data.slice(0, limit) }, { headers: CACHE_HEADERS });
 }

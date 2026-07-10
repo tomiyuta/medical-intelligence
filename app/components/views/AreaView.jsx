@@ -23,14 +23,14 @@ const per100k = (raw, pop) => (pop && pop > 0 && raw != null && isFinite(raw)) ?
 // 数値整形(欠測は「—」)
 const nf = (v, dec = 0) => (v == null || !isFinite(v)) ? '—' : v.toLocaleString(undefined, { minimumFractionDigits: dec, maximumFractionDigits: dec });
 
-export default function AreaView({ mob, areaData, areaPref, setAreaPref, areaPrefList, vitalStats, japanMap, onOpenKarte }) {
+export default function AreaView({ mob, navTitle, areaData, areaDemoData, areaPref, setAreaPref, areaPrefList, vitalStats, japanMap, onOpenKarte }) {
   const vp = vitalStats?.prefectures?.find(p => p.pref === areaPref);
   const causes = vp?.causes || [];
 
   const [metric, setMetric] = useState('beds');
   const [percap, setPercap] = useState(false);           // 実数 ⇄ 人口10万対
   const [allAreas, setAllAreas] = useState([]);          // 全国330圏(供給・県集計用)
-  const [demo, setDemo] = useState([]);                  // area_demographics 330圏(圏人口/高齢化率)
+  const demo = areaDemoData || [];                       // area_demographics 330圏(圏人口/高齢化率) — 親(page.js)取得済を参照
   const [emerg, setEmerg] = useState([]);                // 選択県の救急/在宅 圏別
   const [emergMeta, setEmergMeta] = useState(null);      // 件数差の脚注メタ
   const [karteMap, setKarteMap] = useState(null);        // pref|area -> hsa圏コード (null=未取得)
@@ -57,10 +57,7 @@ export default function AreaView({ mob, areaData, areaPref, setAreaPref, areaPre
     fetch('/api/medical-areas').then(r => r.json()).then(d => setAllAreas(d.data || [])).catch(() => {});
   }, []);
 
-  // 圏人口・高齢化率(住基2025・330圏)を一度だけ取得
-  useEffect(() => {
-    fetch('/api/area-demographics').then(r => r.json()).then(d => setDemo(d.data || [])).catch(() => {});
-  }, []);
+  // 圏人口・高齢化率(住基2025・330圏)は親(page.js)取得済の areaDemoData を参照(再fetch廃止)
 
   // 医療圏カルテ(hsa)の圏コード対応表を一度だけ取得(未抽出なら空)
   useEffect(() => {
@@ -241,8 +238,8 @@ export default function AreaView({ mob, areaData, areaPref, setAreaPref, areaPre
   <div style={{marginBottom:24,display:'flex',flexDirection:mob?'column':'row',justifyContent:'space-between',alignItems:mob?'flex-start':'flex-end',gap:12}}>
     <div>
       <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:4}}>Medical Area Analysis</div>
-      <h1 style={{fontSize:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>3階層 医療圏分析</h1>
-      <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>全国339二次医療圏の医療体制を都道府県別に比較・圏カルテへドリルダウン。</p>
+      <h1 style={{fontSize:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>{navTitle || '医療圏 一覧・比較'}</h1>
+      <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>全国330二次医療圏の医療体制を都道府県別に比較・圏カルテへドリルダウン。</p>
     </div>
     <select value={areaPref} onChange={e=>setAreaPref(e.target.value)} style={{padding:'8px 14px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,background:'#fff',cursor:'pointer',minWidth:140}}>
       {sortPrefs(areaPrefList).map(p=><option key={p} value={p}>{p}</option>)}

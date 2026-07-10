@@ -1,6 +1,7 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 86400;
 import { NextResponse } from 'next/server';
 import { getAreaEmergencyHomecare, getMedicalAreas } from '../../../lib/data.js';
+const CACHE_HEADERS = { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800' };
 
 // area_emergency_homecare.json(339行 × {pref, area, hospitals, emerg,
 // emerg_claims, homecare, homecare_patients, acute_support})を返す。
@@ -47,5 +48,5 @@ export async function GET(request) {
         : `本データは${all.length}行。二次医療圏マスタとの圏定義差(件数不一致)に留意。pref+area 名で join すること。`,
     prefectures,
     data,
-  });
+  }, { headers: CACHE_HEADERS });
 }

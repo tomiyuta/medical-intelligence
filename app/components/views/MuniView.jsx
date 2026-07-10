@@ -29,7 +29,7 @@ const pyramidTotals = (ap) => {
   return { total, p15, p65, rate65: p65 / total * 100 };
 };
 
-export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, demoArea, setDemoArea, demoPrefList, japanMap, hovPref, setHovPref, tooltipPos, setTooltipPos, futureDemo, futureYear, setFutureYear, agePyramid }) {
+export default function MuniView({ mob, navTitle, areaDemoData, demoPref, setDemoPref, demoArea, setDemoArea, demoPrefList, japanMap, hovPref, setHovPref, tooltipPos, setTooltipPos, futureDemo, futureYear, setFutureYear, agePyramid }) {
   // 全国表示モード判定 (demoPref が null/'全国' の時)
   const isNationalView = !demoPref || demoPref === '全国';
 
@@ -310,7 +310,7 @@ export default function MuniView({ mob, areaDemoData, demoPref, setDemoPref, dem
           })()}
           <div style={{marginBottom:12}}>
             <div style={{fontSize:11,color:'#2563EB',fontWeight:600,letterSpacing:'0.08em',textTransform:'uppercase',marginBottom:4}}>Demographics & Projection</div>
-            <h1 style={{fontSize:mob?20:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>人口動態・将来推計</h1>
+            <h1 style={{fontSize:mob?20:22,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>{navTitle || '人口動態・将来推計'}</h1>
             <p style={{fontSize:13,color:'#94a3b8',margin:'4px 0 0'}}>市区町村別の人口構成・高齢化率・自然増減を分析。社人研推計で2050年までの将来予測を俯瞰。</p>
           </div>
           <div style={{display:'flex',gap:8,marginBottom:16,flexWrap:'wrap'}}>

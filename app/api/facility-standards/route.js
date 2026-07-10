@@ -1,7 +1,8 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 86400;
 import { NextResponse } from 'next/server';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
+const CACHE_HEADERS = { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800' };
 
 let summaryCache = null;
 function loadSummary() {
@@ -30,8 +31,8 @@ export async function GET(request) {
   const pref = searchParams.get('prefecture');
   const summary = searchParams.get('summary');
   const cap = searchParams.get('capability');
-  if (summary === 'true') return NextResponse.json({...loadSummary(), categories: CAT_LABELS});
-  if (!pref) return NextResponse.json({ total: 0, data: [], error: 'prefecture parameter required' });
+  if (summary === 'true') return NextResponse.json({...loadSummary(), categories: CAT_LABELS}, { headers: CACHE_HEADERS });
+  if (!pref) return NextResponse.json({ total: 0, data: [], error: 'prefecture parameter required' }, { headers: CACHE_HEADERS });
   let data = loadShard(pref);
   if (cap) data = data.filter(d => d.cap && d.cap[cap] > 0);
   const normalized = data.map(d => ({
@@ -40,5 +41,5 @@ export async function GET(request) {
     cases: d.cs || null, los: d.los || null, score: d.sc || null, tier: d.t || '',
     caps: d.cap || {},
   }));
-  return NextResponse.json({ total: normalized.length, data: normalized });
+  return NextResponse.json({ total: normalized.length, data: normalized }, { headers: CACHE_HEADERS });
 }

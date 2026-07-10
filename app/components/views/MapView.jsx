@@ -26,7 +26,7 @@ const binOf = (v, th) => { if (th == null) return 2; return v <= th[0] ? 0 : v <
 // 供給4指標の年度バッジ(届出受理医療機関名簿。FacilityExplorerView と同一出典)
 const SUPPLY_BADGE = { label: '医療機関届出', year: 'R8', color: '#4338ca' };
 
-export default function MapView({ mob, prefs, metric, setMetric, japanMap, hovPref, setHovPref, tooltipPos, setTooltipPos, setGlobalPref, setView, vitalStats, globalPref, futureDemo }) {
+export default function MapView({ mob, navTitle, prefs, metric, setMetric, japanMap, hovPref, setHovPref, tooltipPos, setTooltipPos, setGlobalPref, setView, vitalStats, globalPref, futureDemo }) {
   // ── ローカル状態 ────────────────────────────────────────────────
   const [unitMode, setUnitMode] = useState('raw');   // 供給指標: 'raw' | 'per100k'
   const [mode, setMode] = useState('map');            // 'map'(分布) | 'strain'(病床逼迫度スイープ)
@@ -176,7 +176,7 @@ export default function MapView({ mob, prefs, metric, setMetric, japanMap, hovPr
   <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:mob?8:12,flexWrap:'wrap',gap:8}}>
     <div>
       <h1 style={{fontSize:mob?18:20,fontWeight:700,letterSpacing:'-0.03em',margin:0}}>
-        {mode==='strain'?'都道府県別 病床逼迫度シミュレーション':`都道府県別 ${isVital(metric)?'疾病構造':'医療機関分布'}`}
+        {navTitle ? navTitle + '｜' : ''}{mode==='strain'?'都道府県別 病床逼迫度シミュレーション':`都道府県別 ${isVital(metric)?'疾病構造':'医療機関分布'}`}
       </h1>
       <p style={{fontSize:11,color:'#94a3b8',margin:'4px 0 0'}}>
         {mode==='strain'
