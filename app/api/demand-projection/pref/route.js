@@ -1,7 +1,8 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 86400;
 import { NextResponse } from 'next/server';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+const CACHE_HEADERS = { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800' };
 
 // demand_projection_r5.json(330二次医療圏 × 22 ICD章 × 入院/外来 × 2020-2050 の
 // 受療率法による将来患者数推計)を都道府県(pref)単位に集約して返す。
@@ -94,5 +95,5 @@ export async function GET(request) {
     national,
     nationalNote: 'national は全国受療率を各圏人口に適用した参考ベンチマークの圏合算(県actualとの対比用)。',
     areas: matched.map((a) => ({ code: a.code, area: a.area })),
-  });
+  }, { headers: CACHE_HEADERS });
 }

@@ -1,7 +1,8 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 86400;
 import { NextResponse } from 'next/server';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+const CACHE_HEADERS = { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800' };
 
 let cache = null;
 function load() {
@@ -31,20 +32,20 @@ export async function GET(request) {
   // ?all=1: 展開ビュー用に47県全系列を同梱(部位別スモールマルチプルの背景線)。
   // gzip後 ~30KB 程度でクライアント側の相対位置描画に必要なため opt-in で返す。
   if (searchParams.get('all')) {
-    return NextResponse.json({ ...meta, prefecture: null, allSeries: data.prefectures });
+    return NextResponse.json({ ...meta, prefecture: null, allSeries: data.prefectures }, { headers: CACHE_HEADERS });
   }
 
   if (!pref) {
-    return NextResponse.json({ ...meta, prefecture: null });
+    return NextResponse.json({ ...meta, prefecture: null }, { headers: CACHE_HEADERS });
   }
 
   const series = data.prefectures[pref];
   if (!series) {
     return NextResponse.json(
       { ...meta, prefecture: null, error: `unknown prefecture: ${pref}` },
-      { status: 404 }
+      { headers: CACHE_HEADERS, status: 404 }
     );
   }
 
-  return NextResponse.json({ ...meta, prefecture: { name: pref, data: series } });
+  return NextResponse.json({ ...meta, prefecture: { name: pref, data: series } }, { headers: CACHE_HEADERS });
 }

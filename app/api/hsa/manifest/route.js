@@ -1,7 +1,8 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 86400;
 import { NextResponse } from 'next/server';
 import { readFileSync, existsSync } from 'fs';
 import { join } from 'path';
+const CACHE_HEADERS = { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800' };
 
 // 医療圏カルテ manifest。
 // 引数なし   : 選択用の軽量圏域一覧（slides を除く）＋都道府県リスト
@@ -27,14 +28,14 @@ export async function GET(request) {
       ready: false,
       message: '医療圏カルテは未抽出です。`python3 scripts/extract_hsa_svg.py` を実行してください。',
       areas: [], prefectures: [], count: 0,
-    });
+    }, { headers: CACHE_HEADERS });
   }
   const { searchParams } = new URL(request.url);
   const code = searchParams.get('code');
   if (code) {
     const area = m.areas.find(a => a.code === code);
-    if (!area) return NextResponse.json({ ready: true, area: null }, { status: 404 });
-    return NextResponse.json({ ready: true, area });
+    if (!area) return NextResponse.json({ ready: true, area: null }, { headers: CACHE_HEADERS, status: 404 });
+    return NextResponse.json({ ready: true, area }, { headers: CACHE_HEADERS });
   }
   // 軽量一覧（slides 除外）
   const areas = m.areas.map(({ slides, ...rest }) => rest);
@@ -45,5 +46,5 @@ export async function GET(request) {
     count: m.count,
     prefectures: m.prefectures,
     areas,
-  });
+  }, { headers: CACHE_HEADERS });
 }

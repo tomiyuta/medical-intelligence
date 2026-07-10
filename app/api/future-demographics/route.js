@@ -1,7 +1,8 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 86400;
 import { NextResponse } from 'next/server';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+const CACHE_HEADERS = { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800' };
 
 let cache = null;
 function load() {
@@ -16,7 +17,7 @@ export async function GET(request) {
 
   if (pref) {
     const munis = data.municipalities.filter(m => m.pref === pref);
-    return NextResponse.json({ prefecture: pref, count: munis.length, data: munis });
+    return NextResponse.json({ prefecture: pref, count: munis.length, data: munis }, { headers: CACHE_HEADERS });
   }
 
   // Return all years for client-side year switching
@@ -32,5 +33,5 @@ export async function GET(request) {
     years: data.years,
     source: data.source,
     prefectures: prefSummary,
-  });
+  }, { headers: CACHE_HEADERS });
 }

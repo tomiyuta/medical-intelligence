@@ -1,7 +1,8 @@
-export const dynamic = "force-dynamic";
+export const revalidate = 86400;
 import { NextResponse } from 'next/server';
 import { readFileSync } from 'fs';
 import { join } from 'path';
+const CACHE_HEADERS = { 'Cache-Control': 'public, s-maxage=86400, stale-while-revalidate=604800' };
 
 // NDB第10回オープンデータ 特定健診 検査値階層別分布 (令和4年度) の v2 スキーマ
 // (sex × age_group × bin_label を完全保持、19,973行/3.4MB)を、
@@ -95,5 +96,5 @@ export async function GET(request) {
     denominatorNote: '分母=特定健診受診者(40-74歳)。住民全体ではない。比較は同性×同年齢帯同士に限る。',
     rowCount: out.length,
     rows: out,
-  });
+  }, { headers: CACHE_HEADERS });
 }
