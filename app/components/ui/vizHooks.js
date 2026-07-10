@@ -3,6 +3,46 @@
 // 他ビュー(Map/Muni/Area 等)が同じ運動文法(400ms easeOutCubic カウントアップ / FLIP行アニメ)を
 // 再利用するための単一ソース。prefers-reduced-motion を全フックで尊重。
 import { useState, useEffect, useRef, useLayoutEffect } from 'react';
+import { useSelection } from '../SelectionContext';
+
+// ── useStripCommon: PrefStrip47/PrefChoropleth 共通 props の単一ソース ──
+// Area/Ndb/RegionalBedFunction の同形 stripCommon を一本化。pinned/hover は
+// SelectionContext を内部で参照＝◆比較ピンがビュー横断で持ち回りされる。
+// selected(表示中の県) と onJump(県クリック時遷移) はビューごとに異なるため引数で受ける。
+export function useStripCommon({ selected, onJump } = {}) {
+  const s = useSelection();
+  return {
+    selected,
+    pinned: s.pinnedPref,
+    hoverPref: s.hoverPref,
+    onHover: s.setHoverPref,
+    onPin: (p) => s.setPinnedPref((prev) => (prev === p ? null : p)),
+    onJump,
+  };
+}
+
+// ── useYearSweep: 将来推計スイープ(再生/1ステップ)の共通ロジック ──
+// NdbView タイムレンズ と MapView 逼迫スイープ の重複再生ロジックを抽出。
+// years=年配列 / current=現在年 / setYear=セッター(=SelectionContext.setFutureYear)。
+// 数値年/文字列年は呼び出し側で正規化してから渡す(indexOf は厳密比較のため)。
+export function useYearSweep({ years, current, setYear, interval = 700, respectReduced = false } = {}) {
+  const [playing, setPlaying] = useState(false);
+  const idx = years ? years.indexOf(current) : -1;
+  const last = years ? years.length - 1 : -1;
+  useEffect(() => {
+    if (!playing) return;
+    if (respectReduced && prefersReducedMotion()) { setPlaying(false); return; }
+    if (idx < 0 || idx >= last) { setPlaying(false); return; }
+    const id = setTimeout(() => setYear(years[idx + 1]), interval);
+    return () => clearTimeout(id);
+  }, [playing, idx, last, interval, respectReduced]); // eslint-disable-line react-hooks/exhaustive-deps
+  // 再生トグル: 末尾なら先頭へ巻き戻してから再生開始（既存 play ボタンの挙動を踏襲）
+  const toggle = () => {
+    if (idx >= last && last >= 0) setYear(years[0]);
+    setPlaying((p) => !p);
+  };
+  return { playing, setPlaying, idx, toggle };
+}
 
 // SSR警告回避: サーバでは useEffect にフォールバック（FLIP用）
 export const useIsoLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;

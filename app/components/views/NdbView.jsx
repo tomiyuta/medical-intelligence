@@ -1,7 +1,8 @@
 'use client';
 import { useState, useEffect, useRef, useMemo, useId, Fragment } from 'react';
 import { fmt, sortPrefs, PREF_ORDER } from '../shared';
-import { prefersReducedMotion, useCountUp, CountUpNum, useFlipRows } from '../ui/vizHooks';
+import { prefersReducedMotion, useCountUp, CountUpNum, useFlipRows, useStripCommon, useYearSweep } from '../ui/vizHooks';
+import { useSelection } from '../SelectionContext';
 import { dispersionForCause, classifyDispersion } from '../../../lib/dispersionMetrics';
 
 import DomainSupplyDemandBridge from './DomainSupplyDemandBridge';
@@ -414,17 +415,10 @@ export default function NdbView({ mob, navTitle, ndbDiag, ndbRx, ndbHc, ndbPref,
   const causes = vp?.causes || [];
 
   // ── rank1: 分布ストリップ共通state（hover同期・比較ピン） ──
-  const [hoverPref, setHoverPref] = useState(null);
-  const [pinnedPref, setPinnedPref] = useState(null);
+  // pinned/hover は SelectionContext を単一ソースに（◆比較ピンがビュー横断で持ち回り）。
+  const { pinnedPref, setPinnedPref, hoverPref, setHoverPref } = useSelection();
   // 全ストリップ共通props（onJump=setNdbPref=globalPref連動）
-  const stripCommon = {
-    selected: ndbPref,
-    pinned: pinnedPref,
-    hoverPref,
-    onHover: setHoverPref,
-    onPin: (p)=>setPinnedPref(prev => prev===p ? null : p),
-    onJump: setNdbPref,
-  };
+  const stripCommon = useStripCommon({ selected: ndbPref, onJump: setNdbPref });
 
   // ── 人口KPI: age_pyramid (住基2025) + future_demographics (社人研2050) ──
   // computeAgeRates はモジュールレベルへ移設（手順1共有基盤）
@@ -495,20 +489,13 @@ export default function NdbView({ mob, navTitle, ndbDiag, ndbRx, ndbHc, ndbPref,
   // ══ rank9: 人口タイムレンズ + 高齢化ドリフト・ダンベル ══
   const tlYear = DEMO_YEARS.includes(futureYear) ? futureYear : '2025';
   const tlIdx = DEMO_YEARS.indexOf(tlYear);
-  const [tlPlaying, setTlPlaying] = useState(false);
   const [dumbbellOpen, setDumbbellOpen] = useState(false);
   const tlRef = useRef(null);
   const tlDrag = useRef(false);
-  // 再生: 700ms/step で末尾まで進んで停止（1周）
-  // 1ステップずつ setTimeout でスケジュール（tlIdx 依存で毎ステップ再実行）。
-  // 停止は「更新関数の外」= エフェクト本体で行う（setFutureYear の updater 内で
-  // setTlPlaying を呼ぶと Home のレンダー中に NdbView を更新する setState-in-render になるため）。
-  useEffect(() => {
-    if (!tlPlaying) return;
-    if (tlIdx >= DEMO_YEARS.length - 1) { setTlPlaying(false); return; }
-    const id = setTimeout(() => setFutureYear(DEMO_YEARS[tlIdx + 1]), 700);
-    return () => clearTimeout(id);
-  }, [tlPlaying, tlIdx, setFutureYear]);
+  // 再生ロジックは useYearSweep() に一本化（MapView 逼迫スイープと共通・700ms/step）。
+  // 年軸は共有 futureYear（SelectionContext）を単一ソースに参照。
+  const { playing: tlPlaying, toggle: tlToggle } =
+    useYearSweep({ years: DEMO_YEARS, current: tlYear, setYear: setFutureYear, interval: 700 });
   // 選択県の社人研系列（type=a）
   const fpSel = useMemo(
     () => futureDemo?.prefectures?.find(p => p.pref === ndbPref) || null,
@@ -717,8 +704,8 @@ export default function NdbView({ mob, navTitle, ndbDiag, ndbRx, ndbHc, ndbPref,
   };
   useEffect(() => () => { if (binsPulseTimer.current) clearTimeout(binsPulseTimer.current); }, []);
 
-  // ── rank2: ドメインレンズ（疾患縦串フィルタ） ──
-  const [activeDomain, setActiveDomain] = useState(null);
+  // ── rank2: ドメインレンズ（疾患縦串フィルタ） ── SelectionContext+URL(&domain) に昇格
+  const { domain: activeDomain, setDomain: setActiveDomain } = useSelection();
   const dm = activeDomain ? DOMAIN_MAPPING[activeDomain] : null;
   // chip選択で Gap Finder テンプレを該当ドメインへ自動切替（可能なら）
   useEffect(() => {
@@ -1093,7 +1080,7 @@ export default function NdbView({ mob, navTitle, ndbDiag, ndbRx, ndbHc, ndbPref,
           </div>
           {/* スクラバー（カスタムSVG・7目盛スナップ / ドラッグ / ←→キー / 再生） */}
           <div style={{display:'flex',alignItems:'center',gap:10}}>
-            <button onClick={()=>{ if(tlIdx>=DEMO_YEARS.length-1) setFutureYear(DEMO_YEARS[0]); setTlPlaying(p=>!p); }}
+            <button onClick={tlToggle}
               aria-label={tlPlaying?'停止':'再生'} style={{flex:'0 0 auto',width:30,height:30,borderRadius:15,border:'1px solid '+(isFut?'#fbbf24':'#cbd5e1'),
               background:'#fff',cursor:'pointer',color:'#f59e0b',fontSize:12,fontWeight:700,lineHeight:1}}>{tlPlaying?'⏸':'▶'}</button>
             <div tabIndex={0} role="slider" aria-valuemin={0} aria-valuemax={DEMO_YEARS.length-1} aria-valuenow={tlIdx} aria-valuetext={tlYear+'年'}

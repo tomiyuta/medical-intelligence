@@ -18,6 +18,7 @@ import HsaHospTrendPanel from './HsaHospTrendPanel';
 import HsaDpcTrendPanel from './HsaDpcTrendPanel';
 import { HsaAreaProvider } from '../hsa/useHsaArea';
 import HsaSummaryCards from '../hsa/HsaSummaryCards';
+import { useSelection } from '../SelectionContext';
 
 const CH_COLOR = ['#64748b', '#2563EB', '#0891b2', '#7c3aed', '#059669'];
 const selStyle = { padding: '8px 12px', borderRadius: 8, border: '1px solid #e2e8f0', fontSize: 13, background: '#fff', cursor: 'pointer' };
@@ -64,11 +65,13 @@ function ChapterNav({ active, onJump, mob }) {
 
 // 医療圏カルテ = 全国330二次医療圏を公開データから作成したパネル群。
 // （元PDFスライドの貼付け表示は removed — 圏一覧/メタは data/static/hsa_manifest.json 由来で独立）
-export default function AreaReportView({ mob, navTitle, globalPref, setGlobalPref, initialCode, onInitialCodeConsumed, setView }) {
+export default function AreaReportView({ mob, navTitle, globalPref, setGlobalPref, setView }) {
   const [ready, setReady] = useState(null);       // null=loading, false=未生成, true=ok
   const [areas, setAreas] = useState([]);          // 軽量圏域一覧
   const [prefectures, setPrefectures] = useState([]);
-  const [code, setCode] = useState(null);          // 選択圏コード
+  // 選択圏コードは SelectionContext.reportCode に永続化（URL ?code= が常時現在カルテを反映）。
+  // カルテ内の圏移動・HsaSummaryCards の setCode も常時 URL に反映される。
+  const { reportCode: code, setReportCode: setCode } = useSelection();
   const [activeCh, setActiveCh] = useState('ch1');  // 章スクロールスパイ
 
   // 初期ロード（軽量一覧）
@@ -86,20 +89,14 @@ export default function AreaReportView({ mob, navTitle, globalPref, setGlobalPre
     () => areas.filter(a => a.pref === globalPref),
     [areas, globalPref]);
 
-  // 圏一覧(AreaView)からのディープリンク: initialCode を最優先で開く
+  // 選択圏の整合: reportCode(URL 復元/AreaView ディープリンク含む)を最優先で尊重し、
+  // 県内に該当が無ければ先頭圏へ。★一覧未ロード中(areas空)は reportCode を保持し、
+  // ?code= のディープリンク/リロードが先頭圏に上書きされないようにする。
   useEffect(() => {
-    if (initialCode && areas.some(a => a.code === initialCode)) {
-      setCode(initialCode);
-      if (onInitialCodeConsumed) onInitialCodeConsumed();
-    }
-  }, [initialCode, areas]); // eslint-disable-line
-
-  // 県が変わったら先頭圏を選択（ただし initialCode 指定中はそれを尊重）
-  useEffect(() => {
-    if (initialCode && areas.some(a => a.code === initialCode)) return;
-    if (!areasInPref.length) { setCode(null); return; }
+    if (!areas.length) return;                              // 一覧未ロード中は触れない
+    if (!areasInPref.length) { setCode(null); return; }     // 当該県にカルテ圏なし
     if (!areasInPref.some(a => a.code === code)) setCode(areasInPref[0].code);
-  }, [areasInPref]); // eslint-disable-line
+  }, [areasInPref, areas]); // eslint-disable-line
 
   // 章スクロールスパイ: 見出しが上端付近を越えた最後の章をアクティブに
   useEffect(() => {
