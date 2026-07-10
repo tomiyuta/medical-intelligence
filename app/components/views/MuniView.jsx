@@ -315,9 +315,10 @@ export default function MuniView({ mob, navTitle, areaDemoData, demoPref, setDem
           </div>
           <div style={{display:'flex',gap:8,marginBottom:16,flexWrap:'wrap'}}>
             <select value={demoPref || '全国'} onChange={e=>{
-              const v = e.target.value === '全国' ? null : e.target.value;
+              // demoPref は globalPref(SelectionContext.pref) と共有。全国は '全国' を番兵値に。
+              const v = e.target.value;
               setDemoPref(v);
-              if (v) { const a=areaDemoData.filter(x=>x.pref===v); if(a.length)setDemoArea(a[0].area); }
+              if (v && v !== '全国') { const a=areaDemoData.filter(x=>x.pref===v); if(a.length)setDemoArea(a[0].area); }
             }} style={{padding:'8px 12px',borderRadius:8,border:'1px solid #e2e8f0',fontSize:13,background:'#fff'}}>
               <option value="全国">全国</option>
               {sortPrefs(demoPrefList).map(p=><option key={p} value={p}>{p}</option>)}

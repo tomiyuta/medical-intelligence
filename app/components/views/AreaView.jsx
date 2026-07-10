@@ -7,6 +7,8 @@ import AreaStrip330 from '../ui/AreaStrip330';
 import DeathWaffle100, { buildWaffleItems, WAFFLE_CAUSE_COLORS, WAFFLE_OTHER, WAFFLE_OTHER_COLOR } from '../ui/DeathWaffle100';
 import { getSourceBadge } from '../../../lib/sourceRegistry';
 import { tierOf } from '../../../lib/domainMapping';
+import { useStripCommon } from '../ui/vizHooks';
+import { useSelection } from '../SelectionContext';
 
 // 県コロプレスの指標セレクタ(圏の県内合計=実数、圏数のみ件数)。beds/hosp は10万対換算対応。
 const METRICS = [
@@ -38,19 +40,12 @@ export default function AreaView({ mob, navTitle, areaData, areaDemoData, areaPr
   // 死因構造の横断同期(百人ワッフル hoverCause + 展開 selectedCause)
   const [hoverCause, setHoverCause] = useState(null);
   const [selectedCause, setSelectedCause] = useState(null);
-  // 県ストリップ(死因)横断同期・◆ピン
-  const [hoverPref, setHoverPref] = useState(null);
-  const [pinnedPref, setPinnedPref] = useState(null);
-  // 圏ストリップ(AreaStrip330)横断同期・◆ピン(テーブル行と共有)
-  const [hoverArea, setHoverArea] = useState(null);      // pref|area
-  const [pinnedArea, setPinnedArea] = useState(null);    // pref|area
-
-  const stripCommon = {
-    selected: areaPref, pinned: pinnedPref, hoverPref,
-    onHover: setHoverPref,
-    onPin: (p) => setPinnedPref(prev => prev === p ? null : p),
-    onJump: setAreaPref,
-  };
+  // 県ストリップ(死因)横断同期・◆ピン — pinned/hover は SelectionContext を単一ソースに
+  // (ビュー横断で ◆比較ピンが持ち回りされる)。selected/onJump のみビュー固有。
+  const stripCommon = useStripCommon({ selected: areaPref, onJump: setAreaPref });
+  // 圏ストリップ(AreaStrip330)横断同期・◆ピン(テーブル行と共有)。圏ピンは Context の pinnedAreaCode へ昇格。
+  const [hoverArea, setHoverArea] = useState(null);      // pref|area (transient)
+  const { pinnedAreaCode: pinnedArea, setPinnedAreaCode: setPinnedArea } = useSelection();
 
   // 全国医療圏(供給・県集計)を一度だけ取得
   useEffect(() => {

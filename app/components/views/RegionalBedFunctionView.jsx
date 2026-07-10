@@ -6,6 +6,7 @@ import InterpretationGuard from '../ui/InterpretationGuard';
 import PrefStrip47 from '../ui/PrefStrip47';
 import PrefChoropleth from '../ui/PrefChoropleth';
 import { getSourceBadge } from '../../../lib/sourceRegistry';
+import { useStripCommon } from '../ui/vizHooks';
 
 const FUNC_COLORS = {
   '高度急性期': '#dc2626',
@@ -104,9 +105,8 @@ export default function RegionalBedFunctionView({ mob, navTitle, bedFunc, regPre
   const bf = bedFunc?.prefectures?.[regPref];
   const bfNat = bedFunc?.national;
 
-  // 47県ストリップ／地図 の hover同期・◆ピン state（確立済 PrefStrip47 文法）
-  const [hoverPref, setHoverPref] = useState(null);
-  const [pinnedPref, setPinnedPref] = useState(null);
+  // 47県ストリップ／地図 の hover同期・◆ピンは SelectionContext を単一ソースに
+  // （◆比較ピンがビュー横断で持ち回りされる。stripCommon は下部で構築）
 
   const computeShares = (d) => {
     if (!d) return null;
@@ -171,14 +171,10 @@ export default function RegionalBedFunctionView({ mob, navTitle, bedFunc, regPre
   }, [bedFunc, agePyramid]);
 
   // 全ストリップ／地図 共通props（onJump/onSelect=setRegPref=globalPref直結）
-  const stripCommon = {
+  const stripCommon = useStripCommon({
     selected: isNational ? null : regPref,
-    pinned: pinnedPref,
-    hoverPref,
-    onHover: setHoverPref,
-    onPin: (p) => setPinnedPref(prev => prev === p ? null : p),
     onJump: (p) => setRegPref && setRegPref(p),
-  };
+  });
 
   // 病棟数集計
   const totalWards = bf

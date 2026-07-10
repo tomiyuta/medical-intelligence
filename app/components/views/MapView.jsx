@@ -2,7 +2,8 @@
 import { useMemo, useState, useEffect, useRef } from 'react';
 import { fmt, METRICS, mKey } from '../shared';
 import { getSourceBadge } from '../../../lib/sourceRegistry';
-import { useCountUp, useFlipRows, prefersReducedMotion } from '../ui/vizHooks';
+import { useCountUp, useFlipRows, prefersReducedMotion, useYearSweep } from '../ui/vizHooks';
+import { useSelection } from '../SelectionContext';
 
 const VITAL_MAP = { cancer: 'がん(悪性新生物)', heart: '心疾患', stroke: '脳血管疾患' };
 const isVital = m => m in VITAL_MAP;
@@ -27,6 +28,8 @@ const binOf = (v, th) => { if (th == null) return 2; return v <= th[0] ? 0 : v <
 const SUPPLY_BADGE = { label: '医療機関届出', year: 'R8', color: '#4338ca' };
 
 export default function MapView({ mob, navTitle, prefs, metric, setMetric, japanMap, hovPref, setHovPref, tooltipPos, setTooltipPos, setGlobalPref, setView, vitalStats, globalPref, futureDemo }) {
+  // 年軸は共有（SelectionContext）: NdbView タイムレンズと同一ソース
+  const { futureYear, setFutureYear } = useSelection();
   // ── ローカル状態 ────────────────────────────────────────────────
   const [unitMode, setUnitMode] = useState('raw');   // 供給指標: 'raw' | 'per100k'
   const [mode, setMode] = useState('map');            // 'map'(分布) | 'strain'(病床逼迫度スイープ)
@@ -47,17 +50,16 @@ export default function MapView({ mob, navTitle, prefs, metric, setMetric, japan
     return (tp == null || ar == null) ? null : tp * ar / 100;
   };
 
-  // ── 病床逼迫度スイープ状態 ─────────────────────────────────────
-  const [yearIdx, setYearIdx] = useState(0);          // demoYears のインデックス
-  const [playing, setPlaying] = useState(false);
-  const sweepYear = demoYears[Math.min(yearIdx, demoYears.length - 1)];
-  useEffect(() => { if (mode !== 'strain') setPlaying(false); }, [mode]);
-  useEffect(() => {
-    if (!playing || reduced) return;
-    if (yearIdx >= demoYears.length - 1) { setPlaying(false); return; }
-    const t = setTimeout(() => setYearIdx(i => Math.min(i + 1, demoYears.length - 1)), 1300);
-    return () => clearTimeout(t);
-  }, [playing, yearIdx, demoYears.length, reduced]);
+  // ── 病床逼迫度スイープ状態（年軸は SelectionContext.futureYear を単一ソース参照） ──
+  // demoYears は数値配列。既存の厳密比較(sweepYear===y)を保つため sweepYear は数値のまま、
+  // 共有 futureYear(文字列 '2025' 等)を文字列配列 yearsStr 経由で正規化して対応付ける。
+  const yearsStr = useMemo(() => demoYears.map(String), [demoYears]);
+  const curStr = yearsStr.includes(String(futureYear)) ? String(futureYear) : yearsStr[0];
+  const sweepIdx = Math.max(0, yearsStr.indexOf(curStr));
+  const sweepYear = demoYears[sweepIdx];              // 数値（表示/比較用）
+  const { playing, setPlaying, toggle: toggleSweep } =
+    useYearSweep({ years: yearsStr, current: curStr, setYear: setFutureYear, interval: 1300, respectReduced: true });
+  useEffect(() => { if (mode !== 'strain') setPlaying(false); }, [mode]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── 表示データ(name→val)。val=null は欠測(データなし)を表す。 ─────
   const supplyKey = metric; // facilities/hospitals/dpc/beds
@@ -222,13 +224,13 @@ export default function MapView({ mob, navTitle, prefs, metric, setMetric, japan
     <div style={{display:'flex',alignItems:'center',gap:mob?4:8,marginBottom:mob?8:12,flexWrap:'wrap',background:'#fff',border:'1px solid #f0f0f0',borderRadius:12,padding:mob?'8px 10px':'10px 14px'}}>
       {reduced
         ? <span style={{fontSize:10,color:'#94a3b8'}}>▶自動再生は軽減設定で無効(年を選択)</span>
-        : <button onClick={()=>{ if(yearIdx>=demoYears.length-1) setYearIdx(0); setPlaying(p=>!p); }}
+        : <button onClick={toggleSweep}
             style={{width:34,height:34,borderRadius:'50%',border:'none',background:playing?'#b91c1c':'#1e293b',color:'#fff',fontSize:14,cursor:'pointer',flexShrink:0}}>
             {playing?'❚❚':'▶'}
           </button>}
       <div style={{display:'flex',gap:mob?3:6,flexWrap:'wrap',flex:1}}>
         {demoYears.map((y,i)=>(
-          <button key={y} onClick={()=>{setPlaying(false);setYearIdx(i);}}
+          <button key={y} onClick={()=>{setPlaying(false);setFutureYear(String(y));}}
             style={{padding:mob?'3px 7px':'4px 11px',borderRadius:14,border:'none',cursor:'pointer',fontVariantNumeric:'tabular-nums',
               background:sweepYear===y?'#b91c1c':'#f1f5f9',color:sweepYear===y?'#fff':'#64748b',fontSize:11,fontWeight:sweepYear===y?700:400}}>{y}</button>
         ))}
