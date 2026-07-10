@@ -12,6 +12,7 @@ import { useMemo, useState } from 'react';
 import { useSelection } from '../SelectionContext';
 import { useData } from '../../../lib/dataClient';
 import PrefStrip47 from '../ui/PrefStrip47';
+import DiscoveryFeed from '../DiscoveryFeed';
 
 // ── 数値フォーマッタ ──
 const fmtOku = (n) => (n / 1e8).toFixed(2) + '億';
@@ -98,7 +99,7 @@ function HierCard({ icon, label, desc, onClick, mob }) {
 }
 
 export default function HomeView({ mob, prefs, vitalStats, agePyramid, bedFunc, futureDemo }) {
-  const { navigate, setFutureYear } = useSelection();
+  const { navigate, setFutureYear, startTour } = useSelection();
   const manifest = useData('/api/hsa/manifest'); // 検索用（cached・軽量一覧）
   const [q, setQ] = useState('');
 
@@ -203,6 +204,22 @@ export default function HomeView({ mob, prefs, vitalStats, agePyramid, bedFunc, 
           )}
         </div>
       </div>
+
+      {/* ── 発見フィード「この県の突出指標」（県選択式・行 click で該当断面へ deep link） ── */}
+      <DiscoveryFeed mob={mob} showSelector />
+
+      {/* ── ツアー起動（2050逼迫ツアー・問い→地図→病床機能→カルテを1本の動線で） ── */}
+      <button onClick={() => startTour('strain2050')}
+        style={{ display: 'flex', alignItems: 'center', gap: 12, width: '100%', textAlign: 'left', cursor: 'pointer',
+          border: '1px solid #fecaca', background: 'linear-gradient(90deg,#fef2f2,#fff)', borderRadius: 12,
+          padding: mob ? '12px 14px' : '14px 18px', marginBottom: mob ? 16 : 20 }}>
+        <span style={{ width: 34, height: 34, borderRadius: '50%', background: '#b91c1c', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, flexShrink: 0 }}>▶</span>
+        <span style={{ minWidth: 0 }}>
+          <span style={{ display: 'block', fontSize: mob ? 13.5 : 14.5, fontWeight: 700, color: '#0f172a' }}>2050年ツアーを見る — あなたの県の医療は？</span>
+          <span style={{ display: 'block', fontSize: 11.5, color: '#94a3b8', marginTop: 2 }}>地図の病床逼迫度 → 病床機能のクロスオーバー → 医療圏カルテの需要推計を、県文脈を保ったまま3ステップで案内します。</span>
+        </span>
+        <span style={{ marginLeft: 'auto', fontSize: 12, color: '#b91c1c', fontWeight: 700, flexShrink: 0 }}>開始 →</span>
+      </button>
 
       {/* ── (1)(2) 全国ヘッドライン KPI（問い形式・click で遷移） ── */}
       <div style={{ fontSize: 11.5, fontWeight: 700, color: '#94a3b8', letterSpacing: '0.04em', marginBottom: 10 }}>全国の「いま」と「2050年」</div>

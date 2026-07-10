@@ -27,17 +27,26 @@ export function SelectionProvider({ children }) {
   const [domain, setDomain] = useState(null);              // 疾患ドメインレンズ（NdbView）
   const [hoverPref, setHoverPref] = useState(null);        // ストリップ hover 同期（transient）
   const [pendingPanel, setPendingPanel] = useState(null);  // navigate() が要求した着地後スクロール先パネルid（transient・消費側でクリア）
+  const [pendingMapMode, setPendingMapMode] = useState(null); // navigate({mapMode}) が要求した MapView 初期モード（'strain'|'map'・transient・MapView が消費）
+  // ── シナリオツアー（ジャーニーlens）──
+  // tourId=null は「ツアー非実行」（＝通常挙動・完全不変）。step は 1 始まり。
+  const [tourId, setTourId] = useState(null);
+  const [tourStep, setTourStep] = useState(1);
+  const startTour = useCallback((id, step = 1) => { setTourId(id); setTourStep(step); }, []);
+  const exitTour = useCallback(() => { setTourId(null); setTourStep(1); }, []);
 
-  // ── ジャンプ網の共通口 navigate(view, {pref,code,panelId,domain,pin}) ──
+  // ── ジャンプ網の共通口 navigate(view, {pref,code,panelId,domain,pin,mapMode}) ──
   // 指定 state をまとめてセットし最後に setView（＝pushState 履歴に 1 回計上）。
   // panelId を渡すと着地ビュー（カルテ等）が pendingPanel を拾い goTo(sec-*アンカー
   // ＋閉パネル自動展開）でその断面へスクロールする。reportCode/goTo の一般化。
+  // mapMode を渡すと MapView が pendingMapMode を拾い初期モード（逼迫スイープ等）へ入る。
   const navigate = useCallback((nextView, opts = {}) => {
-    const { pref: p, code, panelId, domain: dm, pin } = opts;
+    const { pref: p, code, panelId, domain: dm, pin, mapMode } = opts;
     if (p !== undefined) setPref(p);
     if (code !== undefined) setReportCode(code);
     if (dm !== undefined) setDomain(dm);
     if (pin !== undefined) setPinnedPref(pin);
+    if (mapMode !== undefined) setPendingMapMode(mapMode);
     setPendingPanel(panelId || null);
     if (nextView) setView(nextView);
   }, []);
@@ -52,6 +61,8 @@ export function SelectionProvider({ children }) {
     domain, setDomain,
     hoverPref, setHoverPref,
     pendingPanel, setPendingPanel,
+    pendingMapMode, setPendingMapMode,
+    tourId, setTourId, tourStep, setTourStep, startTour, exitTour,
     navigate,
   };
   return <SelectionContext.Provider value={value}>{children}</SelectionContext.Provider>;
@@ -83,6 +94,8 @@ export function useUrlSync() {
     const yr = p.get('year'); if (yr) s.setFutureYear(yr);
     const pin = p.get('pin'); if (pin) s.setPinnedPref(pin);
     const dm = p.get('domain'); if (dm) s.setDomain(dm);
+    // ツアー状態（?tour=&step=）。旧 URL は tour 不在＝通常挙動（後方互換）。
+    const tr = p.get('tour'); if (tr) { s.setTourId(tr); s.setTourStep(parseInt(p.get('step'), 10) || 1); }
 
     const onPop = () => {
       const q = new URLSearchParams(window.location.search);
@@ -92,6 +105,8 @@ export function useUrlSync() {
       s.setFutureYear(q.get('year') || DEFAULTS.futureYear);
       s.setPinnedPref(q.get('pin') || null);
       s.setDomain(q.get('domain') || null);
+      s.setTourId(q.get('tour') || null);
+      s.setTourStep(parseInt(q.get('step'), 10) || 1);
     };
     window.addEventListener('popstate', onPop);
     setReady(true); // 復元 setState 反映後に (2) の書込を解禁（初回クロバー防止）
@@ -109,6 +124,7 @@ export function useUrlSync() {
     if (s.futureYear && s.futureYear !== DEFAULTS.futureYear) p.set('year', s.futureYear); else p.delete('year');
     if (s.pinnedPref) p.set('pin', s.pinnedPref); else p.delete('pin');
     if (s.domain) p.set('domain', s.domain); else p.delete('domain');
+    if (s.tourId) { p.set('tour', s.tourId); p.set('step', String(s.tourStep)); } else { p.delete('tour'); p.delete('step'); }
     const url = '?' + p.toString();
 
     const histKey = s.view + '|' + s.pref + '|' + (s.reportCode || '');
@@ -118,5 +134,5 @@ export function useUrlSync() {
       window.history.pushState(null, '', url);    // view/pref/code 遷移＝履歴に残す
     }
     prevHist.current = histKey;
-  }, [ready, s.view, s.pref, s.reportCode, s.futureYear, s.pinnedPref, s.domain]);
+  }, [ready, s.view, s.pref, s.reportCode, s.futureYear, s.pinnedPref, s.domain, s.tourId, s.tourStep]);
 }

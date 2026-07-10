@@ -3,6 +3,7 @@ import { useState, useEffect, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { SelectionProvider, useSelection, useUrlSync } from './components/SelectionContext';
 import ContextRail from './components/ContextRail';
+import TourBar from './components/TourBar';
 import HomeView from './components/views/HomeView'; // 既定ランディング＝静的 import で初回表示を即時化
 import { useData, fetchData } from '../lib/dataClient';
 
@@ -66,6 +67,7 @@ function HomeInner() {
     setReportCode,
     futureYear, setFutureYear,
     setHoverPref,
+    tourId,
   } = useSelection();
   useUrlSync(); // ?v&pref&code&year&pin&domain 双方向同期・popstate・後方互換
   // グループ内で最後に見たビューを記憶し、グループタップで views[0] でなくそこへ復帰する
@@ -207,7 +209,7 @@ function HomeInner() {
           </button>
         </div>
       )}
-      <main style={{flex:1,minHeight:mob?0:undefined,padding:mob?'16px 16px 80px':'28px 32px',maxWidth:1100,overflow:'auto'}}>
+      <main style={{flex:1,minHeight:mob?0:undefined,padding:mob?`16px 16px ${tourId?180:80}px`:`28px 32px ${tourId?120:28}px`,maxWidth:1100,overflow:'auto'}}>
         {/* ═══ HOME VIEW（全国サマリー・既定ランディング） ═══ */}
         {view==='home' && <HomeView mob={mob} prefs={prefs} vitalStats={vitalStats} agePyramid={agePyramid} bedFunc={bedFunc} futureDemo={futureDemo} />}
         {/* 深掘りチェーン: 全ビュー共通の階層パンくず＋ジャンプチップ（navigate 経由）。home は自前の階層カードを持つため非表示。 */}
@@ -250,6 +252,8 @@ function HomeInner() {
           本サイトは公的統計データを独自に統合・分析したものであり、政府が作成したものではありません
         </div>
       </main>
+      {/* シナリオツアー補助レール（tourId=null＝通常時は非描画・挙動不変） */}
+      <TourBar mob={mob} />
     </div>
   );
 }
