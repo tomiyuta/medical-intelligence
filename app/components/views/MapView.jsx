@@ -4,22 +4,25 @@ import { fmt, METRICS, mKey } from '../shared';
 
 const VITAL_MAP = { cancer: 'がん(悪性新生物)', heart: '心疾患', stroke: '脳血管疾患' };
 const isVital = m => m in VITAL_MAP;
+const NO_DATA_COLOR = '#e5e7eb'; // 「データなし」中立色(欠測=分位色/ランキングから除外)
 
 export default function MapView({ mob, prefs, metric, setMetric, japanMap, hovPref, setHovPref, tooltipPos, setTooltipPos, setGlobalPref, setView, vitalStats, globalPref }) {
-  // Build unified data: prefs for facility metrics, vitalStats for death cause metrics
+  // Build unified data: prefs for facility metrics, vitalStats for death cause metrics.
+  // val=null は欠測(データなし)を表し、val=0(実測ゼロ)と区別する。
   const displayData = useMemo(() => {
     if (!isVital(metric) || !vitalStats?.prefectures) {
-      return prefs.map(p => ({ ...p, val: p[metric] || 0 }));
+      return prefs.map(p => { const v = p[metric]; return { ...p, val: (v == null ? null : v) }; });
     }
     const causeName = VITAL_MAP[metric];
     return vitalStats.prefectures.map(vp => {
       const c = vp.causes?.find(x => x.cause === causeName);
-      return { name: vp.pref, val: c?.rate || 0, cause: c };
+      return { name: vp.pref, val: (c?.rate == null ? null : c.rate), cause: c };
     });
   }, [prefs, metric, vitalStats]);
 
-  const maxVal = useMemo(() => Math.max(...displayData.map(d => d.val), 1), [displayData]);
-  const getColor = v => { const r = v / maxVal; return r > .7 ? '#b91c1c' : r > .4 ? '#ea580c' : r > .2 ? '#f59e0b' : r > .1 ? '#fbbf24' : '#fef3c7'; };
+  // 分位色スケールの最大値は欠測を除いた実測値のみから算出
+  const maxVal = useMemo(() => Math.max(...displayData.filter(d => d.val != null).map(d => d.val), 1), [displayData]);
+  const getColor = v => { if (v == null) return NO_DATA_COLOR; const r = v / maxVal; return r > .7 ? '#b91c1c' : r > .4 ? '#ea580c' : r > .2 ? '#f59e0b' : r > .1 ? '#fbbf24' : '#fef3c7'; };
   const dataByName = useMemo(() => { const m = {}; displayData.forEach(d => m[d.name] = d); return m; }, [displayData]);
   const metricLabel = Object.values(METRICS)[Object.values(mKey).indexOf(metric)];
 
@@ -38,14 +41,15 @@ export default function MapView({ mob, prefs, metric, setMetric, japanMap, hovPr
   <div style={{display:'grid',gridTemplateColumns:mob?'1fr':'1fr 240px',gap:12}}>
     <div style={{background:'#fff',borderRadius:14,padding:mob?'8px':'12px 16px',border:'1px solid #f0f0f0',position:'relative',minHeight:mob?'calc(100vh - 180px)':'calc(100vh - 160px)'}}>
       <div style={{display:'flex',alignItems:'baseline',gap:8,marginBottom:4}}>
-        <span style={{fontSize:26,fontWeight:700,color:isVital(metric)?'#7c3aed':'#b91c1c'}}>{fmt(displayData.reduce((s,d)=>s+d.val,0))}</span>
+        <span style={{fontSize:26,fontWeight:700,color:isVital(metric)?'#7c3aed':'#b91c1c'}}>{fmt(displayData.reduce((s,d)=>s+(d.val||0),0))}</span>
         <span style={{fontSize:11,color:'#94a3b8'}}>{metricLabel}{isVital(metric)?' (2024年)':''} ｜ hover/タップで詳細</span>
       </div>
       {japanMap && (
         <svg viewBox={japanMap.viewBox} style={{width:'100%',height:mob?'calc(100vh - 220px)':'calc(100vh - 200px)'}} preserveAspectRatio="xMidYMid meet">
           {japanMap.prefs.map(pf => {
             const data = dataByName[pf.ja];
-            const val = data?.val||0;
+            // prefsに存在しない県 or 欠測(val==null)は「データなし」中立色で描画
+            const val = (data && data.val != null) ? data.val : null;
             const isHov = hovPref===pf.ja;
             return <path key={pf.id} d={pf.d}
               fill={isHov?'#7c2d12':getColor(val)}
@@ -58,26 +62,31 @@ export default function MapView({ mob, prefs, metric, setMetric, japanMap, hovPr
           })}
         </svg>
       )}
-      {hovPref && (()=>{const d=dataByName[hovPref];return d?(
+      {hovPref && (()=>{const d=dataByName[hovPref];const noData=!d||d.val==null;return (
         <div style={{position:'absolute',left:Math.min(tooltipPos.x,mob?200:400),top:tooltipPos.y+60,background:'#1e293b',color:'#fff',padding:'8px 14px',borderRadius:8,fontSize:12,pointerEvents:'none',zIndex:10,boxShadow:'0 4px 12px rgba(0,0,0,0.15)',whiteSpace:'nowrap'}}>
           <div style={{fontWeight:700,marginBottom:2}}>{hovPref}</div>
-          <div>{metricLabel}: <span style={{color:'#fbbf24',fontWeight:600}}>{isVital(metric)?d.val.toFixed(1):fmt(d.val)}{isVital(metric)?'/10万':''}</span></div>
-          {d.cause && <div style={{fontSize:10,color:'#94a3b8',marginTop:2}}>死因順位 第{d.cause.rank}位</div>}
+          {noData
+            ? <div style={{color:'#cbd5e1'}}>{metricLabel}: <span style={{fontWeight:600}}>データなし</span></div>
+            : <div>{metricLabel}: <span style={{color:'#fbbf24',fontWeight:600}}>{isVital(metric)?d.val.toFixed(1):fmt(d.val)}{isVital(metric)?'/10万':''}</span></div>}
         </div>
-      ):null;})()}
+      );})()}
     </div>
     <div style={{background:'#fff',borderRadius:14,border:'1px solid #f0f0f0',overflow:'hidden',maxHeight:mob?300:'calc(100vh - 160px)',overflowY:'auto',boxShadow:'0 1px 3px rgba(0,0,0,0.04)'}}>
       <div style={{padding:'10px 12px',borderBottom:'1px solid #f0f0f0',fontSize:12,fontWeight:600,position:'sticky',top:0,background:'#fff',zIndex:1}}>全{displayData.length}都道府県</div>
-      {[...displayData].sort((a,b)=>b.val-a.val).map((p,i)=>(
-        <div key={p.name} onClick={()=>{setGlobalPref(p.name);}} style={{display:'flex',alignItems:'center',padding:'6px 12px',borderBottom:'1px solid #f8f9fa',cursor:'pointer',fontSize:12,background:p.name===globalPref?'#fef3c7':'transparent'}} onMouseEnter={e=>e.currentTarget.style.background='#f0f7ff'} onMouseLeave={e=>e.currentTarget.style.background=p.name===globalPref?'#fef3c7':'transparent'}>
-          <span style={{width:20,fontWeight:600,color:'#94a3b8',fontSize:10}}>{i+1}</span>
+      {[...displayData].sort((a,b)=>(b.val==null?-Infinity:b.val)-(a.val==null?-Infinity:a.val)).map((p,i)=>{
+        const noData=p.val==null;
+        return (
+        <div key={p.name} onClick={()=>{setGlobalPref(p.name);}} style={{display:'flex',alignItems:'center',padding:'6px 12px',borderBottom:'1px solid #f8f9fa',cursor:'pointer',fontSize:12,background:p.name===globalPref?'#fef3c7':'transparent',opacity:noData?0.6:1}} onMouseEnter={e=>e.currentTarget.style.background='#f0f7ff'} onMouseLeave={e=>e.currentTarget.style.background=p.name===globalPref?'#fef3c7':'transparent'}>
+          <span style={{width:20,fontWeight:600,color:'#94a3b8',fontSize:10}}>{noData?'–':i+1}</span>
           <span style={{flex:1,fontWeight:500}}>{p.name}</span>
-          <span style={{fontWeight:600,color:isVital(metric)?'#7c3aed':'#b91c1c',fontVariantNumeric:'tabular-nums',fontSize:12}}>{fmt(p.val)}</span>
+          {noData
+            ? <span style={{fontWeight:500,color:'#94a3b8',fontSize:11}}>データなし</span>
+            : <span style={{fontWeight:600,color:isVital(metric)?'#7c3aed':'#b91c1c',fontVariantNumeric:'tabular-nums',fontSize:12}}>{fmt(p.val)}</span>}
           <div style={{width:60,height:6,borderRadius:3,background:'#f1f5f9',marginLeft:8,overflow:'hidden'}}>
-            <div style={{height:'100%',borderRadius:3,background:getColor(p.val),width:`${p.val/maxVal*100}%`}}/>
+            <div style={{height:'100%',borderRadius:3,background:getColor(p.val),width:noData?'0%':`${p.val/maxVal*100}%`}}/>
           </div>
         </div>
-      ))}
+      );})}
     </div>
   </div>
   </>;
