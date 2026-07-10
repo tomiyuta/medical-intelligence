@@ -2,6 +2,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { SelectionProvider, useSelection, useUrlSync } from './components/SelectionContext';
+import ContextRail from './components/ContextRail';
 import { useData, fetchData } from '../lib/dataClient';
 
 // ビューは next/dynamic で遅延ロード(初期チャンクからビュー本体+jspdf等を分離)。ssr:false・簡易ローディング付き。
@@ -192,6 +193,8 @@ function HomeInner() {
       </aside>
       )}
       <main style={{flex:1,minHeight:mob?0:undefined,padding:mob?'16px 16px 80px':'28px 32px',maxWidth:1100,overflow:'auto'}}>
+        {/* 深掘りチェーン: 全ビュー共通の階層パンくず＋ジャンプチップ（navigate 経由） */}
+        <ContextRail mob={mob} />
         {/* サブタブ（グループ内に複数ビューがある場合） */}
         {groupOfView(view).views.length>1 && (
           <div style={{display:'flex',gap:6,marginBottom:20,flexWrap:mob?'nowrap':'wrap',overflowX:mob?'auto':'visible',borderBottom:'1px solid #f0f0f0',paddingBottom:12,...(mob?{position:'sticky',top:0,zIndex:45,background:'#f8f9fb'}:{})}}>

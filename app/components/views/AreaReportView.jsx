@@ -71,7 +71,7 @@ export default function AreaReportView({ mob, navTitle, globalPref, setGlobalPre
   const [prefectures, setPrefectures] = useState([]);
   // 選択圏コードは SelectionContext.reportCode に永続化（URL ?code= が常時現在カルテを反映）。
   // カルテ内の圏移動・HsaSummaryCards の setCode も常時 URL に反映される。
-  const { reportCode: code, setReportCode: setCode } = useSelection();
+  const { reportCode: code, setReportCode: setCode, pendingPanel, setPendingPanel } = useSelection();
   const [activeCh, setActiveCh] = useState('ch1');  // 章スクロールスパイ
 
   // 初期ロード（軽量一覧）
@@ -125,6 +125,20 @@ export default function AreaReportView({ mob, navTitle, globalPref, setGlobalPre
   };
 
   const sel = areas.find(a => a.code === code) || null;
+
+  // navigate({panelId}) で着地した場合、圏カルテ描画後に該当パネルへスクロール（閉パネルは自動展開）。
+  // パネル群は HsaAreaProvider の非同期ロード後に現れるため数回リトライしてから pendingPanel をクリア。
+  useEffect(() => {
+    if (!pendingPanel || !sel) return;
+    let tries = 0;
+    const timer = setInterval(() => {
+      tries += 1;
+      const el = document.getElementById(pendingPanel);
+      if (el) { goTo(pendingPanel); clearInterval(timer); setPendingPanel(null); }
+      else if (tries >= 12) { clearInterval(timer); setPendingPanel(null); }
+    }, 200);
+    return () => clearInterval(timer);
+  }, [pendingPanel, sel]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── 未生成 / ローディング ──
   if (ready === null) return <div style={{ padding: 40, color: '#94a3b8' }}>読み込み中…</div>;
