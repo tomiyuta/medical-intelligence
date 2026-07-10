@@ -29,10 +29,14 @@ const SUPPLY_BADGE = { label: '医療機関届出', year: 'R8', color: '#4338ca'
 
 export default function MapView({ mob, navTitle, prefs, metric, setMetric, japanMap, hovPref, setHovPref, tooltipPos, setTooltipPos, setGlobalPref, setView, vitalStats, globalPref, futureDemo }) {
   // 年軸は共有（SelectionContext）: NdbView タイムレンズと同一ソース
-  const { futureYear, setFutureYear } = useSelection();
+  const { futureYear, setFutureYear, pendingMapMode, setPendingMapMode } = useSelection();
   // ── ローカル状態 ────────────────────────────────────────────────
   const [unitMode, setUnitMode] = useState('raw');   // 供給指標: 'raw' | 'per100k'
   const [mode, setMode] = useState('map');            // 'map'(分布) | 'strain'(病床逼迫度スイープ)
+  // navigate({mapMode}) / ツアーが要求した初期モードを一度だけ適用（未指定時は完全不変）。
+  useEffect(() => {
+    if (pendingMapMode) { setMode(pendingMapMode); setPendingMapMode(null); }
+  }, [pendingMapMode]); // eslint-disable-line react-hooks/exhaustive-deps
   const [hovSrc, setHovSrc] = useState(null);         // 'map' | 'list' — hover 発生源(地図tooltipは'map'のみ)
   const reduced = prefersReducedMotion();
 

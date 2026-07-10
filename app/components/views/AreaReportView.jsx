@@ -220,7 +220,7 @@ export default function AreaReportView({ mob, navTitle, globalPref, setGlobalPre
         <HsaHospTrendPanel mob={mob} />
         <HsaEmergencyPanel mob={mob} />
         <ChapterHead id="ch3" idx={3} name="3. 医療需要の将来推計" />
-        <HsaDemandPanel mob={mob} />
+        <section id="sec-demand" style={{ scrollMarginTop: 56 }}><HsaDemandPanel mob={mob} /></section>
         <HsaCarePanel mob={mob} />
         <HsaHomecarePanel mob={mob} />
         <HsaSurgeryPanel mob={mob} />
