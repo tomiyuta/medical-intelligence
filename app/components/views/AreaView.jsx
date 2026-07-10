@@ -9,6 +9,7 @@ import { getSourceBadge } from '../../../lib/sourceRegistry';
 import { tierOf } from '../../../lib/domainMapping';
 import { useStripCommon } from '../ui/vizHooks';
 import { useSelection } from '../SelectionContext';
+import EntityChip from '../EntityChip';
 
 // 県コロプレスの指標セレクタ(圏の県内合計=実数、圏数のみ件数)。beds/hosp は10万対換算対応。
 const METRICS = [
@@ -321,7 +322,7 @@ export default function AreaView({ mob, navTitle, areaData, areaDemoData, areaPr
             onMouseEnter={()=>setHoverArea(r.code)} onMouseLeave={()=>setHoverArea(null)}
             style={{borderBottom:'1px solid #f8f9fa',background:pinnedArea===r.code?'#fff7ed':(hoverArea===r.code?'#f8faff':'transparent'),transition:'background 150ms ease'}}>
           <td style={{padding:'9px 14px',fontWeight:500,whiteSpace:'nowrap'}}>
-            {pinnedArea===r.code && <span style={{color:'#f97316',marginRight:4}}>◆</span>}{r.area}
+            {pinnedArea===r.code && <span style={{color:'#f97316',marginRight:4}}>◆</span>}<EntityChip code={r.code}>{r.area}</EntityChip>
           </td>
           <td style={{padding:'9px 14px',textAlign:'right',fontWeight:600,color:'#2563EB',fontVariantNumeric:'tabular-nums'}}>{nf(r.hospShow, usePc?1:0)}</td>
           <td style={{padding:'9px 14px',textAlign:'right',fontVariantNumeric:'tabular-nums'}}>{nf(r.wards)}</td>

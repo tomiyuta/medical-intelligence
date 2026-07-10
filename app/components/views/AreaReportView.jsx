@@ -19,6 +19,7 @@ import HsaDpcTrendPanel from './HsaDpcTrendPanel';
 import { HsaAreaProvider } from '../hsa/useHsaArea';
 import HsaSummaryCards from '../hsa/HsaSummaryCards';
 import { useSelection } from '../SelectionContext';
+import EntityChip from '../EntityChip';
 
 const CH_COLOR = ['#64748b', '#2563EB', '#0891b2', '#7c3aed', '#059669'];
 const selStyle = { padding: '8px 12px', borderRadius: 8, border: '1px solid #e2e8f0', fontSize: 13, background: '#fff', cursor: 'pointer' };
@@ -194,7 +195,10 @@ export default function AreaReportView({ mob, navTitle, globalPref, setGlobalPre
 
     {sel && (
       <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, marginBottom: 12, flexWrap: 'wrap' }}>
-        <span style={{ fontSize: 16, fontWeight: 700 }}>{sel.pref} {sel.area}医療圏</span>
+        <span style={{ fontSize: 16, fontWeight: 700 }}>
+          <EntityChip name={sel.pref}>{sel.pref}</EntityChip>{' '}
+          <EntityChip code={sel.pref + '|' + sel.area}>{sel.area}医療圏</EntityChip>
+        </span>
         <span style={{ fontSize: 12, color: '#94a3b8' }}>医療圏コード {sel.code}</span>
       </div>
     )}
