@@ -30,20 +30,21 @@ const Nav = ({icon,label,active,onClick}) => (
 
 // Medical Area data: loaded dynamically from /api/medical-areas
 
-// 2階層ナビ: 4グループ × サブビュー（地理粒度・テーマで整理）
+// 2階層ナビ: 地理階層 4グループ（全国・都道府県 → 医療圏 → 市区町村 → 施設）
+// views の各要素は [id, サブタブ短縮ラベル, 見出しh1(省略時はサブタブラベル)]
 const NAV_GROUPS = [
-  { id: 'social', label: '社会・人口', icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z',
-    views: [['map', '高齢社会 概況'], ['muni', '人口動態・将来推計']] },
-  { id: 'disease', label: '医療・疾病', icon: 'M22 12h-4l-3 9L9 3l-3 9H2',
-    views: [['area', '医療圏 一覧・比較'], ['ndb', '医療プロファイル'], ['bedfunc', '地域医療構想・病床機能']] },
-  { id: 'karte', label: '医療圏カルテ', icon: 'M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8',
-    views: [['report', '医療圏カルテ']] },
+  { id: 'national', label: '全国・都道府県', icon: 'M12 2a10 10 0 100 20 10 10 0 000-20zM2 12h20M12 2a15 15 0 010 20 15 15 0 010-20z',
+    views: [['map', '地図', '高齢社会 概況'], ['ndb', '医療プロファイル', '医療プロファイル'], ['bedfunc', '病床機能', '地域医療構想・病床機能']] },
+  { id: 'iryoken', label: '医療圏', icon: 'M12 2l9 5-9 5-9-5 9-5zM3 12l9 5 9-5M3 17l9 5 9-5',
+    views: [['area', '一覧・比較', '医療圏 一覧・比較'], ['report', 'カルテ', '医療圏カルテ']] },
+  { id: 'city', label: '市区町村', icon: 'M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4-4v2M9 11a4 4 0 100-8 4 4 0 000 8z',
+    views: [['muni', '人口動態・将来推計']] },
   { id: 'facility', label: '施設', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z',
     views: [['explorer', '施設エクスプローラ']] },
 ];
 const groupOfView = (v) => NAV_GROUPS.find(g => g.views.some(([id]) => id === v)) || NAV_GROUPS[0];
-// NAV_GROUPS のラベルを唯一の正とし、各ビューの見出し(h1/冠)へ供給する
-const labelOfView = (v) => { for (const g of NAV_GROUPS) { const f = g.views.find(([id]) => id === v); if (f) return f[1]; } return ''; };
+// NAV_GROUPS のラベルを唯一の正とし、各ビューの見出し(h1/冠)へ供給する（h1は3要素目→無ければサブタブ名）
+const labelOfView = (v) => { for (const g of NAV_GROUPS) { const f = g.views.find(([id]) => id === v); if (f) return f[2] || f[1]; } return ''; };
 
 export default function Home() {
   // SelectionProvider を最上部で Provide（全ビューが共有分析状態を横断参照）
@@ -65,6 +66,13 @@ function HomeInner() {
     setHoverPref,
   } = useSelection();
   useUrlSync(); // ?v&pref&code&year&pin&domain 双方向同期・popstate・後方互換
+  // グループ内で最後に見たビューを記憶し、グループタップで views[0] でなくそこへ復帰する
+  const [lastViewOfGroup, setLastViewOfGroup] = useState({});
+  useEffect(() => {
+    const gid = groupOfView(view).id;
+    setLastViewOfGroup(m => m[gid] === view ? m : { ...m, [gid]: view });
+  }, [view]);
+  const goGroup = (g) => setView(lastViewOfGroup[g.id] || g.views[0][0]);
   const [metric, setMetric] = useState('facilities');
   const [prefs, setPrefs] = useState([]);
   const [munis, setMunis] = useState([]);
@@ -153,14 +161,16 @@ function HomeInner() {
   const totalDeaths = filteredMunis.reduce((s,m)=>s+m.deaths,0);
 
 
+  // モバイルは app-shell（外枠を viewport 高さに固定し main を縦スクローラ化）→ 上部サブタブの sticky を有効化。
+  // dvh 非対応時は minHeight にフォールバックし従来の body スクロールへ縮退。
   return (
-    <div style={{display:'flex',flexDirection:mob?'column':'row',minHeight:'100vh',fontFamily:"'DM Sans',system-ui,sans-serif",background:'#f8f9fb',color:'#0f172a'}}>
+    <div style={{display:'flex',flexDirection:mob?'column':'row',...(mob?{height:'100dvh',overflow:'hidden'}:{minHeight:'100vh'}),fontFamily:"'DM Sans',system-ui,sans-serif",background:'#f8f9fb',color:'#0f172a'}}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
       {/* Desktop Sidebar / Mobile Bottom Nav */}
       {mob ? (
         <nav style={{position:'fixed',bottom:0,left:0,right:0,background:'#fff',borderTop:'1px solid #e2e8f0',display:'flex',zIndex:50,padding:'6px 0 env(safe-area-inset-bottom)',boxShadow:'0 -2px 8px rgba(0,0,0,0.06)'}}>
           {NAV_GROUPS.map(g=>{const on=groupOfView(view).id===g.id;return(
-            <button key={g.id} onClick={()=>setView(g.views[0][0])} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:3,padding:'6px 0',border:'none',background:'transparent',cursor:'pointer',color:on?'#2563EB':'#94a3b8',fontSize:10.5,fontWeight:on?700:400}}>
+            <button key={g.id} onClick={()=>goGroup(g)} style={{flex:1,display:'flex',flexDirection:'column',alignItems:'center',gap:3,padding:'6px 0',border:'none',background:'transparent',cursor:'pointer',color:on?'#2563EB':'#94a3b8',fontSize:10.5,fontWeight:on?700:400}}>
               <svg width={19} height={19} viewBox="0 0 24 24" fill="none" stroke={on?'#2563EB':'#94a3b8'} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={g.icon}/></svg>
               {g.label}
             </button>
@@ -173,7 +183,7 @@ function HomeInner() {
           <div style={{fontSize:11,color:'#94a3b8',marginTop:2}}>日本の医療と高齢社会</div>
         </div>
         {NAV_GROUPS.map(g=>(
-          <Nav key={g.id} icon={g.icon} label={g.label} active={groupOfView(view).id===g.id} onClick={()=>setView(g.views[0][0])}/>
+          <Nav key={g.id} icon={g.icon} label={g.label} active={groupOfView(view).id===g.id} onClick={()=>goGroup(g)}/>
         ))}
         <div style={{flex:1}}/>
         <div style={{padding:'12px 14px',borderTop:'1px solid #f0f0f0',fontSize:11,color:'#cbd5e1'}}>
@@ -181,12 +191,12 @@ function HomeInner() {
         </div>
       </aside>
       )}
-      <main style={{flex:1,padding:mob?'16px 16px 80px':'28px 32px',maxWidth:1100,overflow:'auto'}}>
+      <main style={{flex:1,minHeight:mob?0:undefined,padding:mob?'16px 16px 80px':'28px 32px',maxWidth:1100,overflow:'auto'}}>
         {/* サブタブ（グループ内に複数ビューがある場合） */}
         {groupOfView(view).views.length>1 && (
-          <div style={{display:'flex',gap:6,marginBottom:20,flexWrap:'wrap',borderBottom:'1px solid #f0f0f0',paddingBottom:12}}>
+          <div style={{display:'flex',gap:6,marginBottom:20,flexWrap:mob?'nowrap':'wrap',overflowX:mob?'auto':'visible',borderBottom:'1px solid #f0f0f0',paddingBottom:12,...(mob?{position:'sticky',top:0,zIndex:45,background:'#f8f9fb'}:{})}}>
             {groupOfView(view).views.map(([id,l])=>(
-              <button key={id} onClick={()=>setView(id)} style={{padding:'7px 14px',borderRadius:8,border:'1px solid '+(view===id?'#2563EB':'#e2e8f0'),background:view===id?'#eff6ff':'#fff',color:view===id?'#2563EB':'#64748b',fontSize:13,fontWeight:600,cursor:'pointer'}}>{l}</button>
+              <button key={id} onClick={()=>setView(id)} style={{flexShrink:0,padding:'7px 14px',borderRadius:8,border:'1px solid '+(view===id?'#2563EB':'#e2e8f0'),background:view===id?'#eff6ff':'#fff',color:view===id?'#2563EB':'#64748b',fontSize:13,fontWeight:600,cursor:'pointer'}}>{l}</button>
             ))}
           </div>
         )}
@@ -207,7 +217,7 @@ function HomeInner() {
         {view==='bedfunc' && <RegionalBedFunctionView navTitle={labelOfView('bedfunc')} mob={mob} bedFunc={bedFunc} regPref={globalPref} setRegPref={setGlobalPref} agePyramid={agePyramid} ndbDiag={ndbDiag} homecareCapability={homecareCapability} japanMap={japanMap} />}
 
         {/* ═══ NDB VIEW ═══ */}
-        {view==='ndb' && <NdbView navTitle={labelOfView('ndb')} mob={mob} ndbDiag={ndbDiag} ndbRx={ndbRx} ndbHc={ndbHc} ndbPref={globalPref} setNdbPref={setGlobalPref} setNdbRx={setNdbRx} vitalStats={vitalStats} ndbQ={ndbQ} agePyramid={agePyramid} futureDemo={futureDemo} patientSurvey={patientSurvey} bedFunc={bedFunc} ndbCheckupRiskRates={ndbCheckupRiskRates} ndbCheckupRiskRatesStd={ndbCheckupRiskRatesStd} mortalityOutcome2020={mortalityOutcome2020} cancerSites2024={cancerSites2024} homecareCapability={homecareCapability} japanMap={japanMap} futureYear={futureYear} setFutureYear={setFutureYear} />}
+        {view==='ndb' && <NdbView navTitle={labelOfView('ndb')} mob={mob} ndbDiag={ndbDiag} ndbRx={ndbRx} ndbHc={ndbHc} ndbPref={globalPref} setNdbPref={setGlobalPref} setNdbRx={setNdbRx} vitalStats={vitalStats} ndbQ={ndbQ} agePyramid={agePyramid} futureDemo={futureDemo} patientSurvey={patientSurvey} bedFunc={bedFunc} ndbCheckupRiskRates={ndbCheckupRiskRates} ndbCheckupRiskRatesStd={ndbCheckupRiskRatesStd} mortalityOutcome2020={mortalityOutcome2020} cancerSites2024={cancerSites2024} homecareCapability={homecareCapability} japanMap={japanMap} futureYear={futureYear} setFutureYear={setFutureYear} setView={setView} />}
 
         {/* ═══ FACILITY STANDARDS VIEW ═══ */}
         {view==='explorer' && <FacilityExplorerView navTitle={labelOfView('explorer')} mob={mob} kijunPref={globalPref} setKijunPref={setGlobalPref} kijunPage={kijunPage} setKijunPage={setKijunPage} kijunSearch={kijunSearch} setKijunSearch={setKijunSearch} kijunSort={kijunSort} setKijunSort={setKijunSort} kijunExpanded={kijunExpanded} setKijunExpanded={setKijunExpanded} facSearch={facSearch} setFacSearch={setFacSearch} searchResults={searchResults} doSearch={doSearch} japanMap={japanMap} />}

@@ -33,7 +33,7 @@ import PrescriptionTop10Section from './ndb/PrescriptionTop10Section';
 import OutcomeSection from './ndb/OutcomeSection';
 import GapFinderSection from './ndb/GapFinderSection';
 
-export default function NdbView({ mob, navTitle, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, ndbQ, agePyramid, futureDemo, patientSurvey, bedFunc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd, mortalityOutcome2020, cancerSites2024, homecareCapability, japanMap, futureYear, setFutureYear }) {
+export default function NdbView({ mob, navTitle, ndbDiag, ndbRx, ndbHc, ndbPref, setNdbPref, setNdbRx, vitalStats, ndbQ, agePyramid, futureDemo, patientSurvey, bedFunc, ndbCheckupRiskRates, ndbCheckupRiskRatesStd, mortalityOutcome2020, cancerSites2024, homecareCapability, japanMap, futureYear, setFutureYear, setView }) {
   const diagByPref = ndbDiag.filter(d=>d.prefecture===ndbPref);
   const hcPref = ndbHc.filter(d=>d.pref===ndbPref);
   const vp = vitalStats?.prefectures?.find(p=>p.pref===ndbPref);
@@ -529,10 +529,16 @@ export default function NdbView({ mob, navTitle, ndbDiag, ndbRx, ndbHc, ndbPref,
       {sortPrefs([...new Set(ndbDiag.map(d=>d.prefecture))]).map(p=><option key={p} value={p}>{p}</option>)}
     </select>
     {prefPop > 0 && <span style={{fontSize:12,color:'#94a3b8'}}>人口 {fmt(prefPop)}人</span>}
+    {/* 県→圏の階層降下（1click） */}
+    {setView && <button onClick={()=>setView('area')} title="この県の二次医療圏一覧へ"
+      style={{marginLeft:mob?0:'auto',padding:'7px 12px',borderRadius:8,border:'1px solid #e2e8f0',background:'#fff',color:'#475569',fontSize:12.5,fontWeight:600,cursor:'pointer',whiteSpace:'nowrap'}}
+      onMouseEnter={e=>{e.currentTarget.style.background='#f8faff';e.currentTarget.style.borderColor='#bfdbfe';}}
+      onMouseLeave={e=>{e.currentTarget.style.background='#fff';e.currentTarget.style.borderColor='#e2e8f0';}}>
+      この県の医療圏一覧 →</button>}
   </div>
 
   {/* rank2: ドメインレンズ 疾患chipバー（sticky・ヘッダー付近に同居） */}
-  <div style={{position:'sticky',top:0,zIndex:20,background:'#fff',padding:'8px 0 6px',marginBottom:12,borderBottom:'1px solid #f1f5f9'}}>
+  <div style={{position:'sticky',top:mob?50:0,zIndex:20,background:'#fff',padding:'8px 0 6px',marginBottom:12,borderBottom:'1px solid #f1f5f9'}}>
     <div style={{display:'flex',alignItems:'center',gap:6,overflowX:'auto',paddingBottom:2}}>
       <span style={{fontSize:10,color:'#94a3b8',fontWeight:700,flexShrink:0,letterSpacing:'0.04em'}}>疾患縦串</span>
       {DOMAIN_ORDER.map(id=>{

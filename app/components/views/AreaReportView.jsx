@@ -42,7 +42,7 @@ function ChapterHead({ id, idx, name }) {
 // 章スクロールスパイ付き sticky ナビ（click=章へジャンプ）
 function ChapterNav({ active, onJump, mob }) {
   return (
-    <div style={{ position: 'sticky', top: 0, zIndex: 6, margin: '0 -2px 14px', padding: '8px 2px',
+    <div style={{ position: 'sticky', top: mob ? 50 : 0, zIndex: 6, margin: '0 -2px 14px', padding: '8px 2px',
                   background: 'rgba(255,255,255,0.92)', backdropFilter: 'blur(6px)', WebkitBackdropFilter: 'blur(6px)',
                   borderBottom: '1px solid #eef2f6', display: 'flex', gap: 6, overflowX: 'auto' }}>
       {CHAPTERS.map(ch => {
@@ -138,16 +138,26 @@ export default function AreaReportView({ mob, navTitle, globalPref, setGlobalPre
   );
 
   return <>
-    {/* ── 圏一覧へ戻る ── */}
+    {/* ── 階層ナビ: 圏一覧へ戻る / 県の医療プロファイルへ昇る ── */}
     {setView && (
-      <button onClick={() => setView('area')}
-              style={{ display: 'inline-flex', alignItems: 'center', gap: 6, marginBottom: 12, padding: '6px 12px',
-                       borderRadius: 8, border: '1px solid #e2e8f0', background: '#fff', color: '#475569',
-                       fontSize: 12.5, fontWeight: 600, cursor: 'pointer' }}
-              onMouseEnter={e => { e.currentTarget.style.background = '#f8faff'; e.currentTarget.style.borderColor = '#bfdbfe'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#e2e8f0'; }}>
-        ◀ 医療圏一覧へ戻る
-      </button>
+      <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
+        <button onClick={() => setView('area')}
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 12px',
+                         borderRadius: 8, border: '1px solid #e2e8f0', background: '#fff', color: '#475569',
+                         fontSize: 12.5, fontWeight: 600, cursor: 'pointer' }}
+                onMouseEnter={e => { e.currentTarget.style.background = '#f8faff'; e.currentTarget.style.borderColor = '#bfdbfe'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#e2e8f0'; }}>
+          ◀ 医療圏一覧へ戻る
+        </button>
+        <button onClick={() => setView('ndb')} title="この県の医療プロファイル（NDB統合）へ"
+                style={{ display: 'inline-flex', alignItems: 'center', gap: 6, padding: '6px 12px',
+                         borderRadius: 8, border: '1px solid #e2e8f0', background: '#fff', color: '#475569',
+                         fontSize: 12.5, fontWeight: 600, cursor: 'pointer' }}
+                onMouseEnter={e => { e.currentTarget.style.background = '#f8faff'; e.currentTarget.style.borderColor = '#bfdbfe'; }}
+                onMouseLeave={e => { e.currentTarget.style.background = '#fff'; e.currentTarget.style.borderColor = '#e2e8f0'; }}>
+          この県の医療プロファイル →
+        </button>
+      </div>
     )}
 
     {/* ── ヘッダ ── */}
